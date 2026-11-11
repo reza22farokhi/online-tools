@@ -1,0 +1,68 @@
+---
+---
+<div class="rb-tool">
+  <div class="rb-form">
+    <div class="rb-field">
+      <label for="rb-sitemap">آدرس نقشه سایت (Sitemap URL)</label>
+      <input id="rb-sitemap" type="url" class="input" placeholder="https://example.com/sitemap.xml" dir="ltr" />
+    </div>
+    <div class="rb-field">
+      <label for="rb-disallow">مسیرهای غیرمجاز (Disallow) - هر خط یک مسیر</label>
+      <textarea id="rb-disallow" class="textarea" rows="3" placeholder="/admin&#10;/private&#10;/*.pdf" dir="ltr"></textarea>
+    </div>
+    <div class="rb-field">
+      <label for="rb-allow">مسیرهای مجاز (Allow - اختیاری) - هر خط یک مسیر</label>
+      <textarea id="rb-allow" class="textarea" rows="2" placeholder="/public" dir="ltr"></textarea>
+    </div>
+  </div>
+  <div class="rb-output-wrap">
+    <label for="rb-output" class="rb-label">محتوای فایل robots.txt:</label>
+    <textarea id="rb-output" class="textarea rb-output" readonly></textarea>
+    <div class="rb-actions">
+      <button type="button" class="btn btn-primary" id="rb-copy"><span aria-hidden="true">📋</span> کپی محتوا</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { generateRobotsTxt } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const sitemapInput = document.getElementById('rb-sitemap') as HTMLInputElement | null;
+  const disallowInput = document.getElementById('rb-disallow') as HTMLTextAreaElement | null;
+  const allowInput = document.getElementById('rb-allow') as HTMLTextAreaElement | null;
+  const output = document.getElementById('rb-output') as HTMLTextAreaElement | null;
+  const copyBtn = document.getElementById('rb-copy') as HTMLButtonElement | null;
+
+  function refresh() {
+    if (!output) return;
+    output.value = generateRobotsTxt({
+      userAgent: '*',
+      disallow: disallowInput?.value || '',
+      allow: allowInput?.value || '',
+      sitemap: sitemapInput?.value || ''
+    });
+  }
+
+  sitemapInput?.addEventListener('input', refresh);
+  disallowInput?.addEventListener('input', refresh);
+  allowInput?.addEventListener('input', refresh);
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('محتوای robots.txt کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+
+  refresh();
+</script>
+
+<style>
+  .rb-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .rb-form { display: flex; flex-direction: column; gap: var(--space-3); }
+  .rb-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .rb-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .rb-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); margin-top: var(--space-2); }
+  .rb-output { background: var(--color-surface-2); font-family: var(--font-mono); height: 180px; font-size: 0.9rem; }
+  .rb-actions { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+</style>

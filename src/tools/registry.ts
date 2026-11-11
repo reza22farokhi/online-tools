@@ -18,6 +18,8 @@ import { meta as dateDiffMeta } from './calc/date-diff/meta';
 import { meta as unitConverterMeta } from './calc/unit-converter/meta';
 import { meta as metaTagMeta } from './seo/meta-tag-generator/meta';
 import { meta as serpPreviewMeta } from './seo/serp-preview/meta';
+import { meta as robotsTxtMeta } from './seo/robots-txt-generator/meta';
+import { meta as ogPreviewMeta } from './seo/og-preview/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -34,7 +36,7 @@ export const registry: ToolMeta[] = [
   jsonFormatterMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta, uuidGeneratorMeta,
   hashGeneratorMeta, regexTesterMeta,
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
-  metaTagMeta, serpPreviewMeta
+  metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {

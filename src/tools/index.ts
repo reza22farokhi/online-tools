@@ -18,6 +18,8 @@ import DateDiffTool from './calc/date-diff/Tool.astro';
 import UnitConverterTool from './calc/unit-converter/Tool.astro';
 import MetaTagTool from './seo/meta-tag-generator/Tool.astro';
 import SerpPreviewTool from './seo/serp-preview/Tool.astro';
+import RobotsTxtTool from './seo/robots-txt-generator/Tool.astro';
+import OgPreviewTool from './seo/og-preview/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -38,7 +40,9 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'date-diff': DateDiffTool,
   'unit-converter': UnitConverterTool,
   'meta-tag-generator': MetaTagTool,
-  'serp-preview': SerpPreviewTool
+  'serp-preview': SerpPreviewTool,
+  'robots-txt-generator': RobotsTxtTool,
+  'og-preview': OgPreviewTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {
