@@ -190,3 +190,9 @@ button, input, textarea, select {
   color: var(--color-text-muted);
   opacity: 1;
 }
+
+/* Improved placeholder contrast for accessibility */
+::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
