@@ -35,6 +35,7 @@ import MultiCalendarTool from './date/multi-calendar-converter/Tool.astro';
 import UnixTimestampTool from './date/unix-timestamp/Tool.astro';
 import DateCalculatorTool from './date/date-calculator/Tool.astro';
 import DateInfoTool from './date/date-info/Tool.astro';
+import CsvJsonTool from './file/csv-json-converter/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -72,7 +73,8 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'multi-calendar-converter': MultiCalendarTool,
   'unix-timestamp': UnixTimestampTool,
   'date-calculator': DateCalculatorTool,
-  'date-info': DateInfoTool
+  'date-info': DateInfoTool,
+  'csv-json-converter': CsvJsonTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {

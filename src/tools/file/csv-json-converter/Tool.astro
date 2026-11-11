@@ -1,0 +1,76 @@
+---
+---
+<div class="cjc">
+  <div class="cjc-modes">
+    <button type="button" class="btn cjc-mode active" data-mode="csv2json">CSV → JSON</button>
+    <button type="button" class="btn cjc-mode" data-mode="json2csv">JSON → CSV</button>
+  </div>
+  <label for="cjc-in" class="cjc-lbl">ورودی:</label>
+  <textarea id="cjc-in" class="textarea cjc-ta" spellcheck="false"></textarea>
+  <div class="cjc-err" id="cjc-err" hidden></div>
+  <div class="cjc-actions">
+    <button type="button" class="btn" id="cjc-sample">📋 نمونه</button>
+    <button type="button" class="btn btn-primary" id="cjc-run">🔄 تبدیل</button>
+    <button type="button" class="btn" id="cjc-clear">🗑️ پاک</button>
+  </div>
+  <label for="cjc-out" class="cjc-lbl">خروجی:</label>
+  <textarea id="cjc-out" class="textarea cjc-ta cjc-ot" readonly></textarea>
+  <div class="cjc-actions">
+    <button type="button" class="btn btn-primary" id="cjc-copy" disabled>📋 کپی</button>
+  </div>
+</div>
+
+<script>
+  import { csvToJson, jsonToCsv } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+  const input = document.getElementById('cjc-in') as HTMLTextAreaElement;
+  const output = document.getElementById('cjc-out') as HTMLTextAreaElement;
+  const errorEl = document.getElementById('cjc-err');
+  const copyBtn = document.getElementById('cjc-copy') as HTMLButtonElement;
+  const modes = document.querySelectorAll<HTMLButtonElement>('.cjc-mode');
+  let mode: 'csv2json' | 'json2csv' = 'csv2json';
+  const samples = {
+    csv2json: 'name,age,city\nAli,30,Tehran\nSara,25,Shiraz',
+    json2csv: '[{"name":"Ali","age":30},{"name":"Sara","age":25}]'
+  };
+  function convert() {
+    if (!errorEl || !output || !copyBtn) return;
+    errorEl.hidden = true; output.value = ''; copyBtn.disabled = true;
+    if (!input.value.trim()) return;
+    try {
+      const r = mode === 'csv2json'
+        ? csvToJson(input.value, { delimiter: ',', useHeaders: true })
+        : jsonToCsv(input.value, ',');
+      output.value = r; copyBtn.disabled = !r;
+    } catch (e) {
+      errorEl.hidden = false;
+      errorEl.textContent = 'خطا: ' + (e instanceof Error ? e.message : '');
+    }
+  }
+  modes.forEach(b => b.addEventListener('click', () => {
+    mode = (b.dataset.mode as typeof mode) || 'csv2json';
+    modes.forEach(x => x.classList.toggle('active', x === b));
+    input.value = samples[mode]; convert();
+  }));
+  document.getElementById('cjc-sample')?.addEventListener('click', () => { input.value = samples[mode]; convert(); });
+  document.getElementById('cjc-clear')?.addEventListener('click', () => { input.value = ''; convert(); });
+  document.getElementById('cjc-run')?.addEventListener('click', convert);
+  copyBtn?.addEventListener('click', async () => {
+    if (!output.value) return;
+    const ok = await copyText(output.value);
+    toast(ok ? 'کپی شد' : 'کپی نشد', ok ? 'success' : 'error');
+  });
+  input.value = samples.csv2json; convert();
+</script>
+
+<style>
+  .cjc { display: flex; flex-direction: column; gap: var(--space-3); }
+  .cjc-modes { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+  .cjc-mode { padding: 6px 12px; font-size: 0.85rem; }
+  .cjc-mode.active { background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary); }
+  .cjc-lbl { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .cjc-ta { font-family: var(--font-mono); font-size: 0.85rem; min-height: 130px; }
+  .cjc-ot { background: var(--color-surface-2); }
+  .cjc-err { padding: var(--space-2); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
+  .cjc-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+</style>

@@ -35,6 +35,7 @@ import { meta as multiCalendarMeta } from './date/multi-calendar-converter/meta'
 import { meta as unixTimestampMeta } from './date/unix-timestamp/meta';
 import { meta as dateCalculatorMeta } from './date/date-calculator/meta';
 import { meta as dateInfoMeta } from './date/date-info/meta';
+import { meta as csvJsonMeta } from './file/csv-json-converter/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -58,7 +59,8 @@ export const registry: ToolMeta[] = [
   paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
   fileInfoMeta, fileToBase64Meta,
   multiCalendarMeta, unixTimestampMeta,
-  dateCalculatorMeta, dateInfoMeta
+  dateCalculatorMeta, dateInfoMeta,
+  csvJsonMeta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {
