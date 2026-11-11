@@ -1,0 +1,90 @@
+---
+---
+<div class="fb-tool">
+  <div class="fb-upload-zone" id="fb-upload-zone">
+    <input type="file" id="fb-file" class="sr-only" />
+    <label for="fb-file" class="fb-upload-label">
+      <span class="fb-icon">🔣</span>
+      <span>برای انتخاب فایل کلیک کنید</span>
+      <span class="fb-hint">حداکثر ۱۰ مگابایت (پردازش محلی)</span>
+    </label>
+  </div>
+
+  <div class="fb-workspace" id="fb-workspace" hidden>
+    <div class="fb-info">
+      فایل: <strong id="fb-name">-</strong>
+    </div>
+    <div class="fb-field">
+      <label for="fb-output" class="fb-label">متن Base64 (Data URI):</label>
+      <textarea id="fb-output" class="textarea fb-output" readonly rows="6" placeholder="در حال تبدیل..."></textarea>
+    </div>
+    <div class="fb-actions">
+      <button type="button" class="btn btn-primary" id="fb-copy"><span aria-hidden="true">📋</span> کپی متن Base64</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { fileToBase64 } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const MAX_SIZE = 10 * 1024 * 1024;
+  const fileInput = document.getElementById('fb-file') as HTMLInputElement | null;
+  const uploadZone = document.getElementById('fb-upload-zone');
+  const workspace = document.getElementById('fb-workspace');
+  const nameEl = document.getElementById('fb-name');
+  const outputEl = document.getElementById('fb-output') as HTMLTextAreaElement | null;
+  const copyBtn = document.getElementById('fb-copy') as HTMLButtonElement | null;
+
+  async function handleFile(file: File) {
+    if (file.size > MAX_SIZE) {
+      alert('حجم فایل نباید بیشتر از ۱۰ مگابایت باشد.');
+      return;
+    }
+
+    if (uploadZone) uploadZone.hidden = true;
+    if (workspace) workspace.hidden = false;
+    if (nameEl) nameEl.textContent = file.name;
+    if (outputEl) outputEl.value = 'در حال تبدیل...';
+    if (copyBtn) copyBtn.disabled = true;
+
+    try {
+      const base64 = await fileToBase64(file);
+      if (outputEl) outputEl.value = base64;
+      if (copyBtn) copyBtn.disabled = false;
+    } catch {
+      if (outputEl) outputEl.value = 'خطا در تبدیل فایل';
+    }
+  }
+
+  fileInput?.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) handleFile(target.files[0]);
+  });
+
+  uploadZone?.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--color-primary)'; });
+  uploadZone?.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--color-border)'; });
+  uploadZone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.style.borderColor = 'var(--color-border)';
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (outputEl?.value) { await copyText(outputEl.value); toast('Base64 کپی شد', 'success'); }
+  });
+</script>
+
+<style>
+  .fb-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .fb-upload-zone { border: 2px dashed var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; transition: border-color 0.2s; background: var(--color-surface-2); }
+  .fb-upload-label { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-text); }
+  .fb-icon { font-size: 2.5rem; }
+  .fb-hint { font-size: 0.8rem; color: var(--color-text-muted); }
+  .fb-workspace { display: flex; flex-direction: column; gap: var(--space-3); }
+  .fb-info { font-size: 0.95rem; color: var(--color-text-muted); }
+  .fb-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .fb-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .fb-output { background: var(--color-surface-2); font-family: var(--font-mono); font-size: 0.8rem; word-break: break-all; }
+  .fb-actions { display: flex; justify-content: flex-end; }
+</style>

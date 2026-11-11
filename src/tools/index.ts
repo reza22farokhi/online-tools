@@ -24,6 +24,8 @@ import ImageResizerTool from './image/image-resizer/Tool.astro';
 import ImageCompressorTool from './image/image-compressor/Tool.astro';
 import FormatConverterTool from './image/format-converter/Tool.astro';
 import ColorPickerTool from './image/color-picker/Tool.astro';
+import FileInfoTool from './file/file-info/Tool.astro';
+import FileToBase64Tool from './file/file-to-base64/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -50,7 +52,9 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'image-resizer': ImageResizerTool,
   'image-compressor': ImageCompressorTool,
   'format-converter': FormatConverterTool,
-  'color-picker': ColorPickerTool
+  'color-picker': ColorPickerTool,
+  'file-info': FileInfoTool,
+  'file-to-base64': FileToBase64Tool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {

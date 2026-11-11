@@ -24,6 +24,8 @@ import { meta as imageResizerMeta } from './image/image-resizer/meta';
 import { meta as imageCompressorMeta } from './image/image-compressor/meta';
 import { meta as formatConverterMeta } from './image/format-converter/meta';
 import { meta as colorPickerMeta } from './image/color-picker/meta';
+import { meta as fileInfoMeta } from './file/file-info/meta';
+import { meta as fileToBase64Meta } from './file/file-to-base64/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -41,7 +43,8 @@ export const registry: ToolMeta[] = [
   hashGeneratorMeta, regexTesterMeta,
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
-  imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta
+  imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
+  fileInfoMeta, fileToBase64Meta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {

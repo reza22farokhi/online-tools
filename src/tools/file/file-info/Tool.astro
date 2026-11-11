@@ -1,0 +1,112 @@
+---
+---
+<div class="fi-tool">
+  <div class="fi-upload-zone" id="fi-upload-zone">
+    <input type="file" id="fi-file" class="sr-only" />
+    <label for="fi-file" class="fi-upload-label">
+      <span class="fi-icon">📁</span>
+      <span>برای انتخاب فایل کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="fi-hint">پردازش محلی و امن (بدون آپلود)</span>
+    </label>
+  </div>
+
+  <div class="fi-workspace" id="fi-workspace" hidden>
+    <div class="fi-grid">
+      <div class="fi-card">
+        <div class="fi-label">نام فایل</div>
+        <div class="fi-val" id="fi-name">-</div>
+      </div>
+      <div class="fi-card">
+        <div class="fi-label">حجم</div>
+        <div class="fi-val" id="fi-size">-</div>
+      </div>
+      <div class="fi-card">
+        <div class="fi-label">نوع (MIME)</div>
+        <div class="fi-val" id="fi-type" dir="ltr">-</div>
+      </div>
+      <div class="fi-card">
+        <div class="fi-label">پسوند</div>
+        <div class="fi-val" id="fi-ext">-</div>
+      </div>
+    </div>
+    
+    <div class="fi-hash-wrap">
+      <div class="fi-label">هش SHA-256:</div>
+      <textarea id="fi-hash" class="textarea fi-hash" readonly rows="2" placeholder="در حال محاسبه..."></textarea>
+      <button type="button" class="btn" id="fi-copy-hash" disabled><span aria-hidden="true">📋</span> کپی هش</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { formatBytes, calculateFileSha256 } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const fileInput = document.getElementById('fi-file') as HTMLInputElement | null;
+  const uploadZone = document.getElementById('fi-upload-zone');
+  const workspace = document.getElementById('fi-workspace');
+  
+  const nameEl = document.getElementById('fi-name');
+  const sizeEl = document.getElementById('fi-size');
+  const typeEl = document.getElementById('fi-type');
+  const extEl = document.getElementById('fi-ext');
+  const hashEl = document.getElementById('fi-hash') as HTMLTextAreaElement | null;
+  const copyBtn = document.getElementById('fi-copy-hash') as HTMLButtonElement | null;
+
+  async function handleFile(file: File) {
+    if (uploadZone) uploadZone.hidden = true;
+    if (workspace) workspace.hidden = false;
+    if (copyBtn) copyBtn.disabled = true;
+    
+    if (nameEl) nameEl.textContent = file.name;
+    if (sizeEl) sizeEl.textContent = formatBytes(file.size);
+    if (typeEl) typeEl.textContent = file.type || 'نامشخص';
+    
+    const parts = file.name.split('.');
+    const ext = parts.length > 1 ? parts.pop()!.toUpperCase() : 'نامشخص';
+    if (extEl) extEl.textContent = ext;
+    
+    if (hashEl) hashEl.value = 'در حال محاسبه هش...';
+    
+    try {
+      const hash = await calculateFileSha256(file);
+      if (hashEl) hashEl.value = hash;
+      if (copyBtn) copyBtn.disabled = false;
+    } catch (e) {
+      if (hashEl) hashEl.value = 'خطا در محاسبه هش';
+    }
+  }
+
+  fileInput?.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) handleFile(target.files[0]);
+  });
+
+  uploadZone?.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--color-primary)'; });
+  uploadZone?.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--color-border)'; });
+  uploadZone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.style.borderColor = 'var(--color-border)';
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (hashEl?.value) { await copyText(hashEl.value); toast('هش کپی شد', 'success'); }
+  });
+</script>
+
+<style>
+  .fi-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .fi-upload-zone { border: 2px dashed var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; transition: border-color 0.2s; background: var(--color-surface-2); }
+  .fi-upload-label { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-text); }
+  .fi-icon { font-size: 2.5rem; }
+  .fi-hint { font-size: 0.8rem; color: var(--color-text-muted); }
+  .fi-workspace { display: flex; flex-direction: column; gap: var(--space-4); }
+  .fi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  @media (min-width: 640px) { .fi-grid { grid-template-columns: repeat(4, 1fr); } }
+  .fi-card { background: var(--color-surface-2); padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--color-border); text-align: center; }
+  .fi-label { font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 4px; font-weight: 600; }
+  .fi-val { font-size: 0.95rem; font-weight: 700; word-break: break-all; color: var(--color-text); }
+  .fi-hash-wrap { display: flex; flex-direction: column; gap: var(--space-2); background: var(--color-surface-2); padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--color-border); }
+  .fi-hash { font-family: var(--font-mono); font-size: 0.85rem; background: var(--color-surface); word-break: break-all; }
+</style>
