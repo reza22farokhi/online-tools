@@ -1,0 +1,292 @@
+---
+---
+<div class="jwt-tool">
+  <label for="jwt-input" class="sr-only">توکن JWT</label>
+  <textarea
+    id="jwt-input"
+    class="textarea jwt-input"
+    placeholder="توکن JWT را اینجا جای‌گذاری کنید..."
+    spellcheck="false"
+    rows="4"
+  ></textarea>
+  <p class="jwt-help">پردازش ۱۰۰٪ محلی. امضای توکن تایید نمی‌شود (برای تایید، به کلید مخفی سرور نیاز است).</p>
+
+  <div class="jwt-actions">
+    <button type="button" class="btn" id="jwt-clear">🗑️ پاک کردن</button>
+    <button type="button" class="btn" id="jwt-sample">📋 نمونه</button>
+    <button type="button" class="btn btn-primary" id="jwt-decode" disabled>🔓 رمزگشایی</button>
+  </div>
+
+  <div class="jwt-error" id="jwt-error" hidden role="alert"></div>
+
+  <div class="jwt-results" id="jwt-results" hidden>
+    <div class="jwt-status" id="jwt-status"></div>
+    <div class="jwt-timestamps" id="jwt-timestamps" hidden></div>
+
+    <div class="jwt-section">
+      <div class="jwt-section-head">
+        <h2>🔵 Header</h2>
+        <button type="button" class="btn btn-sm" data-copy="header">📋 کپی</button>
+      </div>
+      <pre class="jwt-json" id="jwt-header"></pre>
+    </div>
+
+    <div class="jwt-section">
+      <div class="jwt-section-head">
+        <h2>🟢 Payload</h2>
+        <button type="button" class="btn btn-sm" data-copy="payload">📋 کپی</button>
+      </div>
+      <pre class="jwt-json" id="jwt-payload"></pre>
+    </div>
+
+    <div class="jwt-section">
+      <div class="jwt-section-head">
+        <h2>🔴 Signature</h2>
+        <button type="button" class="btn btn-sm" data-copy="signature">📋 کپی</button>
+      </div>
+      <pre class="jwt-json jwt-sig" id="jwt-signature"></pre>
+      <p class="jwt-sig-note">⚠️ امضا در مرورگر تایید نمی‌شود. برای تایید اصالت، آن را در سرور با کلید مخفی بررسی کنید.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { decodeJwt, formatTimestamp, getTimeRemaining } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const MAX_INPUT = 10_000;
+  const SAMPLE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+
+  const input = document.getElementById('jwt-input') as HTMLTextAreaElement | null;
+  const decodeBtn = document.getElementById('jwt-decode') as HTMLButtonElement | null;
+  const clearBtn = document.getElementById('jwt-clear') as HTMLButtonElement | null;
+  const sampleBtn = document.getElementById('jwt-sample') as HTMLButtonElement | null;
+  const errorEl = document.getElementById('jwt-error') as HTMLDivElement | null;
+  const resultsEl = document.getElementById('jwt-results') as HTMLDivElement | null;
+  const statusEl = document.getElementById('jwt-status') as HTMLDivElement | null;
+  const timestampsEl = document.getElementById('jwt-timestamps') as HTMLDivElement | null;
+  const headerEl = document.getElementById('jwt-header');
+  const payloadEl = document.getElementById('jwt-payload');
+  const signatureEl = document.getElementById('jwt-signature');
+
+  function setHidden(el: HTMLElement | null, hidden: boolean) {
+    if (el) el.hidden = hidden;
+  }
+  function setText(el: HTMLElement | null, text: string) {
+    if (el) el.textContent = text;
+  }
+
+  function decode() {
+    if (!input || !resultsEl) return;
+    setHidden(errorEl, true);
+    setHidden(resultsEl, true);
+
+    let token = input.value.trim().replace(/\s+/g, '');
+    if (!token) return;
+    if (token.length > MAX_INPUT) token = token.slice(0, MAX_INPUT);
+
+    const result = decodeJwt(token);
+
+    if (!result.ok) {
+      if (errorEl) {
+        errorEl.hidden = false;
+        errorEl.textContent = 'خطا: ' + (result.error || 'نامشخص');
+      }
+      return;
+    }
+
+    if (statusEl) {
+      if (result.isExpired === true) {
+        statusEl.className = 'jwt-status jwt-status-danger';
+        statusEl.textContent = '❌ توکن منقضی شده است';
+      } else if (result.isExpired === false) {
+        statusEl.className = 'jwt-status jwt-status-success';
+        statusEl.textContent = '✅ توکن معتبر است (منقضی نشده)';
+      } else {
+        statusEl.className = 'jwt-status jwt-status-warning';
+        statusEl.textContent = '⚠️ تاریخ انقضا (exp) در توکن وجود ندارد';
+      }
+    }
+
+    if (timestampsEl) {
+      timestampsEl.textContent = '';
+      const rows: { label: string; value: string; cls?: string }[] = [];
+      if (result.issuedAt) {
+        rows.push({ label: 'صادر شده (iat)', value: formatTimestamp(result.issuedAt) });
+      }
+      if (result.notBefore) {
+        rows.push({ label: 'معتبر از (nbf)', value: formatTimestamp(result.notBefore) });
+      }
+      if (result.expiresAt) {
+        rows.push({
+          label: 'انقضا (exp)',
+          value: formatTimestamp(result.expiresAt) + ' — ' + getTimeRemaining(result.expiresAt),
+          cls: result.isExpired ? 'ts-expired' : 'ts-active'
+        });
+      }
+      if (rows.length > 0) {
+        setHidden(timestampsEl, false);
+        for (const row of rows) {
+          const div = document.createElement('div');
+          div.className = 'jwt-ts-row' + (row.cls ? ' ' + row.cls : '');
+          const lbl = document.createElement('span');
+          lbl.className = 'jwt-ts-label';
+          lbl.textContent = row.label;
+          const val = document.createElement('span');
+          val.className = 'jwt-ts-value';
+          val.textContent = row.value;
+          div.appendChild(lbl);
+          div.appendChild(val);
+          timestampsEl.appendChild(div);
+        }
+      } else {
+        setHidden(timestampsEl, true);
+      }
+    }
+
+    setText(headerEl, result.header ? JSON.stringify(result.header, null, 2) : '{}');
+    setText(payloadEl, result.payload ? JSON.stringify(result.payload, null, 2) : '{}');
+    setText(signatureEl, result.signature || '(خالی)');
+
+    setHidden(resultsEl, false);
+  }
+
+  input?.addEventListener('input', () => {
+    if (!input) return;
+    const hasContent = input.value.trim().length > 0;
+    if (decodeBtn) decodeBtn.disabled = !hasContent;
+
+    const trimmed = input.value.trim();
+    if (trimmed.length > 30 && trimmed.split('.').length === 3) {
+      decode();
+    } else {
+      setHidden(resultsEl, true);
+      setHidden(errorEl, true);
+    }
+  });
+
+  decodeBtn?.addEventListener('click', decode);
+
+  clearBtn?.addEventListener('click', () => {
+    if (input) input.value = '';
+    if (decodeBtn) decodeBtn.disabled = true;
+    setHidden(resultsEl, true);
+    setHidden(errorEl, true);
+    input?.focus();
+  });
+
+  sampleBtn?.addEventListener('click', () => {
+    if (input) input.value = SAMPLE;
+    if (decodeBtn) decodeBtn.disabled = false;
+    decode();
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const target = btn.dataset.copy;
+      let text = '';
+      if (target === 'header') text = headerEl?.textContent || '';
+      else if (target === 'payload') text = payloadEl?.textContent || '';
+      else if (target === 'signature') text = signatureEl?.textContent || '';
+      if (!text) return;
+      const ok = await copyText(text);
+      if (ok) toast('کپی شد', 'success');
+      else toast('کپی نشد', 'error');
+    });
+  });
+</script>
+
+<style>
+  .jwt-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .jwt-input { font-family: var(--font-mono); font-size: 0.85rem; word-break: break-all; min-height: 100px; }
+  .jwt-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .jwt-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .jwt-error {
+    padding: var(--space-2) var(--space-3);
+    background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+    border: 1px solid var(--color-danger);
+    border-radius: var(--radius-md);
+    color: var(--color-danger);
+    font-size: 0.9rem;
+    word-break: break-word;
+  }
+  .jwt-results { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-2); }
+  .jwt-status {
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.05rem;
+  }
+  .jwt-status-success {
+    background: color-mix(in srgb, var(--color-success) 15%, transparent);
+    border: 1px solid var(--color-success);
+    color: var(--color-success);
+  }
+  .jwt-status-danger {
+    background: color-mix(in srgb, var(--color-danger) 15%, transparent);
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+  }
+  .jwt-status-warning {
+    background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+    border: 1px solid var(--color-warning);
+    color: var(--color-warning);
+  }
+  .jwt-timestamps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--color-surface-2);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+  .jwt-ts-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .jwt-ts-label { font-weight: 600; color: var(--color-text-muted); }
+  .jwt-ts-value { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .ts-expired .jwt-ts-value { color: var(--color-danger); }
+  .ts-active .jwt-ts-value { color: var(--color-success); }
+  .jwt-section {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .jwt-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .jwt-section-head h2 { margin: 0; font-size: 1rem; }
+  .btn-sm { padding: 4px 10px; font-size: 0.8rem; min-height: 30px; }
+  .jwt-json {
+    margin: 0;
+    padding: var(--space-3);
+    background: var(--color-surface);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: var(--color-text);
+  }
+  .jwt-sig { color: var(--color-text-muted); }
+  .jwt-sig-note {
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    background: color-mix(in srgb, var(--color-warning) 10%, transparent);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+</style>

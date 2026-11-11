@@ -12,6 +12,7 @@ import UrlEncoderTool from './code/url-encoder/Tool.astro';
 import UuidGeneratorTool from './code/uuid-generator/Tool.astro';
 import HashGeneratorTool from './code/hash-generator/Tool.astro';
 import RegexTesterTool from './code/regex-tester/Tool.astro';
+import JwtDecoderTool from './code/jwt-decoder/Tool.astro';
 import PercentageTool from './calc/percentage/Tool.astro';
 import AgeTool from './calc/age/Tool.astro';
 import DateDiffTool from './calc/date-diff/Tool.astro';
@@ -41,6 +42,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'uuid-generator': UuidGeneratorTool,
   'hash-generator': HashGeneratorTool,
   'regex-tester': RegexTesterTool,
+  'jwt-decoder': JwtDecoderTool,
   'percentage': PercentageTool,
   'age': AgeTool,
   'date-diff': DateDiffTool,
