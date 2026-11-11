@@ -20,6 +20,8 @@ import { meta as metaTagMeta } from './seo/meta-tag-generator/meta';
 import { meta as serpPreviewMeta } from './seo/serp-preview/meta';
 import { meta as robotsTxtMeta } from './seo/robots-txt-generator/meta';
 import { meta as ogPreviewMeta } from './seo/og-preview/meta';
+import { meta as imageResizerMeta } from './image/image-resizer/meta';
+import { meta as imageCompressorMeta } from './image/image-compressor/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -36,7 +38,8 @@ export const registry: ToolMeta[] = [
   jsonFormatterMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta, uuidGeneratorMeta,
   hashGeneratorMeta, regexTesterMeta,
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
-  metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta
+  metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
+  imageResizerMeta, imageCompressorMeta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {

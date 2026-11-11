@@ -1,0 +1,171 @@
+---
+---
+<div class="ic-tool">
+  <div class="ic-upload-zone" id="ic-upload-zone">
+    <input type="file" id="ic-file" accept="image/jpeg, image/png, image/webp" class="sr-only" />
+    <label for="ic-file" class="ic-upload-label">
+      <span class="ic-icon">🗜️</span>
+      <span>برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="ic-hint">فرمت‌های مجاز: JPG, PNG, WebP (حداکثر ۲۰ مگابایت)</span>
+    </label>
+  </div>
+
+  <div class="ic-workspace" id="ic-workspace" hidden>
+    <div class="ic-preview-wrap">
+      <img id="ic-preview" class="ic-preview" alt="Preview" />
+      <div class="ic-stats">
+        <div>حجم اصلی: <strong id="ic-orig-size">-</strong></div>
+        <div>حجم جدید: <strong id="ic-new-size">-</strong></div>
+        <div class="ic-reduction" id="ic-reduction-wrap" hidden>کاهش حجم: <strong id="ic-reduction">-</strong></div>
+      </div>
+    </div>
+
+    <div class="ic-controls">
+      <div class="ic-field">
+        <label for="ic-quality">کیفیت (Quality): <span id="ic-q-val">80</span>%</label>
+        <input id="ic-quality" type="range" min="10" max="100" value="80" class="ic-range" />
+      </div>
+      <div class="ic-field">
+        <label for="ic-format">فرمت خروجی</label>
+        <select id="ic-format" class="select">
+          <option value="image/jpeg" selected>JPG (بهترین فشرده‌سازی)</option>
+          <option value="image/webp">WebP (کیفیت بالا + حجم کم)</option>
+        </select>
+      </div>
+      
+      <div class="ic-actions">
+        <button type="button" class="btn btn-primary" id="ic-process"><span aria-hidden="true">⚡</span> فشرده‌سازی</button>
+        <a id="ic-download" class="btn" style="display: none;">📥 دانلود تصویر فشرده</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { calculateReduction, formatBytes } from './logic';
+
+  const MAX_SIZE = 20 * 1024 * 1024;
+  const fileInput = document.getElementById('ic-file') as HTMLInputElement | null;
+  const uploadZone = document.getElementById('ic-upload-zone');
+  const workspace = document.getElementById('ic-workspace');
+  const previewImg = document.getElementById('ic-preview') as HTMLImageElement | null;
+  
+  const origSizeEl = document.getElementById('ic-orig-size');
+  const newSizeEl = document.getElementById('ic-new-size');
+  const reductionWrap = document.getElementById('ic-reduction-wrap');
+  const reductionEl = document.getElementById('ic-reduction');
+  
+  const qualityInput = document.getElementById('ic-quality') as HTMLInputElement | null;
+  const qValEl = document.getElementById('ic-q-val');
+  const formatSelect = document.getElementById('ic-format') as HTMLSelectElement | null;
+  
+  const processBtn = document.getElementById('ic-process') as HTMLButtonElement | null;
+  const downloadBtn = document.getElementById('ic-download') as HTMLAnchorElement | null;
+
+  let originalImage: HTMLImageElement | null = null;
+  let originalSize = 0;
+  let objectUrl: string | null = null;
+
+  function handleFile(file: File) {
+    if (!file.type.startsWith('image/')) {
+      alert('لطفاً یک فایل تصویری انتخاب کنید.');
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      alert('حجم فایل نباید بیشتر از ۲۰ مگابایت باشد.');
+      return;
+    }
+
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file);
+    originalSize = file.size;
+
+    const img = new Image();
+    img.onload = () => {
+      originalImage = img;
+      if (previewImg) previewImg.src = objectUrl!;
+      if (origSizeEl) origSizeEl.textContent = formatBytes(originalSize);
+      
+      if (uploadZone) uploadZone.hidden = true;
+      if (workspace) workspace.hidden = false;
+      if (downloadBtn) downloadBtn.style.display = 'none';
+      if (reductionWrap) reductionWrap.hidden = true;
+      if (newSizeEl) newSizeEl.textContent = '-';
+    };
+    img.src = objectUrl;
+  }
+
+  fileInput?.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) handleFile(target.files[0]);
+  });
+
+  uploadZone?.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--color-primary)'; });
+  uploadZone?.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--color-border)'; });
+  uploadZone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.style.borderColor = 'var(--color-border)';
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+  });
+
+  qualityInput?.addEventListener('input', () => {
+    if (qValEl && qualityInput) qValEl.textContent = qualityInput.value;
+  });
+
+  processBtn?.addEventListener('click', () => {
+    if (!originalImage || !qualityInput || !formatSelect) return;
+    
+    const quality = Number(qualityInput.value) / 100;
+    const format = formatSelect.value;
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = originalImage.naturalWidth;
+    canvas.height = originalImage.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // اگر خروجی JPG است، پس‌زمینه سفید بگذاریم تا شفافیت سیاه نشود
+    if (format === 'image/jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    ctx.drawImage(originalImage, 0, 0);
+    
+    canvas.toBlob((blob) => {
+      if (!blob || !downloadBtn || !newSizeEl || !reductionWrap || !reductionEl) return;
+      
+      const url = URL.createObjectURL(blob);
+      downloadBtn.href = url;
+      const ext = format === 'image/jpeg' ? 'jpg' : 'webp';
+      downloadBtn.download = `compressed-image.${ext}`;
+      downloadBtn.style.display = 'inline-flex';
+      
+      newSizeEl.textContent = formatBytes(blob.size);
+      
+      const reduction = calculateReduction(originalSize, blob.size);
+      reductionEl.textContent = `${reduction}%`;
+      reductionWrap.hidden = false;
+      
+    }, format, quality);
+  });
+</script>
+
+<style>
+  .ic-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .ic-upload-zone { border: 2px dashed var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; transition: border-color 0.2s; background: var(--color-surface-2); }
+  .ic-upload-label { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-text); }
+  .ic-icon { font-size: 2.5rem; }
+  .ic-hint { font-size: 0.8rem; color: var(--color-text-muted); }
+  .ic-workspace { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 768px) { .ic-workspace { grid-template-columns: 1fr 1fr; } }
+  .ic-preview-wrap { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ic-preview { width: 100%; border-radius: var(--radius-md); border: 1px solid var(--color-border); background: repeating-conic-gradient(#f1f5f9 0% 25%, #e2e8f0 0% 50%) 50% / 20px 20px; max-height: 400px; object-fit: contain; }
+  .ic-stats { display: flex; flex-direction: column; gap: var(--space-1); background: var(--color-surface-2); padding: var(--space-3); border-radius: var(--radius-md); font-size: 0.9rem; }
+  .ic-reduction { color: var(--color-success); font-weight: 700; margin-top: var(--space-1); }
+  .ic-controls { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ic-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .ic-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .ic-range { width: 100%; accent-color: var(--color-primary); }
+  .ic-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+</style>

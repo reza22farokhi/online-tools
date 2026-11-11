@@ -20,6 +20,8 @@ import MetaTagTool from './seo/meta-tag-generator/Tool.astro';
 import SerpPreviewTool from './seo/serp-preview/Tool.astro';
 import RobotsTxtTool from './seo/robots-txt-generator/Tool.astro';
 import OgPreviewTool from './seo/og-preview/Tool.astro';
+import ImageResizerTool from './image/image-resizer/Tool.astro';
+import ImageCompressorTool from './image/image-compressor/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -42,7 +44,9 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'meta-tag-generator': MetaTagTool,
   'serp-preview': SerpPreviewTool,
   'robots-txt-generator': RobotsTxtTool,
-  'og-preview': OgPreviewTool
+  'og-preview': OgPreviewTool,
+  'image-resizer': ImageResizerTool,
+  'image-compressor': ImageCompressorTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {
