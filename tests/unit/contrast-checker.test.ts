@@ -21,11 +21,11 @@ describe('evaluateContrast', () => {
     expect(r.aaaLarge).toBe(true);
   });
   it('gray on white fails AA normal', () => {
-    const r = evaluateContrast('#999999', '#ffffff');
+    const r = evaluateContrast('#8a8a8a', '#ffffff');
     expect(r.aaNormal).toBe(false);
   });
   it('gray on white passes AA large', () => {
-    const r = evaluateContrast('#999999', '#ffffff');
+    const r = evaluateContrast('#8a8a8a', '#ffffff');
     expect(r.aaLarge).toBe(true);
   });
 });
