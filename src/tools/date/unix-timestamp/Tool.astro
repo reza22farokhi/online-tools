@@ -1,0 +1,123 @@
+---
+---
+<div class="uts-tool">
+  <div class="uts-current">
+    <div class="uts-current-label">تایم‌استمپ فعلی (Unix):</div>
+    <div class="uts-current-value" id="uts-current">—</div>
+    <button type="button" class="btn btn-sm" id="uts-copy-now">📋 کپی</button>
+  </div>
+
+  <div class="uts-panel">
+    <h3>Timestamp → تاریخ</h3>
+    <div class="uts-row">
+      <input id="uts-input-ts" type="text" class="input" placeholder="1700000000" dir="ltr" />
+      <button type="button" class="btn btn-primary" id="uts-convert-ts">تبدیل</button>
+    </div>
+    <div class="uts-error" id="uts-error-ts" hidden></div>
+    <div class="uts-results" id="uts-results-ts" hidden>
+      <div class="uts-result-row"><span>میلادی:</span><code id="uts-out-greg">—</code></div>
+      <div class="uts-result-row"><span>شمسی:</span><code id="uts-out-jalali">—</code></div>
+      <div class="uts-result-row"><span>قمری:</span><code id="uts-out-hijri">—</code></div>
+      <div class="uts-result-row"><span>UTC:</span><code id="uts-out-utc">—</code></div>
+      <div class="uts-result-row"><span>ISO 8601:</span><code id="uts-out-iso">—</code></div>
+    </div>
+  </div>
+
+  <div class="uts-panel">
+    <h3>تاریخ → Timestamp</h3>
+    <div class="uts-row">
+      <label for="uts-date-input" class="sr-only">تاریخ میلادی</label>
+      <input id="uts-date-input" type="datetime-local" class="input" />
+      <button type="button" class="btn btn-primary" id="uts-convert-date">تبدیل</button>
+    </div>
+    <div class="uts-results" id="uts-results-date" hidden>
+      <div class="uts-result-row"><span>Timestamp (ثانیه):</span><code id="uts-out-sec">—</code></div>
+      <div class="uts-result-row"><span>Timestamp (میلی‌ثانیه):</span><code id="uts-out-ms">—</code></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { timestampToDate, dateToTimestamp, getCurrentTimestamp, formatDateTime, toJalali, gregorianToHijri, JALALI_MONTHS, HIJRI_MONTHS } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const currentEl = document.getElementById('uts-current');
+  const tsInput = document.getElementById('uts-input-ts') as HTMLInputElement;
+  const dateInput = document.getElementById('uts-date-input') as HTMLInputElement;
+  const errorEl = document.getElementById('uts-error-ts');
+  const resultsTs = document.getElementById('uts-results-ts');
+  const resultsDate = document.getElementById('uts-results-date');
+
+  function updateCurrent() {
+    if (currentEl) currentEl.textContent = String(getCurrentTimestamp());
+  }
+  updateCurrent();
+  setInterval(updateCurrent, 1000);
+
+  document.getElementById('uts-copy-now')?.addEventListener('click', async () => {
+    if (!currentEl?.textContent) return;
+    const ok = await copyText(currentEl.textContent);
+    if (ok) toast('کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+
+  document.getElementById('uts-convert-ts')?.addEventListener('click', () => {
+    if (!tsInput || !resultsTs) return;
+    if (errorEl) errorEl.hidden = true;
+    const ts = Number(tsInput.value.trim());
+    if (!Number.isFinite(ts)) {
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'عدد نامعتبر'; }
+      resultsTs.hidden = true;
+      return;
+    }
+    const d = timestampToDate(ts);
+    if (!d) { if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تایم‌استمپ نامعتبر'; } return; }
+
+    const g = { gy: d.getFullYear(), gm: d.getMonth() + 1, gd: d.getDate() };
+    const j = toJalali(g.gy, g.gm, g.gd);
+    const h = gregorianToHijri(g.gy, g.gm, g.gd);
+
+    const setEl = (id: string, val: string) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    setEl('uts-out-greg', formatDateTime(d));
+    setEl('uts-out-jalali', `${j.jd} ${JALALI_MONTHS[j.jm - 1]} ${j.jy} - ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+    setEl('uts-out-hijri', `${h.hd} ${HIJRI_MONTHS[h.hm - 1]} ${h.hy}`);
+    setEl('uts-out-utc', d.toUTCString());
+    setEl('uts-out-iso', d.toISOString());
+
+    resultsTs.hidden = false;
+  });
+
+  document.getElementById('uts-convert-date')?.addEventListener('click', () => {
+    if (!dateInput || !resultsDate) return;
+    if (!dateInput.value) return;
+    const d = new Date(dateInput.value);
+    if (isNaN(d.getTime())) return;
+    const secEl = document.getElementById('uts-out-sec');
+    const msEl = document.getElementById('uts-out-ms');
+    if (secEl) secEl.textContent = String(dateToTimestamp(d, true));
+    if (msEl) msEl.textContent = String(dateToTimestamp(d, false));
+    resultsDate.hidden = false;
+  });
+
+  if (dateInput) {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    dateInput.value = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  }
+</script>
+
+<style>
+  .uts-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .uts-current { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: color-mix(in srgb, var(--color-primary) 10%, transparent); border: 1px solid var(--color-primary); border-radius: var(--radius-md); flex-wrap: wrap; }
+  .uts-current-label { font-weight: 600; color: var(--color-text-muted); font-size: 0.9rem; }
+  .uts-current-value { flex: 1; font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); font-variant-numeric: tabular-nums; }
+  .uts-panel { padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-2); display: flex; flex-direction: column; gap: var(--space-2); }
+  .uts-panel h3 { margin: 0 0 var(--space-1); font-size: 1rem; color: var(--color-text); }
+  .uts-row { display: flex; gap: var(--space-2); }
+  .uts-row > .input { flex: 1; }
+  .uts-error { padding: var(--space-2); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-sm); color: var(--color-danger); font-size: 0.85rem; }
+  .uts-results { display: flex; flex-direction: column; gap: var(--space-1); }
+  .uts-result-row { display: flex; justify-content: space-between; gap: var(--space-2); padding: var(--space-1) var(--space-2); border-bottom: 1px dashed var(--color-border); flex-wrap: wrap; }
+  .uts-result-row span { font-size: 0.85rem; color: var(--color-text-muted); }
+  .uts-result-row code { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-text); word-break: break-all; text-align: left; }
+  .btn-sm { padding: 4px 10px; font-size: 0.8rem; min-height: 30px; }
+</style>

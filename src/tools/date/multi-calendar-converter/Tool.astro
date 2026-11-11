@@ -1,0 +1,166 @@
+---
+---
+<div class="mcc-tool">
+  <div class="mcc-tabs" role="tablist">
+    <button type="button" class="btn mcc-tab active" data-source="jalali">📅 شمسی</button>
+    <button type="button" class="btn mcc-tab" data-source="gregorian">🌍 میلادی</button>
+    <button type="button" class="btn mcc-tab" data-source="hijri">🌙 قمری</button>
+  </div>
+
+  <div class="mcc-input-area">
+    <div class="mcc-field">
+      <label for="mcc-year">سال</label>
+      <input id="mcc-year" type="number" class="input" value="1403" min="1" max="9999" />
+    </div>
+    <div class="mcc-field">
+      <label for="mcc-month">ماه</label>
+      <select id="mcc-month" class="select"></select>
+    </div>
+    <div class="mcc-field">
+      <label for="mcc-day">روز</label>
+      <input id="mcc-day" type="number" class="input" value="1" min="1" max="31" />
+    </div>
+  </div>
+
+  <div class="mcc-actions">
+    <button type="button" class="btn" id="mcc-today">📌 امروز</button>
+    <button type="button" class="btn btn-primary" id="mcc-convert">🔄 تبدیل</button>
+  </div>
+
+  <div class="mcc-error" id="mcc-error" hidden></div>
+
+  <div class="mcc-results" id="mcc-results" hidden>
+    <div class="mcc-card mcc-jalali">
+      <div class="mcc-label">شمسی (جلالی)</div>
+      <div class="mcc-value" id="mcc-jalali-val">—</div>
+      <button type="button" class="btn btn-sm" data-copy="jalali">📋 کپی</button>
+    </div>
+    <div class="mcc-card mcc-gregorian">
+      <div class="mcc-label">میلادی (گرگوری)</div>
+      <div class="mcc-value" id="mcc-gregorian-val">—</div>
+      <button type="button" class="btn btn-sm" data-copy="gregorian">📋 کپی</button>
+    </div>
+    <div class="mcc-card mcc-hijri">
+      <div class="mcc-label">قمری (هجری)</div>
+      <div class="mcc-value" id="mcc-hijri-val">—</div>
+      <button type="button" class="btn btn-sm" data-copy="hijri">📋 کپی</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { toJalali, toGregorian, gregorianToHijri, hijriToGregorian, jalaliToHijri, hijriToJalali, JALALI_MONTHS, HIJRI_MONTHS, GREGORIAN_MONTHS } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const yearIn = document.getElementById('mcc-year') as HTMLInputElement;
+  const monthIn = document.getElementById('mcc-month') as HTMLSelectElement;
+  const dayIn = document.getElementById('mcc-day') as HTMLInputElement;
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.mcc-tab');
+  const results = document.getElementById('mcc-results');
+  const errorEl = document.getElementById('mcc-error');
+  const jalaliVal = document.getElementById('mcc-jalali-val');
+  const gregorianVal = document.getElementById('mcc-gregorian-val');
+  const hijriVal = document.getElementById('mcc-hijri-val');
+
+  let source: 'jalali' | 'gregorian' | 'hijri' = 'jalali';
+  let current = { jalali: '', gregorian: '', hijri: '' };
+
+  function populateMonths() {
+    const months = source === 'jalali' ? JALALI_MONTHS : source === 'gregorian' ? GREGORIAN_MONTHS : HIJRI_MONTHS;
+    monthIn.textContent = '';
+    months.forEach((m, i) => {
+      const opt = document.createElement('option');
+      opt.value = String(i + 1);
+      opt.textContent = m;
+      monthIn.appendChild(opt);
+    });
+  }
+
+  function setHidden(el: HTMLElement | null, h: boolean) { if (el) el.hidden = h; }
+
+  function convert() {
+    setHidden(errorEl, true);
+    setHidden(results, true);
+    const y = Number(yearIn.value), m = Number(monthIn.value), d = Number(dayIn.value);
+    if (!y || !m || !d) { if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'همه فیلدها را پر کنید'; } return; }
+
+    try {
+      let g: { gy: number; gm: number; gd: number };
+      if (source === 'jalali') g = toGregorian(y, m, d);
+      else if (source === 'gregorian') g = { gy: y, gm: m, gd: d };
+      else g = hijriToGregorian(y, m, d);
+
+      const j = toJalali(g.gy, g.gm, g.gd);
+      const h = gregorianToHijri(g.gy, g.gm, g.gd);
+
+      current.jalali = `${j.jy}/${String(j.jm).padStart(2, '0')}/${String(j.jd).padStart(2, '0')}`;
+      current.gregorian = `${g.gy}-${String(g.gm).padStart(2, '0')}-${String(g.gd).padStart(2, '0')}`;
+      current.hijri = `${h.hy}/${String(h.hm).padStart(2, '0')}/${String(h.hd).padStart(2, '0')}`;
+
+      if (jalaliVal) jalaliVal.textContent = `${j.jd} ${JALALI_MONTHS[j.jm - 1]} ${j.jy} (${current.jalali})`;
+      if (gregorianVal) gregorianVal.textContent = `${g.gd} ${GREGORIAN_MONTHS[g.gm - 1]} ${g.gy} (${current.gregorian})`;
+      if (hijriVal) hijriVal.textContent = `${h.hd} ${HIJRI_MONTHS[h.hm - 1]} ${h.hy} (${current.hijri})`;
+
+      setHidden(results, false);
+    } catch (e) {
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تاریخ نامعتبر: ' + (e instanceof Error ? e.message : ''); }
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.toggle('active', t === tab));
+      source = (tab.dataset.source as typeof source) || 'jalali';
+      populateMonths();
+    });
+  });
+
+  document.getElementById('mcc-today')?.addEventListener('click', () => {
+    const now = new Date();
+    const j = toJalali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    if (source === 'jalali') {
+      yearIn.value = String(j.jy); monthIn.value = String(j.jm); dayIn.value = String(j.jd);
+    } else if (source === 'gregorian') {
+      yearIn.value = String(now.getFullYear()); monthIn.value = String(now.getMonth() + 1); dayIn.value = String(now.getDate());
+    } else {
+      const h = gregorianToHijri(now.getFullYear(), now.getMonth() + 1, now.getDate());
+      yearIn.value = String(h.hy); monthIn.value = String(h.hm); dayIn.value = String(h.hd);
+    }
+    convert();
+  });
+
+  document.getElementById('mcc-convert')?.addEventListener('click', convert);
+
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const k = btn.dataset.copy as keyof typeof current;
+      if (!current[k]) return;
+      const ok = await copyText(current[k]);
+      if (ok) toast('کپی شد', 'success'); else toast('کپی نشد', 'error');
+    });
+  });
+
+  populateMonths();
+  convert();
+</script>
+
+<style>
+  .mcc-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .mcc-tabs { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .mcc-tab { font-size: 0.9rem; }
+  .mcc-tab.active { background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary); }
+  .mcc-input-area { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: var(--space-2); }
+  .mcc-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .mcc-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .mcc-actions { display: flex; gap: var(--space-2); }
+  .mcc-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
+  .mcc-results { display: flex; flex-direction: column; gap: var(--space-2); }
+  .mcc-card { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--color-border); background: var(--color-surface-2); }
+  .mcc-jalali { border-inline-start: 4px solid #10b981; }
+  .mcc-gregorian { border-inline-start: 4px solid #4f46e5; }
+  .mcc-hijri { border-inline-start: 4px solid #f59e0b; }
+  .mcc-label { font-size: 0.8rem; color: var(--color-text-muted); min-width: 110px; font-weight: 600; }
+  .mcc-value { flex: 1; font-size: 0.95rem; font-weight: 700; font-family: var(--font-mono); }
+  .btn-sm { padding: 4px 10px; font-size: 0.8rem; min-height: 30px; }
+  @media (max-width: 480px) { .mcc-input-area { grid-template-columns: 1fr; } }
+</style>

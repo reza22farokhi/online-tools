@@ -5,7 +5,8 @@ export type ToolCategory =
   | 'seo'
   | 'image'
   | 'file'
-  | 'color';
+  | 'color'
+  | 'date';
 
 export interface ToolMeta {
   slug: string;

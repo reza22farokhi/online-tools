@@ -31,6 +31,8 @@ import PaletteGeneratorTool from './color/palette-generator/Tool.astro';
 import GradientGeneratorTool from './color/gradient-generator/Tool.astro';
 import ContrastCheckerTool from './color/contrast-checker/Tool.astro';
 import BoxShadowTool from './color/box-shadow/Tool.astro';
+import MultiCalendarTool from './date/multi-calendar-converter/Tool.astro';
+import UnixTimestampTool from './date/unix-timestamp/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -64,7 +66,9 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'palette-generator': PaletteGeneratorTool,
   'gradient-generator': GradientGeneratorTool,
   'contrast-checker': ContrastCheckerTool,
-  'box-shadow': BoxShadowTool
+  'box-shadow': BoxShadowTool,
+  'multi-calendar-converter': MultiCalendarTool,
+  'unix-timestamp': UnixTimestampTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {
