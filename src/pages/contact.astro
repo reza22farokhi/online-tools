@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title="تماس با ما | ابزارهای آنلاین" description="راه‌های ارتباطی با تیم ابزارهای آنلاین. گزارش خطاها و پیشنهادات.">
+  <div class="container page">
+    <header class="page-header">
+      <h1>تماس با ما</h1>
+      <p class="lead">ما همیشه خوشحال می‌شویم نظرات و پیشنهادات شما را بشنویم.</p>
+    </header>
+
+    <div class="content-card card">
+      <h2>گزارش خطا و پیشنهادات</h2>
+      <p>
+        اگر در استفاده از ابزارها به مشکلی برخوردید یا ایده‌ای برای اضافه کردن ابزار جدید دارید، می‌توانید از طریق راه‌های زیر با ما در ارتباط باشید:
+      </p>
+      
+      <div class="contact-methods">
+        <a href="https://github.com/reza22farokhi/online-tools/issues" target="_blank" rel="noopener" class="btn contact-btn">
+          <span aria-hidden="true">🐙</span> ثبت گزارش در GitHub
+        </a>
+        <a href="mailto:contact@example.com" class="btn contact-btn">
+          <span aria-hidden="true">✉️</span> ارسال ایمیل
+        </a>
+      </div>
+
+      <p class="note">
+        <em>توجه: در حال حاضر هیچ سروری برای دریافت پیام‌ها وجود ندارد. برای گزارش فنی، لطفاً از بخش Issues در GitHub استفاده کنید.</em>
+      </p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-5); }
+  .page-header { margin-bottom: var(--space-5); text-align: center; }
+  .lead { color: var(--color-text-muted); }
+  .content-card { max-width: 800px; margin: 0 auto; text-align: center; }
+  .content-card h2 { color: var(--color-primary); margin-top: 0; margin-bottom: var(--space-3); }
+  .contact-methods { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-block: var(--space-4); }
+  .contact-btn { text-decoration: none; padding-inline: var(--space-5); }
+  .note { font-size: 0.85rem; color: var(--color-text-muted); margin-top: var(--space-4); }
+</style>

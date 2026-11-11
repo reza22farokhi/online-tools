@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title="درباره ما | ابزارهای آنلاین" description="درباره پلتفرم ابزارهای آنلاین، ماموریت ما برای حفظ حریم خصوصی و معماری مدرن سایت.">
+  <div class="container page">
+    <header class="page-header">
+      <h1>درباره ما</h1>
+      <p class="lead">داستان ما، تکنولوژی و تعهد به حریم خصوصی شما.</p>
+    </header>
+
+    <div class="content-card card">
+      <h2>ماموریت ما</h2>
+      <p>
+        پلتفرم <strong>ابزارهای آنلاین</strong> با یک هدف ساده و در عین حال بنیادین ساخته شده است: 
+        ارائه ابزارهای کاربردی، سریع و حرفه‌ای بدون اینکه کوچکترین نگرانی برای حریم خصوصی کاربران ایجاد شود.
+      </p>
+      <p>
+        در دنیایی که اکثر سایت‌ها فایل‌ها و داده‌های شما را به سرورهای خود می‌فرستند، ما رویکردی کاملاً متفاوت را انتخاب کرده‌ایم. 
+        تمام پردازش‌ها در پلتفرم ما <strong>۱۰۰٪ سمت کلاینت (Client-Side)</strong> انجام می‌شوند. یعنی فایل‌های شما هرگز از مرورگرتان خارج نمی‌شوند.
+      </p>
+
+      <h2>چرا ما متفاوت هستیم؟</h2>
+      <ul>
+        <li><strong>امنیت مطلق:</strong> با استفاده از موتورهای بومی مرورگر (مانند Web Crypto API و Canvas)، حتی یک بایت از داده‌های شما به اینترنت ارسال نمی‌شود.</li>
+        <li><strong>سرعت فوق‌العاده:</strong> بدون نیاز به آپلود و دانلود مجدد، ابزارها در کسری از ثانیه در دستگاه شما اجرا می‌شوند.</li>
+        <li><strong>رایگان و بدون تبلیغات مزاحم:</strong> ما به پایداری و تجربه کاربری شما اهمیت می‌دهیم.</li>
+      </ul>
+
+      <h2>تکنولوژی</h2>
+      <p>
+        این پلتفرم با استفاده از <strong>Astro 5</strong> و <strong>TypeScript</strong> ساخته شده است. ما از هیچ فریم‌ورک سنگین جاوااسکریپتی استفاده نمی‌کنیم تا سرعت بارگذاری سایت روی گوشی‌های ضعیف‌تر نیز تضمین شود.
+      </p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-5); }
+  .page-header { margin-bottom: var(--space-5); text-align: center; }
+  .lead { color: var(--color-text-muted); }
+  .content-card { max-width: 800px; margin: 0 auto; line-height: 1.8; }
+  .content-card h2 { color: var(--color-primary); margin-top: var(--space-4); margin-bottom: var(--space-2); }
+  .content-card h2:first-child { margin-top: 0; }
+  .content-card ul { padding-inline-start: var(--space-5); margin-bottom: var(--space-3); }
+  .content-card li { margin-bottom: var(--space-2); }
+</style>
