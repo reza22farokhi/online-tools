@@ -1,0 +1,37 @@
+---
+import { buildFaqJsonLd } from '../../lib/seo';
+
+export interface FaqItem {
+  q: string;
+  a: string;
+}
+
+export interface Props {
+  faqs: FaqItem[];
+}
+
+const { faqs } = Astro.props;
+if (!faqs || faqs.length === 0) return null;
+---
+<section class="blog-faq" aria-labelledby="blog-faq-title">
+  <h2 id="blog-faq-title">سوالات متداول</h2>
+  <div class="faq-list">
+    {faqs.map(faq => (
+      <details class="faq-item">
+        <summary class="faq-q">{faq.q}</summary>
+        <p class="faq-a">{faq.a}</p>
+      </details>
+    ))}
+  </div>
+</section>
+<script type="application/ld+json" set:html={JSON.stringify(buildFaqJsonLd(faqs))} />
+<style>
+  .blog-faq { margin-top: var(--space-5); padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+  .blog-faq h2 { font-size: 1.3rem; margin-bottom: var(--space-3); color: var(--color-primary); }
+  .faq-list { display: flex; flex-direction: column; gap: var(--space-2); }
+  .faq-item { padding: var(--space-3); background: var(--color-surface-2); border-radius: var(--radius-md); }
+  .faq-q { cursor: pointer; font-weight: 600; color: var(--color-text); list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  .faq-q::after { content: '+'; font-size: 1.2rem; color: var(--color-primary); font-weight: 700; }
+  .faq-item[open] .faq-q::after { content: '−'; }
+  .faq-a { margin-top: var(--space-2); color: var(--color-text-muted); line-height: 1.8; font-size: 0.95rem; }
+</style>

@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL;
 ---
-<BaseLayout title="وبلاگ | ابزارهای آنلاین" description="مقالات تخصصی درباره امنیت، حریم خصوصی، سئو و بهینه‌سازی وب.">
+<BaseLayout title="وبلاگ | ابزارهای آنلاین" description="مقالات تخصصی درباره امنیت، حریم خصوصی، سئو، تصویر و بهینه‌سازی وب.">
   <div class="container page">
     <header class="page-header">
       <h1>وبلاگ</h1>
@@ -10,6 +10,18 @@ const base = import.meta.env.BASE_URL;
     </header>
 
     <div class="post-list">
+      <a href={base + 'blog/image-formats-comparison/'} class="post-card card">
+        <h2>مقایسه کامل فرمت‌های تصویر: PNG، JPG، WebP و AVIF</h2>
+        <p>کدام فرمت تصویر برای سایت شما بهتر است؟ مقایسه عمیق PNG، JPG، WebP و AVIF از نظر حجم، کیفیت، سازگاری و کاربرد.</p>
+        <span class="read-more">ادامه مطلب ←</span>
+      </a>
+
+      <a href={base + 'blog/strong-password-guide/'} class="post-card card">
+        <h2>راهنمای کامل تولید رمز عبور قوی و امن</h2>
+        <p>چگونه یک رمز عبور قوی بسازیم که هکرها نتوانند بشکنند؟ آشنایی با اصول امنیتی، Passphrase، مدیران رمز عبور و اشتباهات رایج.</p>
+        <span class="read-more">ادامه مطلب ←</span>
+      </a>
+
       <a href={base + 'blog/hashing-vs-base64/'} class="post-card card">
         <h2>تفاوت هش (Hash) و Base64 در چیست؟</h2>
         <p>آیا Base64 یک روش رمزنگاری است؟ تفاوت‌های اساسی بین هش کردن داده‌ها (SHA-256) و کدگذاری Base64 را بشناسید.</p>

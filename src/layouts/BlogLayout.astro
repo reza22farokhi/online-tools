@@ -1,17 +1,19 @@
 ---
-import AdSlot from "../components/ui/AdSlot.astro";
 import BaseLayout from './BaseLayout.astro';
-import { buildBreadcrumbJsonLd } from '../lib/seo';
+import BlogFAQ from '../components/seo/BlogFAQ.astro';
+import { buildBreadcrumbJsonLd, buildFaqJsonLd } from '../lib/seo';
 
+export interface FaqItem { q: string; a: string; }
 export interface Props {
   title: string;
   description: string;
   publishDate: string;
   readTime: string;
   slug: string;
+  faqs?: FaqItem[];
 }
 
-const { title, description, publishDate, readTime, slug } = Astro.props;
+const { title, description, publishDate, readTime, slug, faqs = [] } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const site = Astro.site?.toString() ?? 'https://example.com/';
 const canonical = new URL(`${base}blog/${slug}/`.replace(/^\//, ''), site).toString();
@@ -22,17 +24,11 @@ const articleLd = {
   headline: title,
   description: description,
   datePublished: publishDate,
-  author: {
-    '@type': 'Organization',
-    name: 'Online Tools Team'
-  },
+  author: { '@type': 'Organization', name: 'Online Tools Team' },
   publisher: {
     '@type': 'Organization',
     name: 'ابزارهای آنلاین',
-    logo: {
-      '@type': 'ImageObject',
-      url: new URL(`${base}favicon.svg`.replace(/^\//, ''), site).toString()
-    }
+    logo: { '@type': 'ImageObject', url: new URL(`${base}favicon.svg`.replace(/^\//, ''), site).toString() }
   },
   mainEntityOfPage: canonical
 };
@@ -42,8 +38,13 @@ const breadcrumbLd = buildBreadcrumbJsonLd([
   { name: 'وبلاگ', url: new URL(`${base}blog/`.replace(/^\//, ''), site).toString() },
   { name: title, url: canonical }
 ]);
+
+const jsonLdList: object[] = [articleLd, breadcrumbLd];
+if (faqs.length > 0) {
+  jsonLdList.push(buildFaqJsonLd(faqs));
+}
 ---
-<BaseLayout title={`${title} | وبلاگ`} description={description} canonical={canonical} jsonLd={[articleLd, breadcrumbLd]}>
+<BaseLayout title={`${title} | وبلاگ`} description={description} canonical={canonical} jsonLd={jsonLdList}>
   <article class="blog-post container">
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
@@ -61,12 +62,11 @@ const breadcrumbLd = buildBreadcrumbJsonLd([
       </div>
     </header>
 
-    <AdSlot id="pos-article-text-124135" />
-
     <div class="post-content card">
       <slot />
     </div>
-    <AdSlot id="pos-article-display-card-124132" />
+
+    {faqs.length > 0 && <BlogFAQ faqs={faqs} />}
   </article>
 </BaseLayout>
 
