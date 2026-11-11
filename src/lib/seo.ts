@@ -13,17 +13,11 @@ export function buildWebAppJsonLd(input: {
     applicationCategory: 'UtilityApplication',
     operatingSystem: 'Any',
     inLanguage: input.lang,
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD'
-    }
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
   };
 }
 
-export function buildBreadcrumbJsonLd(
-  items: { name: string; url: string }[]
-) {
+export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -48,13 +42,33 @@ export function buildWebSiteJsonLd(input: {
     name: input.name,
     url: input.url,
     description: input.description,
-    inLanguage: input.lang
+    inLanguage: input.lang,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${input.url}tools/?q={search_term_string}`
+      },
+      'query-input': 'required name=search_term_string'
+    }
+  };
+}
+
+export function buildFaqJsonLd(faqs: { q: string; a: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.a
+      }
+    }))
   };
 }
 
 export const SITE_NAME = 'Online Tools';
 export const SITE_NAME_FA = 'ابزارهای آنلاین';
-export const DEFAULT_DESCRIPTION =
-  'مجموعه‌ای از ابزارهای آنلاین رایگان و حریم خصوصی‌محور برای متن، کد، سئو، تصویر و بیشتر.';
-export const DEFAULT_DESCRIPTION_EN =
-  'A collection of free, privacy-first online tools for text, code, SEO, images, and more.';
+export const DEFAULT_DESCRIPTION = 'مجموعه‌ای از ابزارهای آنلاین رایگان و حریم خصوصی‌محور برای متن، کد، سئو، تصویر و بیشتر.';
