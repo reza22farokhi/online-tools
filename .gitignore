@@ -8,3 +8,5 @@ dist/
 .DS_Store
 .DS_Store?
 .Trashes
+batch*.sh
+patch*.sh
