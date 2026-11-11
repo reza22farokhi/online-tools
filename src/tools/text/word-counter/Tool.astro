@@ -1,0 +1,174 @@
+---
+---
+<div class="wc-tool">
+  <label for="wc-input" class="sr-only">متن ورودی</label>
+  <textarea
+    id="wc-input"
+    class="textarea wc-input"
+    placeholder="متن خود را اینجا تایپ یا جای‌گذاری کنید..."
+    maxlength="1000000"
+    aria-describedby="wc-help"
+    spellcheck="false"
+  ></textarea>
+  <p id="wc-help" class="wc-help">
+    حداکثر ۱ میلیون کاراکتر. پردازش کاملاً محلی و بدون ارسال به سرور.
+  </p>
+
+  <div class="wc-actions">
+    <button type="button" class="btn" id="wc-clear">
+      <span aria-hidden="true">🗑️</span> پاک کردن
+    </button>
+  </div>
+
+  <div class="wc-stats" aria-live="polite" aria-atomic="true">
+    <div class="stat">
+      <span class="stat-value" id="stat-words">0</span>
+      <span class="stat-label">کلمه</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-chars">0</span>
+      <span class="stat-label">کاراکتر</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-chars-nospace">0</span>
+      <span class="stat-label">بدون فاصله</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-sentences">0</span>
+      <span class="stat-label">جمله</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-lines">0</span>
+      <span class="stat-label">خط</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-paragraphs">0</span>
+      <span class="stat-label">پاراگراف</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-reading">0</span>
+      <span class="stat-label">دقیقه خواندن</span>
+    </div>
+  </div>
+
+  <div class="wc-copy-row">
+    <button type="button" class="btn btn-primary" id="wc-copy" disabled>
+      <span aria-hidden="true">📋</span> کپی آمار
+    </button>
+  </div>
+</div>
+
+<script>
+  import { analyzeText } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const input = document.getElementById('wc-input') as HTMLTextAreaElement | null;
+  const clearBtn = document.getElementById('wc-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('wc-copy') as HTMLButtonElement | null;
+
+  const out = {
+    words: document.getElementById('stat-words'),
+    chars: document.getElementById('stat-chars'),
+    charsNoSpace: document.getElementById('stat-chars-nospace'),
+    sentences: document.getElementById('stat-sentences'),
+    lines: document.getElementById('stat-lines'),
+    paragraphs: document.getElementById('stat-paragraphs'),
+    reading: document.getElementById('stat-reading')
+  };
+
+  let lastStats: ReturnType<typeof analyzeText> | null = null;
+
+  function refresh() {
+    if (!input) return;
+    const s = analyzeText(input.value);
+    lastStats = s;
+    if (out.words) out.words.textContent = String(s.words);
+    if (out.chars) out.chars.textContent = String(s.characters);
+    if (out.charsNoSpace) out.charsNoSpace.textContent = String(s.charactersNoSpaces);
+    if (out.sentences) out.sentences.textContent = String(s.sentences);
+    if (out.lines) out.lines.textContent = String(s.lines);
+    if (out.paragraphs) out.paragraphs.textContent = String(s.paragraphs);
+    if (out.reading) out.reading.textContent = String(s.readingTimeMin);
+    if (copyBtn) copyBtn.disabled = s.characters === 0;
+  }
+
+  input?.addEventListener('input', refresh);
+
+  clearBtn?.addEventListener('click', () => {
+    if (input) input.value = '';
+    refresh();
+    input?.focus();
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!lastStats) return;
+    const text =
+      `کلمات: ${lastStats.words}\n` +
+      `کاراکترها: ${lastStats.characters}\n` +
+      `بدون فاصله: ${lastStats.charactersNoSpaces}\n` +
+      `جمله‌ها: ${lastStats.sentences}\n` +
+      `خطوط: ${lastStats.lines}\n` +
+      `پاراگراف‌ها: ${lastStats.paragraphs}\n` +
+      `زمان خواندن (دقیقه): ${lastStats.readingTimeMin}`;
+    const ok = await copyText(text);
+    if (ok) toast('آمار کپی شد', 'success');
+    else toast('کپی نشد', 'error');
+  });
+
+  refresh();
+</script>
+
+<style>
+  .wc-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .wc-input {
+    width: 100%;
+    min-height: 180px;
+    font-family: var(--font-mono);
+    line-height: 1.5;
+  }
+  .wc-help {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+  .wc-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .wc-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+  @media (min-width: 640px) {
+    .wc-stats { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (min-width: 960px) {
+    .wc-stats { grid-template-columns: repeat(7, 1fr); }
+  }
+  .stat {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+  .wc-copy-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-2);
+  }
+</style>

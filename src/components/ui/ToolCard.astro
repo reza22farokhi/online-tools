@@ -1,0 +1,71 @@
+---
+import type { ToolMeta } from '../../tools/types';
+import { getCategoryMeta } from '../../tools/registry';
+
+export interface Props {
+  tool: ToolMeta;
+  lang?: 'fa' | 'en';
+}
+
+const { tool, lang = 'fa' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const category = getCategoryMeta(tool.category);
+const href = `${base}tools/${tool.slug}/`;
+---
+<a href={href} class="tool-card card" data-slug={tool.slug} data-category={tool.category}>
+  <div class="tool-card-icon" aria-hidden="true">{category?.icon ?? '🔧'}</div>
+  <div class="tool-card-body">
+    <h3 class="tool-card-title">{tool.name[lang]}</h3>
+    <p class="tool-card-desc">{tool.description[lang]}</p>
+    {category && (
+      <span class="tool-card-tag">{category[lang]}</span>
+    )}
+  </div>
+</a>
+
+<style>
+  .tool-card {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4);
+    text-decoration: none;
+    color: inherit;
+    transition: transform var(--transition-fast),
+                box-shadow var(--transition-fast),
+                border-color var(--transition-fast);
+    height: 100%;
+  }
+  .tool-card:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-2);
+    border-color: var(--color-primary);
+  }
+  .tool-card-icon { font-size: 1.75rem; line-height: 1; flex-shrink: 0; }
+  .tool-card-body { min-width: 0; flex: 1; }
+  .tool-card-title {
+    font-size: 1rem;
+    margin: 0 0 var(--space-1);
+    color: var(--color-text);
+    font-weight: 700;
+  }
+  .tool-card-desc {
+    margin: 0 0 var(--space-2);
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tool-card-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    background: var(--color-surface-2);
+    color: var(--color-text-muted);
+    border-radius: var(--radius-full);
+  }
+</style>

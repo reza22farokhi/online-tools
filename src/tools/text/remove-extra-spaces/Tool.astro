@@ -1,0 +1,151 @@
+---
+---
+<div class="res-tool">
+  <label for="res-input" class="sr-only">متن ورودی</label>
+  <textarea
+    id="res-input"
+    class="textarea"
+    placeholder="متن خود را اینجا تایپ یا جای‌گذاری کنید..."
+    spellcheck="false"
+    aria-describedby="res-help"
+  ></textarea>
+  <p id="res-help" class="res-help">
+    حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.
+  </p>
+
+  <fieldset class="res-options">
+    <legend>گزینه‌ها:</legend>
+    <label class="res-opt">
+      <input type="checkbox" id="res-collapse" checked />
+      <span>حذف فاصله‌های تکراری (چند فاصله ← یک فاصله)</span>
+    </label>
+    <label class="res-opt">
+      <input type="checkbox" id="res-trim-lines" checked />
+      <span>حذف فاصله ابتدا و انتهای هر خط</span>
+    </label>
+    <label class="res-opt">
+      <input type="checkbox" id="res-trim-text" checked />
+      <span>حذف فاصله ابتدا و انتهای کل متن</span>
+    </label>
+    <label class="res-opt">
+      <input type="checkbox" id="res-remove-empty" />
+      <span>حذف خطوط خالی</span>
+    </label>
+  </fieldset>
+
+  <div class="res-actions">
+    <button type="button" class="btn" id="res-clear">
+      <span aria-hidden="true">🗑️</span> پاک کردن
+    </button>
+    <button type="button" class="btn btn-primary" id="res-copy" disabled>
+      <span aria-hidden="true">📋</span> کپی خروجی
+    </button>
+  </div>
+
+  <label for="res-output" class="res-output-label">خروجی:</label>
+  <textarea
+    id="res-output"
+    class="textarea res-output"
+    readonly
+    placeholder="خروجی اینجا نمایش داده می‌شود..."
+  ></textarea>
+</div>
+
+<script>
+  import { cleanSpaces } from './logic';
+  import type { SpaceOptions } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const MAX_INPUT = 100_000;
+
+  const input = document.getElementById('res-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('res-output') as HTMLTextAreaElement | null;
+  const clearBtn = document.getElementById('res-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('res-copy') as HTMLButtonElement | null;
+  const cbs = {
+    collapseSpaces: document.getElementById('res-collapse') as HTMLInputElement | null,
+    trimLines: document.getElementById('res-trim-lines') as HTMLInputElement | null,
+    trimText: document.getElementById('res-trim-text') as HTMLInputElement | null,
+    removeEmptyLines: document.getElementById('res-remove-empty') as HTMLInputElement | null
+  };
+
+  function readOptions(): SpaceOptions {
+    return {
+      collapseSpaces: cbs.collapseSpaces?.checked ?? true,
+      trimLines: cbs.trimLines?.checked ?? true,
+      trimText: cbs.trimText?.checked ?? true,
+      removeEmptyLines: cbs.removeEmptyLines?.checked ?? false
+    };
+  }
+
+  function refresh() {
+    if (!input || !output) return;
+    if (input.value.length > MAX_INPUT) {
+      input.value = input.value.slice(0, MAX_INPUT);
+    }
+    output.value = cleanSpaces(input.value, readOptions());
+    if (copyBtn) copyBtn.disabled = output.value === '';
+  }
+
+  input?.addEventListener('input', refresh);
+  for (const el of Object.values(cbs)) {
+    el?.addEventListener('change', refresh);
+  }
+
+  clearBtn?.addEventListener('click', () => {
+    if (input) input.value = '';
+    refresh();
+    input?.focus();
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('خروجی کپی شد', 'success');
+    else toast('کپی نشد', 'error');
+  });
+
+  refresh();
+</script>
+
+<style>
+  .res-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .res-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .res-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-2);
+    margin: 0;
+  }
+  .res-options legend {
+    padding-inline: var(--space-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .res-opt {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .res-opt input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+  }
+  .res-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .res-output-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+  }
+  .res-output { background: var(--color-surface-2); }
+</style>

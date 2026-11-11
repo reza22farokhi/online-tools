@@ -1,0 +1,80 @@
+---
+---
+<div class="ue-tool">
+  <div class="ue-modes" role="group" aria-label="عملیات">
+    <button type="button" class="btn ue-mode active" data-mode="encode" aria-pressed="true">Encode</button>
+    <button type="button" class="btn ue-mode" data-mode="decode" aria-pressed="false">Decode</button>
+  </div>
+  <div class="ue-field">
+    <label for="ue-kind">حالت:</label>
+    <select id="ue-kind" class="select ue-select">
+      <option value="component" selected>encodeURIComponent (برای یک مقدار)</option>
+      <option value="full">encodeURI (برای URL کامل)</option>
+    </select>
+  </div>
+  <label for="ue-input" class="sr-only">ورودی</label>
+  <textarea id="ue-input" class="textarea" placeholder="متن یا URL را اینجا وارد کنید..." spellcheck="false"></textarea>
+  <div class="ue-error" id="ue-error" hidden role="alert"></div>
+  <div class="ue-actions">
+    <button type="button" class="btn" id="ue-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
+    <button type="button" class="btn btn-primary" id="ue-copy" disabled><span aria-hidden="true">📋</span> کپی خروجی</button>
+  </div>
+  <label for="ue-output" class="ue-output-label">خروجی:</label>
+  <textarea id="ue-output" class="textarea ue-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+</div>
+<script>
+  import { processUrl } from './logic';
+  import type { UrlMode, UrlKind } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+  const input = document.getElementById('ue-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('ue-output') as HTMLTextAreaElement | null;
+  const errorEl = document.getElementById('ue-error') as HTMLDivElement | null;
+  const kindSelect = document.getElementById('ue-kind') as HTMLSelectElement | null;
+  const clearBtn = document.getElementById('ue-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('ue-copy') as HTMLButtonElement | null;
+  const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.ue-mode'));
+  let currentMode: UrlMode = 'encode';
+  function refresh() {
+    if (!input || !output) return;
+    if (input.value.length > 100_000) input.value = input.value.slice(0, 100_000);
+    if (input.value === '') {
+      output.value = ''; if (errorEl) errorEl.hidden = true; if (copyBtn) copyBtn.disabled = true; return;
+    }
+    const kind = (kindSelect?.value as UrlKind) || 'component';
+    const r = processUrl(input.value, currentMode, kind);
+    if (!r.ok) {
+      output.value = ''; if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'خطا: ' + (r.error || 'نامشخص'); }
+      if (copyBtn) copyBtn.disabled = true;
+    } else {
+      output.value = r.output; if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+      if (copyBtn) copyBtn.disabled = r.output === '';
+    }
+  }
+  input?.addEventListener('input', refresh);
+  kindSelect?.addEventListener('change', refresh);
+  for (const btn of modeBtns) {
+    btn.addEventListener('click', () => {
+      for (const b of modeBtns) { b.classList.toggle('active', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); }
+      currentMode = (btn.dataset.mode as UrlMode) || 'encode'; refresh();
+    });
+  }
+  clearBtn?.addEventListener('click', () => { if (input) input.value = ''; refresh(); input?.focus(); });
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('خروجی کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+  refresh();
+</script>
+<style>
+  .ue-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ue-modes { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .ue-mode { font-size: 0.9rem; padding: var(--space-1) var(--space-3); }
+  .ue-mode.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-fg); }
+  .ue-field { display: flex; align-items: center; gap: var(--space-2); font-size: 0.9rem; }
+  .ue-select { width: auto; min-width: 260px; padding-block: var(--space-1); }
+  .ue-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; word-break: break-word; }
+  .ue-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .ue-output-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .ue-output { background: var(--color-surface-2); font-family: var(--font-mono); }
+</style>

@@ -1,0 +1,116 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ToolCard from '../components/ui/ToolCard.astro';
+import type { ToolMeta } from '../tools/types';
+import { getRelated } from '../tools/registry';
+import { buildWebAppJsonLd, buildBreadcrumbJsonLd } from '../lib/seo';
+
+export interface Props {
+  meta: ToolMeta;
+  lang?: 'fa' | 'en';
+}
+
+const { meta, lang = 'fa' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const site = Astro.site?.toString() ?? 'https://example.com/';
+
+const pageTitle = `${meta.name[lang]} | ابزارهای آنلاین`;
+const pageDescription = meta.description[lang];
+const canonical = new URL(
+  `${base}tools/${meta.slug}/`.replace(/^\//, ''),
+  site
+).toString();
+
+const webAppLd = buildWebAppJsonLd({
+  name: meta.name[lang],
+  description: pageDescription,
+  url: canonical,
+  lang
+});
+
+const breadcrumbLd = buildBreadcrumbJsonLd([
+  { name: 'خانه', url: site },
+  { name: 'ابزارها', url: new URL(`${base}tools/`.replace(/^\//, ''), site).toString() },
+  { name: meta.name[lang], url: canonical }
+]);
+
+const related = getRelated(meta.slug);
+---
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  lang={lang}
+  canonical={canonical}
+  jsonLd={[webAppLd, breadcrumbLd]}
+>
+  <article class="tool-page container">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <ol>
+        <li><a href={base}>خانه</a></li>
+        <li><a href={base + 'tools/'}>ابزارها</a></li>
+        <li aria-current="page">{meta.name[lang]}</li>
+      </ol>
+    </nav>
+
+    <header class="tool-header">
+      <h1>{meta.name[lang]}</h1>
+      <p class="lead">{meta.description[lang]}</p>
+    </header>
+
+    <div class="tool-body card">
+      <slot />
+    </div>
+
+    <section class="tool-privacy card" aria-labelledby="privacy-title">
+      <h2 id="privacy-title">حریم خصوصی</h2>
+      <p>این ابزار کاملاً در مرورگر شما اجرا می‌شود و هیچ داده‌ای به سرور ارسال نمی‌شود. تمام پردازش‌ها به‌صورت محلی روی دستگاه شما انجام می‌شوند.</p>
+    </section>
+
+    {related.length > 0 && (
+      <section class="tool-related" aria-labelledby="related-title">
+        <h2 id="related-title">ابزارهای مرتبط</h2>
+        <div class="tools-grid">
+          {related.map(t => <ToolCard tool={t} lang={lang} />)}
+        </div>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .tool-page { padding-block: var(--space-5); }
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .breadcrumb ol li:not(:last-child)::after {
+    content: '/';
+    margin-inline-start: var(--space-2);
+    opacity: 0.5;
+  }
+  .breadcrumb a { color: var(--color-text-muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--color-text); text-decoration: underline; }
+  .tool-header { margin-bottom: var(--space-4); }
+  .lead { font-size: 1.05rem; color: var(--color-text-muted); margin: 0; }
+  .tool-body { margin-bottom: var(--space-4); }
+  .tool-privacy { margin-bottom: var(--space-5); }
+  .tool-privacy h2 { font-size: 1.1rem; }
+  .tool-related { margin-top: var(--space-5); }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  @media (min-width: 640px) {
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 960px) {
+    .tools-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>

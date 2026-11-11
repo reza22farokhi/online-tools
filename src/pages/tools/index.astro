@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolCard from '../../components/ui/ToolCard.astro';
+import { registry, categories } from '../../tools/registry';
+
+const site = Astro.site?.toString() ?? 'https://example.com/';
+const canonical = new URL('tools/', site).toString();
+---
+<BaseLayout
+  title="همه ابزارها | ابزارهای آنلاین"
+  description="فهرست کامل ابزارهای آنلاین حرفه‌ای در دسته‌های متن، برنامه‌نویسی، محاسبات، سئو، تصویر و فایل."
+  canonical={canonical}
+>
+  <div class="container page">
+    <header class="page-header">
+      <h1 data-i18n="tools.all">همه ابزارها</h1>
+      <p class="lead">مجموعه کامل ابزارها در دسته‌های مختلف.</p>
+    </header>
+
+    {categories.map(c => {
+      const items = registry.filter(t => t.category === c.slug);
+      if (items.length === 0) return null;
+      return (
+        <section class="cat-section" aria-labelledby={`cat-${c.slug}`}>
+          <h2 id={`cat-${c.slug}`} class="cat-title">
+            <span aria-hidden="true">{c.icon}</span> {c.fa}
+          </h2>
+          <div class="tools-grid">
+            {items.map(t => <ToolCard tool={t} />)}
+          </div>
+        </section>
+      );
+    })}
+
+    {registry.length === 0 && (
+      <p class="empty" data-i18n="tools.empty">هنوز ابزاری در این دسته وجود ندارد</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-5); }
+  .page-header { margin-bottom: var(--space-5); }
+  .lead { color: var(--color-text-muted); }
+  .cat-section { margin-block: var(--space-5); }
+  .cat-title {
+    font-size: 1.2rem;
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  @media (min-width: 640px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 960px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
+  .empty {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding-block: var(--space-5);
+  }
+</style>

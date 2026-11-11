@@ -1,0 +1,180 @@
+---
+import { SORT_MODES } from './logic';
+---
+<div class="ls-tool">
+  <label for="ls-input" class="sr-only">متن ورودی</label>
+  <textarea
+    id="ls-input"
+    class="textarea"
+    placeholder="هر خط یک آیتم. مثال:&#10;banana&#10;apple&#10;cherry"
+    spellcheck="false"
+    aria-describedby="ls-help"
+  ></textarea>
+  <p id="ls-help" class="ls-help">
+    حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.
+  </p>
+
+  <div class="ls-controls">
+    <div class="ls-control-group">
+      <label for="ls-mode">نوع مرتب‌سازی:</label>
+      <select id="ls-mode" class="select ls-select">
+        {SORT_MODES.map((m, i) => (
+          <option value={m.value} selected={i === 0}>{m.fa}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+
+  <fieldset class="ls-options">
+    <legend>گزینه‌ها:</legend>
+    <label class="ls-opt">
+      <input type="checkbox" id="ls-trim" checked />
+      <span>حذف فاصله ابتدا/انتهای هر خط</span>
+    </label>
+    <label class="ls-opt">
+      <input type="checkbox" id="ls-remove-empty" checked />
+      <span>حذف خطوط خالی</span>
+    </label>
+    <label class="ls-opt">
+      <input type="checkbox" id="ls-unique" />
+      <span>حذف خطوط تکراری</span>
+    </label>
+    <label class="ls-opt">
+      <input type="checkbox" id="ls-ci" />
+      <span>مقایسه بدون حساسیت به حروف بزرگ/کوچک</span>
+    </label>
+    <label class="ls-opt">
+      <input type="checkbox" id="ls-numeric" />
+      <span>مرتب‌سازی عددی (برای اعداد)</span>
+    </label>
+  </fieldset>
+
+  <div class="ls-actions">
+    <button type="button" class="btn" id="ls-clear">
+      <span aria-hidden="true">🗑️</span> پاک کردن
+    </button>
+    <button type="button" class="btn btn-primary" id="ls-copy" disabled>
+      <span aria-hidden="true">📋</span> کپی خروجی
+    </button>
+  </div>
+
+  <label for="ls-output" class="ls-output-label">خروجی:</label>
+  <textarea
+    id="ls-output"
+    class="textarea ls-output"
+    readonly
+    placeholder="خروجی اینجا نمایش داده می‌شود..."
+  ></textarea>
+</div>
+
+<script>
+  import { sortLines } from './logic';
+  import type { SortOptions, SortMode } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const MAX_INPUT = 100_000;
+
+  const input = document.getElementById('ls-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('ls-output') as HTMLTextAreaElement | null;
+  const modeSelect = document.getElementById('ls-mode') as HTMLSelectElement | null;
+  const clearBtn = document.getElementById('ls-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('ls-copy') as HTMLButtonElement | null;
+  const cbs = {
+    trim: document.getElementById('ls-trim') as HTMLInputElement | null,
+    removeEmpty: document.getElementById('ls-remove-empty') as HTMLInputElement | null,
+    unique: document.getElementById('ls-unique') as HTMLInputElement | null,
+    caseInsensitive: document.getElementById('ls-ci') as HTMLInputElement | null,
+    numeric: document.getElementById('ls-numeric') as HTMLInputElement | null
+  };
+
+  function readOptions(): SortOptions {
+    return {
+      mode: (modeSelect?.value as SortMode) || 'asc',
+      caseInsensitive: cbs.caseInsensitive?.checked ?? false,
+      numeric: cbs.numeric?.checked ?? false,
+      trim: cbs.trim?.checked ?? true,
+      removeEmpty: cbs.removeEmpty?.checked ?? true,
+      unique: cbs.unique?.checked ?? false
+    };
+  }
+
+  function refresh() {
+    if (!input || !output) return;
+    if (input.value.length > MAX_INPUT) {
+      input.value = input.value.slice(0, MAX_INPUT);
+    }
+    output.value = sortLines(input.value, readOptions());
+    if (copyBtn) copyBtn.disabled = output.value === '';
+  }
+
+  input?.addEventListener('input', refresh);
+  modeSelect?.addEventListener('change', refresh);
+  for (const el of Object.values(cbs)) {
+    el?.addEventListener('change', refresh);
+  }
+
+  clearBtn?.addEventListener('click', () => {
+    if (input) input.value = '';
+    refresh();
+    input?.focus();
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('خروجی کپی شد', 'success');
+    else toast('کپی نشد', 'error');
+  });
+
+  refresh();
+</script>
+
+<style>
+  .ls-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ls-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .ls-controls { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .ls-control-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+  }
+  .ls-select { width: auto; min-width: 170px; padding-block: var(--space-1); }
+  .ls-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-2);
+    margin: 0;
+  }
+  .ls-options legend {
+    padding-inline: var(--space-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .ls-opt {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .ls-opt input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+  }
+  .ls-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .ls-output-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+  }
+  .ls-output { background: var(--color-surface-2); }
+</style>

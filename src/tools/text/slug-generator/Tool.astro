@@ -1,0 +1,106 @@
+---
+---
+<div class="sg-tool">
+  <label for="sg-input" class="sr-only">متن ورودی</label>
+  <input id="sg-input" type="text" class="input" placeholder="مثلاً: ۱۰ نکته برای سئو بهتر" spellcheck="false" aria-describedby="sg-help" />
+  <p id="sg-help" class="sg-help">حداکثر ۵۰۰ کاراکتر. پردازش کاملاً محلی.</p>
+
+  <div class="sg-controls">
+    <div class="sg-field">
+      <label for="sg-sep">جداکننده:</label>
+      <select id="sg-sep" class="select sg-select">
+        <option value="-" selected>خط تیره (-)</option>
+        <option value="_">زیرخط (_)</option>
+      </select>
+    </div>
+    <div class="sg-field">
+      <label for="sg-max">حداکثر طول:</label>
+      <input id="sg-max" type="number" class="input sg-num" value="80" min="10" max="200" />
+    </div>
+  </div>
+
+  <fieldset class="sg-options">
+    <legend>گزینه‌ها:</legend>
+    <label class="sg-opt"><input type="checkbox" id="sg-lower" checked /><span>حروف کوچک</span></label>
+    <label class="sg-opt"><input type="checkbox" id="sg-strip" checked /><span>حذف اعراب لاتین (é → e)</span></label>
+    <label class="sg-opt"><input type="checkbox" id="sg-trans" /><span>تبدیل فارسی به لاتین (تقریبی)</span></label>
+  </fieldset>
+
+  <div class="sg-output-wrap">
+    <label for="sg-output" class="sg-output-label">Slug:</label>
+    <div class="sg-output-row">
+      <input id="sg-output" type="text" class="input sg-output" readonly placeholder="خروجی..." />
+      <button type="button" class="btn btn-primary" id="sg-copy" disabled>📋 کپی</button>
+    </div>
+  </div>
+
+  <div class="sg-actions">
+    <button type="button" class="btn" id="sg-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
+  </div>
+</div>
+
+<script>
+  import { generateSlug } from './logic';
+  import type { SlugOptions, SlugSeparator } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const input = document.getElementById('sg-input') as HTMLInputElement | null;
+  const output = document.getElementById('sg-output') as HTMLInputElement | null;
+  const sepSelect = document.getElementById('sg-sep') as HTMLSelectElement | null;
+  const maxInput = document.getElementById('sg-max') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('sg-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('sg-copy') as HTMLButtonElement | null;
+  const cbs = {
+    lowercase: document.getElementById('sg-lower') as HTMLInputElement | null,
+    stripDiacritics: document.getElementById('sg-strip') as HTMLInputElement | null,
+    transliterate: document.getElementById('sg-trans') as HTMLInputElement | null
+  };
+
+  function readOptions(): SlugOptions {
+    const maxLen = Number(maxInput?.value || 80);
+    return {
+      separator: (sepSelect?.value as SlugSeparator) || '-',
+      lowercase: cbs.lowercase?.checked ?? true,
+      stripDiacritics: cbs.stripDiacritics?.checked ?? true,
+      transliterate: cbs.transliterate?.checked ?? false,
+      maxLength: Number.isFinite(maxLen) && maxLen >= 10 && maxLen <= 200 ? maxLen : 80
+    };
+  }
+
+  function refresh() {
+    if (!input || !output) return;
+    if (input.value.length > 500) input.value = input.value.slice(0, 500);
+    output.value = generateSlug(input.value, readOptions());
+    if (copyBtn) copyBtn.disabled = output.value === '';
+  }
+
+  input?.addEventListener('input', refresh);
+  sepSelect?.addEventListener('change', refresh);
+  maxInput?.addEventListener('input', refresh);
+  for (const el of Object.values(cbs)) el?.addEventListener('change', refresh);
+
+  clearBtn?.addEventListener('click', () => { if (input) input.value = ''; refresh(); input?.focus(); });
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('Slug کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+  refresh();
+</script>
+
+<style>
+  .sg-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .sg-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .sg-controls { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .sg-field { display: flex; align-items: center; gap: var(--space-2); font-size: 0.9rem; }
+  .sg-select { width: auto; min-width: 140px; padding-block: var(--space-1); }
+  .sg-num { width: 90px; padding-block: var(--space-1); }
+  .sg-options { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-2); margin: 0; }
+  .sg-options legend { padding-inline: var(--space-2); font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .sg-opt { display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: 0.9rem; }
+  .sg-opt input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--color-primary); }
+  .sg-output-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .sg-output-row { display: flex; gap: var(--space-2); }
+  .sg-output { flex: 1; background: var(--color-surface-2); font-family: var(--font-mono); }
+  .sg-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+</style>

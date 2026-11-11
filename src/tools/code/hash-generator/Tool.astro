@@ -1,0 +1,94 @@
+---
+import { ALGORITHMS } from './logic';
+---
+<div class="hg-tool">
+  <div class="hg-field">
+    <label for="hg-algo">الگوریتم:</label>
+    <select id="hg-algo" class="select hg-select">
+      {ALGORITHMS.map((a, i) => (
+        <option value={a.id} selected={a.id === 'SHA-256'}>{a.label} ({a.bits}-bit)</option>
+      ))}
+    </select>
+  </div>
+  <label for="hg-input" class="sr-only">متن ورودی</label>
+  <textarea id="hg-input" class="textarea" placeholder="متن خود را وارد کنید..." spellcheck="false" aria-describedby="hg-help"></textarea>
+  <p id="hg-help" class="hg-help">حداکثر ۱ میلیون کاراکتر. محاسبه محلی و امن. اتصال امن (HTTPS) لازم است.</p>
+  <div class="hg-error" id="hg-error" hidden role="alert"></div>
+  <label for="hg-output" class="hg-output-label">هش (hex):</label>
+  <textarea id="hg-output" class="textarea hg-output" readonly placeholder="خروجی hex..." aria-live="polite"></textarea>
+  <div class="hg-actions">
+    <button type="button" class="btn" id="hg-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
+    <button type="button" class="btn btn-primary" id="hg-copy" disabled><span aria-hidden="true">📋</span> کپی هش</button>
+  </div>
+</div>
+
+<script>
+  import { computeHash } from './logic';
+  import type { HashAlgorithm } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const MAX_INPUT = 1_000_000;
+  const algoSelect = document.getElementById('hg-algo') as HTMLSelectElement | null;
+  const input = document.getElementById('hg-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('hg-output') as HTMLTextAreaElement | null;
+  const errorEl = document.getElementById('hg-error') as HTMLDivElement | null;
+  const clearBtn = document.getElementById('hg-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('hg-copy') as HTMLButtonElement | null;
+
+  let token = 0;
+
+  async function compute() {
+    if (!input || !output || !algoSelect) return;
+    const myToken = ++token;
+    if (input.value.length > MAX_INPUT) input.value = input.value.slice(0, MAX_INPUT);
+    const algo = algoSelect.value as HashAlgorithm;
+
+    if (input.value === '') {
+      output.value = '';
+      if (errorEl) errorEl.hidden = true;
+      if (copyBtn) copyBtn.disabled = true;
+      return;
+    }
+
+    try {
+      const hash = await computeHash(input.value, algo);
+      if (myToken !== token) return;
+      output.value = hash;
+      if (errorEl) errorEl.hidden = true;
+      if (copyBtn) copyBtn.disabled = false;
+    } catch (e) {
+      if (myToken !== token) return;
+      output.value = '';
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = e instanceof Error ? e.message : 'خطا'; }
+      if (copyBtn) copyBtn.disabled = true;
+    }
+  }
+
+  let debounceId: number | null = null;
+  function debouncedCompute() {
+    if (debounceId !== null) clearTimeout(debounceId);
+    debounceId = window.setTimeout(compute, 200);
+  }
+
+  input?.addEventListener('input', debouncedCompute);
+  algoSelect?.addEventListener('change', compute);
+  clearBtn?.addEventListener('click', () => { if (input) input.value = ''; compute(); input?.focus(); });
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('هش کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+
+  compute();
+</script>
+
+<style>
+  .hg-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .hg-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .hg-field { display: flex; align-items: center; gap: var(--space-2); font-size: 0.9rem; }
+  .hg-select { width: auto; min-width: 180px; padding-block: var(--space-1); }
+  .hg-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
+  .hg-output-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .hg-output { background: var(--color-surface-2); font-family: var(--font-mono); word-break: break-all; }
+  .hg-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+</style>

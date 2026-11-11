@@ -1,0 +1,130 @@
+---
+import { MODES } from './logic';
+---
+<div class="cc-tool">
+  <label for="cc-input" class="sr-only">متن ورودی</label>
+  <textarea
+    id="cc-input"
+    class="textarea"
+    placeholder="متن خود را اینجا تایپ یا جای‌گذاری کنید..."
+    spellcheck="false"
+    aria-describedby="cc-help"
+  ></textarea>
+  <p id="cc-help" class="cc-help">
+    حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.
+  </p>
+
+  <div class="cc-modes" role="group" aria-label="نوع تبدیل">
+    {MODES.map((m, i) => (
+      <button
+        type="button"
+        class={"btn cc-mode" + (i === 0 ? " active" : "")}
+        data-mode={m.value}
+        aria-pressed={i === 0 ? "true" : "false"}
+      >
+        {m.labelFa}
+      </button>
+    ))}
+  </div>
+
+  <div class="cc-actions">
+    <button type="button" class="btn" id="cc-clear">
+      <span aria-hidden="true">🗑️</span> پاک کردن
+    </button>
+    <button type="button" class="btn btn-primary" id="cc-copy" disabled>
+      <span aria-hidden="true">📋</span> کپی خروجی
+    </button>
+  </div>
+
+  <div class="cc-output-wrap">
+    <label for="cc-output" class="cc-output-label">خروجی:</label>
+    <textarea
+      id="cc-output"
+      class="textarea cc-output"
+      readonly
+      placeholder="خروجی اینجا نمایش داده می‌شود..."
+    ></textarea>
+  </div>
+</div>
+
+<script>
+  import { convertCase } from './logic';
+  import type { CaseMode } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const input = document.getElementById('cc-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('cc-output') as HTMLTextAreaElement | null;
+  const clearBtn = document.getElementById('cc-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('cc-copy') as HTMLButtonElement | null;
+  const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.cc-mode'));
+
+  const MAX_INPUT = 100_000;
+  let currentMode: CaseMode = 'lower';
+
+  function refresh() {
+    if (!input || !output) return;
+    let val = input.value;
+    if (val.length > MAX_INPUT) {
+      val = val.slice(0, MAX_INPUT);
+      input.value = val;
+    }
+    output.value = val === '' ? '' : convertCase(val, currentMode);
+    if (copyBtn) copyBtn.disabled = output.value === '';
+  }
+
+  input?.addEventListener('input', refresh);
+
+  for (const btn of modeBtns) {
+    btn.addEventListener('click', () => {
+      for (const b of modeBtns) {
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      }
+      currentMode = (btn.dataset.mode as CaseMode) || 'lower';
+      refresh();
+    });
+  }
+
+  clearBtn?.addEventListener('click', () => {
+    if (input) input.value = '';
+    refresh();
+    input?.focus();
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('خروجی کپی شد', 'success');
+    else toast('کپی نشد', 'error');
+  });
+
+  refresh();
+</script>
+
+<style>
+  .cc-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .cc-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .cc-modes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .cc-mode { font-size: 0.9rem; padding: var(--space-1) var(--space-3); }
+  .cc-mode.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+  .cc-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .cc-output-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .cc-output-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .cc-output { background: var(--color-surface-2); }
+</style>

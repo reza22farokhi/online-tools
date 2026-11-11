@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout
+  title="صفحه یافت نشد | ابزارهای آنلاین"
+  description="صفحه درخواستی وجود ندارد."
+  noindex={true}
+>
+  <div class="container notfound">
+    <p class="code" aria-hidden="true">404</p>
+    <h1 data-i18n="notfound.title">صفحه یافت نشد</h1>
+    <p class="desc" data-i18n="notfound.desc">
+      صفحه‌ای که به دنبال آن هستید وجود ندارد یا منتقل شده است.
+    </p>
+    <a href={base} class="btn btn-primary" data-i18n="notfound.back">بازگشت به خانه</a>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound {
+    text-align: center;
+    padding-block: var(--space-8);
+  }
+  .code {
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 800;
+    margin: 0;
+    color: var(--color-primary);
+    opacity: 0.5;
+    line-height: 1;
+  }
+  .desc {
+    color: var(--color-text-muted);
+    max-width: 480px;
+    margin: 0 auto var(--space-5);
+  }
+</style>

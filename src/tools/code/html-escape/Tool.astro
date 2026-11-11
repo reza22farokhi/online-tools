@@ -1,0 +1,59 @@
+---
+---
+<div class="he-tool">
+  <div class="he-modes" role="group" aria-label="عملیات">
+    <button type="button" class="btn he-mode active" data-mode="escape" aria-pressed="true">Escape (تبدیل به entity)</button>
+    <button type="button" class="btn he-mode" data-mode="unescape" aria-pressed="false">Unescape (بازگردانی)</button>
+  </div>
+  <label for="he-input" class="sr-only">ورودی</label>
+  <textarea id="he-input" class="textarea" placeholder="مثلاً: <a href=&quot;x&quot;>لینک</a>" spellcheck="false" aria-describedby="he-help"></textarea>
+  <p id="he-help" class="he-help">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</p>
+  <div class="he-actions">
+    <button type="button" class="btn" id="he-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
+    <button type="button" class="btn btn-primary" id="he-copy" disabled><span aria-hidden="true">📋</span> کپی خروجی</button>
+  </div>
+  <label for="he-output" class="he-output-label">خروجی:</label>
+  <textarea id="he-output" class="textarea he-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+</div>
+<script>
+  import { processHtml } from './logic';
+  import type { HtmlMode } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+  const MAX_INPUT = 100_000;
+  const input = document.getElementById('he-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('he-output') as HTMLTextAreaElement | null;
+  const clearBtn = document.getElementById('he-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('he-copy') as HTMLButtonElement | null;
+  const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.he-mode'));
+  let currentMode: HtmlMode = 'escape';
+  function refresh() {
+    if (!input || !output) return;
+    if (input.value.length > MAX_INPUT) input.value = input.value.slice(0, MAX_INPUT);
+    output.value = processHtml(input.value, currentMode);
+    if (copyBtn) copyBtn.disabled = output.value === '';
+  }
+  input?.addEventListener('input', refresh);
+  for (const btn of modeBtns) {
+    btn.addEventListener('click', () => {
+      for (const b of modeBtns) { b.classList.toggle('active', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); }
+      currentMode = (btn.dataset.mode as HtmlMode) || 'escape'; refresh();
+    });
+  }
+  clearBtn?.addEventListener('click', () => { if (input) input.value = ''; refresh(); input?.focus(); });
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('خروجی کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+  refresh();
+</script>
+<style>
+  .he-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .he-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .he-modes { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .he-mode { font-size: 0.9rem; padding: var(--space-1) var(--space-3); }
+  .he-mode.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-fg); }
+  .he-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .he-output-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .he-output { background: var(--color-surface-2); font-family: var(--font-mono); }
+</style>

@@ -1,0 +1,133 @@
+---
+---
+<div class="age-tool">
+  <div class="age-fields">
+    <div class="age-field">
+      <label for="age-birth">تاریخ تولد</label>
+      <input id="age-birth" type="date" class="input" />
+    </div>
+    <div class="age-field">
+      <label for="age-ref">تاریخ مرجع (پیش‌فرض: امروز)</label>
+      <input id="age-ref" type="date" class="input" />
+    </div>
+  </div>
+
+  <div class="age-error" id="age-error" hidden role="alert"></div>
+
+  <div class="age-results" id="age-results" hidden>
+    <div class="age-main" id="age-main">—</div>
+    <div class="age-grid">
+      <div class="age-cell"><span class="age-num" id="age-years">0</span><span class="age-lbl">سال</span></div>
+      <div class="age-cell"><span class="age-num" id="age-months">0</span><span class="age-lbl">ماه</span></div>
+      <div class="age-cell"><span class="age-num" id="age-days">0</span><span class="age-lbl">روز</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-days">0</span><span class="age-lbl">کل روزها</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-weeks">0</span><span class="age-lbl">کل هفته‌ها</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-months">0</span><span class="age-lbl">کل ماه‌ها</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-hours">0</span><span class="age-lbl">کل ساعت‌ها</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-minutes">0</span><span class="age-lbl">کل دقیقه‌ها</span></div>
+      <div class="age-cell age-cell-wide"><span class="age-num" id="age-next-bd">0</span><span class="age-lbl">روز تا تولد بعدی</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { calculateAge, parseIsoDate } from './logic';
+  const birthInput = document.getElementById('age-birth') as HTMLInputElement | null;
+  const refInput = document.getElementById('age-ref') as HTMLInputElement | null;
+  const errorEl = document.getElementById('age-error') as HTMLDivElement | null;
+  const resultsEl = document.getElementById('age-results') as HTMLDivElement | null;
+  const mainEl = document.getElementById('age-main');
+  const nums = {
+    years: document.getElementById('age-years'),
+    months: document.getElementById('age-months'),
+    days: document.getElementById('age-days'),
+    totalDays: document.getElementById('age-total-days'),
+    totalWeeks: document.getElementById('age-total-weeks'),
+    totalMonths: document.getElementById('age-total-months'),
+    totalHours: document.getElementById('age-total-hours'),
+    totalMinutes: document.getElementById('age-total-minutes'),
+    nextBd: document.getElementById('age-next-bd')
+  };
+
+  function setHidden(el: HTMLElement | null, hidden: boolean) {
+    if (el) el.hidden = hidden;
+  }
+
+  function refresh() {
+    if (!birthInput || !refInput || !resultsEl) return;
+    setHidden(errorEl, true);
+    if (errorEl) errorEl.textContent = '';
+
+    const bStr = birthInput.value;
+    if (!bStr) { setHidden(resultsEl, true); return; }
+
+    const birth = parseIsoDate(bStr);
+    if (!birth) {
+      setHidden(resultsEl, true);
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تاریخ تولد نامعتبر است'; }
+      return;
+    }
+
+    const ref = refInput.value ? parseIsoDate(refInput.value) : new Date();
+    if (!ref) {
+      setHidden(resultsEl, true);
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تاریخ مرجع نامعتبر است'; }
+      return;
+    }
+
+    const r = calculateAge(birth, ref);
+    if (!r) {
+      setHidden(resultsEl, true);
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تاریخ تولد نمی‌تواند بعد از تاریخ مرجع باشد'; }
+      return;
+    }
+
+    setHidden(resultsEl, false);
+    if (mainEl) mainEl.textContent = `${r.years} سال و ${r.months} ماه و ${r.days} روز`;
+    if (nums.years) nums.years.textContent = String(r.years);
+    if (nums.months) nums.months.textContent = String(r.months);
+    if (nums.days) nums.days.textContent = String(r.days);
+    if (nums.totalDays) nums.totalDays.textContent = r.totalDays.toLocaleString('fa-IR');
+    if (nums.totalWeeks) nums.totalWeeks.textContent = r.totalWeeks.toLocaleString('fa-IR');
+    if (nums.totalMonths) nums.totalMonths.textContent = r.totalMonths.toLocaleString('fa-IR');
+    if (nums.totalHours) nums.totalHours.textContent = r.totalHours.toLocaleString('fa-IR');
+    if (nums.totalMinutes) nums.totalMinutes.textContent = r.totalMinutes.toLocaleString('fa-IR');
+    if (nums.nextBd) nums.nextBd.textContent = r.nextBirthdayDays.toLocaleString('fa-IR');
+  }
+
+  birthInput?.addEventListener('change', refresh);
+  birthInput?.addEventListener('input', refresh);
+  refInput?.addEventListener('change', refresh);
+  refInput?.addEventListener('input', refresh);
+  refresh();
+</script>
+
+<style>
+  .age-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .age-fields { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 640px) { .age-fields { grid-template-columns: 1fr 1fr; } }
+  .age-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .age-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .age-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
+  .age-results { display: flex; flex-direction: column; gap: var(--space-3); }
+  .age-main {
+    padding: var(--space-3);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--color-text);
+  }
+  .age-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
+  @media (min-width: 640px) { .age-grid { grid-template-columns: repeat(4, 1fr); } }
+  .age-cell {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: var(--space-2); background: var(--color-surface-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  }
+  .age-cell-wide { grid-column: 1 / -1; }
+  .age-num { font-size: 1.25rem; font-weight: 700; color: var(--color-primary); font-variant-numeric: tabular-nums; }
+  .age-lbl { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 2px; }
+</style>

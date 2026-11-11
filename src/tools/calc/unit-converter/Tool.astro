@@ -1,0 +1,101 @@
+---
+import { CATEGORIES } from './logic';
+---
+<div class="uc-tool">
+  <div class="uc-field">
+    <label for="uc-cat">دسته:</label>
+    <select id="uc-cat" class="select">
+      {CATEGORIES.map((c, i) => (
+        <option value={c.id} selected={i === 0}>{c.label}</option>
+      ))}
+    </select>
+  </div>
+
+  <div class="uc-row">
+    <div class="uc-field uc-field-grow">
+      <label for="uc-value">مقدار:</label>
+      <input id="uc-value" type="number" class="input" value="1" step="any" />
+    </div>
+    <div class="uc-field">
+      <label for="uc-from">از:</label>
+      <select id="uc-from" class="select"></select>
+    </div>
+  </div>
+
+  <div class="uc-arrow" aria-hidden="true">↓</div>
+
+  <div class="uc-row">
+    <div class="uc-field uc-field-grow">
+      <label for="uc-result">نتیجه:</label>
+      <input id="uc-result" type="text" class="input uc-result" readonly />
+    </div>
+    <div class="uc-field">
+      <label for="uc-to">به:</label>
+      <select id="uc-to" class="select"></select>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { CATEGORIES, UNITS, convert, formatNumber } from './logic';
+  import type { Category } from './logic';
+
+  const catSelect = document.getElementById('uc-cat') as HTMLSelectElement | null;
+  const valueInput = document.getElementById('uc-value') as HTMLInputElement | null;
+  const fromSelect = document.getElementById('uc-from') as HTMLSelectElement | null;
+  const toSelect = document.getElementById('uc-to') as HTMLSelectElement | null;
+  const resultInput = document.getElementById('uc-result') as HTMLInputElement | null;
+
+  function populateUnits(cat: Category) {
+    if (!fromSelect || !toSelect) return;
+    const units = UNITS[cat];
+    const buildOpts = (el: HTMLSelectElement, def: number) => {
+      el.innerHTML = '';
+      units.forEach((u, i) => {
+        const o = document.createElement('option');
+        o.value = u.id;
+        o.textContent = u.label;
+        if (i === def) o.selected = true;
+        el.appendChild(o);
+      });
+    };
+    buildOpts(fromSelect, 0);
+    buildOpts(toSelect, Math.min(1, units.length - 1));
+  }
+
+  function refresh() {
+    if (!catSelect || !valueInput || !fromSelect || !toSelect || !resultInput) return;
+    const cat = catSelect.value as Category;
+    const units = UNITS[cat];
+    const from = units.find(u => u.id === fromSelect.value);
+    const to = units.find(u => u.id === toSelect.value);
+    if (!from || !to) { resultInput.value = '—'; return; }
+    const v = Number(valueInput.value);
+    if (valueInput.value === '' || !Number.isFinite(v)) { resultInput.value = '—'; return; }
+    resultInput.value = formatNumber(convert(v, from, to));
+  }
+
+  catSelect?.addEventListener('change', () => {
+    populateUnits(catSelect.value as Category);
+    refresh();
+  });
+  valueInput?.addEventListener('input', refresh);
+  fromSelect?.addEventListener('change', refresh);
+  toSelect?.addEventListener('change', refresh);
+
+  if (catSelect) {
+    populateUnits(catSelect.value as Category);
+    refresh();
+  }
+</script>
+
+<style>
+  .uc-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .uc-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .uc-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .uc-row { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .uc-field-grow { flex: 1; min-width: 140px; }
+  .uc-row > .uc-field:not(.uc-field-grow) { min-width: 140px; }
+  .uc-result { background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-2)); font-weight: 600; font-family: var(--font-mono); }
+  .uc-arrow { text-align: center; font-size: 1.5rem; color: var(--color-primary); }
+</style>

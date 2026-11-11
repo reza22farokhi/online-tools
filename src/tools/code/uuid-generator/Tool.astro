@@ -1,0 +1,55 @@
+---
+---
+<div class="ug-tool">
+  <div class="ug-controls">
+    <div class="ug-field">
+      <label for="ug-count">تعداد:</label>
+      <input id="ug-count" type="number" class="input ug-num" value="1" min="1" max="1000" />
+    </div>
+    <label class="ug-opt"><input type="checkbox" id="ug-upper" /><span>حروف بزرگ</span></label>
+    <label class="ug-opt"><input type="checkbox" id="ug-nohyphen" /><span>بدون خط تیره</span></label>
+    <button type="button" class="btn btn-primary" id="ug-generate">🔄 تولید</button>
+  </div>
+  <label for="ug-output" class="ug-output-label">UUIDها:</label>
+  <textarea id="ug-output" class="textarea ug-output" readonly rows="10" placeholder="برای تولید، روی دکمه کلیک کنید..."></textarea>
+  <div class="ug-actions">
+    <button type="button" class="btn" id="ug-copy" disabled><span aria-hidden="true">📋</span> کپی همه</button>
+  </div>
+</div>
+<script>
+  import { generateUuids } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+  const output = document.getElementById('ug-output') as HTMLTextAreaElement | null;
+  const countInput = document.getElementById('ug-count') as HTMLInputElement | null;
+  const upperCb = document.getElementById('ug-upper') as HTMLInputElement | null;
+  const noHyphenCb = document.getElementById('ug-nohyphen') as HTMLInputElement | null;
+  const generateBtn = document.getElementById('ug-generate') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('ug-copy') as HTMLButtonElement | null;
+  function refresh() {
+    if (!output) return;
+    const count = Math.max(1, Math.min(1000, Number(countInput?.value || 1)));
+    output.value = generateUuids({ count, uppercase: upperCb?.checked ?? false, noHyphens: noHyphenCb?.checked ?? false });
+    if (copyBtn) copyBtn.disabled = output.value === '';
+  }
+  generateBtn?.addEventListener('click', refresh);
+  countInput?.addEventListener('input', refresh);
+  upperCb?.addEventListener('change', refresh);
+  noHyphenCb?.addEventListener('change', refresh);
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('UUIDها کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+  refresh();
+</script>
+<style>
+  .ug-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ug-controls { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+  .ug-field { display: flex; align-items: center; gap: var(--space-2); font-size: 0.9rem; }
+  .ug-num { width: 90px; padding-block: var(--space-1); }
+  .ug-opt { display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: 0.9rem; }
+  .ug-opt input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--color-primary); }
+  .ug-output-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .ug-output { background: var(--color-surface-2); font-family: var(--font-mono); }
+  .ug-actions { display: flex; gap: var(--space-2); }
+</style>

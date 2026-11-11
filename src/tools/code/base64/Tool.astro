@@ -1,0 +1,76 @@
+---
+---
+<div class="b64-tool">
+  <div class="b64-modes" role="group" aria-label="عملیات">
+    <button type="button" class="btn b64-mode active" data-mode="encode" aria-pressed="true">Encode (به Base64)</button>
+    <button type="button" class="btn b64-mode" data-mode="decode" aria-pressed="false">Decode (از Base64)</button>
+  </div>
+  <label for="b64-input" class="sr-only">ورودی</label>
+  <textarea id="b64-input" class="textarea" placeholder="متن یا Base64 را اینجا وارد کنید..." spellcheck="false" aria-describedby="b64-help"></textarea>
+  <p id="b64-help" class="b64-help">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</p>
+  <label class="b64-opt"><input type="checkbox" id="b64-urlsafe" /><span>حالت URL-safe (بدون +/ و =، مناسب URL)</span></label>
+  <div class="b64-error" id="b64-error" hidden role="alert"></div>
+  <div class="b64-actions">
+    <button type="button" class="btn" id="b64-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
+    <button type="button" class="btn btn-primary" id="b64-copy" disabled><span aria-hidden="true">📋</span> کپی خروجی</button>
+  </div>
+  <label for="b64-output" class="b64-output-label">خروجی:</label>
+  <textarea id="b64-output" class="textarea b64-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+</div>
+<script>
+  import { processBase64 } from './logic';
+  import type { Base64Mode } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+  const MAX_INPUT = 100_000;
+  const input = document.getElementById('b64-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('b64-output') as HTMLTextAreaElement | null;
+  const errorEl = document.getElementById('b64-error') as HTMLDivElement | null;
+  const urlSafeCb = document.getElementById('b64-urlsafe') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('b64-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('b64-copy') as HTMLButtonElement | null;
+  const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.b64-mode'));
+  let currentMode: Base64Mode = 'encode';
+  function refresh() {
+    if (!input || !output) return;
+    if (input.value.length > MAX_INPUT) input.value = input.value.slice(0, MAX_INPUT);
+    if (input.value === '') {
+      output.value = ''; if (errorEl) errorEl.hidden = true; if (copyBtn) copyBtn.disabled = true; return;
+    }
+    const r = processBase64(input.value, currentMode, { urlSafe: urlSafeCb?.checked ?? false });
+    if (!r.ok) {
+      output.value = ''; if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'خطا: ' + (r.error || 'نامشخص'); }
+      if (copyBtn) copyBtn.disabled = true;
+    } else {
+      output.value = r.output; if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+      if (copyBtn) copyBtn.disabled = r.output === '';
+    }
+  }
+  input?.addEventListener('input', refresh);
+  urlSafeCb?.addEventListener('change', refresh);
+  for (const btn of modeBtns) {
+    btn.addEventListener('click', () => {
+      for (const b of modeBtns) { b.classList.toggle('active', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); }
+      currentMode = (btn.dataset.mode as Base64Mode) || 'encode'; refresh();
+    });
+  }
+  clearBtn?.addEventListener('click', () => { if (input) input.value = ''; refresh(); input?.focus(); });
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('خروجی کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+  refresh();
+</script>
+<style>
+  .b64-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .b64-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .b64-modes { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .b64-mode { font-size: 0.9rem; padding: var(--space-1) var(--space-3); }
+  .b64-mode.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-fg); }
+  .b64-opt { display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: 0.9rem; }
+  .b64-opt input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--color-primary); }
+  .b64-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; word-break: break-word; }
+  .b64-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .b64-output-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .b64-output { background: var(--color-surface-2); font-family: var(--font-mono); }
+</style>

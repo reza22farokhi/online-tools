@@ -1,0 +1,217 @@
+---
+---
+<div class="rt-tool">
+  <div class="rt-pattern-wrap">
+    <div class="rt-pattern-row">
+      <span class="rt-slash" aria-hidden="true">/</span>
+      <label for="rt-pattern" class="sr-only">الگوی Regex</label>
+      <input id="rt-pattern" type="text" class="input rt-pattern" placeholder="\d+" spellcheck="false" autocomplete="off" />
+      <span class="rt-slash" aria-hidden="true">/</span>
+      <div class="rt-flags" role="group" aria-label="Flags">
+        <label class="rt-flag" title="global"><input type="checkbox" id="rt-flag-g" checked /><span>g</span></label>
+        <label class="rt-flag" title="case-insensitive"><input type="checkbox" id="rt-flag-i" /><span>i</span></label>
+        <label class="rt-flag" title="multiline"><input type="checkbox" id="rt-flag-m" /><span>m</span></label>
+        <label class="rt-flag" title="dotAll"><input type="checkbox" id="rt-flag-s" /><span>s</span></label>
+        <label class="rt-flag" title="unicode"><input type="checkbox" id="rt-flag-u" /><span>u</span></label>
+        <label class="rt-flag" title="sticky"><input type="checkbox" id="rt-flag-y" /><span>y</span></label>
+      </div>
+    </div>
+  </div>
+  <label for="rt-input" class="rt-input-label">متن تست:</label>
+  <textarea id="rt-input" class="textarea" rows="6" placeholder="متن خود را اینجا وارد کنید..." spellcheck="false"></textarea>
+  <div class="rt-status" id="rt-status" aria-live="polite"></div>
+  <div class="rt-error" id="rt-error" hidden role="alert"></div>
+  <div class="rt-highlight-wrap" id="rt-highlight-wrap" hidden>
+    <div class="rt-label">نمایش هایلایت:</div>
+    <pre class="rt-highlight" id="rt-highlight"></pre>
+  </div>
+  <div class="rt-matches-wrap" id="rt-matches-wrap" hidden>
+    <div class="rt-label">لیست تطابق‌ها:</div>
+    <ol class="rt-matches" id="rt-matches"></ol>
+  </div>
+</div>
+
+<script>
+  import { testRegex } from './logic';
+  import type { RegexResult, MatchResult } from './logic';
+
+  const patternInput = document.getElementById('rt-pattern') as HTMLInputElement | null;
+  const inputArea = document.getElementById('rt-input') as HTMLTextAreaElement | null;
+  const statusEl = document.getElementById('rt-status');
+  const errorEl = document.getElementById('rt-error');
+  const highlightWrap = document.getElementById('rt-highlight-wrap');
+  const highlightPre = document.getElementById('rt-highlight');
+  const matchesWrap = document.getElementById('rt-matches-wrap');
+  const matchesList = document.getElementById('rt-matches');
+
+  const flagIds = ['g', 'i', 'm', 's', 'u', 'y'];
+  const flagCbs: Record<string, HTMLInputElement | null> = {};
+  for (const f of flagIds) flagCbs[f] = document.getElementById(`rt-flag-${f}`) as HTMLInputElement | null;
+
+  function getFlags(): string {
+    return flagIds.filter(f => flagCbs[f]?.checked).join('');
+  }
+  function setHidden(el: HTMLElement | null, hidden: boolean) { if (el) el.hidden = hidden; }
+
+  let worker: Worker | null = null;
+  let timeoutHandle: number | null = null;
+  let runToken = 0;
+
+  function killWorker() {
+    if (worker) { worker.terminate(); worker = null; }
+    if (timeoutHandle !== null) { clearTimeout(timeoutHandle); timeoutHandle = null; }
+  }
+
+  function runInWorker(pattern: string, flags: string, input: string): Promise<RegexResult> {
+    return new Promise((resolve) => {
+      if (typeof Worker === 'undefined') {
+        resolve(testRegex(pattern, flags, input));
+        return;
+      }
+      try {
+        worker = new Worker(new URL('./regex.worker.ts', import.meta.url), { type: 'module' });
+      } catch {
+        resolve(testRegex(pattern, flags, input));
+        return;
+      }
+      worker.onmessage = (e) => {
+        if (timeoutHandle !== null) { clearTimeout(timeoutHandle); timeoutHandle = null; }
+        resolve(e.data as RegexResult);
+      };
+      worker.onerror = () => {
+        if (timeoutHandle !== null) { clearTimeout(timeoutHandle); timeoutHandle = null; }
+        resolve({ ok: false, error: 'خطا در اجرای Worker', matches: [] });
+      };
+      worker.postMessage({ pattern, flags, input });
+      timeoutHandle = window.setTimeout(() => {
+        killWorker();
+        resolve({ ok: false, error: 'تایم‌اوت ۲ ثانیه — الگو ممکن است خطرناک باشد (ReDoS)', matches: [] });
+      }, 2000);
+    });
+  }
+
+  function renderHighlight(input: string, matches: MatchResult[]) {
+    if (!highlightPre) return;
+    highlightPre.textContent = '';
+    if (matches.length === 0) { highlightPre.textContent = input; return; }
+    let pos = 0;
+    for (const m of matches) {
+      if (m.index > pos) highlightPre.appendChild(document.createTextNode(input.slice(pos, m.index)));
+      const mark = document.createElement('mark');
+      mark.textContent = m.value === '' ? '∅' : m.value;
+      highlightPre.appendChild(mark);
+      pos = m.index + m.value.length;
+      if (m.value.length === 0) pos = Math.max(pos, m.index + 1);
+    }
+    if (pos < input.length) highlightPre.appendChild(document.createTextNode(input.slice(pos)));
+  }
+
+  function renderMatches(matches: MatchResult[]) {
+    if (!matchesList) return;
+    matchesList.textContent = '';
+    matches.slice(0, 50).forEach((m, i) => {
+      const li = document.createElement('li');
+      const idx = document.createElement('span');
+      idx.className = 'rt-match-index';
+      idx.textContent = `#${i + 1} @ ${m.index}`;
+      const val = document.createElement('code');
+      val.className = 'rt-match-val';
+      val.textContent = m.value === '' ? '(خالی)' : m.value;
+      li.appendChild(idx); li.appendChild(val);
+      if (m.groups && Object.keys(m.groups).length > 0) {
+        const groups = document.createElement('div');
+        groups.className = 'rt-match-groups';
+        for (const [k, v] of Object.entries(m.groups)) {
+          const g = document.createElement('span');
+          g.className = 'rt-group';
+          g.textContent = `${k}=${v ?? '(خالی)'}`;
+          groups.appendChild(g);
+        }
+        li.appendChild(groups);
+      }
+      matchesList.appendChild(li);
+    });
+    if (matches.length > 50) {
+      const more = document.createElement('li');
+      more.className = 'rt-more';
+      more.textContent = `... و ${matches.length - 50} نتیجه دیگر`;
+      matchesList.appendChild(more);
+    }
+  }
+
+  async function refresh() {
+    if (!patternInput || !inputArea) return;
+    const pattern = patternInput.value;
+    const flags = getFlags();
+    const input = inputArea.value;
+
+    setHidden(errorEl, true);
+    if (errorEl) errorEl.textContent = '';
+    setHidden(highlightWrap, true);
+    setHidden(matchesWrap, true);
+    if (statusEl) statusEl.textContent = '';
+
+    if (pattern === '') { if (statusEl) statusEl.textContent = 'الگو خالی است'; return; }
+
+    killWorker();
+    const myToken = ++runToken;
+    if (statusEl) statusEl.textContent = 'در حال اجرا...';
+
+    const result = await runInWorker(pattern, flags, input);
+    if (myToken !== runToken) return;
+
+    if (!result.ok) {
+      if (statusEl) statusEl.textContent = '';
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = result.error || 'خطا'; }
+      return;
+    }
+
+    if (statusEl) {
+      statusEl.textContent = result.matches.length === 0
+        ? 'هیچ تطابقی پیدا نشد'
+        : `${result.matches.length.toLocaleString('fa-IR')} تطابق پیدا شد`;
+    }
+
+    if (result.matches.length > 0) {
+      setHidden(highlightWrap, false);
+      setHidden(matchesWrap, false);
+      renderHighlight(input, result.matches);
+      renderMatches(result.matches);
+    }
+  }
+
+  let debounceId: number | null = null;
+  function debouncedRefresh() {
+    if (debounceId !== null) clearTimeout(debounceId);
+    debounceId = window.setTimeout(refresh, 250);
+  }
+
+  patternInput?.addEventListener('input', debouncedRefresh);
+  inputArea?.addEventListener('input', debouncedRefresh);
+  for (const f of flagIds) flagCbs[f]?.addEventListener('change', debouncedRefresh);
+
+  refresh();
+</script>
+
+<style>
+  .rt-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .rt-pattern-wrap { display: flex; flex-direction: column; gap: var(--space-2); }
+  .rt-pattern-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+  .rt-slash { font-family: var(--font-mono); font-size: 1.2rem; color: var(--color-text-muted); }
+  .rt-pattern { flex: 1; min-width: 200px; font-family: var(--font-mono); }
+  .rt-flags { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+  .rt-flag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; font-family: var(--font-mono); font-size: 0.85rem; }
+  .rt-flag input { margin: 0; cursor: pointer; }
+  .rt-input-label, .rt-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .rt-status { font-size: 0.9rem; color: var(--color-primary); font-weight: 600; min-height: 1.2em; }
+  .rt-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; word-break: break-word; }
+  .rt-highlight { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-mono); font-size: 0.9rem; white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow: auto; margin: 0; }
+  .rt-highlight mark { background: color-mix(in srgb, var(--color-primary) 30%, transparent); color: inherit; padding: 1px 2px; border-radius: 2px; }
+  .rt-matches { margin: 0; padding-left: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); max-height: 400px; overflow: auto; }
+  .rt-matches li { padding: var(--space-2); background: var(--color-surface-2); border-radius: var(--radius-sm); border: 1px solid var(--color-border); font-size: 0.85rem; }
+  .rt-match-index { font-weight: 700; color: var(--color-primary); margin-inline-end: var(--space-2); font-variant-numeric: tabular-nums; }
+  .rt-match-val { font-family: var(--font-mono); background: var(--color-surface); padding: 1px 6px; border-radius: 3px; word-break: break-all; }
+  .rt-match-groups { margin-top: var(--space-1); display: flex; flex-wrap: wrap; gap: 4px; }
+  .rt-group { font-family: var(--font-mono); font-size: 0.75rem; padding: 1px 6px; background: color-mix(in srgb, var(--color-primary) 12%, transparent); border-radius: 3px; color: var(--color-primary); }
+  .rt-more { color: var(--color-text-muted); font-style: italic; }
+</style>

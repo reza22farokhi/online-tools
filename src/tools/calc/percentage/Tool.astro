@@ -1,0 +1,162 @@
+---
+---
+<div class="pc-tool">
+  <div class="pc-modes" role="tablist" aria-label="حالت محاسبه">
+    <button type="button" class="btn pc-mode active" data-mode="of" role="tab" aria-selected="true">X% از Y</button>
+    <button type="button" class="btn pc-mode" data-mode="what" role="tab" aria-selected="false">X چند درصد Y است</button>
+    <button type="button" class="btn pc-mode" data-mode="change" role="tab" aria-selected="false">تغییر درصدی</button>
+  </div>
+
+  <div class="pc-panel" data-panel="of">
+    <div class="pc-formula">X% از Y = ?</div>
+    <div class="pc-fields">
+      <div class="pc-field">
+        <label for="pc-of-x">درصد (X)</label>
+        <input id="pc-of-x" type="number" class="input" placeholder="20" step="any" />
+      </div>
+      <div class="pc-field">
+        <label for="pc-of-y">از مقدار (Y)</label>
+        <input id="pc-of-y" type="number" class="input" placeholder="500" step="any" />
+      </div>
+    </div>
+    <div class="pc-result" id="pc-of-result" aria-live="polite">—</div>
+  </div>
+
+  <div class="pc-panel" data-panel="what" hidden>
+    <div class="pc-formula">X چند درصد Y است؟</div>
+    <div class="pc-fields">
+      <div class="pc-field">
+        <label for="pc-what-x">مقدار (X)</label>
+        <input id="pc-what-x" type="number" class="input" placeholder="25" step="any" />
+      </div>
+      <div class="pc-field">
+        <label for="pc-what-y">کل (Y)</label>
+        <input id="pc-what-y" type="number" class="input" placeholder="200" step="any" />
+      </div>
+    </div>
+    <div class="pc-result" id="pc-what-result" aria-live="polite">—</div>
+  </div>
+
+  <div class="pc-panel" data-panel="change" hidden>
+    <div class="pc-formula">تغییر از X به Y</div>
+    <div class="pc-fields">
+      <div class="pc-field">
+        <label for="pc-ch-from">مقدار اولیه (X)</label>
+        <input id="pc-ch-from" type="number" class="input" placeholder="100" step="any" />
+      </div>
+      <div class="pc-field">
+        <label for="pc-ch-to">مقدار نهایی (Y)</label>
+        <input id="pc-ch-to" type="number" class="input" placeholder="150" step="any" />
+      </div>
+    </div>
+    <div class="pc-result" id="pc-ch-result" aria-live="polite">—</div>
+  </div>
+</div>
+
+<script>
+  import { percentOf, whatPercent, percentChange, formatNumber } from './logic';
+  const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.pc-mode'));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('.pc-panel'));
+
+  const ofX = document.getElementById('pc-of-x') as HTMLInputElement | null;
+  const ofY = document.getElementById('pc-of-y') as HTMLInputElement | null;
+  const ofR = document.getElementById('pc-of-result');
+
+  const whatX = document.getElementById('pc-what-x') as HTMLInputElement | null;
+  const whatY = document.getElementById('pc-what-y') as HTMLInputElement | null;
+  const whatR = document.getElementById('pc-what-result');
+
+  const chFrom = document.getElementById('pc-ch-from') as HTMLInputElement | null;
+  const chTo = document.getElementById('pc-ch-to') as HTMLInputElement | null;
+  const chR = document.getElementById('pc-ch-result');
+
+  function updateOf() {
+    if (!ofX || !ofY || !ofR) return;
+    const x = Number(ofX.value);
+    const y = Number(ofY.value);
+    if (ofX.value === '' || ofY.value === '' || !Number.isFinite(x) || !Number.isFinite(y)) {
+      ofR.textContent = '—'; return;
+    }
+    ofR.textContent = `${formatNumber(x)}٪ از ${formatNumber(y)} = ${formatNumber(percentOf(x, y))}`;
+  }
+
+  function updateWhat() {
+    if (!whatX || !whatY || !whatR) return;
+    const x = Number(whatX.value);
+    const y = Number(whatY.value);
+    if (whatX.value === '' || whatY.value === '' || !Number.isFinite(x) || !Number.isFinite(y)) {
+      whatR.textContent = '—'; return;
+    }
+    if (y === 0) { whatR.textContent = 'تقسیم بر صفر ممکن نیست'; return; }
+    whatR.textContent = `${formatNumber(x)} برابر است با ${formatNumber(whatPercent(x, y))}٪ از ${formatNumber(y)}`;
+  }
+
+  function updateChange() {
+    if (!chFrom || !chTo || !chR) return;
+    const a = Number(chFrom.value);
+    const b = Number(chTo.value);
+    if (chFrom.value === '' || chTo.value === '' || !Number.isFinite(a) || !Number.isFinite(b)) {
+      chR.textContent = '—'; return;
+    }
+    if (a === 0) { chR.textContent = 'مقدار اولیه نمی‌تواند صفر باشد'; return; }
+    const pct = percentChange(a, b);
+    const direction = pct > 0 ? 'افزایش' : pct < 0 ? 'کاهش' : 'بدون تغییر';
+    chR.textContent = `${direction} ${formatNumber(Math.abs(pct))}٪ (از ${formatNumber(a)} به ${formatNumber(b)})`;
+  }
+
+  ofX?.addEventListener('input', updateOf);
+  ofY?.addEventListener('input', updateOf);
+  whatX?.addEventListener('input', updateWhat);
+  whatY?.addEventListener('input', updateWhat);
+  chFrom?.addEventListener('input', updateChange);
+  chTo?.addEventListener('input', updateChange);
+
+  for (const btn of modeBtns) {
+    btn.addEventListener('click', () => {
+      for (const b of modeBtns) {
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+      }
+      const mode = btn.dataset.mode;
+      for (const p of panels) p.hidden = p.dataset.panel !== mode;
+    });
+  }
+
+  updateOf();
+  updateWhat();
+  updateChange();
+</script>
+
+<style>
+  .pc-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .pc-modes { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .pc-mode { font-size: 0.9rem; padding: var(--space-1) var(--space-3); }
+  .pc-mode.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-fg); }
+  .pc-panel { display: flex; flex-direction: column; gap: var(--space-3); }
+  .pc-formula {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface-2);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+  .pc-fields { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 640px) { .pc-fields { grid-template-columns: 1fr 1fr; } }
+  .pc-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .pc-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .pc-result {
+    padding: var(--space-3);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+</style>

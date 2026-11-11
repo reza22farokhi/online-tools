@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { getDicts } from '../lib/i18n';
+import { SITE_NAME_FA, DEFAULT_DESCRIPTION } from '../lib/seo';
+
+export interface Props {
+  title: string;
+  description?: string;
+  lang?: 'fa' | 'en';
+  canonical?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  jsonLd?: object | object[];
+}
+
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  lang = 'fa',
+  canonical,
+  image = '/og-default.svg',
+  type = 'website',
+  noindex = false,
+  jsonLd
+} = Astro.props;
+
+const site = Astro.site?.toString() ?? 'https://example.com/';
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).toString();
+const ogImage = new URL(image.replace(/^\//, ''), site).toString();
+const dir = lang === 'fa' ? 'rtl' : 'ltr';
+const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const dicts = getDicts();
+---
+<!doctype html>
+<html lang={lang} dir={dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={SITE_NAME_FA} />
+    <meta property="og:locale" content={lang === 'fa' ? 'fa_IR' : 'en_US'} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('pot.theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', t);
+          var l = localStorage.getItem('pot.lang');
+          if (l === 'fa' || l === 'en') {
+            document.documentElement.setAttribute('lang', l);
+            document.documentElement.setAttribute('dir', l === 'fa' ? 'rtl' : 'ltr');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    {jsonLdList.map(obj => (
+      <script type="application/ld+json" set:html={JSON.stringify(obj)}></script>
+    ))}
+  </head>
+  <body>
+    <a href="#main" class="skip-link">پرش به محتوا</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script type="application/json" id="i18n-data" set:html={JSON.stringify(dicts)}></script>
+    <script>
+      import { initUI } from '../lib/ui';
+      const dataEl = document.getElementById('i18n-data');
+      const data = JSON.parse(dataEl?.textContent || '{}') as Record<'fa' | 'en', Record<string, string>>;
+      initUI(data);
+    </script>
+  </body>
+</html>

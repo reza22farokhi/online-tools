@@ -1,0 +1,18 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { registry } from '../../tools/registry';
+import { getToolComponent } from '../../tools';
+
+export function getStaticPaths() {
+  return registry.map(tool => ({
+    params: { slug: tool.slug },
+    props: { tool }
+  }));
+}
+
+const { tool } = Astro.props;
+const ToolComponent = getToolComponent(tool.slug);
+---
+<ToolLayout meta={tool}>
+  {ToolComponent && <ToolComponent />}
+</ToolLayout>

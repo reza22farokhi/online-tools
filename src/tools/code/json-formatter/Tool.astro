@@ -1,0 +1,173 @@
+---
+---
+<div class="jf-tool">
+  <label for="jf-input" class="sr-only">JSON ورودی</label>
+  <textarea
+    id="jf-input"
+    class="textarea jf-input"
+    placeholder='{"name": "example", "items": [1, 2, 3]}'
+    spellcheck="false"
+    aria-describedby="jf-help"
+  ></textarea>
+  <p id="jf-help" class="jf-help">
+    JSON را جای‌گذاری کنید. حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.
+  </p>
+
+  <div class="jf-controls">
+    <div class="jf-modes" role="group" aria-label="عملیات">
+      <button type="button" class="btn jf-mode active" data-mode="format" aria-pressed="true">Format</button>
+      <button type="button" class="btn jf-mode" data-mode="minify" aria-pressed="false">Minify</button>
+      <button type="button" class="btn jf-mode" data-mode="validate" aria-pressed="false">Validate</button>
+    </div>
+    <div class="jf-indent" id="jf-indent-wrap">
+      <label for="jf-indent">تورفتگی:</label>
+      <select id="jf-indent" class="select jf-indent-select">
+        <option value="2" selected>۲ فاصله</option>
+        <option value="4">۴ فاصله</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="jf-error" id="jf-error" hidden role="alert"></div>
+
+  <div class="jf-actions">
+    <button type="button" class="btn" id="jf-clear">
+      <span aria-hidden="true">🗑️</span> پاک کردن
+    </button>
+    <button type="button" class="btn btn-primary" id="jf-copy" disabled>
+      <span aria-hidden="true">📋</span> کپی خروجی
+    </button>
+  </div>
+
+  <label for="jf-output" class="jf-output-label">خروجی:</label>
+  <textarea
+    id="jf-output"
+    class="textarea jf-output"
+    readonly
+    placeholder="پس از جای‌گذاری JSON، خروجی اینجا نمایش داده می‌شود..."
+  ></textarea>
+</div>
+
+<script>
+  import { processJson } from './logic';
+  import type { JsonMode } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const MAX_INPUT = 100_000;
+
+  const input = document.getElementById('jf-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('jf-output') as HTMLTextAreaElement | null;
+  const errorEl = document.getElementById('jf-error') as HTMLDivElement | null;
+  const indentSelect = document.getElementById('jf-indent') as HTMLSelectElement | null;
+  const indentWrap = document.getElementById('jf-indent-wrap') as HTMLDivElement | null;
+  const clearBtn = document.getElementById('jf-clear') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('jf-copy') as HTMLButtonElement | null;
+  const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.jf-mode'));
+
+  let currentMode: JsonMode = 'format';
+
+  function refresh() {
+    if (!input || !output) return;
+    if (input.value.length > MAX_INPUT) {
+      input.value = input.value.slice(0, MAX_INPUT);
+    }
+    const indent: 2 | 4 = indentSelect?.value === '4' ? 4 : 2;
+    if (indentWrap) indentWrap.style.display = currentMode === 'format' ? '' : 'none';
+
+    const result = processJson(input.value, currentMode, indent);
+
+    if (!result.ok) {
+      if (errorEl) {
+        errorEl.hidden = false;
+        errorEl.textContent = 'خطا: ' + (result.error || 'نامشخص');
+      }
+      output.value = '';
+      if (copyBtn) copyBtn.disabled = true;
+    } else {
+      if (errorEl) {
+        errorEl.hidden = true;
+        errorEl.textContent = '';
+      }
+      output.value = result.output;
+      if (copyBtn) copyBtn.disabled = result.output === '';
+    }
+  }
+
+  input?.addEventListener('input', refresh);
+  indentSelect?.addEventListener('change', refresh);
+
+  for (const btn of modeBtns) {
+    btn.addEventListener('click', () => {
+      for (const b of modeBtns) {
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      }
+      currentMode = (btn.dataset.mode as JsonMode) || 'format';
+      refresh();
+    });
+  }
+
+  clearBtn?.addEventListener('click', () => {
+    if (input) input.value = '';
+    refresh();
+    input?.focus();
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('خروجی کپی شد', 'success');
+    else toast('کپی نشد', 'error');
+  });
+
+  refresh();
+</script>
+
+<style>
+  .jf-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .jf-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .jf-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: space-between;
+  }
+  .jf-modes { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .jf-mode { font-size: 0.9rem; padding: var(--space-1) var(--space-3); }
+  .jf-mode.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+  .jf-indent {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+  .jf-indent-select {
+    width: auto;
+    min-width: 110px;
+    padding-block: var(--space-1);
+  }
+  .jf-error {
+    padding: var(--space-2) var(--space-3);
+    background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+    border: 1px solid var(--color-danger);
+    border-radius: var(--radius-md);
+    color: var(--color-danger);
+    font-size: 0.9rem;
+    font-family: var(--font-mono);
+    word-break: break-word;
+  }
+  .jf-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .jf-output-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+  }
+  .jf-output { background: var(--color-surface-2); }
+</style>

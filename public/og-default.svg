@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <text x="600" y="290" font-family="system-ui, sans-serif" font-size="88" fill="#ffffff" text-anchor="middle" font-weight="700">Online Tools</text>
+  <text x="600" y="380" font-family="system-ui, sans-serif" font-size="42" fill="#e0e7ff" text-anchor="middle">ابزارهای آنلاین حرفه‌ای</text>
+  <text x="600" y="490" font-family="system-ui, sans-serif" font-size="28" fill="#c7d2fe" text-anchor="middle">Fast · Secure · Privacy-first</text>
+</svg>
