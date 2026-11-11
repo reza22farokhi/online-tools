@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolCard from '../../components/ui/ToolCard.astro';
+import { categories, getToolsByCategory } from '../../tools/registry';
+import { buildBreadcrumbJsonLd } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return categories.map(cat => ({
+    params: { category: cat.slug },
+    props: { category: cat }
+  }));
+}
+
+const { category } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const site = Astro.site?.toString() ?? 'https://example.com/';
+const tools = getToolsByCategory(category.slug);
+const canonical = new URL(`${base}categories/${category.slug}/`.replace(/^\//, ''), site).toString();
+
+const pageTitle = `${category.fa} | ابزارهای آنلاین`;
+const pageDesc = `مجموعه‌ای از ${tools.length} ابزار حرفه‌ای در دسته ${category.fa}. کاملاً رایگان، سریع و با پردازش محلی.`;
+
+const breadcrumbLd = buildBreadcrumbJsonLd([
+  { name: 'خانه', url: site },
+  { name: 'ابزارها', url: new URL(`${base}tools/`.replace(/^\//, ''), site).toString() },
+  { name: category.fa, url: canonical }
+]);
+
+const collectionLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: pageTitle,
+  description: pageDesc,
+  url: canonical,
+  inLanguage: 'fa'
+};
+
+const otherCategories = categories.filter(c => c.slug !== category.slug);
+---
+<BaseLayout title={pageTitle} description={pageDesc} canonical={canonical} jsonLd={[breadcrumbLd, collectionLd]}>
+  <div class="container page">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <ol>
+        <li><a href={base}>خانه</a></li>
+        <li><a href={base + 'tools/'}>ابزارها</a></li>
+        <li aria-current="page">{category.fa}</li>
+      </ol>
+    </nav>
+
+    <header class="cat-hero">
+      <div class="cat-hero-icon" aria-hidden="true">{category.icon}</div>
+      <div class="cat-hero-text">
+        <h1>{category.fa}</h1>
+        <p class="lead">{tools.length} ابزار حرفه‌ای — رایگان، سریع و با پردازش محلی.</p>
+      </div>
+    </header>
+
+    {tools.length > 0 ? (
+      <div class="tools-grid">
+        {tools.map(t => <ToolCard tool={t} />)}
+      </div>
+    ) : (
+      <p class="empty">هنوز ابزاری در این دسته وجود ندارد.</p>
+    )}
+
+    <section class="other-cats" aria-labelledby="other-cats-title">
+      <h2 id="other-cats-title">دسته‌های دیگر</h2>
+      <div class="other-cats-grid">
+        {otherCategories.map(c => (
+          <a href={base + 'categories/' + c.slug + '/'} class="other-cat-card">
+            <span class="other-cat-icon" aria-hidden="true">{c.icon}</span>
+            <span class="other-cat-name">{c.fa}</span>
+            <span class="other-cat-arrow" aria-hidden="true">←</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-5); }
+  .breadcrumb ol { list-style: none; padding: 0; margin: 0 0 var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: 0.875rem; color: var(--color-text-muted); }
+  .breadcrumb ol li:not(:last-child)::after { content: '/'; margin-inline-start: var(--space-2); opacity: 0.5; }
+  .breadcrumb a { color: var(--color-text-muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--color-text); text-decoration: underline; }
+
+  .cat-hero { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-5); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); margin-bottom: var(--space-5); flex-wrap: wrap; }
+  .cat-hero-icon { font-size: 3rem; line-height: 1; }
+  .cat-hero-text { flex: 1; min-width: 200px; }
+  .cat-hero h1 { margin: 0 0 var(--space-2); font-size: clamp(1.75rem, 1.5rem + 1.5vw, 2.25rem); }
+  .cat-hero .lead { margin: 0; color: var(--color-text-muted); }
+
+  .tools-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 640px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 960px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
+  .empty { text-align: center; color: var(--color-text-muted); padding-block: var(--space-5); }
+
+  .other-cats { margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
+  .other-cats h2 { font-size: 1.2rem; margin-bottom: var(--space-3); }
+  .other-cats-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+  @media (min-width: 640px) { .other-cats-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 960px) { .other-cats-grid { grid-template-columns: repeat(3, 1fr); } }
+  .other-cat-card { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); text-decoration: none; color: var(--color-text); transition: border-color var(--transition-fast), transform var(--transition-fast); }
+  .other-cat-card:hover { border-color: var(--color-primary); transform: translateX(-2px); text-decoration: none; }
+  .other-cat-icon { font-size: 1.4rem; }
+  .other-cat-name { flex: 1; font-weight: 600; }
+  .other-cat-arrow { color: var(--color-primary); font-weight: 700; }
+</style>
