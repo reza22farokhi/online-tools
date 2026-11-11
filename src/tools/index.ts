@@ -22,6 +22,8 @@ import RobotsTxtTool from './seo/robots-txt-generator/Tool.astro';
 import OgPreviewTool from './seo/og-preview/Tool.astro';
 import ImageResizerTool from './image/image-resizer/Tool.astro';
 import ImageCompressorTool from './image/image-compressor/Tool.astro';
+import FormatConverterTool from './image/format-converter/Tool.astro';
+import ColorPickerTool from './image/color-picker/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -46,7 +48,9 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'robots-txt-generator': RobotsTxtTool,
   'og-preview': OgPreviewTool,
   'image-resizer': ImageResizerTool,
-  'image-compressor': ImageCompressorTool
+  'image-compressor': ImageCompressorTool,
+  'format-converter': FormatConverterTool,
+  'color-picker': ColorPickerTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {

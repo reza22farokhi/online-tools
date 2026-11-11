@@ -22,6 +22,8 @@ import { meta as robotsTxtMeta } from './seo/robots-txt-generator/meta';
 import { meta as ogPreviewMeta } from './seo/og-preview/meta';
 import { meta as imageResizerMeta } from './image/image-resizer/meta';
 import { meta as imageCompressorMeta } from './image/image-compressor/meta';
+import { meta as formatConverterMeta } from './image/format-converter/meta';
+import { meta as colorPickerMeta } from './image/color-picker/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -39,7 +41,7 @@ export const registry: ToolMeta[] = [
   hashGeneratorMeta, regexTesterMeta,
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
-  imageResizerMeta, imageCompressorMeta
+  imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {

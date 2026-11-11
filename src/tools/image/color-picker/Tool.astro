@@ -1,0 +1,134 @@
+---
+---
+<div class="cp-tool">
+  <div class="cp-upload-zone" id="cp-upload-zone">
+    <input type="file" id="cp-file" accept="image/*" class="sr-only" />
+    <label for="cp-file" class="cp-upload-label">
+      <span class="cp-icon">🎨</span>
+      <span>برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="cp-hint">حداکثر ۲۰ مگابایت (پردازش محلی)</span>
+    </label>
+  </div>
+
+  <div class="cp-workspace" id="cp-workspace" hidden>
+    <div class="cp-canvas-wrap">
+      <canvas id="cp-canvas" class="cp-canvas"></canvas>
+    </div>
+    
+    <div class="cp-info" id="cp-info">
+      <div class="cp-hint-text">روی هر نقطه از تصویر کلیک کنید تا کد رنگ آن را ببینید.</div>
+      <div class="cp-color-box" id="cp-color-box" hidden>
+        <div class="cp-swatch" id="cp-swatch"></div>
+        <div class="cp-codes">
+          <div class="cp-code-row">
+            <span>HEX:</span>
+            <input type="text" id="cp-hex" readonly class="input cp-input" />
+            <button class="btn btn-sm" id="cp-copy-hex">کپی</button>
+          </div>
+          <div class="cp-code-row">
+            <span>RGB:</span>
+            <input type="text" id="cp-rgb" readonly class="input cp-input" />
+            <button class="btn btn-sm" id="cp-copy-rgb">کپی</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { rgbToHex, formatRgb } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const MAX_SIZE = 20 * 1024 * 1024;
+  const fileInput = document.getElementById('cp-file') as HTMLInputElement | null;
+  const uploadZone = document.getElementById('cp-upload-zone');
+  const workspace = document.getElementById('cp-workspace');
+  const canvas = document.getElementById('cp-canvas') as HTMLCanvasElement | null;
+  const colorBox = document.getElementById('cp-color-box');
+  const swatch = document.getElementById('cp-swatch');
+  const hexInput = document.getElementById('cp-hex') as HTMLInputElement | null;
+  const rgbInput = document.getElementById('cp-rgb') as HTMLInputElement | null;
+
+  let ctx: CanvasRenderingContext2D | null = null;
+
+  function handleFile(file: File) {
+    if (!file.type.startsWith('image/')) { alert('لطفاً یک فایل تصویری انتخاب کنید.'); return; }
+    if (file.size > MAX_SIZE) { alert('حجم فایل نباید بیشتر از ۲۰ مگابایت باشد.'); return; }
+
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      if (!canvas) return;
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (ctx) ctx.drawImage(img, 0, 0);
+      
+      if (uploadZone) uploadZone.hidden = true;
+      if (workspace) workspace.hidden = false;
+      if (colorBox) colorBox.hidden = true;
+      URL.revokeObjectURL(objectUrl);
+    };
+    img.src = objectUrl;
+  }
+
+  fileInput?.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) handleFile(target.files[0]);
+  });
+
+  uploadZone?.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--color-primary)'; });
+  uploadZone?.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--color-border)'; });
+  uploadZone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.style.borderColor = 'var(--color-border)';
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+  });
+
+  canvas?.addEventListener('click', (e) => {
+    if (!ctx || !canvas || !hexInput || !rgbInput || !swatch || !colorBox) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    const x = Math.floor((e.clientX - rect.left) * scaleX);
+    const y = Math.floor((e.clientY - rect.top) * scaleY);
+    
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const r = pixel[0], g = pixel[1], b = pixel[2];
+    
+    const hex = rgbToHex(r, g, b);
+    hexInput.value = hex;
+    rgbInput.value = formatRgb(r, g, b);
+    swatch.style.backgroundColor = hex;
+    colorBox.hidden = false;
+  });
+
+  document.getElementById('cp-copy-hex')?.addEventListener('click', async () => {
+    if (hexInput?.value) { await copyText(hexInput.value); toast('HEX کپی شد', 'success'); }
+  });
+  document.getElementById('cp-copy-rgb')?.addEventListener('click', async () => {
+    if (rgbInput?.value) { await copyText(rgbInput.value); toast('RGB کپی شد', 'success'); }
+  });
+</script>
+
+<style>
+  .cp-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .cp-upload-zone { border: 2px dashed var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; transition: border-color 0.2s; background: var(--color-surface-2); }
+  .cp-upload-label { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-text); }
+  .cp-icon { font-size: 2.5rem; }
+  .cp-hint { font-size: 0.8rem; color: var(--color-text-muted); }
+  .cp-workspace { display: flex; flex-direction: column; gap: var(--space-4); }
+  .cp-canvas-wrap { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: repeating-conic-gradient(#f1f5f9 0% 25%, #e2e8f0 0% 50%) 50% / 20px 20px; display: flex; justify-content: center; }
+  .cp-canvas { max-width: 100%; max-height: 500px; cursor: crosshair; display: block; }
+  .cp-info { background: var(--color-surface-2); padding: var(--space-4); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
+  .cp-hint-text { font-size: 0.9rem; color: var(--color-text-muted); }
+  .cp-color-box { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; justify-content: center; width: 100%; max-width: 500px; }
+  .cp-swatch { width: 60px; height: 60px; border-radius: var(--radius-md); border: 2px solid var(--color-border); box-shadow: var(--shadow-sm); }
+  .cp-codes { flex: 1; display: flex; flex-direction: column; gap: var(--space-2); min-width: 250px; }
+  .cp-code-row { display: flex; align-items: center; gap: var(--space-2); font-size: 0.9rem; font-weight: 600; }
+  .cp-input { font-family: var(--font-mono); background: var(--color-surface); padding: 4px 8px; height: 32px; }
+  .btn-sm { padding: 4px 12px; font-size: 0.8rem; min-height: 32px; }
+</style>
