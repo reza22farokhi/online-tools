@@ -1,0 +1,84 @@
+---
+---
+<div class="serp-tool">
+  <div class="serp-form">
+    <div class="serp-field">
+      <label for="serp-url">آدرس صفحه (URL)</label>
+      <input id="serp-url" type="url" class="input" placeholder="https://example.com/page" dir="ltr" />
+    </div>
+    <div class="serp-field">
+      <label for="serp-title">عنوان (Title)</label>
+      <input id="serp-title" type="text" class="input" placeholder="عنوان جذاب برای گوگل..." />
+      <div class="serp-hint"><span id="serp-title-count">0</span> / 60 کاراکتر</div>
+    </div>
+    <div class="serp-field">
+      <label for="serp-desc">توضیحات (Description)</label>
+      <textarea id="serp-desc" class="textarea" rows="3" placeholder="توضیحات متا..."></textarea>
+      <div class="serp-hint"><span id="serp-desc-count">0</span> / 160 کاراکتر</div>
+    </div>
+  </div>
+
+  <div class="serp-preview-wrap">
+    <div class="serp-label">پیش‌نمایش در گوگل (دسکتاپ):</div>
+    <div class="serp-card">
+      <div class="serp-url" id="prev-url">example.com</div>
+      <div class="serp-title" id="prev-title">عنوان صفحه شما در اینجا نمایش داده می‌شود</div>
+      <div class="serp-desc" id="prev-desc">توضیحات متا شما در اینجا نمایش داده می‌شود. سعی کنید آن را جذاب و مرتبط با محتوای صفحه بنویسید تا کاربران روی لینک شما کلیک کنند.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { truncate, formatUrlForSerp, MAX_TITLE_LEN, MAX_DESC_LEN } from './logic';
+
+  const urlInput = document.getElementById('serp-url') as HTMLInputElement | null;
+  const titleInput = document.getElementById('serp-title') as HTMLInputElement | null;
+  const descInput = document.getElementById('serp-desc') as HTMLTextAreaElement | null;
+
+  const prevUrl = document.getElementById('prev-url');
+  const prevTitle = document.getElementById('prev-title');
+  const prevDesc = document.getElementById('prev-desc');
+  
+  const titleCount = document.getElementById('serp-title-count');
+  const descCount = document.getElementById('serp-desc-count');
+
+  function refresh() {
+    if (!urlInput || !titleInput || !descInput) return;
+
+    const urlVal = urlInput.value;
+    const titleVal = titleInput.value;
+    const descVal = descInput.value;
+
+    if (titleCount) titleCount.textContent = String(titleVal.length);
+    if (descCount) descCount.textContent = String(descVal.length);
+
+    if (prevUrl) prevUrl.textContent = formatUrlForSerp(urlVal);
+    if (prevTitle) prevTitle.textContent = titleVal ? truncate(titleVal, MAX_TITLE_LEN) : 'عنوان صفحه شما در اینجا نمایش داده می‌شود';
+    if (prevDesc) prevDesc.textContent = descVal ? truncate(descVal, MAX_DESC_LEN) : 'توضیحات متا شما در اینجا نمایش داده می‌شود. سعی کنید آن را جذاب و مرتبط با محتوای صفحه بنویسید تا کاربران روی لینک شما کلیک کنند.';
+  }
+
+  urlInput?.addEventListener('input', refresh);
+  titleInput?.addEventListener('input', refresh);
+  descInput?.addEventListener('input', refresh);
+
+  refresh();
+</script>
+
+<style>
+  .serp-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .serp-form { display: flex; flex-direction: column; gap: var(--space-3); }
+  .serp-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .serp-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .serp-hint { font-size: 0.75rem; color: var(--color-text-muted); text-align: left; }
+  .serp-preview-wrap { padding: var(--space-3); background: var(--color-surface-2); border-radius: var(--radius-md); border: 1px solid var(--color-border); }
+  .serp-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); margin-bottom: var(--space-2); }
+  .serp-card { background: #fff; padding: 16px; border-radius: 8px; font-family: arial, sans-serif; text-align: left; }
+  [data-theme="dark"] .serp-card { background: #202124; }
+  .serp-url { color: #202124; font-size: 14px; margin-bottom: 4px; }
+  [data-theme="dark"] .serp-url { color: #bdc1c6; }
+  .serp-title { color: #1a0dab; font-size: 20px; line-height: 1.3; margin-bottom: 4px; cursor: pointer; }
+  .serp-title:hover { text-decoration: underline; }
+  [data-theme="dark"] .serp-title { color: #8ab4f8; }
+  .serp-desc { color: #4d5156; font-size: 14px; line-height: 1.58; }
+  [data-theme="dark"] .serp-desc { color: #bdc1c6; }
+</style>

@@ -1,0 +1,82 @@
+---
+---
+<div class="mtg-tool">
+  <div class="mtg-form">
+    <div class="mtg-field">
+      <label for="mtg-title">عنوان صفحه (Title)</label>
+      <input id="mtg-title" type="text" class="input" placeholder="مثلاً: ابزارهای آنلاین حرفه‌ای" />
+    </div>
+    <div class="mtg-field">
+      <label for="mtg-desc">توضیحات (Description)</label>
+      <textarea id="mtg-desc" class="textarea" rows="2" placeholder="توضیح مختصر و جذاب..."></textarea>
+    </div>
+    <div class="mtg-row">
+      <div class="mtg-field">
+        <label for="mtg-url">آدرس سایت (URL)</label>
+        <input id="mtg-url" type="url" class="input" placeholder="https://example.com" dir="ltr" />
+      </div>
+      <div class="mtg-field">
+        <label for="mtg-author">نویسنده / برند (Author)</label>
+        <input id="mtg-author" type="text" class="input" placeholder="مثلاً: تیم ما" />
+      </div>
+    </div>
+    <div class="mtg-field">
+      <label for="mtg-image">آدرس تصویر (Image URL)</label>
+      <input id="mtg-image" type="url" class="input" placeholder="https://example.com/og.jpg" dir="ltr" />
+    </div>
+  </div>
+  
+  <div class="mtg-output-wrap">
+    <label for="mtg-output" class="mtg-label">کد HTML تولید شده:</label>
+    <textarea id="mtg-output" class="textarea mtg-output" readonly></textarea>
+    <div class="mtg-actions">
+      <button type="button" class="btn btn-primary" id="mtg-copy"><span aria-hidden="true">📋</span> کپی کد</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { generateMetaTags } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const inputIds = ['mtg-title', 'mtg-desc', 'mtg-url', 'mtg-image', 'mtg-author'];
+  const output = document.getElementById('mtg-output') as HTMLTextAreaElement | null;
+  const copyBtn = document.getElementById('mtg-copy') as HTMLButtonElement | null;
+
+  function refresh() {
+    if (!output) return;
+    const getVal = (id: string) => (document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null)?.value || '';
+    
+    output.value = generateMetaTags({
+      title: getVal('mtg-title'),
+      description: getVal('mtg-desc'),
+      url: getVal('mtg-url'),
+      image: getVal('mtg-image'),
+      author: getVal('mtg-author')
+    });
+  }
+
+  for (const id of inputIds) {
+    document.getElementById(id)?.addEventListener('input', refresh);
+  }
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!output || !output.value) return;
+    const ok = await copyText(output.value);
+    if (ok) toast('کد متا کپی شد', 'success'); else toast('کپی نشد', 'error');
+  });
+
+  refresh();
+</script>
+
+<style>
+  .mtg-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .mtg-form { display: flex; flex-direction: column; gap: var(--space-3); }
+  .mtg-row { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .mtg-row > .mtg-field { flex: 1; min-width: 200px; }
+  .mtg-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .mtg-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .mtg-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); margin-top: var(--space-2); }
+  .mtg-output { background: var(--color-surface-2); font-family: var(--font-mono); height: 220px; font-size: 0.85rem; }
+  .mtg-actions { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+</style>

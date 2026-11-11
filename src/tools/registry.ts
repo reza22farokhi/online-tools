@@ -16,6 +16,8 @@ import { meta as percentageMeta } from './calc/percentage/meta';
 import { meta as ageMeta } from './calc/age/meta';
 import { meta as dateDiffMeta } from './calc/date-diff/meta';
 import { meta as unitConverterMeta } from './calc/unit-converter/meta';
+import { meta as metaTagMeta } from './seo/meta-tag-generator/meta';
+import { meta as serpPreviewMeta } from './seo/serp-preview/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -31,7 +33,8 @@ export const registry: ToolMeta[] = [
   removeDuplicatesMeta, slugGeneratorMeta,
   jsonFormatterMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta, uuidGeneratorMeta,
   hashGeneratorMeta, regexTesterMeta,
-  percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta
+  percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
+  metaTagMeta, serpPreviewMeta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {

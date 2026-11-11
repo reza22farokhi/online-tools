@@ -10,10 +10,14 @@ import Base64Tool from './code/base64/Tool.astro';
 import HtmlEscapeTool from './code/html-escape/Tool.astro';
 import UrlEncoderTool from './code/url-encoder/Tool.astro';
 import UuidGeneratorTool from './code/uuid-generator/Tool.astro';
+import HashGeneratorTool from './code/hash-generator/Tool.astro';
+import RegexTesterTool from './code/regex-tester/Tool.astro';
 import PercentageTool from './calc/percentage/Tool.astro';
 import AgeTool from './calc/age/Tool.astro';
 import DateDiffTool from './calc/date-diff/Tool.astro';
 import UnitConverterTool from './calc/unit-converter/Tool.astro';
+import MetaTagTool from './seo/meta-tag-generator/Tool.astro';
+import SerpPreviewTool from './seo/serp-preview/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -27,10 +31,14 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'html-escape': HtmlEscapeTool,
   'url-encoder': UrlEncoderTool,
   'uuid-generator': UuidGeneratorTool,
+  'hash-generator': HashGeneratorTool,
+  'regex-tester': RegexTesterTool,
   'percentage': PercentageTool,
   'age': AgeTool,
   'date-diff': DateDiffTool,
-  'unit-converter': UnitConverterTool
+  'unit-converter': UnitConverterTool,
+  'meta-tag-generator': MetaTagTool,
+  'serp-preview': SerpPreviewTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {
