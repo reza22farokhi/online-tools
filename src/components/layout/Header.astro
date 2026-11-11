@@ -11,20 +11,17 @@ const base = import.meta.env.BASE_URL;
     <nav aria-label="Main" class="main-nav">
       <a href={base} data-i18n="nav.home">خانه</a>
       <a href={base + 'tools/'} data-i18n="nav.tools">ابزارها</a>
+      <a href={base + 'blog/'}>وبلاگ</a>
     </nav>
 
     <div class="header-actions">
-      <button type="button" class="icon-btn" data-theme-toggle
-              data-i18n-aria-label="theme.toggle" aria-label="تغییر تم" title="Theme">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-             stroke-linejoin="round" aria-hidden="true">
+      <button type="button" class="icon-btn" data-theme-toggle data-i18n-aria-label="theme.toggle" aria-label="تغییر تم" title="Theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="4"/>
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
         </svg>
       </button>
-      <button type="button" class="icon-btn" data-lang-toggle
-              data-i18n-aria-label="lang.toggle" aria-label="تغییر زبان" title="EN / FA">
+      <button type="button" class="icon-btn" data-lang-toggle data-i18n-aria-label="lang.toggle" aria-label="تغییر زبان" title="EN / FA">
         <span aria-hidden="true">A/ف</span>
       </button>
     </div>
@@ -32,59 +29,16 @@ const base = import.meta.env.BASE_URL;
 </header>
 
 <style>
-  .site-header {
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .header-inner {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    min-height: var(--header-h);
-    flex-wrap: wrap;
-    padding-block: var(--space-2);
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: var(--color-text);
-    text-decoration: none;
-  }
+  .site-header { border-bottom: 1px solid var(--color-border); background: var(--color-surface); position: sticky; top: 0; z-index: 10; }
+  .header-inner { display: flex; align-items: center; gap: var(--space-3); min-height: var(--header-h); flex-wrap: wrap; padding-block: var(--space-2); }
+  .brand { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; font-size: 1.05rem; color: var(--color-text); text-decoration: none; }
   .brand:hover { text-decoration: none; }
   .brand-icon { font-size: 1.25rem; }
   .main-nav { display: flex; gap: var(--space-4); margin-inline-start: auto; }
-  .main-nav a {
-    color: var(--color-text-muted);
-    text-decoration: none;
-    font-weight: 500;
-    padding-block: var(--space-2);
-  }
+  .main-nav a { color: var(--color-text-muted); text-decoration: none; font-weight: 500; padding-block: var(--space-2); }
   .main-nav a:hover { color: var(--color-text); }
   .header-actions { display: flex; gap: var(--space-2); }
-  .icon-btn {
-    width: 40px;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface);
-    cursor: pointer;
-    color: var(--color-text);
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: background var(--transition-fast);
-  }
+  .icon-btn { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); cursor: pointer; color: var(--color-text); font-weight: 600; font-size: 0.85rem; transition: background var(--transition-fast); }
   .icon-btn:hover { background: var(--color-surface-2); }
-  @media (max-width: 480px) {
-    .brand-name { font-size: 0.95rem; }
-    .main-nav { gap: var(--space-3); }
-  }
+  @media (max-width: 480px) { .brand-name { font-size: 0.95rem; } .main-nav { gap: var(--space-3); } }
 </style>

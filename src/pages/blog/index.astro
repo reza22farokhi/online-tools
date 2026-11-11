@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title="وبلاگ | ابزارهای آنلاین" description="مقالات تخصصی درباره امنیت، حریم خصوصی و بهینه‌سازی وب.">
+  <div class="container page">
+    <header class="page-header">
+      <h1>وبلاگ</h1>
+      <p class="lead">مقالات تخصصی درباره امنیت، حریم خصوصی و بهینه‌سازی وب.</p>
+    </header>
+
+    <div class="post-list">
+      <a href={base + 'blog/why-client-side-tools-matter/'} class="post-card card">
+        <h2>آینده ابزارهای آنلاین: چرا حریم خصوصی و پردازش محلی اهمیت دارد؟</h2>
+        <p>در دنیای امروز که هر کلیک ما ردیابی می‌شود، ابزارهای سمت کلاینت (Client-Side) راه‌حل نهایی برای امنیت و سرعت هستند.</p>
+        <span class="read-more">ادامه مطلب ←</span>
+      </a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-5); }
+  .page-header { margin-bottom: var(--space-5); text-align: center; }
+  .lead { color: var(--color-text-muted); }
+  .post-list { display: flex; flex-direction: column; gap: var(--space-4); max-width: 800px; margin: 0 auto; }
+  .post-card { text-decoration: none; color: inherit; transition: transform var(--transition-fast); display: block; }
+  .post-card:hover { text-decoration: none; transform: translateY(-2px); border-color: var(--color-primary); }
+  .post-card h2 { font-size: 1.3rem; margin-bottom: var(--space-2); color: var(--color-text); }
+  .post-card p { color: var(--color-text-muted); margin-bottom: var(--space-3); }
+  .read-more { color: var(--color-primary); font-weight: 600; font-size: 0.9rem; }
+</style>
