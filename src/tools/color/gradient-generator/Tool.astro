@@ -1,0 +1,153 @@
+---
+---
+<div class="gg-tool">
+  <div class="gg-preview" id="gg-preview">
+    <div class="gg-preview-css" id="gg-preview-css"></div>
+  </div>
+
+  <div class="gg-controls">
+    <div class="gg-row">
+      <div class="gg-field">
+        <label for="gg-type">نوع گرادیانت:</label>
+        <select id="gg-type" class="select">
+          <option value="linear">خطی (Linear)</option>
+          <option value="radial">شعاعی (Radial)</option>
+        </select>
+      </div>
+      <div class="gg-field" id="gg-angle-wrap">
+        <label for="gg-angle">زاویه: <span id="gg-angle-val">90</span>°</label>
+        <input id="gg-angle" type="range" min="0" max="360" value="90" class="gg-range" />
+      </div>
+    </div>
+
+    <div class="gg-stops" id="gg-stops"></div>
+
+    <div class="gg-actions">
+      <button type="button" class="btn" id="gg-add-stop">➕ افزودن رنگ</button>
+      <button type="button" class="btn btn-primary" id="gg-copy-css">📋 کپی کد CSS</button>
+    </div>
+
+    <div class="gg-css-output">
+      <label class="gg-label">کد CSS:</label>
+      <pre class="gg-css" id="gg-css"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { buildCssGradient } from './logic';
+  import type { ColorStop, GradientType } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const preview = document.getElementById('gg-preview');
+  const previewCss = document.getElementById('gg-preview-css');
+  const typeSelect = document.getElementById('gg-type') as HTMLSelectElement | null;
+  const angleInput = document.getElementById('gg-angle') as HTMLInputElement | null;
+  const angleVal = document.getElementById('gg-angle-val');
+  const angleWrap = document.getElementById('gg-angle-wrap');
+  const stopsContainer = document.getElementById('gg-stops');
+  const cssOutput = document.getElementById('gg-css');
+  const addBtn = document.getElementById('gg-add-stop') as HTMLButtonElement | null;
+  const copyBtn = document.getElementById('gg-copy-css') as HTMLButtonElement | null;
+
+  let stops: ColorStop[] = [
+    { color: '#4f46e5', position: 0 },
+    { color: '#ec4899', position: 100 }
+  ];
+
+  function render() {
+    if (!stopsContainer || !cssOutput || !typeSelect || !angleInput || !previewCss) return;
+
+    const type = typeSelect.value as GradientType;
+    const angle = Number(angleInput.value);
+
+    if (angleWrap) angleWrap.style.display = type === 'linear' ? '' : 'none';
+
+    stopsContainer.textContent = '';
+    stops.forEach((stop, i) => {
+      const row = document.createElement('div');
+      row.className = 'gg-stop-row';
+
+      const colorIn = document.createElement('input');
+      colorIn.type = 'color';
+      colorIn.value = stop.color;
+      colorIn.className = 'gg-color';
+      colorIn.addEventListener('input', () => { stops[i].color = colorIn.value; render(); });
+
+      const posIn = document.createElement('input');
+      posIn.type = 'range';
+      posIn.min = '0';
+      posIn.max = '100';
+      posIn.value = String(stop.position);
+      posIn.className = 'gg-range';
+      posIn.addEventListener('input', () => { stops[i].position = Number(posIn.value); render(); });
+
+      const posLabel = document.createElement('span');
+      posLabel.className = 'gg-pos-label';
+      posLabel.textContent = stop.position + '%';
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'btn btn-sm gg-remove';
+      removeBtn.textContent = '✕';
+      removeBtn.disabled = stops.length <= 2;
+      removeBtn.addEventListener('click', () => {
+        if (stops.length > 2) { stops.splice(i, 1); render(); }
+      });
+
+      row.appendChild(colorIn);
+      row.appendChild(posIn);
+      row.appendChild(posLabel);
+      row.appendChild(removeBtn);
+      stopsContainer.appendChild(row);
+    });
+
+    const css = buildCssGradient({ type, angle, stops });
+    cssOutput.textContent = `background: ${css};`;
+    previewCss.textContent = css;
+    if (preview) preview.style.background = css;
+  }
+
+  typeSelect?.addEventListener('change', render);
+  angleInput?.addEventListener('input', () => {
+    if (angleVal && angleInput) angleVal.textContent = angleInput.value;
+    render();
+  });
+
+  addBtn?.addEventListener('click', () => {
+    if (stops.length >= 5) { toast('حداکثر ۵ رنگ مجاز است', 'error'); return; }
+    stops.push({ color: '#10b981', position: 50 });
+    render();
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!cssOutput?.textContent) return;
+    const ok = await copyText(cssOutput.textContent);
+    if (ok) toast('کد CSS کپی شد', 'success');
+    else toast('کپی نشد', 'error');
+  });
+
+  render();
+</script>
+
+<style>
+  .gg-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .gg-preview { height: 160px; border-radius: var(--radius-md); border: 1px solid var(--color-border); overflow: hidden; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--space-2); }
+  .gg-preview-css { background: rgba(0,0,0,0.6); color: #fff; font-family: var(--font-mono); font-size: 0.75rem; padding: 4px 8px; border-radius: var(--radius-sm); max-width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .gg-controls { display: flex; flex-direction: column; gap: var(--space-3); }
+  .gg-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  @media (max-width: 480px) { .gg-row { grid-template-columns: 1fr; } }
+  .gg-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .gg-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .gg-range { width: 100%; accent-color: var(--color-primary); }
+  .gg-stops { display: flex; flex-direction: column; gap: var(--space-2); }
+  .gg-stop-row { display: grid; grid-template-columns: 50px 1fr 50px 40px; gap: var(--space-2); align-items: center; }
+  .gg-color { width: 44px; height: 36px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 2px; background: var(--color-surface); cursor: pointer; }
+  .gg-pos-label { font-size: 0.8rem; font-family: var(--font-mono); color: var(--color-text-muted); text-align: center; }
+  .gg-remove { padding: 4px 8px; min-height: 30px; font-size: 0.8rem; }
+  .gg-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .gg-css-output { display: flex; flex-direction: column; gap: var(--space-1); }
+  .gg-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .gg-css { margin: 0; padding: var(--space-3); background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 0.85rem; word-break: break-all; white-space: pre-wrap; }
+  .btn-sm { padding: 4px 10px; font-size: 0.8rem; min-height: 30px; }
+</style>

@@ -1,0 +1,153 @@
+---
+import { PRESETS } from './logic';
+---
+<div class="bs-tool">
+  <div class="bs-presets" role="group" aria-label="پیش‌تنظیم‌ها">
+    {PRESETS.map((p, i) => (
+      <button type="button" class="btn bs-preset" data-idx={String(i)}>{p.name}</button>
+    ))}
+  </div>
+
+  <div class="bs-preview">
+    <div class="bs-box" id="bs-box">پیش‌نمایش</div>
+  </div>
+
+  <div class="bs-controls">
+    <div class="bs-field">
+      <label for="bs-x">افقی (X): <span id="bs-x-val">0</span>px</label>
+      <input id="bs-x" type="range" min="-50" max="50" value="0" class="bs-range" />
+    </div>
+    <div class="bs-field">
+      <label for="bs-y">عمودی (Y): <span id="bs-y-val">4</span>px</label>
+      <input id="bs-y" type="range" min="-50" max="50" value="4" class="bs-range" />
+    </div>
+    <div class="bs-field">
+      <label for="bs-blur">محو (Blur): <span id="bs-blur-val">12</span>px</label>
+      <input id="bs-blur" type="range" min="0" max="100" value="12" class="bs-range" />
+    </div>
+    <div class="bs-field">
+      <label for="bs-spread">گسترش (Spread): <span id="bs-spread-val">0</span>px</label>
+      <input id="bs-spread" type="range" min="-50" max="50" value="0" class="bs-range" />
+    </div>
+    <div class="bs-field">
+      <label for="bs-opacity">شفافیت: <span id="bs-opacity-val">15</span>%</label>
+      <input id="bs-opacity" type="range" min="0" max="100" value="15" class="bs-range" />
+    </div>
+    <div class="bs-row">
+      <div class="bs-field">
+        <label for="bs-color">رنگ سایه</label>
+        <input id="bs-color" type="color" value="#000000" class="bs-color" />
+      </div>
+      <label class="bs-inset">
+        <input type="checkbox" id="bs-inset" />
+        <span>سایه داخلی (Inset)</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="bs-css-output">
+    <label class="bs-label">کد CSS:</label>
+    <pre class="bs-css" id="bs-css"></pre>
+    <button type="button" class="btn btn-primary" id="bs-copy">📋 کپی کد</button>
+  </div>
+</div>
+
+<script>
+  import { buildBoxShadow, PRESETS } from './logic';
+  import type { ShadowConfig } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const els = {
+    x: document.getElementById('bs-x') as HTMLInputElement,
+    y: document.getElementById('bs-y') as HTMLInputElement,
+    blur: document.getElementById('bs-blur') as HTMLInputElement,
+    spread: document.getElementById('bs-spread') as HTMLInputElement,
+    opacity: document.getElementById('bs-opacity') as HTMLInputElement,
+    color: document.getElementById('bs-color') as HTMLInputElement,
+    inset: document.getElementById('bs-inset') as HTMLInputElement
+  };
+  const vals = {
+    x: document.getElementById('bs-x-val'),
+    y: document.getElementById('bs-y-val'),
+    blur: document.getElementById('bs-blur-val'),
+    spread: document.getElementById('bs-spread-val'),
+    opacity: document.getElementById('bs-opacity-val')
+  };
+  const box = document.getElementById('bs-box');
+  const cssOut = document.getElementById('bs-css');
+  const copyBtn = document.getElementById('bs-copy') as HTMLButtonElement | null;
+  const presetBtns = document.querySelectorAll<HTMLButtonElement>('.bs-preset');
+
+  function readConfig(): ShadowConfig {
+    return {
+      offsetX: Number(els.x.value),
+      offsetY: Number(els.y.value),
+      blur: Number(els.blur.value),
+      spread: Number(els.spread.value),
+      color: els.color.value,
+      opacity: Number(els.opacity.value),
+      inset: els.inset.checked
+    };
+  }
+
+  function render() {
+    const cfg = readConfig();
+    const css = buildBoxShadow(cfg);
+    if (cssOut) cssOut.textContent = `box-shadow: ${css};`;
+    if (box) box.style.boxShadow = css;
+    if (vals.x) vals.x.textContent = String(cfg.offsetX);
+    if (vals.y) vals.y.textContent = String(cfg.offsetY);
+    if (vals.blur) vals.blur.textContent = String(cfg.blur);
+    if (vals.spread) vals.spread.textContent = String(cfg.spread);
+    if (vals.opacity) vals.opacity.textContent = String(cfg.opacity);
+  }
+
+  Object.values(els).forEach(el => {
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
+  });
+
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.idx);
+      const cfg = PRESETS[idx].cfg;
+      els.x.value = String(cfg.offsetX);
+      els.y.value = String(cfg.offsetY);
+      els.blur.value = String(cfg.blur);
+      els.spread.value = String(cfg.spread);
+      els.opacity.value = String(cfg.opacity);
+      els.color.value = cfg.color;
+      els.inset.checked = cfg.inset;
+      render();
+    });
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!cssOut?.textContent) return;
+    const ok = await copyText(cssOut.textContent);
+    if (ok) toast('کد CSS کپی شد', 'success');
+    else toast('کپی نشد', 'error');
+  });
+
+  render();
+</script>
+
+<style>
+  .bs-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .bs-presets { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .bs-preset { font-size: 0.85rem; padding: 6px 12px; min-height: 34px; }
+  .bs-preview { padding: var(--space-6) var(--space-4); display: flex; justify-content: center; align-items: center; background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .bs-box { width: 120px; height: 120px; background: var(--color-surface); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--color-text-muted); border: 1px solid var(--color-border); }
+  .bs-controls { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 640px) { .bs-controls { grid-template-columns: 1fr 1fr; } }
+  .bs-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .bs-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .bs-range { width: 100%; accent-color: var(--color-primary); }
+  .bs-row { display: flex; gap: var(--space-3); align-items: center; }
+  .bs-color { width: 56px; height: 40px; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 2px; cursor: pointer; background: var(--color-surface); }
+  .bs-inset { display: flex; align-items: center; gap: var(--space-2); font-size: 0.9rem; cursor: pointer; }
+  .bs-inset input { width: 18px; height: 18px; accent-color: var(--color-primary); cursor: pointer; }
+  .bs-css-output { display: flex; flex-direction: column; gap: var(--space-2); }
+  .bs-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .bs-css { margin: 0; padding: var(--space-3); background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 0.85rem; word-break: break-all; white-space: pre-wrap; }
+</style>

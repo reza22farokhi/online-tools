@@ -1,0 +1,128 @@
+---
+import { HARMONY_TYPES } from './logic';
+---
+<div class="pg-tool">
+  <div class="pg-controls">
+    <div class="pg-field">
+      <label for="pg-color">رنگ پایه:</label>
+      <div class="pg-color-input">
+        <input id="pg-color" type="color" value="#4f46e5" class="pg-picker" />
+        <input id="pg-hex" type="text" class="input pg-hex" value="#4f46e5" dir="ltr" maxlength="7" />
+      </div>
+    </div>
+    <div class="pg-field">
+      <label for="pg-type">نوع هارمونی:</label>
+      <select id="pg-type" class="select">
+        {HARMONY_TYPES.map(h => <option value={h.value}>{h.fa} ({h.en})</option>)}
+      </select>
+    </div>
+  </div>
+
+  <div class="pg-palette" id="pg-palette" aria-live="polite"></div>
+
+  <div class="pg-actions">
+    <button type="button" class="btn btn-primary" id="pg-copy-all">📋 کپی همه رنگ‌ها</button>
+  </div>
+</div>
+
+<script>
+  import { generatePalette, HARMONY_TYPES } from './logic';
+  import type { HarmonyType } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+
+  const colorInput = document.getElementById('pg-color') as HTMLInputElement | null;
+  const hexInput = document.getElementById('pg-hex') as HTMLInputElement | null;
+  const typeSelect = document.getElementById('pg-type') as HTMLSelectElement | null;
+  const paletteEl = document.getElementById('pg-palette');
+  const copyAllBtn = document.getElementById('pg-copy-all') as HTMLButtonElement | null;
+
+  let currentColors: string[] = [];
+
+  function textColorForBg(hex: string): string {
+    const m = hex.replace('#', '').match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    if (!m) return '#ffffff';
+    const r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16);
+    const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return lum > 0.5 ? '#000000' : '#ffffff';
+  }
+
+  function render() {
+    if (!colorInput || !typeSelect || !paletteEl) return;
+    const type = typeSelect.value as HarmonyType;
+    const colors = generatePalette(colorInput.value, type);
+    currentColors = colors;
+    paletteEl.textContent = '';
+    colors.forEach(hex => {
+      const item = document.createElement('div');
+      item.className = 'pg-swatch';
+      item.style.backgroundColor = hex;
+      item.style.color = textColorForBg(hex);
+      const code = document.createElement('span');
+      code.className = 'pg-swatch-code';
+      code.textContent = hex.toUpperCase();
+      item.appendChild(code);
+      item.addEventListener('click', async () => {
+        const ok = await copyText(hex);
+        if (ok) toast(`${hex.toUpperCase()} کپی شد`, 'success');
+      });
+      paletteEl.appendChild(item);
+    });
+  }
+
+  colorInput?.addEventListener('input', () => {
+    if (hexInput) hexInput.value = colorInput.value;
+    render();
+  });
+
+  hexInput?.addEventListener('input', () => {
+    let v = hexInput.value.trim();
+    if (!v.startsWith('#')) v = '#' + v;
+    if (/^#[0-9a-f]{6}$/i.test(v)) {
+      if (colorInput) colorInput.value = v;
+      render();
+    }
+  });
+
+  typeSelect?.addEventListener('change', render);
+
+  copyAllBtn?.addEventListener('click', async () => {
+    const text = currentColors.map(c => c.toUpperCase()).join('\n');
+    if (!text) return;
+    const ok = await copyText(text);
+    if (ok) toast('همه رنگ‌ها کپی شدند', 'success');
+    else toast('کپی نشد', 'error');
+  });
+
+  render();
+</script>
+
+<style>
+  .pg-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .pg-controls { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 640px) { .pg-controls { grid-template-columns: 1fr 1fr; } }
+  .pg-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .pg-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .pg-color-input { display: flex; gap: var(--space-2); align-items: stretch; }
+  .pg-picker { width: 60px; height: 44px; border: 1px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer; padding: 2px; background: var(--color-surface); }
+  .pg-hex { flex: 1; font-family: var(--font-mono); text-transform: uppercase; }
+  .pg-palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); }
+  @media (max-width: 480px) { .pg-palette { grid-template-columns: repeat(2, 1fr); } }
+  .pg-swatch {
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: var(--space-2);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.8rem;
+    box-shadow: var(--shadow-1);
+  }
+  .pg-swatch:hover { transform: scale(1.05); border-color: var(--color-primary); }
+  .pg-swatch-code { padding: 3px 8px; background: rgba(0,0,0,0.15); border-radius: var(--radius-sm); backdrop-filter: blur(4px); }
+  .pg-actions { display: flex; justify-content: flex-end; }
+</style>

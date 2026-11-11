@@ -27,6 +27,10 @@ import FormatConverterTool from './image/format-converter/Tool.astro';
 import ColorPickerTool from './image/color-picker/Tool.astro';
 import FileInfoTool from './file/file-info/Tool.astro';
 import FileToBase64Tool from './file/file-to-base64/Tool.astro';
+import PaletteGeneratorTool from './color/palette-generator/Tool.astro';
+import GradientGeneratorTool from './color/gradient-generator/Tool.astro';
+import ContrastCheckerTool from './color/contrast-checker/Tool.astro';
+import BoxShadowTool from './color/box-shadow/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -56,7 +60,11 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'format-converter': FormatConverterTool,
   'color-picker': ColorPickerTool,
   'file-info': FileInfoTool,
-  'file-to-base64': FileToBase64Tool
+  'file-to-base64': FileToBase64Tool,
+  'palette-generator': PaletteGeneratorTool,
+  'gradient-generator': GradientGeneratorTool,
+  'contrast-checker': ContrastCheckerTool,
+  'box-shadow': BoxShadowTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {

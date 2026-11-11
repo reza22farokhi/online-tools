@@ -12,6 +12,7 @@ import { meta as urlEncoderMeta } from './code/url-encoder/meta';
 import { meta as uuidGeneratorMeta } from './code/uuid-generator/meta';
 import { meta as hashGeneratorMeta } from './code/hash-generator/meta';
 import { meta as regexTesterMeta } from './code/regex-tester/meta';
+import { meta as jwtDecoderMeta } from './code/jwt-decoder/meta';
 import { meta as percentageMeta } from './calc/percentage/meta';
 import { meta as ageMeta } from './calc/age/meta';
 import { meta as dateDiffMeta } from './calc/date-diff/meta';
@@ -24,9 +25,12 @@ import { meta as imageResizerMeta } from './image/image-resizer/meta';
 import { meta as imageCompressorMeta } from './image/image-compressor/meta';
 import { meta as formatConverterMeta } from './image/format-converter/meta';
 import { meta as colorPickerMeta } from './image/color-picker/meta';
-import { meta as jwtDecoderMeta } from './code/jwt-decoder/meta';
 import { meta as fileInfoMeta } from './file/file-info/meta';
 import { meta as fileToBase64Meta } from './file/file-to-base64/meta';
+import { meta as paletteGeneratorMeta } from './color/palette-generator/meta';
+import { meta as gradientGeneratorMeta } from './color/gradient-generator/meta';
+import { meta as contrastCheckerMeta } from './color/contrast-checker/meta';
+import { meta as boxShadowMeta } from './color/box-shadow/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -34,6 +38,7 @@ export const categories: CategoryMeta[] = [
   { slug: 'calc', fa: 'محاسبات', en: 'Calculators', icon: '🧮' },
   { slug: 'seo', fa: 'سئو', en: 'SEO', icon: '📈' },
   { slug: 'image', fa: 'تصویر', en: 'Image', icon: '🖼️' },
+  { slug: 'color', fa: 'رنگ و طراحی', en: 'Color & Design', icon: '🎨' },
   { slug: 'file', fa: 'فایل', en: 'File', icon: '📁' }
 ];
 
@@ -45,6 +50,7 @@ export const registry: ToolMeta[] = [
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
   imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
+  paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
   fileInfoMeta, fileToBase64Meta
 ];
 

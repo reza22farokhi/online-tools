@@ -1,0 +1,129 @@
+---
+---
+<div class="cc-tool">
+  <div class="cc-inputs">
+    <div class="cc-field">
+      <label for="cc-fg">رنگ متن</label>
+      <div class="cc-color-row">
+        <input id="cc-fg" type="color" value="#1e293b" class="cc-color" />
+        <input id="cc-fg-hex" type="text" class="input cc-hex" value="#1e293b" dir="ltr" maxlength="7" />
+      </div>
+    </div>
+    <div class="cc-swap" aria-hidden="true">⇄</div>
+    <div class="cc-field">
+      <label for="cc-bg">رنگ پس‌زمینه</label>
+      <div class="cc-color-row">
+        <input id="cc-bg" type="color" value="#ffffff" class="cc-color" />
+        <input id="cc-bg-hex" type="text" class="input cc-hex" value="#ffffff" dir="ltr" maxlength="7" />
+      </div>
+    </div>
+  </div>
+
+  <div class="cc-preview" id="cc-preview">
+    <p class="cc-preview-text">متن نمونه در اینجا نمایش داده می‌شود</p>
+    <p class="cc-preview-text cc-preview-small">متن کوچک (۱۸px) نمونه</p>
+  </div>
+
+  <div class="cc-result" id="cc-result">
+    <div class="cc-ratio" id="cc-ratio">—</div>
+    <div class="cc-ratio-label">نسبت کنتراست</div>
+  </div>
+
+  <div class="cc-checks" id="cc-checks"></div>
+</div>
+
+<script>
+  import { evaluateContrast } from './logic';
+
+  const fg = document.getElementById('cc-fg') as HTMLInputElement | null;
+  const bg = document.getElementById('cc-bg') as HTMLInputElement | null;
+  const fgHex = document.getElementById('cc-fg-hex') as HTMLInputElement | null;
+  const bgHex = document.getElementById('cc-bg-hex') as HTMLInputElement | null;
+  const preview = document.getElementById('cc-preview');
+  const previewTexts = document.querySelectorAll<HTMLElement>('.cc-preview-text');
+  const ratioEl = document.getElementById('cc-ratio');
+  const checksEl = document.getElementById('cc-checks');
+
+  const checks = [
+    { key: 'aaNormal', label: 'WCAG AA (متن معمولی)', min: 4.5 },
+    { key: 'aaLarge', label: 'WCAG AA (متن بزرگ)', min: 3 },
+    { key: 'aaaNormal', label: 'WCAG AAA (متن معمولی)', min: 7 },
+    { key: 'aaaLarge', label: 'WCAG AAA (متن بزرگ)', min: 4.5 }
+  ];
+
+  function render() {
+    if (!fg || !bg || !fgHex || !bgHex || !preview || !ratioEl || !checksEl) return;
+
+    const fgVal = fg.value;
+    const bgVal = bg.value;
+    fgHex.value = fgVal;
+    bgHex.value = bgVal;
+
+    preview.style.background = bgVal;
+    preview.style.color = fgVal;
+    previewTexts.forEach(el => { el.style.color = fgVal; });
+
+    const result = evaluateContrast(fgVal, bgVal);
+    ratioEl.textContent = result.ratio.toFixed(2) + ':1';
+
+    let color = 'var(--color-danger)';
+    if (result.aaNormal) color = 'var(--color-success)';
+    else if (result.aaLarge) color = 'var(--color-warning)';
+    ratioEl.style.color = color;
+
+    checksEl.textContent = '';
+    checks.forEach(c => {
+      const passed = result[c.key as keyof typeof result] as boolean;
+      const item = document.createElement('div');
+      item.className = 'cc-check ' + (passed ? 'cc-pass' : 'cc-fail');
+      const icon = document.createElement('span');
+      icon.className = 'cc-icon';
+      icon.textContent = passed ? '✓' : '✗';
+      const label = document.createElement('span');
+      label.textContent = c.label + ` (حداقل ${c.min}:1)`;
+      item.appendChild(icon);
+      item.appendChild(label);
+      checksEl.appendChild(item);
+    });
+  }
+
+  fg?.addEventListener('input', render);
+  bg?.addEventListener('input', render);
+
+  fgHex?.addEventListener('input', () => {
+    let v = fgHex.value.trim();
+    if (!v.startsWith('#')) v = '#' + v;
+    if (/^#[0-9a-f]{6}$/i.test(v) && fg) { fg.value = v; render(); }
+  });
+  bgHex?.addEventListener('input', () => {
+    let v = bgHex.value.trim();
+    if (!v.startsWith('#')) v = '#' + v;
+    if (/^#[0-9a-f]{6}$/i.test(v) && bg) { bg.value = v; render(); }
+  });
+
+  render();
+</script>
+
+<style>
+  .cc-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .cc-inputs { display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--space-3); align-items: end; }
+  @media (max-width: 640px) { .cc-inputs { grid-template-columns: 1fr; } .cc-swap { display: none; } }
+  .cc-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .cc-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .cc-color-row { display: flex; gap: var(--space-2); }
+  .cc-color { width: 56px; height: 44px; border: 1px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer; padding: 2px; background: var(--color-surface); }
+  .cc-hex { flex: 1; font-family: var(--font-mono); text-transform: uppercase; }
+  .cc-swap { font-size: 1.5rem; color: var(--color-text-muted); padding-block: var(--space-1); }
+  .cc-preview { padding: var(--space-5); border-radius: var(--radius-md); border: 1px solid var(--color-border); text-align: center; }
+  .cc-preview-text { margin: 0; font-size: 1.1rem; }
+  .cc-preview-small { font-size: 0.85rem; margin-top: var(--space-2); opacity: 0.9; }
+  .cc-result { text-align: center; padding: var(--space-4); background: var(--color-surface-2); border-radius: var(--radius-md); border: 1px solid var(--color-border); }
+  .cc-ratio { font-size: 2.5rem; font-weight: 800; font-family: var(--font-mono); line-height: 1; }
+  .cc-ratio-label { font-size: 0.85rem; color: var(--color-text-muted); margin-top: var(--space-1); }
+  .cc-checks { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+  @media (min-width: 640px) { .cc-checks { grid-template-columns: 1fr 1fr; } }
+  .cc-check { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; }
+  .cc-pass { background: color-mix(in srgb, var(--color-success) 12%, transparent); color: var(--color-success); border: 1px solid var(--color-success); }
+  .cc-fail { background: color-mix(in srgb, var(--color-danger) 12%, transparent); color: var(--color-danger); border: 1px solid var(--color-danger); }
+  .cc-icon { font-weight: 800; font-size: 1.1rem; }
+</style>
