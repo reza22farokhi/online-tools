@@ -10,3 +10,5 @@ dist/
 .Trashes
 batch*.sh
 patch*.sh
+inject_*.sh
+fix_*.sh
