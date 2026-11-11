@@ -1,0 +1,93 @@
+---
+---
+<div class="di-tool">
+  <div class="di-input-row">
+    <div class="di-field">
+      <label for="di-input">تاریخ شمسی (مثل 1403/01/01):</label>
+      <input id="di-input" type="text" class="input" placeholder="1403/01/01" dir="ltr" />
+    </div>
+    <button type="button" class="btn btn-primary" id="di-calc">🔍 نمایش اطلاعات</button>
+    <button type="button" class="btn" id="di-today">📌 امروز</button>
+  </div>
+  <div class="di-error" id="di-error" hidden></div>
+  <div class="di-results" id="di-results" hidden>
+    <div class="di-grid" id="di-grid"></div>
+  </div>
+</div>
+<script>
+  import { toGregorian, toJalali, formatJalali, WEEKDAYS_FA, JALALI_MONTHS } from '../../../lib/calendar';
+  import { isLeapYear, dayOfYear, daysRemainingInYear, isoWeekNumber, daysInYear } from './logic';
+
+  const input = document.getElementById('di-input') as HTMLInputElement;
+  const grid = document.getElementById('di-grid');
+  const results = document.getElementById('di-results');
+  const errorEl = document.getElementById('di-error');
+
+  function parseJalali(s: string) {
+    const p = s.trim().split('/').map(Number);
+    if (p.length !== 3 || p.some(n => !Number.isFinite(n))) return null;
+    return { jy: p[0], jm: p[1], jd: p[2] };
+  }
+
+  function infoItem(label: string, value: string): string {
+    return `<div class="di-item"><span class="di-label">${label}</span><span class="di-value">${value}</span></div>`;
+  }
+
+  function calculate() {
+    if (!grid || !results || !errorEl) return;
+    errorEl.hidden = true;
+    results.hidden = true;
+
+    const p = parseJalali(input.value);
+    if (!p) { errorEl.hidden = false; errorEl.textContent = 'تاریخ نامعتبر'; return; }
+
+    try {
+      const g = toGregorian(p.jy, p.jm, p.jd);
+      const d = new Date(g.gy, g.gm - 1, g.gd);
+      const isoWeek = isoWeekNumber(d);
+      const doy = dayOfYear(d);
+      const remaining = daysRemainingInYear(d);
+      const leap = isLeapYear(g.gy);
+      const monthName = JALALI_MONTHS[p.jm - 1] || '—';
+
+      grid.innerHTML = [
+        infoItem('📅 تاریخ شمسی', formatJalali(p.jy, p.jm, p.jd)),
+        infoItem('🌍 تاریخ میلادی', `${g.gy}-${String(g.gm).padStart(2,'0')}-${String(g.gd).padStart(2,'0')}`),
+        infoItem('📆 روز هفته', WEEKDAYS_FA[d.getDay()]),
+        infoItem('🏷️ نام ماه', monthName),
+        infoItem('🔢 شماره روز سال', doy.toLocaleString('fa-IR')),
+        infoItem('📊 شماره هفته ISO', isoWeek.toLocaleString('fa-IR')),
+        infoItem('📈 روزهای سال', daysInYear(g.gy).toLocaleString('fa-IR')),
+        infoItem('⏳ باقیمانده تا پایان سال', remaining.toLocaleString('fa-IR')),
+        infoItem('✨ سال کبیسه؟', leap ? '✅ بله' : '❌ خیر'),
+        infoItem('🎯 روز باقیمانده تا تولد بعدی', '—'),
+      ].join('');
+
+      results.hidden = false;
+    } catch (e) {
+      errorEl.hidden = false;
+      errorEl.textContent = 'خطا: ' + (e instanceof Error ? e.message : '');
+    }
+  }
+
+  document.getElementById('di-today')?.addEventListener('click', () => {
+    const now = new Date();
+    const j = toJalali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    input.value = formatJalali(j.jy, j.jm, j.jd);
+    calculate();
+  });
+
+  document.getElementById('di-calc')?.addEventListener('click', calculate);
+</script>
+<style>
+  .di-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .di-input-row { display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: flex-end; }
+  .di-field { display: flex; flex-direction: column; gap: var(--space-1); flex: 1; min-width: 200px; }
+  .di-field label { font-size: 0.8rem; font-weight: 600; color: var(--color-text-muted); }
+  .di-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
+  .di-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+  @media (min-width: 640px) { .di-grid { grid-template-columns: 1fr 1fr; } }
+  .di-item { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .di-label { font-size: 0.85rem; color: var(--color-text-muted); }
+  .di-value { font-weight: 700; color: var(--color-text); font-family: var(--font-mono); font-size: 0.9rem; }
+</style>

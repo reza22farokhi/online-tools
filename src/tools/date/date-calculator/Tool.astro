@@ -1,0 +1,116 @@
+---
+---
+<div class="dc-tool">
+  <div class="dc-inputs">
+    <div class="dc-field">
+      <label for="dc-base">تاریخ پایه (شمسی):</label>
+      <input id="dc-base" type="text" class="input" placeholder="1403/01/01" dir="ltr" />
+    </div>
+    <div class="dc-field">
+      <label for="dc-amount">مقدار:</label>
+      <input id="dc-amount" type="number" class="input" value="30" min="0" />
+    </div>
+    <div class="dc-field">
+      <label for="dc-unit">واحد:</label>
+      <select id="dc-unit" class="select">
+        <option value="days" selected>روز</option>
+        <option value="weeks">هفته</option>
+        <option value="months">ماه</option>
+        <option value="years">سال</option>
+      </select>
+    </div>
+    <div class="dc-field">
+      <label for="dc-op">عملیات:</label>
+      <select id="dc-op" class="select">
+        <option value="add" selected>اضافه (+)</option>
+        <option value="sub">کم کردن (−)</option>
+      </select>
+    </div>
+  </div>
+  <div class="dc-actions">
+    <button type="button" class="btn" id="dc-today">📌 امروز</button>
+    <button type="button" class="btn btn-primary" id="dc-calc">🧮 محاسبه</button>
+  </div>
+  <div class="dc-error" id="dc-error" hidden></div>
+  <div class="dc-results" id="dc-results" hidden>
+    <div class="dc-card dc-jalali"><span class="dc-lbl">شمسی</span><span class="dc-val" id="dc-j"></span></div>
+    <div class="dc-card dc-gregorian"><span class="dc-lbl">میلادی</span><span class="dc-val" id="dc-g"></span></div>
+    <div class="dc-card dc-hijri"><span class="dc-lbl">قمری</span><span class="dc-val" id="dc-h"></span></div>
+    <div class="dc-card dc-weekday"><span class="dc-lbl">روز هفته</span><span class="dc-val" id="dc-w"></span></div>
+  </div>
+</div>
+<script>
+  import { toGregorian, toJalali, gregorianToHijri, JALALI_MONTHS, HIJRI_MONTHS, WEEKDAYS_FA, formatJalali, formatGregorian, formatHijri } from '../../../lib/calendar';
+  import { addToDate } from './logic';
+  import type { OpUnit } from './logic';
+
+  const baseIn = document.getElementById('dc-base') as HTMLInputElement;
+  const amountIn = document.getElementById('dc-amount') as HTMLInputElement;
+  const unitSel = document.getElementById('dc-unit') as HTMLSelectElement;
+  const opSel = document.getElementById('dc-op') as HTMLSelectElement;
+  const results = document.getElementById('dc-results');
+  const errorEl = document.getElementById('dc-error');
+
+  function parseJalali(s: string): { jy: number; jm: number; jd: number } | null {
+    const parts = s.trim().split('/').map(Number);
+    if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return null;
+    return { jy: parts[0], jm: parts[1], jd: parts[2] };
+  }
+
+  function calculate() {
+    if (!results || !errorEl) return;
+    errorEl.hidden = true;
+    results.hidden = true;
+
+    const p = parseJalali(baseIn.value);
+    if (!p) { errorEl.hidden = false; errorEl.textContent = 'تاریخ پایه نامعتبر (مثل 1403/01/01)'; return; }
+    const amount = Number(amountIn.value);
+    if (!Number.isFinite(amount) || amount < 0) { errorEl.hidden = false; errorEl.textContent = 'مقدار نامعتبر'; return; }
+
+    try {
+      const g = toGregorian(p.jy, p.jm, p.jd);
+      const base = new Date(g.gy, g.gm - 1, g.gd);
+      const unit = unitSel.value as OpUnit;
+      const subtract = opSel.value === 'sub';
+      const result = addToDate(base, amount, unit, subtract);
+
+      const j = toJalali(result.getFullYear(), result.getMonth() + 1, result.getDate());
+      const h = gregorianToHijri(result.getFullYear(), result.getMonth() + 1, result.getDate());
+
+      document.getElementById('dc-j')!.textContent = `${j.jd} ${JALALI_MONTHS[j.jm-1]} ${j.jy} (${formatJalali(j.jy, j.jm, j.jd)})`;
+      document.getElementById('dc-g')!.textContent = formatGregorian(result.getFullYear(), result.getMonth() + 1, result.getDate());
+      document.getElementById('dc-h')!.textContent = `${h.hd} ${HIJRI_MONTHS[h.hm-1]} ${h.hy} (${formatHijri(h.hy, h.hm, h.hd)})`;
+      document.getElementById('dc-w')!.textContent = WEEKDAYS_FA[result.getDay()];
+      results.hidden = false;
+    } catch (e) {
+      errorEl.hidden = false;
+      errorEl.textContent = 'خطا: ' + (e instanceof Error ? e.message : '');
+    }
+  }
+
+  document.getElementById('dc-today')?.addEventListener('click', () => {
+    const now = new Date();
+    const j = toJalali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    baseIn.value = formatJalali(j.jy, j.jm, j.jd);
+    calculate();
+  });
+
+  document.getElementById('dc-calc')?.addEventListener('click', calculate);
+</script>
+<style>
+  .dc-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .dc-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+  @media (min-width: 640px) { .dc-inputs { grid-template-columns: 1fr 1fr 1fr 1fr; } }
+  .dc-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .dc-field label { font-size: 0.8rem; font-weight: 600; color: var(--color-text-muted); }
+  .dc-actions { display: flex; gap: var(--space-2); }
+  .dc-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
+  .dc-results { display: flex; flex-direction: column; gap: var(--space-2); }
+  .dc-card { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--color-border); background: var(--color-surface-2); }
+  .dc-jalali { border-inline-start: 4px solid #10b981; }
+  .dc-gregorian { border-inline-start: 4px solid #4f46e5; }
+  .dc-hijri { border-inline-start: 4px solid #f59e0b; }
+  .dc-weekday { border-inline-start: 4px solid #8b5cf6; }
+  .dc-lbl { font-size: 0.8rem; color: var(--color-text-muted); font-weight: 600; min-width: 80px; }
+  .dc-val { flex: 1; text-align: left; font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; }
+</style>

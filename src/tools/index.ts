@@ -33,6 +33,8 @@ import ContrastCheckerTool from './color/contrast-checker/Tool.astro';
 import BoxShadowTool from './color/box-shadow/Tool.astro';
 import MultiCalendarTool from './date/multi-calendar-converter/Tool.astro';
 import UnixTimestampTool from './date/unix-timestamp/Tool.astro';
+import DateCalculatorTool from './date/date-calculator/Tool.astro';
+import DateInfoTool from './date/date-info/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -68,7 +70,9 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'contrast-checker': ContrastCheckerTool,
   'box-shadow': BoxShadowTool,
   'multi-calendar-converter': MultiCalendarTool,
-  'unix-timestamp': UnixTimestampTool
+  'unix-timestamp': UnixTimestampTool,
+  'date-calculator': DateCalculatorTool,
+  'date-info': DateInfoTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {

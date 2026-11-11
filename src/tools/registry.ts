@@ -33,6 +33,8 @@ import { meta as contrastCheckerMeta } from './color/contrast-checker/meta';
 import { meta as boxShadowMeta } from './color/box-shadow/meta';
 import { meta as multiCalendarMeta } from './date/multi-calendar-converter/meta';
 import { meta as unixTimestampMeta } from './date/unix-timestamp/meta';
+import { meta as dateCalculatorMeta } from './date/date-calculator/meta';
+import { meta as dateInfoMeta } from './date/date-info/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -55,7 +57,8 @@ export const registry: ToolMeta[] = [
   imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
   paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
   fileInfoMeta, fileToBase64Meta,
-  multiCalendarMeta, unixTimestampMeta
+  multiCalendarMeta, unixTimestampMeta,
+  dateCalculatorMeta, dateInfoMeta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {
