@@ -184,3 +184,9 @@ button, input, textarea, select {
 .toast.visible { opacity: 1; transform: translateY(0); }
 .toast-success { background: var(--color-success); color: #fff; }
 .toast-error { background: var(--color-danger); color: #fff; }
+
+/* Improved placeholder contrast for accessibility */
+::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
