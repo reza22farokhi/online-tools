@@ -31,6 +31,8 @@ import { meta as paletteGeneratorMeta } from './color/palette-generator/meta';
 import { meta as gradientGeneratorMeta } from './color/gradient-generator/meta';
 import { meta as contrastCheckerMeta } from './color/contrast-checker/meta';
 import { meta as boxShadowMeta } from './color/box-shadow/meta';
+import { meta as multiCalendarMeta } from './date/multi-calendar-converter/meta';
+import { meta as unixTimestampMeta } from './date/unix-timestamp/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -39,6 +41,7 @@ export const categories: CategoryMeta[] = [
   { slug: 'seo', fa: 'سئو', en: 'SEO', icon: '📈' },
   { slug: 'image', fa: 'تصویر', en: 'Image', icon: '🖼️' },
   { slug: 'color', fa: 'رنگ و طراحی', en: 'Color & Design', icon: '🎨' },
+  { slug: 'date', fa: 'تاریخ و زمان', en: 'Date & Time', icon: '📅' },
   { slug: 'file', fa: 'فایل', en: 'File', icon: '📁' }
 ];
 
@@ -51,7 +54,8 @@ export const registry: ToolMeta[] = [
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
   imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
   paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
-  fileInfoMeta, fileToBase64Meta
+  fileInfoMeta, fileToBase64Meta,
+  multiCalendarMeta, unixTimestampMeta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {
