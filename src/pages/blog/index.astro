@@ -2,14 +2,26 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL;
 ---
-<BaseLayout title="وبلاگ | ابزارهای آنلاین" description="مقالات تخصصی درباره امنیت، حریم خصوصی و بهینه‌سازی وب.">
+<BaseLayout title="وبلاگ | ابزارهای آنلاین" description="مقالات تخصصی درباره امنیت، حریم خصوصی، سئو و بهینه‌سازی وب.">
   <div class="container page">
     <header class="page-header">
       <h1>وبلاگ</h1>
-      <p class="lead">مقالات تخصصی درباره امنیت، حریم خصوصی و بهینه‌سازی وب.</p>
+      <p class="lead">مقالات تخصصی درباره امنیت، حریم خصوصی، سئو و بهینه‌سازی وب.</p>
     </header>
 
     <div class="post-list">
+      <a href={base + 'blog/slug-generation-guide/'} class="post-card card">
+        <h2>چگونه نامک (Slug) حرفه‌ای برای URL خود بسازیم؟</h2>
+        <p>نامک یا Slug چیست و چرا برای سئو اهمیت دارد؟ بهترین روش‌های ساخت URL خوانا برای فارسی و انگلیسی.</p>
+        <span class="read-more">ادامه مطلب ←</span>
+      </a>
+
+      <a href={base + 'blog/seo-meta-tags-guide/'} class="post-card card">
+        <h2>راهنمای جامع بهینه‌سازی متا تگ‌ها و پیش‌نمایش شبکه‌های اجتماعی</h2>
+        <p>چگونه با تنظیم صحیح عنوان، توضیحات و تگ‌های Open Graph، نرخ کلیک (CTR) سایت خود را افزایش دهیم؟</p>
+        <span class="read-more">ادامه مطلب ←</span>
+      </a>
+
       <a href={base + 'blog/image-optimization-guide/'} class="post-card card">
         <h2>چگونه بدون افت کیفیت، حجم تصاویر را تا ۸۰٪ کاهش دهیم؟</h2>
         <p>راهنمای جامع بهینه‌سازی تصاویر برای وب. آشنایی با فرمت‌های WebP و JPG، نحوه فشرده‌سازی اصولی و تاثیر آن بر سرعت سایت.</p>
