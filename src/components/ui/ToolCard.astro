@@ -12,18 +12,40 @@ const base = import.meta.env.BASE_URL;
 const category = getCategoryMeta(tool.category);
 const href = `${base}tools/${tool.slug}/`;
 ---
-<a href={href} class="tool-card card" data-slug={tool.slug} data-category={tool.category}>
-  <div class="tool-card-icon" aria-hidden="true">{category?.icon ?? '🔧'}</div>
-  <div class="tool-card-body">
-    <h3 class="tool-card-title">{tool.name[lang]}</h3>
-    <p class="tool-card-desc">{tool.description[lang]}</p>
-    {category && (
-      <span class="tool-card-tag">{category[lang]}</span>
-    )}
-  </div>
-</a>
+<div class="tool-card-wrap">
+  <a href={href} class="tool-card card" data-slug={tool.slug} data-category={tool.category}>
+    <div class="tool-card-icon" aria-hidden="true">{category?.icon ?? '🔧'}</div>
+    <div class="tool-card-body">
+      <h3 class="tool-card-title">{tool.name[lang]}</h3>
+      <p class="tool-card-desc">{tool.description[lang]}</p>
+      {category && (
+        <span class="tool-card-tag">{category[lang]}</span>
+      )}
+    </div>
+  </a>
+  <button
+    type="button"
+    class="fav-btn"
+    data-fav-slug={tool.slug}
+    aria-label="افزودن به علاقه‌مندی‌ها"
+    aria-pressed="false"
+    title="افزودن به علاقه‌مندی‌ها"
+  >
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </button>
+</div>
 
 <style>
+  .tool-card-wrap {
+    position: relative;
+    display: flex;
+    height: 100%;
+  }
+  .tool-card-wrap > .tool-card {
+    flex: 1;
+  }
   .tool-card {
     display: flex;
     gap: var(--space-3);
@@ -34,7 +56,6 @@ const href = `${base}tools/${tool.slug}/`;
     transition: transform var(--transition-fast),
                 box-shadow var(--transition-fast),
                 border-color var(--transition-fast);
-    height: 100%;
   }
   .tool-card:hover {
     text-decoration: none;
@@ -49,6 +70,7 @@ const href = `${base}tools/${tool.slug}/`;
     margin: 0 0 var(--space-1);
     color: var(--color-text);
     font-weight: 700;
+    padding-inline-end: 28px;
   }
   .tool-card-desc {
     margin: 0 0 var(--space-2);
@@ -67,5 +89,36 @@ const href = `${base}tools/${tool.slug}/`;
     background: var(--color-surface-2);
     color: var(--color-text-muted);
     border-radius: var(--radius-full);
+  }
+  .fav-btn {
+    position: absolute;
+    inset-block-start: 10px;
+    inset-inline-end: 10px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    z-index: 2;
+  }
+  .fav-btn:hover {
+    background: var(--color-surface-2);
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+  }
+  .fav-btn.favorited {
+    color: var(--color-danger);
+    background: color-mix(in srgb, var(--color-danger) 15%, transparent);
+    border-color: var(--color-danger);
+  }
+  .fav-btn.favorited svg {
+    fill: currentColor;
   }
 </style>

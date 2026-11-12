@@ -162,6 +162,9 @@ export function toast(
 }
 
 export function initUI(dicts?: Record<Lang, Record<string, string>>) {
+  setupFavoriteDelegation();
+  initFavoriteButtons();
+
   const storedLang = getStoredLang();
   if (storedLang) applyLang(storedLang, dicts);
 
@@ -172,4 +175,60 @@ export function initUI(dicts?: Record<Lang, Record<string, string>>) {
   document.querySelectorAll<HTMLButtonElement>('[data-lang-toggle]').forEach(btn => {
     btn.addEventListener('click', () => toggleLang(dicts));
   });
+}
+
+
+let __favDelegationSetup = false;
+
+export function initFavoriteButtons(root: ParentNode = document): void {
+  root.querySelectorAll<HTMLButtonElement>(".fav-btn").forEach(btn => {
+    const slug = btn.dataset.favSlug;
+    if (!slug) return;
+    const fav = isFavorite(slug);
+    btn.classList.toggle("favorited", fav);
+    btn.setAttribute("aria-pressed", fav ? "true" : "false");
+    const label = fav ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها";
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("title", label);
+  });
+}
+
+export function setupFavoriteDelegation(): void {
+  if (__favDelegationSetup) return;
+  __favDelegationSetup = true;
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    const btn = target.closest(".fav-btn") as HTMLButtonElement | null;
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const slug = btn.dataset.favSlug;
+    if (!slug) return;
+    toggleFavorite(slug);
+    initFavoriteButtons(document);
+  });
+}
+
+export function populateHomeSections(): void {
+  if (typeof document === "undefined") return;
+  const populate = (sectionId: string, gridId: string, slugs: string[]): void => {
+    const section = document.getElementById(sectionId);
+    const grid = document.getElementById(gridId);
+    if (!section || !grid) return;
+    grid.textContent = "";
+    let count = 0;
+    for (const slug of slugs) {
+      const original = document.querySelector<HTMLElement>('#all-tools-grid [data-slug="' + slug + '"]');
+      if (original) {
+        const clone = original.cloneNode(true) as HTMLElement;
+        grid.appendChild(clone);
+        count++;
+      }
+    }
+    section.hidden = count === 0;
+    if (count > 0) initFavoriteButtons(grid);
+  };
+  populate("favorites-section", "favorites-grid", getFavorites());
+  populate("recent-section", "recent-grid", getRecent());
 }

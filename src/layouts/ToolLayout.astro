@@ -45,7 +45,7 @@ const related = getRelated(meta.slug);
   canonical={canonical}
   jsonLd={[webAppLd, breadcrumbLd]}
 >
-  <article class="tool-page container">
+  <article class="tool-page container" data-tool-slug={meta.slug}>
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
         <li><a href={base}>خانه</a></li>
