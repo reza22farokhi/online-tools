@@ -24,5 +24,9 @@
   "footer.rights": "تمامی حقوق محفوظ است.",
   "notfound.title": "صفحه یافت نشد",
   "notfound.desc": "صفحه‌ای که به دنبال آن هستید وجود ندارد یا منتقل شده است.",
-  "notfound.back": "بازگشت به خانه"
+  "notfound.back": "بازگشت به خانه",
+  "tools.favorites": "علاقه‌مندی‌ها",
+  "tools.recent": "اخیراً استفاده شده",
+  "favorite.add": "افزودن به علاقه‌مندی‌ها",
+  "favorite.remove": "حذف از علاقه‌مندی‌ها"
 }

@@ -66,6 +66,15 @@ const base = import.meta.env.BASE_URL;
       ))}
     </div>
   </section>
+  <section class="container section" id="favorites-section" hidden aria-labelledby="fav-title">
+    <h2 id="fav-title" class="section-title" data-i18n="tools.favorites">علاقه‌مندی‌ها</h2>
+    <div class="tools-grid" id="favorites-grid"></div>
+  </section>
+
+  <section class="container section" id="recent-section" hidden aria-labelledby="recent-title">
+    <h2 id="recent-title" class="section-title" data-i18n="tools.recent">اخیراً استفاده شده</h2>
+    <div class="tools-grid" id="recent-grid"></div>
+  </section>
 
   {popular.length > 0 && (
     <section class="container section" aria-labelledby="popular-title">
@@ -197,4 +206,7 @@ const base = import.meta.env.BASE_URL;
   }
 
   searchInput?.addEventListener("input", applySearch);
+
+  import { populateHomeSections } from '../lib/ui';
+  populateHomeSections();
 </script>
