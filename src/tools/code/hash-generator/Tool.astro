@@ -5,7 +5,7 @@ import { ALGORITHMS } from './logic';
   <div class="hg-field">
     <label for="hg-algo">الگوریتم:</label>
     <select id="hg-algo" class="select hg-select">
-      {ALGORITHMS.map((a, i) => (
+      {ALGORITHMS.map((a) => (
         <option value={a.id} selected={a.id === 'SHA-256'}>{a.label} ({a.bits}-bit)</option>
       ))}
     </select>
