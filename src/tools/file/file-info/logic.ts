@@ -1,3 +1,27 @@
+export const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
+export interface FileSizeValidation {
+  ok: boolean;
+  error?: string;
+}
+
+export function validateFileSize(size: number): FileSizeValidation {
+  if (!Number.isFinite(size) || size < 0) {
+    return { ok: false, error: 'اندازه فایل نامعتبر است.' };
+  }
+  if (size === 0) {
+    return { ok: false, error: 'فایل خالی است و قابل پردازش نیست.' };
+  }
+  if (size > MAX_FILE_SIZE) {
+    const mb = (size / (1024 * 1024)).toFixed(1);
+    return {
+      ok: false,
+      error: `حجم فایل (${mb} مگابایت) بیشتر از حد مجاز ۵۰ مگابایت است. لطفاً فایل کوچک‌تری انتخاب کنید.`
+    };
+  }
+  return { ok: true };
+}
+
 export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;

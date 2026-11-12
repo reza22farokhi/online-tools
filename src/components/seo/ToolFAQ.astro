@@ -1,43 +1,30 @@
 ---
+import { getFaqsFor } from '../../data/tool-faqs';
 import { buildFaqJsonLd } from '../../lib/seo';
 
 export interface Props {
+  toolSlug: string;
   toolName: string;
 }
 
-const { toolName } = Astro.props;
-
-const faqs = [
-  {
-    q: `آیا استفاده از ${toolName} امن است؟`,
-    a: 'بله، تمام پردازش‌ها در این ابزار به صورت ۱۰۰٪ محلی (Client-Side) در مرورگر شما انجام می‌شود و هیچ داده‌ای به سرور ارسال نمی‌شود.'
-  },
-  {
-    q: `آیا ${toolName} رایگان است؟`,
-    a: 'بله، تمام ابزارهای این پلتفرم کاملاً رایگان هستند و نیازی به ثبت‌نام یا پرداخت هزینه ندارید.'
-  },
-  {
-    q: 'آیا محدودیتی در حجم یا تعداد استفاده وجود دارد؟',
-    a: 'برای جلوگیری از فشار به حافظه مرورگر، محدودیت‌های منطقی (مانند حداکثر طول متن) در نظر گرفته شده است. اما برای استفاده‌های روزمره هیچ محدودیتی ندارید.'
-  }
-];
-
-const faqLd = buildFaqJsonLd(faqs);
+const { toolSlug, toolName } = Astro.props;
+const faqs = getFaqsFor(toolSlug);
+const faqLd = faqs.length > 0 ? buildFaqJsonLd(faqs) : null;
 ---
-<section class="tool-faq" aria-labelledby="faq-title">
-  <h2 id="faq-title">سوالات متداول درباره {toolName}</h2>
-  <div class="faq-list">
-    {faqs.map(faq => (
-      <details class="faq-item">
-        <summary class="faq-q">{faq.q}</summary>
-        <p class="faq-a">{faq.a}</p>
-      </details>
-    ))}
-  </div>
-</section>
-
-<script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
-
+{faqs.length > 0 && (
+  <section class="tool-faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">سوالات متداول درباره {toolName}</h2>
+    <div class="faq-list">
+      {faqs.map(faq => (
+        <details class="faq-item">
+          <summary class="faq-q">{faq.q}</summary>
+          <p class="faq-a">{faq.a}</p>
+        </details>
+      ))}
+    </div>
+    {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
+  </section>
+)}
 <style>
   .tool-faq { margin-top: var(--space-5); }
   .tool-faq h2 { font-size: 1.2rem; margin-bottom: var(--space-3); color: var(--color-text); }
