@@ -1,0 +1,118 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const base = import.meta.env.BASE_URL;
+
+const faqs = [
+  { q: 'JSON یک زبان برنامه‌نویسی است؟', a: 'خیر. JSON مخفف JavaScript Object Notation است و یک فرمت تبادل داده است، نه یک زبان برنامه‌نویسی. اما سینتکس آن شبیه جاوااسکریپت است.' },
+  { q: 'تفاوت JSON و XML چیست؟', a: 'JSON سبک‌تر، خواناتر برای انسان، و برای مرورگرها سریع‌تر پردازش می‌شود. XML برای اسناد پیچیده و سلسله‌مراتبی بهتر است. امروزه اکثر APIهای مدرن از JSON استفاده می‌کنند.' },
+  { q: 'آیا JSON امن است؟', a: 'خود JSON فقط یک فرمت متن است و امن یا ناامن بودن آن به نحوه پردازش شما بستگی دارد. هرگز JSON نامعتبر را مستقیماً اجرا نکنید و همیشه اعتبارسنجی کنید.' },
+  { q: 'چگونه JSON را اعتبارسنجی کنیم؟', a: 'با استفاده از ابزار آنلاین اعتبارسنجی JSON، یا با JSON.parse در جاوااسکریپت. ابزار ما هم پیام خطای دقیق و هم شماره خط و ستون را نشان می‌دهد.' }
+];
+---
+<BlogLayout
+  title="JSON چیست؟ راهنمای کامل برای مبتدیان و برنامه‌نویسان"
+  description="JSON چیست و چه کاربردی دارد؟ تفاوت JSON با XML، سینتکس، مثال‌های کاربردی و نحوه اعتبارسنجی JSON. راهنمای جامع برای همه."
+  publishDate="۱۹ آذر ۱۴۰۵"
+  readTime="۷ دقیقه"
+  slug="what-is-json-guide"
+  faqs={faqs}
+>
+  <p>
+    اگر در حوزه برنامه‌نویسی، توسعه وب، یا حتی کار با APIهای مختلف فعالیت می‌کنید، حتماً نام <strong>JSON</strong> به گوشتان خورده است. اما JSON واقعاً چیست و چرا این‌قدر مهم شده است؟
+  </p>
+
+  <h2>JSON چیست؟</h2>
+  <p>
+    JSON (مخفف JavaScript Object Notation) یک <strong>فرمت سبک برای تبادل داده</strong> است که برای خوانایی انسان و پردازش ماشین طراحی شده. در واقع، JSON یک زبان برنامه‌نویسی نیست، بلکه روشی برای ذخیره و انتقال اطلاعات است.
+  </p>
+  <p>
+    JSON توسط Douglas Crockford در اوایل دهه ۲۰۰۰ معرفی شد و اکنون استاندارد جهانی تبادل داده در وب است. اکثر APIهای مدرن (توییتر، گوگل، تلگرام، و...) داده‌ها را در قالب JSON برمی‌گردانند.
+  </p>
+
+  <h2>ساختار JSON چگونه است؟</h2>
+  <p>
+    JSON از دو ساختار اصلی تشکیل شده:
+  </p>
+
+  <h3>۱. آبجکت (Object)</h3>
+  <p>
+    مجموعه‌ای از جفت‌های «کلید: مقدار» که بین آکولاد `{}` قرار می‌گیرند.
+  </p>
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;overflow-x:auto;font-size:0.85rem;"><code>{
+  "name": "Ali",
+  "age": 30,
+  "city": "Tehran"
+}</code></pre>
+
+  <h3>۲. آرایه (Array)</h3>
+  <p>
+    لیستی از مقادیر که بین کروشه `[]` قرار می‌گیرند.
+  </p>
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;overflow-x:auto;font-size:0.85rem;"><code>["Ali", "Sara", "Reza"]</code></pre>
+
+  <h2>قوانین مهم JSON</h2>
+  <ul>
+    <li>همه کلیدها باید در کوتیشن دوگانه باشند</li>
+    <li>مقادیر رشته‌ای نیز در کوتیشن دوگانه هستند</li>
+    <li>اعداد بدون کوتیشن هستند</li>
+    <li>کاما بعد از آخرین آیتم مجاز نیست</li>
+    <li>کامنت‌گذاری مجاز نیست</li>
+    <li>استفاده از تک‌کوتیشن مجاز نیست</li>
+  </ul>
+
+  <h2>چرا JSON محبوب است؟</h2>
+  <ol>
+    <li><strong>خوانایی بالا:</strong> انسان می‌تواند JSON را راحت‌تر از XML بخواند</li>
+    <li><strong>پردازش سریع:</strong> مرورگرها JSON را بسیار سریع‌تر از XML پارس می‌کنند</li>
+    <li><strong>پشتیبانی جهانی:</strong> همه زبان‌های برنامه‌نویسی از JSON پشتیبانی می‌کنند</li>
+    <li><strong>حجم کم:</strong> JSON حجم کمتری از XML دارد</li>
+  </ol>
+
+  <h2>مقایسه JSON و XML</h2>
+  <p>
+    <strong>در JSON:</strong>
+  </p>
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;font-size:0.85rem;"><code>{"name": "Ali", "age": 30}</code></pre>
+  <p>
+    <strong>همان داده در XML:</strong>
+  </p>
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;font-size:0.85rem;"><code>&lt;person&gt;
+  &lt;name&gt;Ali&lt;/name&gt;
+  &lt;age&gt;30&lt;/age&gt;
+&lt;/person&gt;</code></pre>
+  <p>
+    همان‌طور که می‌بینید، JSON بسیار مختصرتر است.
+  </p>
+
+  <h2>کاربردهای JSON</h2>
+  <ul>
+    <li><strong>APIها:</strong> اکثر APIهای وب از JSON استفاده می‌کنند</li>
+    <li><strong>فایل‌های تنظیمات:</strong> package.json در Node.js</li>
+    <li><strong>ذخیره‌سازی موقت:</strong> localStorage مرورگر</li>
+    <li><strong>تبادل داده بین سیستم‌ها:</strong> استاندارد صنعتی</li>
+    <li><strong>پایگاه داده NoSQL:</strong> MongoDB از فرمت BSON (مشابه JSON) استفاده می‌کند</li>
+  </ul>
+
+  <h2>ابزارهای JSON در سایت ما</h2>
+  <p>
+    اگر با JSON کار می‌کنید، این ابزارها می‌توانند به شما کمک کنند:
+  </p>
+  <ul>
+    <li><a href={base + 'tools/json-formatter/'}>فرمت‌کننده JSON</a> - مرتب‌سازی، فشرده‌سازی و اعتبارسنجی</li>
+    <li><a href={base + 'tools/base64/'}>رمزگذار Base64</a> - برای انتقال امن JSON حاوی کاراکترهای خاص</li>
+    <li><a href={base + 'tools/csv-json-converter/'}>مبدل CSV به JSON</a> - برای کار با داده‌های جدولی</li>
+  </ul>
+
+  <h2>اشتباهات رایج در کار با JSON</h2>
+  <ol>
+    <li><strong>استفاده از تک‌کوتیشن:</strong> `{'name': 'Ali'}` نامعتبر است</li>
+    <li><strong>کامای اضافه:</strong> `{"a": 1,}` نامعتبر است</li>
+    <li><strong>کامنت‌گذاری:</strong> `{"a": 1 /* comment */}` نامعتبر است</li>
+    <li><strong>عدم escape کردن کاراکترهای خاص:</strong> باید از `\n`, `\t`, `\"` استفاده کنید</li>
+  </ol>
+
+  <h2>جمع‌بندی</h2>
+  <p>
+    JSON یک فرمت سبک و خوانا برای تبادل داده است که امروزه استاندارد جهانی شده. اگر با APIها، برنامه‌نویسی وب، یا هر سیستمی که داده مبادله می‌کند کار می‌کنید، یادگیری JSON ضروری است. برای کار با JSON، از <a href={base + 'tools/json-formatter/'}>ابزار فرمت‌کننده JSON</a> ما استفاده کنید که کاملاً محلی اجرا می‌شود.
+  </p>
+</BlogLayout>
