@@ -13,3 +13,5 @@ patch*.sh
 inject_*.sh
 fix_*.sh
 fix-calendar.sh
+run-hardening.sh
+hardening-*.sh

@@ -6,46 +6,32 @@
     <label for="fi-file" class="fi-upload-label">
       <span class="fi-icon">📁</span>
       <span>برای انتخاب فایل کلیک کنید یا آن را اینجا رها کنید</span>
-      <span class="fi-hint">پردازش محلی و امن (بدون آپلود)</span>
+      <span class="fi-hint">حداکثر حجم: ۵۰ مگابایت (پردازش محلی)</span>
     </label>
   </div>
-
+  <div class="fi-error" id="fi-error" hidden role="alert"></div>
   <div class="fi-workspace" id="fi-workspace" hidden>
     <div class="fi-grid">
-      <div class="fi-card">
-        <div class="fi-label">نام فایل</div>
-        <div class="fi-val" id="fi-name">-</div>
-      </div>
-      <div class="fi-card">
-        <div class="fi-label">حجم</div>
-        <div class="fi-val" id="fi-size">-</div>
-      </div>
-      <div class="fi-card">
-        <div class="fi-label">نوع (MIME)</div>
-        <div class="fi-val" id="fi-type" dir="ltr">-</div>
-      </div>
-      <div class="fi-card">
-        <div class="fi-label">پسوند</div>
-        <div class="fi-val" id="fi-ext">-</div>
-      </div>
+      <div class="fi-card"><div class="fi-label">نام فایل</div><div class="fi-val" id="fi-name">-</div></div>
+      <div class="fi-card"><div class="fi-label">حجم</div><div class="fi-val" id="fi-size">-</div></div>
+      <div class="fi-card"><div class="fi-label">نوع (MIME)</div><div class="fi-val" id="fi-type" dir="ltr">-</div></div>
+      <div class="fi-card"><div class="fi-label">پسوند</div><div class="fi-val" id="fi-ext">-</div></div>
     </div>
-    
     <div class="fi-hash-wrap">
       <div class="fi-label">هش SHA-256:</div>
       <textarea id="fi-hash" class="textarea fi-hash" readonly rows="2" placeholder="در حال محاسبه..."></textarea>
-      <button type="button" class="btn" id="fi-copy-hash" disabled><span aria-hidden="true">📋</span> کپی هش</button>
+      <button type="button" class="btn" id="fi-copy-hash" disabled>📋 کپی هش</button>
     </div>
   </div>
 </div>
-
 <script>
-  import { formatBytes, calculateFileSha256 } from './logic';
+  import { formatBytes, calculateFileSha256, validateFileSize } from './logic';
   import { copyText, toast } from '../../../lib/ui';
 
   const fileInput = document.getElementById('fi-file') as HTMLInputElement | null;
   const uploadZone = document.getElementById('fi-upload-zone');
   const workspace = document.getElementById('fi-workspace');
-  
+  const errorEl = document.getElementById('fi-error');
   const nameEl = document.getElementById('fi-name');
   const sizeEl = document.getElementById('fi-size');
   const typeEl = document.getElementById('fi-type');
@@ -53,27 +39,50 @@
   const hashEl = document.getElementById('fi-hash') as HTMLTextAreaElement | null;
   const copyBtn = document.getElementById('fi-copy-hash') as HTMLButtonElement | null;
 
+  let isProcessing = false;
+
+  function showError(msg: string) {
+    if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
+    if (uploadZone) uploadZone.hidden = false;
+    if (workspace) workspace.hidden = true;
+    if (fileInput) fileInput.value = '';
+    if (copyBtn) copyBtn.disabled = true;
+    isProcessing = false;
+  }
+  function clearError() {
+    if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+  }
+
   async function handleFile(file: File) {
+    clearError();
+    if (isProcessing) {
+      showError('یک پردازش در حال انجام است. لطفاً کمی صبر کنید.');
+      return;
+    }
+    const validation = validateFileSize(file.size);
+    if (!validation.ok) {
+      showError(validation.error ?? 'خطای نامشخص در فایل.');
+      return;
+    }
+    isProcessing = true;
     if (uploadZone) uploadZone.hidden = true;
     if (workspace) workspace.hidden = false;
     if (copyBtn) copyBtn.disabled = true;
-    
     if (nameEl) nameEl.textContent = file.name;
     if (sizeEl) sizeEl.textContent = formatBytes(file.size);
     if (typeEl) typeEl.textContent = file.type || 'نامشخص';
-    
     const parts = file.name.split('.');
     const ext = parts.length > 1 ? parts.pop()!.toUpperCase() : 'نامشخص';
     if (extEl) extEl.textContent = ext;
-    
     if (hashEl) hashEl.value = 'در حال محاسبه هش...';
-    
     try {
       const hash = await calculateFileSha256(file);
       if (hashEl) hashEl.value = hash;
       if (copyBtn) copyBtn.disabled = false;
     } catch (e) {
-      if (hashEl) hashEl.value = 'خطا در محاسبه هش';
+      showError('خطا در محاسبه هش: ' + (e instanceof Error ? e.message : 'نامشخص'));
+    } finally {
+      isProcessing = false;
     }
   }
 
@@ -81,7 +90,6 @@
     const target = e.target as HTMLInputElement;
     if (target.files && target.files.length > 0) handleFile(target.files[0]);
   });
-
   uploadZone?.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--color-primary)'; });
   uploadZone?.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--color-border)'; });
   uploadZone?.addEventListener('drop', (e) => {
@@ -89,18 +97,19 @@
     uploadZone.style.borderColor = 'var(--color-border)';
     if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
   });
-
   copyBtn?.addEventListener('click', async () => {
-    if (hashEl?.value) { await copyText(hashEl.value); toast('هش کپی شد', 'success'); }
+    if (!hashEl?.value) return;
+    const ok = await copyText(hashEl.value);
+    if (ok) toast('هش کپی شد', 'success'); else toast('کپی نشد', 'error');
   });
 </script>
-
 <style>
   .fi-tool { display: flex; flex-direction: column; gap: var(--space-4); }
   .fi-upload-zone { border: 2px dashed var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; transition: border-color 0.2s; background: var(--color-surface-2); }
   .fi-upload-label { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-text); }
   .fi-icon { font-size: 2.5rem; }
   .fi-hint { font-size: 0.8rem; color: var(--color-text-muted); }
+  .fi-error { padding: var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; line-height: 1.6; }
   .fi-workspace { display: flex; flex-direction: column; gap: var(--space-4); }
   .fi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
   @media (min-width: 640px) { .fi-grid { grid-template-columns: repeat(4, 1fr); } }
