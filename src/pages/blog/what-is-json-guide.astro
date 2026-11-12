@@ -38,11 +38,11 @@ const faqs = [
   <p>
     مجموعه‌ای از جفت‌های «کلید: مقدار» که بین آکولاد `{}` قرار می‌گیرند.
   </p>
-  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;overflow-x:auto;font-size:0.85rem;"><code>{
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;overflow-x:auto;font-size:0.85rem;"><code>&#123;
   "name": "Ali",
   "age": 30,
   "city": "Tehran"
-}</code></pre>
+&#125;</code></pre>
 
   <h3>۲. آرایه (Array)</h3>
   <p>
@@ -72,7 +72,7 @@ const faqs = [
   <p>
     <strong>در JSON:</strong>
   </p>
-  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;font-size:0.85rem;"><code>{"name": "Ali", "age": 30}</code></pre>
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;font-size:0.85rem;"><code>&#123;"name": "Ali", "age": 30&#125;</code></pre>
   <p>
     <strong>همان داده در XML:</strong>
   </p>
@@ -105,9 +105,9 @@ const faqs = [
 
   <h2>اشتباهات رایج در کار با JSON</h2>
   <ol>
-    <li><strong>استفاده از تک‌کوتیشن:</strong> `{'name': 'Ali'}` نامعتبر است</li>
-    <li><strong>کامای اضافه:</strong> `{"a": 1,}` نامعتبر است</li>
-    <li><strong>کامنت‌گذاری:</strong> `{"a": 1 /* comment */}` نامعتبر است</li>
+    <li><strong>استفاده از تک‌کوتیشن:</strong> <code>&#123;'name': 'Ali'&#125;</code> نامعتبر است</li>
+    <li><strong>کامای اضافه:</strong> <code>&#123;"a": 1,&#125;</code> نامعتبر است</li>
+    <li><strong>کامنت‌گذاری:</strong> <code>&#123;"a": 1 /* comment */&#125;</code> نامعتبر است</li>
     <li><strong>عدم escape کردن کاراکترهای خاص:</strong> باید از `\n`, `\t`, `\"` استفاده کنید</li>
   </ol>
 
