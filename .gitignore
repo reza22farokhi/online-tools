@@ -16,3 +16,6 @@ fix-calendar.sh
 run-hardening.sh
 hardening-*.sh
 fix-*.sh
+playwright-report/
+test-results/
+e2e-*.sh

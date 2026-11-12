@@ -12,7 +12,9 @@
     "preview": "astro preview --host 0.0.0.0",
     "check": "astro check",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install --with-deps chromium"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.0",
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "@playwright/test": "^1.65.0",
     "typescript": "^5.7.0",
     "vitest": "^2.1.0"
   }

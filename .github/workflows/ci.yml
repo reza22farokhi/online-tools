@@ -4,10 +4,14 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [security-seo-hardening]
+    branches: [main]
 
 permissions:
   contents: read
+
+env:
+  SITE_URL: https://reza22farokhi.github.io/online-tools
+  BASE_PATH: /online-tools/
 
 jobs:
   test:
@@ -27,3 +31,27 @@ jobs:
         run: npm run build
       - name: Verify dist
         run: test -f dist/index.html && test -f dist/tools/file-info/index.html
+
+  e2e:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci || npm install
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Build
+        run: npm run build
+      - name: Run E2E tests
+        run: npx playwright test
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
