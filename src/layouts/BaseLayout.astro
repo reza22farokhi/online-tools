@@ -111,10 +111,35 @@ const dicts = getDicts();
 
     <script type="application/json" id="i18n-data" set:html={JSON.stringify(dicts)}></script>
     <script>
-      import { initUI } from '../lib/ui';
+      import { initUI, populateHomeSections } from '../lib/ui';
       const dataEl = document.getElementById('i18n-data');
       const data = JSON.parse(dataEl?.textContent || '{}') as Record<'fa' | 'en', Record<string, string>>;
       initUI(data);
+      populateHomeSections();
+      window.addEventListener('pageshow', function (e) {
+        if (e.persisted) populateHomeSections();
+      });
     </script>
+  
+    <script is:inline>
+      (function() {
+        try {
+          var el = document.querySelector("[data-tool-slug]");
+          if (el) {
+            var slug = el.getAttribute("data-tool-slug");
+            if (slug) {
+              var key = "pot.recent";
+              var raw = localStorage.getItem(key);
+              var list = raw ? JSON.parse(raw) : [];
+              if (!Array.isArray(list)) list = [];
+              list = list.filter(function(s) { return s !== slug; });
+              list.unshift(slug);
+              localStorage.setItem(key, JSON.stringify(list.slice(0, 6)));
+            }
+          }
+        } catch(e) {}
+      })();
+    </script>
+    <!-- data-tool-slug-tracker -->
   </body>
 </html>
