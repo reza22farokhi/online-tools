@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+env:
+  SITE_URL: https://reza22farokhi.github.io/online-tools
+  BASE_PATH: /online-tools/
+
 jobs:
   test:
     runs-on: ubuntu-latest
