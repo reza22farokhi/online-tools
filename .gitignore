@@ -19,3 +19,4 @@ fix-*.sh
 playwright-report/
 test-results/
 e2e-*.sh
+cleanup-*.sh
