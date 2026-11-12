@@ -14,17 +14,12 @@ export function getStoredTheme(): Theme | null {
   } catch { return null; }
 }
 
-export function getSystemTheme(): Theme {
-  if (typeof window === 'undefined') return 'light';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
 export function applyTheme(theme: Theme) {
   document.documentElement.setAttribute('data-theme', theme);
 }
 
 export function setTheme(theme: Theme) {
-  try { localStorage.setItem(THEME_KEY, theme); } catch { /* ignore */ }
+  try { localStorage.setItem(THEME_KEY, theme); } catch {}
   applyTheme(theme);
 }
 
@@ -46,26 +41,20 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
   if (!dicts) return;
   document.querySelectorAll<HTMLElement>('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
-    if (!key) return;
-    const text = dicts[lang][key];
-    if (text) el.textContent = text;
+    if (key && dicts[lang][key]) el.textContent = dicts[lang][key];
   });
   document.querySelectorAll<HTMLInputElement>('[data-i18n-placeholder]').forEach(el => {
     const key = el.dataset.i18nPlaceholder;
-    if (!key) return;
-    const text = dicts[lang][key];
-    if (text) el.placeholder = text;
+    if (key && dicts[lang][key]) el.placeholder = dicts[lang][key];
   });
   document.querySelectorAll<HTMLElement>('[data-i18n-aria-label]').forEach(el => {
     const key = el.dataset.i18nAriaLabel;
-    if (!key) return;
-    const text = dicts[lang][key];
-    if (text) el.setAttribute('aria-label', text);
+    if (key && dicts[lang][key]) el.setAttribute('aria-label', dicts[lang][key]);
   });
 }
 
 export function setLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>) {
-  try { localStorage.setItem(LANG_KEY, lang); } catch { /* ignore */ }
+  try { localStorage.setItem(LANG_KEY, lang); } catch {}
   applyLang(lang, dicts);
 }
 
@@ -91,7 +80,7 @@ export function toggleFavorite(slug: string): boolean {
   const set = new Set(getFavorites());
   if (set.has(slug)) set.delete(slug);
   else set.add(slug);
-  try { localStorage.setItem(FAV_KEY, JSON.stringify([...set])); } catch { /* ignore */ }
+  try { localStorage.setItem(FAV_KEY, JSON.stringify([...set])); } catch {}
   return set.has(slug);
 }
 
@@ -107,7 +96,7 @@ export function getRecent(): string[] {
 export function pushRecent(slug: string) {
   const list = getRecent().filter(s => s !== slug);
   list.unshift(slug);
-  try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, RECENT_MAX))); } catch { /* ignore */ }
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, RECENT_MAX))); } catch {}
 }
 
 export async function copyText(text: string): Promise<boolean> {
@@ -131,7 +120,6 @@ export async function copyText(text: string): Promise<boolean> {
 }
 
 let toastContainer: HTMLElement | null = null;
-
 function ensureToastContainer(): HTMLElement {
   if (toastContainer && document.body.contains(toastContainer)) return toastContainer;
   toastContainer = document.createElement('div');
@@ -143,11 +131,7 @@ function ensureToastContainer(): HTMLElement {
   return toastContainer;
 }
 
-export function toast(
-  message: string,
-  type: 'success' | 'error' | 'info' = 'info',
-  duration = 2500
-) {
+export function toast(message: string, type: 'success' | 'error' | 'info' = 'info', duration = 2500) {
   if (!message) return;
   const container = ensureToastContainer();
   const el = document.createElement('div');
@@ -160,25 +144,6 @@ export function toast(
     setTimeout(() => el.remove(), 250);
   }, duration);
 }
-
-export function initUI(dicts?: Record<Lang, Record<string, string>>) {
-  setupFavoriteDelegation();
-  initFavoriteButtons();
-
-  const storedLang = getStoredLang();
-  if (storedLang) applyLang(storedLang, dicts);
-
-  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach(btn => {
-    btn.addEventListener('click', () => toggleTheme());
-  });
-
-  document.querySelectorAll<HTMLButtonElement>('[data-lang-toggle]').forEach(btn => {
-    btn.addEventListener('click', () => toggleLang(dicts));
-  });
-}
-
-
-let __favDelegationSetup = false;
 
 export function initFavoriteButtons(root: ParentNode = document): void {
   root.querySelectorAll<HTMLButtonElement>(".fav-btn").forEach(btn => {
@@ -193,6 +158,7 @@ export function initFavoriteButtons(root: ParentNode = document): void {
   });
 }
 
+let __favDelegationSetup = false;
 export function setupFavoriteDelegation(): void {
   if (__favDelegationSetup) return;
   __favDelegationSetup = true;
@@ -220,7 +186,7 @@ export function populateHomeSections(): void {
     grid.textContent = "";
     let count = 0;
     for (const slug of slugs) {
-      const link = document.querySelector<HTMLElement>(\`#all-tools-grid [data-slug="\${slug}"]\`);
+      const link = document.querySelector<HTMLElement>(`#all-tools-grid [data-slug="${slug}"]`);
       if (link) {
         const wrapper = link.closest(".tool-card-wrap");
         if (wrapper) {
@@ -235,4 +201,17 @@ export function populateHomeSections(): void {
   };
   populate("favorites-section", "favorites-grid", getFavorites());
   populate("recent-section", "recent-grid", getRecent());
+}
+
+export function initUI(dicts?: Record<Lang, Record<string, string>>) {
+  setupFavoriteDelegation();
+  initFavoriteButtons();
+  const storedLang = getStoredLang();
+  if (storedLang) applyLang(storedLang, dicts);
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => toggleTheme());
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-lang-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => toggleLang(dicts));
+  });
 }
