@@ -9,13 +9,12 @@
       <span class="fc-hint">حداکثر ۲۰ مگابایت (پردازش محلی)</span>
     </label>
   </div>
-
+  <div class="fc-error" id="fc-error" hidden role="alert"></div>
   <div class="fc-workspace" id="fc-workspace" hidden>
     <div class="fc-preview-wrap">
       <img id="fc-preview" class="fc-preview" alt="Preview" />
       <div class="fc-file-info" id="fc-file-info"></div>
     </div>
-
     <div class="fc-controls">
       <div class="fc-field">
         <label for="fc-format">فرمت خروجی:</label>
@@ -25,62 +24,65 @@
           <option value="image/webp">WebP</option>
         </select>
       </div>
-      
       <div class="fc-actions">
-        <button type="button" class="btn btn-primary" id="fc-process"><span aria-hidden="true">✨</span> تبدیل فرمت</button>
+        <button type="button" class="btn btn-primary" id="fc-process">✨ تبدیل فرمت</button>
         <a id="fc-download" class="btn" style="display: none;">📥 دانلود تصویر</a>
       </div>
     </div>
   </div>
 </div>
-
 <script>
-  import { getFileExtension, formatBytes } from './logic';
+  import { getFileExtension, formatBytes, validateFileSize, MAX_IMAGE_SIZE, MAX_IMAGE_SIZE_LABEL } from './logic';
   import type { ImageFormat } from './logic';
-
-  const MAX_SIZE = 20 * 1024 * 1024;
   const fileInput = document.getElementById('fc-file') as HTMLInputElement | null;
   const uploadZone = document.getElementById('fc-upload-zone');
   const workspace = document.getElementById('fc-workspace');
+  const errorEl = document.getElementById('fc-error');
   const previewImg = document.getElementById('fc-preview') as HTMLImageElement | null;
   const fileInfo = document.getElementById('fc-file-info');
   const formatSelect = document.getElementById('fc-format') as HTMLSelectElement | null;
   const processBtn = document.getElementById('fc-process') as HTMLButtonElement | null;
   const downloadBtn = document.getElementById('fc-download') as HTMLAnchorElement | null;
-
   let originalImage: HTMLImageElement | null = null;
   let originalSize = 0;
   let objectUrl: string | null = null;
-
+  let isProcessing = false;
+  function showError(msg: string) {
+    if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
+    if (uploadZone) uploadZone.hidden = false;
+    if (workspace) workspace.hidden = true;
+    if (fileInput) fileInput.value = '';
+    if (downloadBtn) downloadBtn.style.display = 'none';
+    isProcessing = false;
+  }
+  function clearError() { if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; } }
   function handleFile(file: File) {
-    if (!file.type.startsWith('image/')) {
-      alert('لطفاً یک فایل تصویری انتخاب کنید.'); return;
-    }
-    if (file.size > MAX_SIZE) {
-      alert('حجم فایل نباید بیشتر از ۲۰ مگابایت باشد.'); return;
-    }
+    clearError();
+    if (isProcessing) { showError('یک پردازش در حال انجام است.'); return; }
+    if (!file.type.startsWith('image/')) { showError('لطفاً یک فایل تصویری انتخاب کنید.'); return; }
+    const v = validateFileSize(file.size, MAX_IMAGE_SIZE, MAX_IMAGE_SIZE_LABEL);
+    if (!v.ok) { showError(v.error ?? 'خطای نامشخص'); return; }
+    isProcessing = true;
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     objectUrl = URL.createObjectURL(file);
     originalSize = file.size;
-
     const img = new Image();
     img.onload = () => {
       originalImage = img;
       if (previewImg) previewImg.src = objectUrl!;
       if (fileInfo) fileInfo.textContent = `حجم اصلی: ${formatBytes(originalSize)} | ابعاد: ${img.naturalWidth}×${img.naturalHeight}`;
-      
       if (uploadZone) uploadZone.hidden = true;
       if (workspace) workspace.hidden = false;
       if (downloadBtn) downloadBtn.style.display = 'none';
+      isProcessing = false;
     };
+    img.onerror = () => { showError('فایل تصویری معتبر نیست.'); };
     img.src = objectUrl;
   }
-
   fileInput?.addEventListener('change', (e) => {
-    const target = e.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) handleFile(target.files[0]);
+    const t = e.target as HTMLInputElement;
+    if (t.files && t.files.length > 0) handleFile(t.files[0]);
   });
-
   uploadZone?.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--color-primary)'; });
   uploadZone?.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--color-border)'; });
   uploadZone?.addEventListener('drop', (e) => {
@@ -88,24 +90,19 @@
     uploadZone.style.borderColor = 'var(--color-border)';
     if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
   });
-
   processBtn?.addEventListener('click', () => {
     if (!originalImage || !formatSelect || !downloadBtn) return;
     const format = formatSelect.value as ImageFormat;
-    
     const canvas = document.createElement('canvas');
     canvas.width = originalImage.naturalWidth;
     canvas.height = originalImage.naturalHeight;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
+    if (!ctx) { showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
     if (format === 'image/jpeg') {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    
     ctx.drawImage(originalImage, 0, 0);
-    
     canvas.toBlob((blob) => {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
@@ -115,13 +112,13 @@
     }, format, 0.95);
   });
 </script>
-
 <style>
   .fc-tool { display: flex; flex-direction: column; gap: var(--space-4); }
   .fc-upload-zone { border: 2px dashed var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; transition: border-color 0.2s; background: var(--color-surface-2); }
   .fc-upload-label { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-text); }
   .fc-icon { font-size: 2.5rem; }
   .fc-hint { font-size: 0.8rem; color: var(--color-text-muted); }
+  .fc-error { padding: var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
   .fc-workspace { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
   @media (min-width: 768px) { .fc-workspace { grid-template-columns: 1fr 1fr; } }
   .fc-preview-wrap { display: flex; flex-direction: column; gap: var(--space-2); }

@@ -1,13 +1,9 @@
+export { validateFileSize, formatBytes } from '../../../lib/file-validation';
+
+export const MAX_IMAGE_SIZE = 20 * 1024 * 1024;
+export const MAX_IMAGE_SIZE_LABEL = '۲۰ مگابایت';
+
 export function calculateReduction(original: number, compressed: number): number {
   if (original === 0) return 0;
   return Math.max(0, Math.round(((original - compressed) / original) * 100));
-}
-
-export function formatBytes(bytes: number, decimals = 2): string {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }

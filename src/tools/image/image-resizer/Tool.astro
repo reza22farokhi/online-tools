@@ -9,13 +9,12 @@
       <span class="ir-hint">حداکثر حجم: ۲۰ مگابایت (پردازش محلی)</span>
     </label>
   </div>
-
+  <div class="ir-error" id="ir-error" hidden role="alert"></div>
   <div class="ir-workspace" id="ir-workspace" hidden>
     <div class="ir-preview-wrap">
       <img id="ir-preview" class="ir-preview" alt="Preview" />
       <div class="ir-file-info" id="ir-file-info"></div>
     </div>
-
     <div class="ir-controls">
       <div class="ir-field">
         <label for="ir-width">عرض (پیکسل)</label>
@@ -29,75 +28,70 @@
         <input type="checkbox" id="ir-maintain" checked />
         <span>حفظ نسبت تصویر (Aspect Ratio)</span>
       </label>
-      
       <div class="ir-actions">
-        <button type="button" class="btn btn-primary" id="ir-process"><span aria-hidden="true">✂️</span> تغییر اندازه</button>
+        <button type="button" class="btn btn-primary" id="ir-process">✂️ تغییر اندازه</button>
         <a id="ir-download" class="btn" style="display: none;">📥 دانلود تصویر</a>
       </div>
     </div>
   </div>
 </div>
-
 <script>
-  import { calculateDimensions, formatBytes } from './logic';
-
-  const MAX_SIZE = 20 * 1024 * 1024;
+  import { calculateDimensions, formatBytes, validateFileSize, MAX_IMAGE_SIZE, MAX_IMAGE_SIZE_LABEL } from './logic';
   const fileInput = document.getElementById('ir-file') as HTMLInputElement | null;
   const uploadZone = document.getElementById('ir-upload-zone');
   const workspace = document.getElementById('ir-workspace');
+  const errorEl = document.getElementById('ir-error');
   const previewImg = document.getElementById('ir-preview') as HTMLImageElement | null;
   const fileInfo = document.getElementById('ir-file-info');
-  
   const widthInput = document.getElementById('ir-width') as HTMLInputElement | null;
   const heightInput = document.getElementById('ir-height') as HTMLInputElement | null;
   const maintainCb = document.getElementById('ir-maintain') as HTMLInputElement | null;
-  
   const processBtn = document.getElementById('ir-process') as HTMLButtonElement | null;
   const downloadBtn = document.getElementById('ir-download') as HTMLAnchorElement | null;
-
   let originalImage: HTMLImageElement | null = null;
   let originalWidth = 0;
   let originalHeight = 0;
   let objectUrl: string | null = null;
-
+  let isProcessing = false;
+  function showError(msg: string) {
+    if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
+    if (uploadZone) uploadZone.hidden = false;
+    if (workspace) workspace.hidden = true;
+    if (fileInput) fileInput.value = '';
+    if (downloadBtn) downloadBtn.style.display = 'none';
+    isProcessing = false;
+  }
+  function clearError() { if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; } }
   function handleFile(file: File) {
-    if (!file.type.startsWith('image/')) {
-      alert('لطفاً یک فایل تصویری انتخاب کنید.');
-      return;
-    }
-    if (file.size > MAX_SIZE) {
-      alert('حجم فایل نباید بیشتر از ۲۰ مگابایت باشد.');
-      return;
-    }
-
+    clearError();
+    if (isProcessing) { showError('یک پردازش در حال انجام است. لطفاً صبر کنید.'); return; }
+    if (!file.type.startsWith('image/')) { showError('لطفاً یک فایل تصویری انتخاب کنید.'); return; }
+    const v = validateFileSize(file.size, MAX_IMAGE_SIZE, MAX_IMAGE_SIZE_LABEL);
+    if (!v.ok) { showError(v.error ?? 'خطای نامشخص'); return; }
+    isProcessing = true;
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     objectUrl = URL.createObjectURL(file);
-
     const img = new Image();
     img.onload = () => {
       originalImage = img;
       originalWidth = img.naturalWidth;
       originalHeight = img.naturalHeight;
-      
       if (previewImg) previewImg.src = objectUrl!;
       if (fileInfo) fileInfo.textContent = `ابعاد اصلی: ${originalWidth}×${originalHeight} | حجم: ${formatBytes(file.size)}`;
-      
       if (widthInput) widthInput.value = String(originalWidth);
       if (heightInput) heightInput.value = String(originalHeight);
-      
       if (uploadZone) uploadZone.hidden = true;
       if (workspace) workspace.hidden = false;
       if (downloadBtn) downloadBtn.style.display = 'none';
+      isProcessing = false;
     };
+    img.onerror = () => { showError('فایل تصویری معتبر نیست.'); };
     img.src = objectUrl;
   }
-
   fileInput?.addEventListener('change', (e) => {
-    const target = e.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) handleFile(target.files[0]);
+    const t = e.target as HTMLInputElement;
+    if (t.files && t.files.length > 0) handleFile(t.files[0]);
   });
-
-  // Drag and Drop
   uploadZone?.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--color-primary)'; });
   uploadZone?.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--color-border)'; });
   uploadZone?.addEventListener('drop', (e) => {
@@ -105,40 +99,28 @@
     uploadZone.style.borderColor = 'var(--color-border)';
     if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
   });
-
-  // Aspect Ratio linking
   widthInput?.addEventListener('input', () => {
-    if (!maintainCb?.checked || !originalWidth) return;
+    if (!maintainCb?.checked || !originalWidth || !heightInput) return;
     const w = Number(widthInput.value);
-    if (w > 0 && heightInput) {
-      heightInput.value = String(Math.round(w * (originalHeight / originalWidth)));
-    }
+    if (w > 0) heightInput.value = String(Math.round(w * (originalHeight / originalWidth)));
   });
-
   heightInput?.addEventListener('input', () => {
-    if (!maintainCb?.checked || !originalHeight) return;
+    if (!maintainCb?.checked || !originalHeight || !widthInput) return;
     const h = Number(heightInput.value);
-    if (h > 0 && widthInput) {
-      widthInput.value = String(Math.round(h * (originalWidth / originalHeight)));
-    }
+    if (h > 0) widthInput.value = String(Math.round(h * (originalWidth / originalHeight)));
   });
-
   processBtn?.addEventListener('click', () => {
     if (!originalImage || !widthInput || !heightInput) return;
     const tW = Number(widthInput.value);
     const tH = Number(heightInput.value);
-    if (tW <= 0 || tH <= 0) { alert('ابعاد باید بزرگتر از صفر باشند.'); return; }
-
+    if (tW <= 0 || tH <= 0) { showError('ابعاد باید بزرگتر از صفر باشند.'); return; }
     const dims = calculateDimensions(originalWidth, originalHeight, tW, tH, maintainCb?.checked ?? true);
-    
     const canvas = document.createElement('canvas');
     canvas.width = dims.width;
     canvas.height = dims.height;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
+    if (!ctx) { showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
     ctx.drawImage(originalImage, 0, 0, dims.width, dims.height);
-    
     canvas.toBlob((blob) => {
       if (!blob || !downloadBtn) return;
       const url = URL.createObjectURL(blob);
@@ -148,13 +130,13 @@
     }, 'image/jpeg', 0.92);
   });
 </script>
-
 <style>
   .ir-tool { display: flex; flex-direction: column; gap: var(--space-4); }
   .ir-upload-zone { border: 2px dashed var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; transition: border-color 0.2s; background: var(--color-surface-2); }
   .ir-upload-label { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-text); }
   .ir-icon { font-size: 2.5rem; }
   .ir-hint { font-size: 0.8rem; color: var(--color-text-muted); }
+  .ir-error { padding: var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
   .ir-workspace { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
   @media (min-width: 768px) { .ir-workspace { grid-template-columns: 1fr 1fr; } }
   .ir-preview-wrap { display: flex; flex-direction: column; gap: var(--space-2); }
