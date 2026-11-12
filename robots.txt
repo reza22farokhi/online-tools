@@ -4,4 +4,4 @@ Allow: /
 # Disallow UI-only utility routes
 Disallow: /404/
 
-Sitemap: https://reza22farokhi.github.io/sitemap-index.xml
+Sitemap: https://reza22farokhi.github.io/online-tools/sitemap-index.xml
