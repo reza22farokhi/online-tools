@@ -207,6 +207,7 @@ export function setupFavoriteDelegation(): void {
     if (!slug) return;
     toggleFavorite(slug);
     initFavoriteButtons(document);
+    populateHomeSections();
   });
 }
 
@@ -219,11 +220,14 @@ export function populateHomeSections(): void {
     grid.textContent = "";
     let count = 0;
     for (const slug of slugs) {
-      const original = document.querySelector<HTMLElement>('#all-tools-grid [data-slug="' + slug + '"]');
-      if (original) {
-        const clone = original.cloneNode(true) as HTMLElement;
-        grid.appendChild(clone);
-        count++;
+      const link = document.querySelector<HTMLElement>(\`#all-tools-grid [data-slug="\${slug}"]\`);
+      if (link) {
+        const wrapper = link.closest(".tool-card-wrap");
+        if (wrapper) {
+          const clone = wrapper.cloneNode(true) as HTMLElement;
+          grid.appendChild(clone);
+          count++;
+        }
       }
     }
     section.hidden = count === 0;
