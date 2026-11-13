@@ -4,8 +4,8 @@ export interface Props {
 }
 const { id } = Astro.props;
 ---
-<div class="ad-slot-wrap">
-  <div id={id}></div>
+<div class="ad-slot-wrap" data-ad-id={id} style="min-height: 120px;">
+  <div id={id} class="ad-content"></div>
 </div>
 
 <style>
@@ -13,12 +13,41 @@ const { id } = Astro.props;
     display: flex;
     justify-content: center;
     margin-block: var(--space-4);
-    min-height: 120px;
     background: var(--color-surface-2);
     border: 1px dashed var(--color-border);
     border-radius: var(--radius-md);
     align-items: center;
     color: var(--color-text-muted);
     font-size: 0.85rem;
+    /* جلوگیری از CLS */
+    content-visibility: auto;
+    contain-intrinsic-size: 0 120px;
   }
 </style>
+
+<script>
+  // TITAN X Ω — Lazy Load Ads via IntersectionObserver
+  document.addEventListener('DOMContentLoaded', () => {
+    const adSlots = document.querySelectorAll('.ad-slot-wrap');
+    
+    if (!('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const wrap = entry.target;
+          const adId = wrap.getAttribute('data-ad-id');
+          
+          // اینجا کد مربوط به شبکه تبلیغاتی خود را قرار دهید
+          // مثال: window.adsbygoogle.push(...) یا کدهای Adsterra
+          
+          console.log(`[AdSlot] Initialized ad: ${adId}`);
+          wrap.classList.add('ad-loaded');
+          obs.unobserve(wrap);
+        }
+      });
+    }, { rootMargin: '200px' }); // 200px قبل از رسیدن به دید کاربر لود شود
+
+    adSlots.forEach(slot => observer.observe(slot));
+  });
+</script>
