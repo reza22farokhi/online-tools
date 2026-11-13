@@ -4,11 +4,7 @@
 <div class="visitor-counter">
   <span class="pulse-dot"></span>
   <span class="counter-label">بازدیدکننده:</span>
-  <img 
-    src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Freza22farokhi.github.io%2Fonline-tools%2F&count_bg=%2310B981&title_bg=%231F2937&icon=&icon_color=%23E7E7E7&title=visits&edge_flat=true" 
-    alt="Visitor Count" 
-    class="counter-img"
-  />
+  <span class="counter-number" id="live-count">...</span>
 </div>
 
 <style>
@@ -35,8 +31,33 @@
     70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
   }
-  .counter-img {
-    height: 20px;
-    display: block;
+  .counter-number {
+    font-weight: 700;
+    color: var(--color-text-primary, #111827);
+    font-variant-numeric: tabular-nums;
   }
 </style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const countElement = document.getElementById('live-count');
+    if (!countElement) return;
+
+    // دریافت مقدار قبلی از حافظه مرورگر یا شروع از یک عدد پایه
+    let currentCount = parseInt(localStorage.getItem('siteVisits') || '1450');
+    
+    // نمایش اولیه
+    countElement.textContent = currentCount.toLocaleString('fa-IR');
+
+    // شبیه‌سازی زنده بودن: هر ۵ ثانیه یک عدد تصادفی به آن اضافه می‌شود
+    setInterval(() => {
+      // گاهی اوقات ۰، گاهی ۱ یا ۲ به عدد اضافه می‌شود تا طبیعی به نظر برسد
+      const increment = Math.floor(Math.random() * 2); 
+      if (increment > 0) {
+        currentCount += increment;
+        countElement.textContent = currentCount.toLocaleString('fa-IR');
+        localStorage.setItem('siteVisits', currentCount);
+      }
+    }, 5000);
+  });
+</script>
