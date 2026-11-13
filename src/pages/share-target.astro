@@ -45,9 +45,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.getElementById('base64-link').href = `${base}/tools/base64/`;
 
       // منطق دکمه کپی
-      document.getElementById('copy-btn').addEventListener('click', () => {
+      document.getElementById('copy-btn').addEventListener('click', async () => {
         textarea.select();
-        await navigator.clipboard.writeText(textToCopy).catch(console.error);
+        await navigator.clipboard.writeText(textarea.value).catch(console.error);
         const btn = document.getElementById('copy-btn');
         btn.textContent = '✅ کپی شد!';
         setTimeout(() => btn.textContent = '📋 کپی متن', 2000);
