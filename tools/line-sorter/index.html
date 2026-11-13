@@ -67,11 +67,11 @@ cherry" spellcheck="false" aria-describedby="ls-help" data-astro-cid-mjgx73of></
 
     try {
       // استفاده از API رایگان CounterAPI
-      const response = await fetch('https://api.counterapi.dev/v1/reza22farokhi/online-tools/up');
+      const response = await fetch('https://abacus.jasoncameron.dev/hit/reza22farokhi/online-tools/visits');
       const data = await response.json();
       
       // فرمت کردن عدد (مثلا 1,234)
-      countElement.textContent = data.count.toLocaleString('fa-IR');
+      countElement.textContent = data.value.toLocaleString('fa-IR');
     } catch (error) {
       console.warn('Failed to fetch visitor count', error);
       countElement.textContent = '---';
