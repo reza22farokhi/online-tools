@@ -1,3 +1,4 @@
+import { meta as dateConverterMeta } from './date/date-converter/meta';
 import { meta as passwordGeneratorMeta } from './code/password-generator/meta';
 import { meta as qrCodeMeta } from './image/qr-code-generator/meta';
 import type { ToolMeta, ToolCategory, CategoryMeta } from './types';
@@ -51,6 +52,7 @@ export const categories: CategoryMeta[] = [
 ];
 
 export const registry: ToolMeta[] = [
+  dateConverterMeta,
   passwordGeneratorMeta,
   qrCodeMeta,
   wordCounterMeta, caseConverterMeta, removeExtraSpacesMeta, lineSorterMeta,

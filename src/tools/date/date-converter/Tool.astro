@@ -1,0 +1,117 @@
+---
+// Date Converter UI
+---
+<div class="date-tool">
+  <div class="date-col">
+    <h3>تبدیل شمسی به میلادی</h3>
+    <div class="inputs-row">
+      <input type="number" id="j-year" placeholder="سال (مثلاً 1402)" min="1300" max="1500" value="1402" />
+      <input type="number" id="j-month" placeholder="ماه (1-12)" min="1" max="12" value="1" />
+      <input type="number" id="j-day" placeholder="روز (1-31)" min="1" max="31" value="1" />
+    </div>
+    <button id="btn-to-g" class="btn-primary">تبدیل به میلادی ←</button>
+    <div class="result-box" id="result-g">---</div>
+  </div>
+
+  <div class="date-col">
+    <h3>تبدیل میلادی به شمسی</h3>
+    <div class="inputs-row">
+      <input type="number" id="g-year" placeholder="سال (مثلاً 2023)" min="1900" max="2100" value="2023" />
+      <input type="number" id="g-month" placeholder="ماه (1-12)" min="1" max="12" value="1" />
+      <input type="number" id="g-day" placeholder="روز (1-31)" min="1" max="31" value="1" />
+    </div>
+    <button id="btn-to-j" class="btn-primary">تبدیل به شمسی ←</button>
+    <div class="result-box" id="result-j">---</div>
+  </div>
+</div>
+
+<script>
+  import { toJalaali, toGregorian } from './logic';
+
+  // شمسی به میلادی
+  document.getElementById('btn-to-g')?.addEventListener('click', () => {
+    const jy = parseInt((document.getElementById('j-year') as HTMLInputElement).value);
+    const jm = parseInt((document.getElementById('j-month') as HTMLInputElement).value);
+    const jd = parseInt((document.getElementById('j-day') as HTMLInputElement).value);
+    try {
+      const res = toGregorian(jy, jm, jd);
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      (document.getElementById('result-g') as HTMLElement).textContent = `${res.gy} ${monthNames[res.gm - 1]} ${res.gd}`;
+    } catch (e) {
+      (document.getElementById('result-g') as HTMLElement).textContent = 'تاریخ نامعتبر است';
+    }
+  });
+
+  // میلادی به شمسی
+  document.getElementById('btn-to-j')?.addEventListener('click', () => {
+    const gy = parseInt((document.getElementById('g-year') as HTMLInputElement).value);
+    const gm = parseInt((document.getElementById('g-month') as HTMLInputElement).value);
+    const gd = parseInt((document.getElementById('g-day') as HTMLInputElement).value);
+    try {
+      const res = toJalaali(gy, gm, gd);
+      const monthNames = ["فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"];
+      (document.getElementById('result-j') as HTMLElement).textContent = `${res.jd} ${monthNames[res.jm - 1]} ${res.jy}`;
+    } catch (e) {
+      (document.getElementById('result-j') as HTMLElement).textContent = 'تاریخ نامعتبر است';
+    }
+  });
+</script>
+
+<style>
+  .date-tool {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .date-col {
+    flex: 1;
+    min-width: 280px;
+    background: var(--color-surface-2);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+  }
+  .date-col h3 {
+    margin-top: 0;
+    margin-bottom: var(--space-3);
+    text-align: center;
+    font-size: 1.1rem;
+  }
+  .inputs-row {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  .inputs-row input {
+    width: 100%;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-family: inherit;
+  }
+  .btn-primary {
+    width: 100%;
+    background: var(--color-primary);
+    color: white;
+    padding: var(--space-2);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: var(--space-3);
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .result-box {
+    background: var(--color-surface);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: 1px dashed var(--color-border);
+    color: var(--color-text);
+  }
+</style>

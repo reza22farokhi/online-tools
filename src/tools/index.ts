@@ -1,3 +1,4 @@
+import DateConverterTool from './date/date-converter/Tool.astro';
 import PasswordGeneratorTool from './code/password-generator/Tool.astro';
 import QrCodeGeneratorTool from './image/qr-code-generator/Tool.astro';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
@@ -66,6 +67,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'image-compressor': ImageCompressorTool,
   'format-converter': FormatConverterTool,
   'qr-code-generator': QrCodeGeneratorTool,
+  'date-converter': DateConverterTool,
   'password-generator': PasswordGeneratorTool,
   'color-picker': ColorPickerTool,
   'file-info': FileInfoTool,
