@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="حالت آفلاین | ابزارهای آنلاین" description="شما در حال حاضر به اینترنت متصل نیستید.">
+  <div class="container page" style="text-align:center; padding-block: 4rem;">
+    <div style="font-size: 4rem; margin-bottom: 1rem;">📡</div>
+    <h1>شما آفلاین هستید</h1>
+    <p style="color: var(--color-text-muted); max-width: 400px; margin: 0 auto 2rem;">
+      برای استفاده از ابزارهای آنلاین، لطفاً اتصال اینترنت خود را بررسی کنید و صفحه را دوباره بارگذاری نمایید.
+    </p>
+    <button onclick="window.location.reload()" class="btn btn-primary">🔄 تلاش مجدد</button>
+  </div>
+</BaseLayout>

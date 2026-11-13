@@ -1,0 +1,19 @@
+{
+  "name": "ابزارهای آنلاین حرفه‌ای",
+  "short_name": "Online Tools",
+  "description": "مجموعه‌ای از ۳۷ ابزار سریع، امن و رایگان",
+  "start_url": "/online-tools/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#4f46e5",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/online-tools/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

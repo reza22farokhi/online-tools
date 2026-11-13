@@ -100,7 +100,11 @@ const dicts = getDicts();
         a.appendChild(l);
     }(window,document,"yektanet");
   </script>
-</head>
+
+    <link rel="manifest" href="${import.meta.env.BASE_URL}manifest.json" />
+    <meta name="theme-color" content="#4f46e5" />
+    <link rel="apple-touch-icon" href="${import.meta.env.BASE_URL}favicon.svg" />
+    </head>
   <body>
     <a href="#main" class="skip-link">پرش به محتوا</a>
     <Header />
@@ -141,5 +145,15 @@ const dicts = getDicts();
       })();
     </script>
     <!-- data-tool-slug-tracker -->
-  </body>
+  
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('${import.meta.env.BASE_URL}sw.js')
+            .then(reg => console.log('SW registered:', reg.scope))
+            .catch(err => console.warn('SW error:', err));
+        });
+      }
+    </script>
+    </body>
 </html>
