@@ -37,7 +37,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const textarea = document.getElementById('shared-content');
       textarea.value = finalContent || 'هیچ متنی دریافت نشد.';
 
-      const base = window.location.pathname.split('/share-target')[0];
+      const base = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/share-target'));
       
       // تنظیم لینک ابزارها
       document.getElementById('word-counter-link').href = `${base}/tools/word-counter/`;
