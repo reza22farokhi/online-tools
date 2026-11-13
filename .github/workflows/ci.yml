@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: '20'
           cache: npm
-      - run: npm ci || npm install
+      - run: npm ci
       - name: Unit tests
         run: npx vitest run
       - name: Type check
@@ -30,7 +30,14 @@ jobs:
       - name: Build
         run: npm run build
       - name: Verify dist
-        run: test -f dist/index.html && test -f dist/tools/file-info/index.html
+        run: |
+          test -f dist/index.html
+          TOOL_COUNT=$(ls dist/tools | wc -l)
+          REGISTRY_COUNT=$(grep -c "slug:" src/tools/registry.ts)
+          if [ "$TOOL_COUNT" -ne "$REGISTRY_COUNT" ]; then
+            echo "Error: Built tools count ($TOOL_COUNT) does not match registry ($REGISTRY_COUNT)"
+            exit 1
+          fi
 
   e2e:
     needs: test
@@ -41,7 +48,7 @@ jobs:
         with:
           node-version: '20'
           cache: npm
-      - run: npm ci || npm install
+      - run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Build
