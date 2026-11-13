@@ -1,10 +1,14 @@
 ---
 // VisitorCounter.astro
 ---
-<div class="visitor-counter" id="live-visitor-counter">
+<div class="visitor-counter">
   <span class="pulse-dot"></span>
   <span class="counter-label">بازدیدکننده:</span>
-  <span class="counter-number" id="visitor-count">...</span>
+  <img 
+    src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Freza22farokhi.github.io%2Fonline-tools%2F&count_bg=%2310B981&title_bg=%231F2937&icon=&icon_color=%23E7E7E7&title=visits&edge_flat=true" 
+    alt="Visitor Count" 
+    class="counter-img"
+  />
 </div>
 
 <style>
@@ -24,7 +28,6 @@
     height: 8px;
     background-color: #10b981;
     border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
     animation: pulse 2s infinite;
   }
   @keyframes pulse {
@@ -32,34 +35,8 @@
     70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
   }
-  .counter-number {
-    font-weight: 700;
-    color: var(--color-text-primary, #111827);
-    font-variant-numeric: tabular-nums;
+  .counter-img {
+    height: 20px;
+    display: block;
   }
 </style>
-
-<script is:inline>
-  async function updateVisitorCount() {
-    const countElement = document.getElementById('visitor-count');
-    if (!countElement) return;
-
-    try {
-      // استفاده از API رایگان CounterAPI
-      const response = await fetch('https://abacus.jasoncameron.dev/hit/reza22farokhi/online-tools/visits');
-      const data = await response.json();
-      
-      // فرمت کردن عدد (مثلا 1,234)
-      countElement.textContent = data.value.toLocaleString('fa-IR');
-    } catch (error) {
-      console.warn('Failed to fetch visitor count', error);
-      countElement.textContent = '---';
-    }
-  }
-
-  // اجرای اولیه
-  updateVisitorCount();
-
-  // آپدیت خودکار هر ۱۰ ثانیه (برای حس زنده بودن)
-  setInterval(updateVisitorCount, 10000);
-</script>
