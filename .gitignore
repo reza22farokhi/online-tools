@@ -20,3 +20,19 @@ playwright-report/
 test-results/
 e2e-*.sh
 cleanup-*.sh
+
+# ============ TITAN X Ω harden ============
+# One-off maintenance scripts (never tracked)
+scripts/one-off/
+
+# Local backups / bundles
+*.bundle
+*.tgz
+*.BACKUP-*
+online-tools-BACKUP-*/
+
+# Test / build noise
+coverage/
+.vitest/
+playwright-report/
+test-results/

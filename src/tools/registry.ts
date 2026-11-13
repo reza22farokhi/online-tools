@@ -66,7 +66,14 @@ export const registry: ToolMeta[] = [
   fileInfoMeta, fileToBase64Meta,
   multiCalendarMeta, unixTimestampMeta,
   dateCalculatorMeta, dateInfoMeta,
-  csvJsonMeta
+  csvJsonMeta,
+  {
+    slug: 'persian-text-refiner',
+    name: { fa: 'پالایشگر متن فارسی', en: 'Persian Text Refiner' },
+    description: { fa: 'اصلاح خودکار حروف عربی، نیم‌فاصله‌ها و علائم نگارشی', en: 'Fix Arabic characters, half-spaces, and punctuation' },
+    category: 'text',
+    popular: false
+  }
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {

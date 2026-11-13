@@ -39,6 +39,7 @@ import UnixTimestampTool from './date/unix-timestamp/Tool.astro';
 import DateCalculatorTool from './date/date-calculator/Tool.astro';
 import DateInfoTool from './date/date-info/Tool.astro';
 import CsvJsonTool from './file/csv-json-converter/Tool.astro';
+import PersianTextRefinerTool from './text/persian-text-refiner/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool,
@@ -80,7 +81,8 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'unix-timestamp': UnixTimestampTool,
   'date-calculator': DateCalculatorTool,
   'date-info': DateInfoTool,
-  'csv-json-converter': CsvJsonTool
+  'csv-json-converter': CsvJsonTool,
+  'persian-text-refiner': PersianTextRefinerTool
 };
 
 export function getToolComponent(slug: string): AstroComponentFactory | null {

@@ -42,6 +42,8 @@ import { faqs as qr_code_generator } from './faqs/qr-code-generator';
 import { faqs as password_generator } from './faqs/password-generator';
 import { faqs as date_converter } from './faqs/date-converter';
 
+import { faqs as persian_text_refiner } from './faqs/persian-text-refiner';
+
 export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'word-counter': word_counter,
   'case-converter': case_converter,
@@ -83,6 +85,7 @@ export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'qr-code-generator': qr_code_generator,
   'password-generator': password_generator,
   'date-converter': date_converter,
+  'persian-text-refiner': persian_text_refiner,
 };
 
 export function getFaqsFor(slug: string): ToolFaqItem[] {
