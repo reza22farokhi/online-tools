@@ -81,6 +81,15 @@ const related = getRelated(meta.slug);
       </section>
     )}
   </article>
+
+<script>
+  import { pushRecent } from '../lib/ui';
+  const article = document.querySelector('article[data-tool-slug]');
+  if (article) {
+    const slug = article.getAttribute('data-tool-slug');
+    if (slug) pushRecent(slug);
+  }
+</script>
 </BaseLayout>
 
 <style>
