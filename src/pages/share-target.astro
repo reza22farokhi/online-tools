@@ -47,7 +47,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       // منطق دکمه کپی
       document.getElementById('copy-btn').addEventListener('click', () => {
         textarea.select();
-        document.execCommand('copy');
+        await navigator.clipboard.writeText(textToCopy).catch(console.error);
         const btn = document.getElementById('copy-btn');
         btn.textContent = '✅ کپی شد!';
         setTimeout(() => btn.textContent = '📋 کپی متن', 2000);

@@ -113,7 +113,7 @@ export async function copyText(text: string): Promise<boolean> {
     ta.style.opacity = '0';
     document.body.appendChild(ta);
     ta.select();
-    const ok = document.execCommand('copy');
+    const ok = await navigator.clipboard.writeText(textToCopy).then(() => true).catch(() => false);
     document.body.removeChild(ta);
     return ok;
   } catch { return false; }

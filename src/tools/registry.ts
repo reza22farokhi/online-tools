@@ -72,7 +72,9 @@ export const registry: ToolMeta[] = [
     name: { fa: 'پالایشگر متن فارسی', en: 'Persian Text Refiner' },
     description: { fa: 'اصلاح خودکار حروف عربی، نیم‌فاصله‌ها و علائم نگارشی', en: 'Fix Arabic characters, half-spaces, and punctuation' },
     category: 'text',
-    popular: false
+    popular: false,
+    keywords: ['persian', 'text', 'refiner', 'فارسی'],
+    addedAt: '2026-11-14'
   }
 ];
 
