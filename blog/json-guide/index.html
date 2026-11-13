@@ -32,7 +32,7 @@
         l.src=c,
         a.appendChild(l);
     }(window,document,"yektanet");
-  </script><link rel="stylesheet" href="/online-tools/_astro/age-calculation-guide.CDycFbvc.css">
+  </script><link rel="manifest" href="${import.meta.env.BASE_URL}manifest.json"><meta name="theme-color" content="#4f46e5"><link rel="apple-touch-icon" href="${import.meta.env.BASE_URL}favicon.svg"><link rel="stylesheet" href="/online-tools/_astro/age-calculation-guide.CDycFbvc.css">
 <link rel="stylesheet" href="/online-tools/_astro/age-calculation-guide.BKTr-pDI.css"></head> <body> <a href="#main" class="skip-link">پرش به محتوا</a> <header class="site-header" data-astro-cid-qlfjksao> <div class="container header-inner" data-astro-cid-qlfjksao> <a href="/online-tools/" class="brand" aria-label="Online Tools" data-astro-cid-qlfjksao> <span class="brand-icon" aria-hidden="true" data-astro-cid-qlfjksao>🧰</span> <span class="brand-name" data-i18n="site.name" data-astro-cid-qlfjksao>ابزارهای آنلاین</span> </a> <nav aria-label="Main" class="main-nav" data-astro-cid-qlfjksao> <a href="/online-tools/" data-i18n="nav.home" data-astro-cid-qlfjksao>خانه</a> <a href="/online-tools/tools/" data-i18n="nav.tools" data-astro-cid-qlfjksao>ابزارها</a> <a href="/online-tools/blog/" data-astro-cid-qlfjksao>وبلاگ</a> </nav> <div class="header-actions" data-astro-cid-qlfjksao> <button type="button" class="icon-btn" data-theme-toggle data-i18n-aria-label="theme.toggle" aria-label="تغییر تم" title="Theme" data-astro-cid-qlfjksao> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-astro-cid-qlfjksao> <circle cx="12" cy="12" r="4" data-astro-cid-qlfjksao></circle> <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" data-astro-cid-qlfjksao></path> </svg> </button> <button type="button" class="icon-btn" data-lang-toggle data-i18n-aria-label="lang.toggle" aria-label="تغییر زبان" title="EN / FA" data-astro-cid-qlfjksao> <span aria-hidden="true" data-astro-cid-qlfjksao>A/ف</span> </button> </div> </div> </header>  <main id="main">  <article class="blog-post container" data-astro-cid-4dqtj3le> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-4dqtj3le> <ol data-astro-cid-4dqtj3le> <li data-astro-cid-4dqtj3le><a href="/online-tools/" data-astro-cid-4dqtj3le>خانه</a></li> <li data-astro-cid-4dqtj3le><a href="/online-tools/blog/" data-astro-cid-4dqtj3le>وبلاگ</a></li> <li aria-current="page" data-astro-cid-4dqtj3le>راهنمای کامل JSON: از فرمت‌بندی تا اعتبارسنجی امن</li> </ol> </nav> <header class="post-header" data-astro-cid-4dqtj3le> <h1 data-astro-cid-4dqtj3le>راهنمای کامل JSON: از فرمت‌بندی تا اعتبارسنجی امن</h1> <div class="post-meta" data-astro-cid-4dqtj3le> <span data-astro-cid-4dqtj3le>📅 ۲۲ آبان ۱۴۰۵</span> <span data-astro-cid-4dqtj3le>⏱️ ۴ دقیقه مطالعه</span> </div> </header> <div class="post-content card" data-astro-cid-4dqtj3le>  <p>
 امروزه <strong>JSON (JavaScript Object Notation)</strong> زبان مشترک تبادل داده در وب است. از APIهای ابری گرفته تا فایل‌های تنظیمات یک برنامه ساده، همه از JSON استفاده می‌کنند. اما کار با JSON خام می‌تواند دشوار و مستعد خطا باشد.
 </p> <h2>چرا فرمت‌بندی (Pretty-Print) اهمیت دارد؟</h2> <p>
@@ -64,4 +64,12 @@
           }
         } catch(e) {}
       })();
-    </script> <!-- data-tool-slug-tracker --> </body></html> 
+    </script> <!-- data-tool-slug-tracker --> <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('${import.meta.env.BASE_URL}sw.js')
+            .then(reg => console.log('SW registered:', reg.scope))
+            .catch(err => console.warn('SW error:', err));
+        });
+      }
+    </script> </body> </html> 
