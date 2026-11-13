@@ -1,0 +1,119 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const base = import.meta.env.BASE_URL;
+
+const faqs = [
+  { q: 'CSV و JSON چه تفاوتی دارند؟', a: 'CSV یک فرمت متنی ساده است که داده‌ها را با کاما از هم جدا می‌کند (مناسب Excel). JSON یک فرمت ساختاریافته است که داده‌ها را به صورت شیء نمایش می‌دهد (مناسب APIها و برنامه‌نویسی). هر دو برای ذخیره داده استفاده می‌شوند اما کاربردهای متفاوتی دارند.' },
+  { q: 'چرا از CSV به JSON تبدیل کنیم؟', a: 'APIهای مدرن معمولاً JSON می‌پذیرند نه CSV. اگر داده‌ها را از Excel یا Google Sheets خارج کرده‌اید (CSV)، برای استفاده در برنامه یا ارسال به API، باید به JSON تبدیل شوند.' },
+  { q: 'آیا هنگام تبدیل، داده‌ها از بین می‌روند؟', a: 'در تبدیل ساده، ممکن است ساختار (مثل ادغام سلول‌ها در Excel) از بین برود، اما داده‌ها حفظ می‌شوند. برای حفظ ساختار پیچیده، باید تبدیل‌های پیچیده‌تری انجام دهید.' },
+  { q: 'آیا تبدیل CSV به JSON امن است؟', a: 'اگر ابزار آنلاین، داده‌ها را به سرور ارسال نکند، بله. ابزار ما کاملاً محلی اجرا می‌شود و داده‌های شما هرگز از مرورگر خارج نمی‌شود.' }
+];
+---
+<BlogLayout
+  title="راهنمای کامل تبدیل CSV به JSON و برعکس"
+  description="آموزش تبدیل CSV به JSON و JSON به CSV با مثال‌های کاربردی. مقایسه دو فرمت، استفاده در برنامه‌نویسی و ابزار آنلاین."
+  publishDate="۲۶ آذر ۱۴۰۵"
+  readTime="۶ دقیقه"
+  slug="csv-to-json-guide"
+  faqs={faqs}
+>
+  <p>
+    در دنیای داده‌ها، دو فرمت بیشتر از بقیه استفاده می‌شوند: <strong>CSV</strong> (برای انسان‌ها) و <strong>JSON</strong> (برای ماشین‌ها). بسیاری از پروژه‌ها نیاز دارند داده‌ها را بین این دو فرمت تبدیل کنند. اما این تبدیل، پیچیدگی‌های خاص خودش را دارد.
+  </p>
+
+  <h2>CSV چیست؟</h2>
+  <p>
+    CSV (Comma-Separated Values) یک فرمت متنی ساده است که داده‌ها را با کاما از هم جدا می‌کند. هر خط، یک ردیف داده است و هر کاما، یک ستون.
+  </p>
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;overflow-x:auto;font-size:0.85rem;"><code>name,age,city
+Ali,30,Tehran
+Sara,25,Shiraz
+Reza,28,Mashhad</code></pre>
+  <p>
+    CSV برای Excel، Google Sheets و ابزارهای داده مناسب است، اما ساختار سلسله‌مراتبی ندارد.
+  </p>
+
+  <h2>JSON چیست؟</h2>
+  <p>
+    JSON (JavaScript Object Notation) یک فرمت ساختاریافته است که داده‌ها را به صورت شیء یا آرایه نمایش می‌دهد.
+  </p>
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;overflow-x:auto;font-size:0.85rem;"><code>[
+  &#123;"name": "Ali", "age": 30, "city": "Tehran"&#125;,
+  &#123;"name": "Sara", "age": 25, "city": "Shiraz"&#125;,
+  &#123;"name": "Reza", "age": 28, "city": "Mashhad"&#125;
+]</code></pre>
+  <p>
+    JSON برای APIها، برنامه‌نویسی و ساختارهای پیچیده مناسب است.
+  </p>
+
+  <h2>تبدیل CSV به JSON</h2>
+  <p>
+    برای تبدیل CSV به JSON، مراحل ساده است:
+  </p>
+  <ol>
+    <li>خط اول = نام ستون‌ها (header)</li>
+    <li>هر خط بعدی = یک ردیف داده</li>
+    <li>هر ردیف به یک شیء JSON تبدیل می‌شود</li>
+  </ol>
+  <p>
+    با <a href={base + 'tools/csv-json-converter/'}>ابزار مبدل CSV به JSON</a> ما، این کار در یک کلیک انجام می‌شود.
+  </p>
+
+  <h2>تبدیل JSON به CSV</h2>
+  <p>
+    برای تبدیل JSON به CSV:
+  </p>
+  <ol>
+    <li>تمام کلیدهای آبجکت‌ها را استخراج کنید (این‌ها ستون‌ها می‌شوند)</li>
+    <li>هر آبجکت = یک ردیف</li>
+    <li>مقادیر را با کاما از هم جدا کنید</li>
+  </ol>
+
+  <h2>چالش‌های تبدیل</h2>
+  <h3>۱. کوتیشن‌ها</h3>
+  <p>
+    اگر یک مقدار شامل کاما باشد (مثل «Tehran, Iran»)، باید در کوتیشن قرار گیرد:
+  </p>
+  <pre style="background:var(--color-surface-2);padding:var(--space-3);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;font-size:0.85rem;"><code>name,city
+Ali,"Tehran, Iran"</code></pre>
+  <p>
+    ابزار ما به‌طور خودکار این کوتیشن‌ها را مدیریت می‌کند.
+  </p>
+
+  <h3>۲. ستون‌های ناقص</h3>
+  <p>
+    اگر یک ردیف ستون کمتری داشته باشد، باید با مقدار خالی پر شود. ابزار ما این را پشتیبانی می‌کند.
+  </p>
+
+  <h3>۳. جداکننده‌های مختلف</h3>
+  <p>
+    بعضی از فایل‌ها به جای کاما از سمی‌کالن (;) یا Tab استفاده می‌کنند. ابزار ما هر سه را پشتیبانی می‌کند.
+  </p>
+
+  <h2>کاربردهای تبدیل</h2>
+  <ul>
+    <li><strong>مهاجرت داده:</strong> انتقال داده از Excel به دیتابیس</li>
+    <li><strong>API:</strong> تبدیل داده‌های CSV به JSON برای ارسال به API</li>
+    <li><strong>تحلیل داده:</strong> پردازش داده‌های Excel در Python یا JavaScript</li>
+    <li><strong>پشتیبان‌گیری:</strong> ذخیره داده‌ها در فرمت خوانا</li>
+  </ul>
+
+  <h2>ابزار مبدل CSV/JSON</h2>
+  <p>
+    با <a href={base + 'tools/csv-json-converter/'}>ابزار مبدل CSV به JSON</a> ما:
+  </p>
+  <ul>
+    <li>می‌توانید فایل CSV خود را جای‌گذاری کنید</li>
+    <li>جهت تبدیل (CSV به JSON یا برعکس) را انتخاب کنید</li>
+    <li>جداکننده را مشخص کنید (کاما، سمی‌کالن، Tab)</li>
+    <li>نتیجه را در چند ثانیه ببینید</li>
+  </ul>
+  <p>
+    این ابزار کاملاً محلی اجرا می‌شود و داده‌های شما هرگز به سرور ارسال نمی‌شود.
+  </p>
+
+  <h2>جمع‌بندی</h2>
+  <p>
+    تبدیل CSV به JSON یک کار ضروری در پروژه‌های داده است. با <a href={base + 'tools/csv-json-converter/'}>ابزار آنلاین ما</a>، این کار در چند ثانیه و بدون ارسال داده به سرور انجام می‌شود. برای برنامه‌نویسان و تحلیل‌گران داده، این ابزار یک ضرورت است.
+  </p>
+</BlogLayout>
