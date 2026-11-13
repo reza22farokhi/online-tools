@@ -76,6 +76,64 @@ const otherCategories = categories.filter(c => c.slug !== category.slug);
       </div>
     </section>
   </div>
+
+<style>
+  /* Category Hero Enhancements */
+  .cat-hero {
+    position: relative;
+    overflow: hidden;
+    animation: catFadeIn 0.6s ease-out forwards;
+  }
+  .cat-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; right: -50%; bottom: -50%;
+    background: radial-gradient(circle at center, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cat-hero > * {
+    position: relative;
+    z-index: 1;
+  }
+  .cat-hero-icon {
+    animation: iconFloat 4s ease-in-out infinite;
+    display: inline-block;
+  }
+  
+  @keyframes catFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes iconFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.05); }
+  }
+
+  /* Other Categories Cards Enhancements */
+  .other-cat-card {
+    transition: all var(--transition-normal) ease;
+  }
+  .other-cat-card:hover {
+    transform: translateY(-3px) translateX(0);
+    box-shadow: var(--shadow-2);
+    border-color: var(--color-primary);
+    background: var(--color-surface-2);
+  }
+  .other-cat-arrow {
+    transition: transform var(--transition-fast) ease;
+  }
+  .other-cat-card:hover .other-cat-arrow {
+    transform: translateX(-4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cat-hero, .cat-hero-icon {
+      animation: none !important;
+    }
+  }
+</style>
+
 </BaseLayout>
 
 <style>
