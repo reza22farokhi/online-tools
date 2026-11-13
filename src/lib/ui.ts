@@ -216,8 +216,3 @@ export function initUI(dicts?: Record<Lang, Record<string, string>>) {
   });
 }
 
-
-// TITAN X Ω — Expose toast for global error handler
-if (typeof window !== 'undefined') {
-  (window as any).showToast = showToast;
-}

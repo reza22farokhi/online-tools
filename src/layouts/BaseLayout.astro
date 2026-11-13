@@ -122,14 +122,25 @@ const dicts = getDicts();
 
     <script type="application/json" id="i18n-data" set:html={JSON.stringify(dicts)}></script>
     <script is:inline>
-      // TITAN X Ω — Global Error Handler
+      // TITAN X Ω — Self-Contained Global Error Handler
+      function showGlobalError(msg) {
+        console.error(msg);
+        var el = document.getElementById('global-error-toast');
+        if(!el) {
+          el = document.createElement('div');
+          el.id = 'global-error-toast';
+          el.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:12px 24px;border-radius:8px;z-index:9999;font-family:inherit;box-shadow:0 4px 12px rgba(0,0,0,0.15);direction:rtl;';
+          document.body.appendChild(el);
+        }
+        el.textContent = msg;
+        setTimeout(function() { if(el) el.remove(); }, 5000);
+      }
+
       window.addEventListener('error', function(event) {
-        console.error('[Global Error]', event.message);
-        if(window.showToast) window.showToast('یک خطای غیرمنتظره رخ داد. لطفاً صفحه را رفرش کنید.', 'error');
+        showGlobalError('یک خطای غیرمنتظره رخ داد. لطفاً صفحه را رفرش کنید.');
       });
       window.addEventListener('unhandledrejection', function(event) {
-        console.error('[Unhandled Promise]', event.reason);
-        if(window.showToast) window.showToast('خطا در ارتباط با سرور. لطفاً اتصال خود را بررسی کنید.', 'error');
+        showGlobalError('خطا در ارتباط با سرور. لطفاً اتصال خود را بررسی کنید.');
       });
     </script>
 
