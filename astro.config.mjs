@@ -6,7 +6,8 @@ import sitemap from '@astrojs/sitemap';
 // برای دامنه اصلی:
 //   SITE_URL=https://example.com npm run build
 const site = process.env.SITE_URL || 'https://reza22farokhi.github.io/online-tools';
-const base = process.env.BASE_PATH || '/';
+const isDev = process.env.NODE_ENV !== 'production';
+const base = process.env.BASE_PATH || (isDev ? '/' : '/online-tools/');
 
 export default defineConfig({
   site,
