@@ -1,11 +1,13 @@
-const CACHE_NAME = 'online-tools-v2';
-const OFFLINE_URL = '/online-tools/offline/';
+// TITAN X Ω — Dynamic Base Path & Robust Caching
+const CACHE_NAME = 'online-tools-v3';
+// دریافت مسیر پایه (Base Path) به صورت داینامیک
+const scope = self.registration.scope;
+const OFFLINE_URL = new URL('offline/', scope).href;
 
-// فایل‌هایی که در نصب اولیه کش می‌شوند
 const PRECACHE_ASSETS = [
   OFFLINE_URL,
-  '/online-tools/icons/icon-192.png',
-  '/online-tools/icons/icon-512.png'
+  new URL('icons/icon-192.png', scope).href,
+  new URL('icons/icon-512.png', scope).href
 ];
 
 self.addEventListener('install', (event) => {
@@ -30,8 +32,11 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  
+  // Ignore Chrome extension requests
+  if (!event.request.url.startsWith('http')) return;
 
-  // استراتژی برای صفحات HTML (اول شبکه، بعد کش، بعد صفحه آفلاین)
+  // Network First for HTML (Navigation)
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -49,22 +54,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // استراتژی برای فایل‌های استاتیک (اول کش، بعد شبکه)
+  // Stale-While-Revalidate for Static Assets
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-
-      return fetch(event.request).then((response) => {
-        // فقط فایل‌های موفق و از دامنه خودمان را کش می‌کنیم
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse.clone()));
         }
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return response;
-      });
+        return networkResponse;
+      }).catch(() => {}); // Prevent unhandled rejection
+
+      return cachedResponse || fetchPromise;
     })
   );
 });
