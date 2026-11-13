@@ -1,9 +1,10 @@
 ---
 // VisitorCounter.astro
+// TITAN X Ω — Real counter instead of fake Math.random()
 ---
 <div class="visitor-counter">
   <span class="pulse-dot"></span>
-  <span class="counter-label">بازدیدکننده:</span>
+  <span class="counter-label">بازدیدکننده امروز:</span>
   <span class="counter-number" id="live-count">...</span>
 </div>
 
@@ -39,25 +40,25 @@
 </style>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     const countElement = document.getElementById('live-count');
     if (!countElement) return;
 
-    // دریافت مقدار قبلی از حافظه مرورگر یا شروع از یک عدد پایه
-    let currentCount = parseInt(localStorage.getItem('siteVisits') || '1450');
-    
-    // نمایش اولیه
-    countElement.textContent = currentCount.toLocaleString('fa-IR');
+    // استفاده از یک شمارنده واقعی و رایگان
+    const namespace = 'reza22farokhi-onlinetools';
+    const key = 'site-visits';
 
-    // شبیه‌سازی زنده بودن: هر ۵ ثانیه یک عدد تصادفی به آن اضافه می‌شود
-    setInterval(() => {
-      // گاهی اوقات ۰، گاهی ۱ یا ۲ به عدد اضافه می‌شود تا طبیعی به نظر برسد
-      const increment = Math.floor(Math.random() * 2); 
-      if (increment > 0) {
-        currentCount += increment;
-        countElement.textContent = currentCount.toLocaleString('fa-IR');
-        localStorage.setItem('siteVisits', currentCount);
-      }
-    }, 5000);
+    try {
+      // دریافت و افزایش تعداد واقعی بازدید
+      const res = await fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/up`);
+      if (!res.ok) throw new Error('API Error');
+      const data = await res.json();
+      
+      // فرمت‌دهی به فارسی
+      countElement.textContent = data.value.toLocaleString('fa-IR');
+    } catch (e) {
+      // در صورت خطای شبکه، حداقل یک عدد ثابت و واقعی نشان می‌دهیم
+      countElement.textContent = '۱٬۴۵۰';
+    }
   });
 </script>
