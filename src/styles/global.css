@@ -196,3 +196,30 @@ button, input, textarea, select {
   color: var(--color-text-muted);
   opacity: 1;
 }
+
+
+/* TITAN X Ω — Accessibility & Focus Visible */
+:focus-visible {
+  outline: 3px solid var(--color-primary, #4f46e5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip Link Styles */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--color-primary, #4f46e5);
+  color: white;
+  padding: 10px 20px;
+  z-index: 9999;
+  transition: top 0.2s;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+  top: 0;
+}

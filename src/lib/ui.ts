@@ -215,3 +215,9 @@ export function initUI(dicts?: Record<Lang, Record<string, string>>) {
     btn.addEventListener('click', () => toggleLang(dicts));
   });
 }
+
+
+// TITAN X Ω — Expose toast for global error handler
+if (typeof window !== 'undefined') {
+  (window as any).showToast = showToast;
+}

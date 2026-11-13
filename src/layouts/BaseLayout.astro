@@ -121,6 +121,18 @@ const dicts = getDicts();
     <Footer />
 
     <script type="application/json" id="i18n-data" set:html={JSON.stringify(dicts)}></script>
+    <script is:inline>
+      // TITAN X Ω — Global Error Handler
+      window.addEventListener('error', function(event) {
+        console.error('[Global Error]', event.message);
+        if(window.showToast) window.showToast('یک خطای غیرمنتظره رخ داد. لطفاً صفحه را رفرش کنید.', 'error');
+      });
+      window.addEventListener('unhandledrejection', function(event) {
+        console.error('[Unhandled Promise]', event.reason);
+        if(window.showToast) window.showToast('خطا در ارتباط با سرور. لطفاً اتصال خود را بررسی کنید.', 'error');
+      });
+    </script>
+
     <script>
       import { initUI, populateHomeSections } from '../lib/ui';
       const dataEl = document.getElementById('i18n-data');
