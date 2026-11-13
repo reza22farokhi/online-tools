@@ -1,3 +1,4 @@
+import { meta as passwordGeneratorMeta } from './code/password-generator/meta';
 import { meta as qrCodeMeta } from './image/qr-code-generator/meta';
 import type { ToolMeta, ToolCategory, CategoryMeta } from './types';
 import { meta as wordCounterMeta } from './text/word-counter/meta';
@@ -50,6 +51,7 @@ export const categories: CategoryMeta[] = [
 ];
 
 export const registry: ToolMeta[] = [
+  passwordGeneratorMeta,
   qrCodeMeta,
   wordCounterMeta, caseConverterMeta, removeExtraSpacesMeta, lineSorterMeta,
   removeDuplicatesMeta, slugGeneratorMeta,

@@ -1,0 +1,169 @@
+---
+// Password Generator UI
+---
+<div class="pass-tool">
+  <div class="output-group">
+    <input type="text" id="pass-output" readonly placeholder="رمز عبور اینجا نمایش داده می‌شود" dir="ltr" />
+    <button id="copy-btn" class="btn-secondary" title="کپی">📋</button>
+  </div>
+
+  <button id="generate-btn" class="btn-primary">تولید رمز عبور جدید</button>
+
+  <div class="options">
+    <div class="option-row">
+      <label for="pass-length">طول رمز: <span id="length-val">16</span></label>
+      <input type="range" id="pass-length" min="8" max="64" value="16" />
+    </div>
+    
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="inc-upper" checked> شامل حروف بزرگ (A-Z)</label>
+      <label><input type="checkbox" id="inc-lower" checked> شامل حروف کوچک (a-z)</label>
+      <label><input type="checkbox" id="inc-numbers" checked> شامل اعداد (0-9)</label>
+      <label><input type="checkbox" id="inc-symbols" checked> شامل نمادها (!@#$%)</label>
+    </div>
+  </div>
+</div>
+
+<script>
+  const outputEl = document.getElementById('pass-output') as HTMLInputElement;
+  const lengthEl = document.getElementById('pass-length') as HTMLInputElement;
+  const lengthValEl = document.getElementById('length-val') as HTMLSpanElement;
+  const generateBtn = document.getElementById('generate-btn') as HTMLButtonElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+  
+  const incUpper = document.getElementById('inc-upper') as HTMLInputElement;
+  const incLower = document.getElementById('inc-lower') as HTMLInputElement;
+  const incNumbers = document.getElementById('inc-numbers') as HTMLInputElement;
+  const incSymbols = document.getElementById('inc-symbols') as HTMLInputElement;
+
+  const CHARSETS = {
+    upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    lower: 'abcdefghijklmnopqrstuvwxyz',
+    numbers: '0123456789',
+    symbols: '!@#$%^&*()_+~`|}{[]:;?><,./-='
+  };
+
+  function getSecureRandomInt(max: number) {
+    const randomBuffer = new Uint32Array(1);
+    window.crypto.getRandomValues(randomBuffer);
+    return randomBuffer[0] % max;
+  }
+
+  function generatePassword() {
+    let charset = '';
+    if (incUpper.checked) charset += CHARSETS.upper;
+    if (incLower.checked) charset += CHARSETS.lower;
+    if (incNumbers.checked) charset += CHARSETS.numbers;
+    if (incSymbols.checked) charset += CHARSETS.symbols;
+
+    if (charset === '') {
+      outputEl.value = 'حداقل یک گزینه را انتخاب کنید!';
+      return;
+    }
+
+    const length = parseInt(lengthEl.value, 10);
+    let password = '';
+    
+    for (let i = 0; i < length; i++) {
+      const randomIndex = getSecureRandomInt(charset.length);
+      password += charset[randomIndex];
+    }
+    
+    outputEl.value = password;
+  }
+
+  // Event Listeners
+  lengthEl.addEventListener('input', () => {
+    lengthValEl.textContent = lengthEl.value;
+    generatePassword();
+  });
+
+  generateBtn.addEventListener('click', generatePassword);
+
+  copyBtn.addEventListener('click', () => {
+    if (!outputEl.value || outputEl.value.includes('انتخاب کنید')) return;
+    navigator.clipboard.writeText(outputEl.value).then(() => {
+      copyBtn.textContent = '✅';
+      setTimeout(() => copyBtn.textContent = '📋', 2000);
+    });
+  });
+
+  // Generate on load
+  generatePassword();
+</script>
+
+<style>
+  .pass-tool {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .output-group {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .output-group input {
+    flex: 1;
+    padding: var(--space-3);
+    font-size: 1.2rem;
+    font-family: monospace;
+    background: var(--color-surface-2);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  .btn-primary {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--space-3);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  .btn-secondary {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    background: var(--color-surface);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+  .option-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  input[type="range"] {
+    width: 100%;
+  }
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  @media (min-width: 600px) {
+    .checkbox-group {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+  }
+</style>
