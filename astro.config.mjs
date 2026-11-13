@@ -19,7 +19,10 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/404')
+      filter: (page) =>
+        !page.includes('/404') &&
+        !page.includes('/share-target') &&
+        !page.includes('/offline')
     })
   ],
   vite: {
