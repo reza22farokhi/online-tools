@@ -3,8 +3,8 @@ import BlogLayout from '../../layouts/BlogLayout.astro';
 const base = import.meta.env.BASE_URL;
 ---
 <BlogLayout
-  title="راهنمای کامل JSON: از فرمت‌بندی تا اعتبارسنجی امن"
-  description="چگونه یک فایل JSON را به درستی فرمت کنیم؟ آشنایی با خطاهای رایج، اهمیت اعتبارسنجی و روش‌های امن برای کار با داده‌های JSON."
+  title="راهنمای فرمت‌بندی و رفع خطاهای JSON"
+  description="آموزش گام‌به‌گام فرمت‌بندی (Pretty-Print) و اعتبارسنجی JSON. بررسی خطاهای رایج مثل کامای اضافه و تک‌کوتیشن و روش‌های امن کار با داده‌ها."
   publishDate="۲۲ آبان ۱۴۰۵"
   readTime="۴ دقیقه"
   slug="json-guide"
@@ -21,6 +21,7 @@ const base = import.meta.env.BASE_URL;
     می‌توانید از <a href={base + 'tools/json-formatter/'}>ابزار فرمت‌بندی JSON</a> ما برای این کار استفاده کنید. این ابزار کاملاً در مرورگر شما اجرا می‌شود و هیچ داده‌ای را به سرور ارسال نمی‌کند.
   </p>
 
+<p>اگر با مفاهیم پایه JSON آشنایی ندارید، ابتدا مقاله <a href={base + 'blog/what-is-json-guide/'}>JSON چیست؟</a> را بخوانید.</p>
   <h2>خطاهای رایج در JSON</h2>
   <p>JSON بسیار سخت‌گیر است. یک کاما اضافه یا یک کوتیشن جاافتاده می‌تواند کل فایل را نامعتبر کند:</p>
   <ul>
