@@ -69,6 +69,32 @@ if (faqs.length > 0) {
 
     {faqs.length > 0 && <BlogFAQ faqs={faqs} />}
   </article>
+
+<!-- TITAN X Ω — Copy with Attribution Script -->
+<script is:inline>
+  document.addEventListener('copy', function(e) {
+    // گرفتن متنی که کاربر انتخاب کرده است
+    const selection = window.getSelection().toString();
+    
+    // اگر متنی انتخاب نشده بود، کاری نکن
+    if (!selection) return;
+    
+    // جلوگیری از رفتار پیش‌فرض مرورگر
+    e.preventDefault();
+    
+    // ساخت متن نهایی (متن + لینک صفحه)
+    const url = window.location.href.split('#')[0]; // حذف هش‌های احتمالی
+    const copyText = `${selection}\n\nمنبع: ${url}`;
+    
+    // کپی کردن در حافظه
+    if (e.clipboardData) {
+      e.clipboardData.setData('text/plain', copyText);
+    } else if (window.clipboardData) {
+      window.clipboardData.setData('Text', copyText);
+    }
+  });
+</script>
+
 </BaseLayout>
 
 <style>
