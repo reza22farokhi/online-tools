@@ -1,3 +1,4 @@
+import { meta as qrCodeMeta } from './image/qr-code-generator/meta';
 import type { ToolMeta, ToolCategory, CategoryMeta } from './types';
 import { meta as wordCounterMeta } from './text/word-counter/meta';
 import { meta as caseConverterMeta } from './text/case-converter/meta';
@@ -49,6 +50,7 @@ export const categories: CategoryMeta[] = [
 ];
 
 export const registry: ToolMeta[] = [
+  qrCodeMeta,
   wordCounterMeta, caseConverterMeta, removeExtraSpacesMeta, lineSorterMeta,
   removeDuplicatesMeta, slugGeneratorMeta,
   jsonFormatterMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta, uuidGeneratorMeta,

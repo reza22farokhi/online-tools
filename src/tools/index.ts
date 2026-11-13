@@ -1,3 +1,4 @@
+import QrCodeGeneratorTool from './image/qr-code-generator/Tool.astro';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import WordCounterTool from './text/word-counter/Tool.astro';
 import CaseConverterTool from './text/case-converter/Tool.astro';
@@ -63,6 +64,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'image-resizer': ImageResizerTool,
   'image-compressor': ImageCompressorTool,
   'format-converter': FormatConverterTool,
+  'qr-code-generator': QrCodeGeneratorTool,
   'color-picker': ColorPickerTool,
   'file-info': FileInfoTool,
   'file-to-base64': FileToBase64Tool,
