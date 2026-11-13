@@ -3,32 +3,55 @@
 ---
 <div class="date-tool">
   <div class="date-col">
-    <h3>تبدیل شمسی به میلادی</h3>
+    <h3>شمسی به میلادی</h3>
     <div class="inputs-row">
-      <input type="number" id="j-year" placeholder="سال (مثلاً 1402)" min="1300" max="1500" value="1402" />
-      <input type="number" id="j-month" placeholder="ماه (1-12)" min="1" max="12" value="1" />
-      <input type="number" id="j-day" placeholder="روز (1-31)" min="1" max="31" value="1" />
+      <div class="input-group">
+        <label>سال</label>
+        <input type="number" id="j-year" placeholder="1402" min="1300" max="1500" value="1402" />
+      </div>
+      <div class="input-group">
+        <label>ماه</label>
+        <input type="number" id="j-month" placeholder="1" min="1" max="12" value="1" />
+      </div>
+      <div class="input-group">
+        <label>روز</label>
+        <input type="number" id="j-day" placeholder="1" min="1" max="31" value="1" />
+      </div>
     </div>
-    <button id="btn-to-g" class="btn-primary">تبدیل به میلادی ←</button>
-    <div class="result-box" id="result-g">---</div>
+    <button id="btn-to-g" class="btn-convert">تبدیل به میلادی <span>←</span></button>
+    <div class="result-box">
+      <span class="result-label">نتیجه:</span>
+      <div id="result-g" class="result-value">---</div>
+    </div>
   </div>
 
   <div class="date-col">
-    <h3>تبدیل میلادی به شمسی</h3>
+    <h3>میلادی به شمسی</h3>
     <div class="inputs-row">
-      <input type="number" id="g-year" placeholder="سال (مثلاً 2023)" min="1900" max="2100" value="2023" />
-      <input type="number" id="g-month" placeholder="ماه (1-12)" min="1" max="12" value="1" />
-      <input type="number" id="g-day" placeholder="روز (1-31)" min="1" max="31" value="1" />
+      <div class="input-group">
+        <label>سال</label>
+        <input type="number" id="g-year" placeholder="2023" min="1900" max="2100" value="2023" />
+      </div>
+      <div class="input-group">
+        <label>ماه</label>
+        <input type="number" id="g-month" placeholder="1" min="1" max="12" value="1" />
+      </div>
+      <div class="input-group">
+        <label>روز</label>
+        <input type="number" id="g-day" placeholder="1" min="1" max="31" value="1" />
+      </div>
     </div>
-    <button id="btn-to-j" class="btn-primary">تبدیل به شمسی ←</button>
-    <div class="result-box" id="result-j">---</div>
+    <button id="btn-to-j" class="btn-convert">تبدیل به شمسی <span>←</span></button>
+    <div class="result-box">
+      <span class="result-label">نتیجه:</span>
+      <div id="result-j" class="result-value">---</div>
+    </div>
   </div>
 </div>
 
 <script>
   import { toJalaali, toGregorian } from './logic';
 
-  // شمسی به میلادی
   document.getElementById('btn-to-g')?.addEventListener('click', () => {
     const jy = parseInt((document.getElementById('j-year') as HTMLInputElement).value);
     const jm = parseInt((document.getElementById('j-month') as HTMLInputElement).value);
@@ -42,7 +65,6 @@
     }
   });
 
-  // میلادی به شمسی
   document.getElementById('btn-to-j')?.addEventListener('click', () => {
     const gy = parseInt((document.getElementById('g-year') as HTMLInputElement).value);
     const gm = parseInt((document.getElementById('g-month') as HTMLInputElement).value);
@@ -63,25 +85,44 @@
     gap: var(--space-4);
     flex-wrap: wrap;
     justify-content: center;
+    align-items: stretch;
   }
   .date-col {
     flex: 1;
-    min-width: 280px;
-    background: var(--color-surface-2);
-    padding: var(--space-4);
+    min-width: 300px;
+    background: var(--color-surface);
+    padding: var(--space-5);
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-1);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .date-col:hover {
+    box-shadow: var(--shadow-2);
   }
   .date-col h3 {
     margin-top: 0;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-4);
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    font-weight: 800;
   }
   .inputs-row {
     display: flex;
     gap: var(--space-2);
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .input-group label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-align: center;
   }
   .inputs-row input {
     width: 100%;
@@ -90,28 +131,57 @@
     border-radius: var(--radius-md);
     text-align: center;
     font-family: inherit;
+    font-size: 1.1rem;
+    background: var(--color-surface-2);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   }
-  .btn-primary {
+  .inputs-row input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
+    background: var(--color-surface);
+  }
+  .btn-convert {
     width: 100%;
     background: var(--color-primary);
     color: white;
-    padding: var(--space-2);
+    padding: var(--space-3);
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
     font-weight: bold;
-    margin-bottom: var(--space-3);
-    transition: opacity 0.2s;
+    font-size: 1rem;
+    margin-bottom: var(--space-4);
+    transition: background var(--transition-fast), transform var(--transition-fast);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-2);
   }
-  .btn-primary:hover { opacity: 0.9; }
+  .btn-convert:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-2px);
+  }
   .result-box {
-    background: var(--color-surface);
+    background: #1e293b;
+    color: #e2e8f0;
     padding: var(--space-3);
     border-radius: var(--radius-md);
     text-align: center;
-    font-size: 1.2rem;
+    border: 1px solid #334155;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .result-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: var(--space-1);
+  }
+  .result-value {
+    font-size: 1.3rem;
     font-weight: 700;
-    border: 1px dashed var(--color-border);
-    color: var(--color-text);
+    font-family: var(--font-mono);
+    color: #38bdf8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
   }
 </style>
