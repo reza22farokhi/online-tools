@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout 
+  title="متن به اشتراک گذاشته شده | ابزارهای آنلاین" 
+  description="متن یا لینک خود را از اینجا به ابزارهای مختلف ارسال کنید."
+>
+  <div class="container" style="padding-block: var(--space-6); max-width: 800px;">
+    <div class="card" style="padding: var(--space-5);">
+      <h1 style="font-size: 1.5rem; margin-bottom: var(--space-3);">متن دریافت شد!</h1>
+      <p style="color: var(--color-text-muted); margin-bottom: var(--space-4);">
+        شما این متن یا لینک را از یک برنامه دیگر به اشتراک گذاشته‌اید. می‌توانید آن را کپی کنید یا یکی از ابزارهای زیر را روی آن اجرا کنید.
+      </p>
+
+      <textarea id="shared-content" class="textarea" rows="6" style="margin-bottom: var(--space-4);"></textarea>
+
+      <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+        <button id="copy-btn" class="btn btn-primary">📋 کپی متن</button>
+        <a id="word-counter-link" class="btn">📝 شمارش کلمات</a>
+        <a id="url-encoder-link" class="btn">🔗 Encode URL</a>
+        <a id="base64-link" class="btn">🔐 تبدیل به Base64</a>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const sharedText = params.get('text') || '';
+      const sharedUrl = params.get('url') || '';
+      const sharedTitle = params.get('title') || '';
+      
+      // ترکیب متن و لینک
+      const finalContent = [sharedTitle, sharedText, sharedUrl].filter(Boolean).join('\n\n').trim();
+      
+      const textarea = document.getElementById('shared-content');
+      textarea.value = finalContent || 'هیچ متنی دریافت نشد.';
+
+      const base = window.location.pathname.split('/share-target')[0];
+      
+      // تنظیم لینک ابزارها
+      document.getElementById('word-counter-link').href = `${base}/tools/word-counter/`;
+      document.getElementById('url-encoder-link').href = `${base}/tools/url-encoder/`;
+      document.getElementById('base64-link').href = `${base}/tools/base64/`;
+
+      // منطق دکمه کپی
+      document.getElementById('copy-btn').addEventListener('click', () => {
+        textarea.select();
+        document.execCommand('copy');
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = '✅ کپی شد!';
+        setTimeout(() => btn.textContent = '📋 کپی متن', 2000);
+      });
+    });
+  </script>
+</BaseLayout>
