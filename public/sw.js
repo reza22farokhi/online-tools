@@ -1,70 +1,49 @@
-// TITAN X Ω — Dynamic Base Path & Robust Caching
-const CACHE_NAME = 'online-tools-v3';
-// دریافت مسیر پایه (Base Path) به صورت داینامیک
-const scope = self.registration.scope;
-const OFFLINE_URL = new URL('offline/', scope).href;
-
-const PRECACHE_ASSETS = [
-  OFFLINE_URL,
-  new URL('icons/icon-192.png', scope).href,
-  new URL('icons/icon-512.png', scope).href
+const CACHE_NAME = 'online-tools-v2'; // تغییر نسخه از v1 به v2
+const ASSETS_TO_CACHE = [
+  '/',
+  '/manifest.json'
 ];
 
+// نصب سرویس‌ورکر جدید و پاک کردن کش‌های قدیمی
 self.addEventListener('install', (event) => {
+  self.skipWaiting(); // مجبور کردن سرویس‌ورکر جدید به فعال شدن فوری
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_ASSETS))
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
   );
-  self.skipWaiting();
 });
 
+// فعال‌سازی و حذف کش‌های مربوط به نسخه‌های قبلی
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) return caches.delete(key);
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName); // پاک کردن کش قدیمی
+          }
         })
       );
-    })
+    }).then(() => self.clients.claim()) // کنترل فوری تمام تب‌های باز
   );
-  self.clients.claim();
 });
 
+// استراتژی Network First (اول شبکه، بعد کش) برای جلوگیری از نمایش نسخه قدیمی
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  
-  // Ignore Chrome extension requests
-  if (!event.request.url.startsWith('http')) return;
-
-  // Network First for HTML (Navigation)
-  if (event.request.mode === 'navigate') {
+  if (event.request.mode === 'navigate' || (event.request.method === 'GET' && event.request.headers.get('accept').includes('text/html'))) {
     event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-          return response;
-        })
-        .catch(() => {
-          return caches.match(event.request).then((cachedResponse) => {
-            return cachedResponse || caches.match(OFFLINE_URL);
-          });
-        })
+      fetch(event.request).catch(() => {
+        return caches.match(event.request).then((response) => {
+          return response || caches.match('/');
+        });
+      })
     );
-    return;
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
+      })
+    );
   }
-
-  // Stale-While-Revalidate for Static Assets
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse.clone()));
-        }
-        return networkResponse;
-      }).catch(() => {}); // Prevent unhandled rejection
-
-      return cachedResponse || fetchPromise;
-    })
-  );
 });
