@@ -1,51 +1,69 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = "درباره ما | ابزارهای آنلاین حرفه‌ای";
+const description = "آشنایی با مأموریت، ارزش‌ها و تکنولوژی ابزارهای آنلاین حرفه‌ای. ما حریم خصوصی شما را با پردازش کاملاً سمت کاربر تضمین می‌کنیم.";
 ---
-<BaseLayout title="درباره ما | ابزارهای آنلاین" description="درباره پلتفرم ابزارهای آنلاین، ماموریت ما برای حفظ حریم خصوصی و معماری مدرن سایت.">
-  <div class="container page">
-    <header class="page-header">
-      <h1>درباره ما</h1>
-      <p class="lead">داستان ما، تکنولوژی و تعهد به حریم خصوصی شما.</p>
-    </header>
 
-    <div class="content-card card">
-      <h2>ماموریت ما</h2>
-      <p>
-        پلتفرم <strong>ابزارهای آنلاین</strong> با یک هدف ساده و در عین حال بنیادین ساخته شده است: 
-        ارائه ابزارهای کاربردی، سریع و حرفه‌ای بدون اینکه کوچکترین نگرانی برای حریم خصوصی کاربران ایجاد شود.
+<BaseLayout title={title} description={description}>
+  <section class="about-wrapper" style="max-width: 900px; margin: 0 auto; padding: 3rem 1rem;">
+    
+    <div style="text-align: center; margin-bottom: 4rem;">
+      <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(79, 70, 229, 0.1); color: #4f46e5; border-radius: 999px; font-weight: bold; font-size: 0.875rem; margin-bottom: 1rem;">داستان ما</span>
+      <h1 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 1.5rem; line-height: 1.3;">
+        ابزارهای آنلاین، <span style="color: #4f46e5;">بدون مرز و ردیاب</span>
+      </h1>
+      <p style="font-size: 1.1rem; color: var(--color-text-muted, #666); max-width: 700px; margin: 0 auto; line-height: 1.8;">
+        در دنیایی که هر وب‌سایت سعی در جمع‌آوری اطلاعات شما دارد، ما مسیر متفاوتی را انتخاب کردیم. تمام ابزارهای ما <strong>کاملاً در مرورگر شما</strong> اجرا می‌شوند و هیچ دیتایی به سرورهای ما ارسال نمی‌شود.
       </p>
-      <p>
-        در دنیایی که اکثر سایت‌ها فایل‌ها و داده‌های شما را به سرورهای خود می‌فرستند، ما رویکردی کاملاً متفاوت را انتخاب کرده‌ایم. 
-        تمام پردازش‌ها در پلتفرم ما <strong>۱۰۰٪ سمت کلاینت (Client-Side)</strong> انجام می‌شوند. یعنی فایل‌های شما هرگز از مرورگرتان خارج نمی‌شوند.
-      </p>
-
-      <h2>چرا ما متفاوت هستیم؟</h2>
-      <ul>
-        <li><strong>امنیت مطلق:</strong> با استفاده از موتورهای بومی مرورگر (مانند Web Crypto API و Canvas)، حتی یک بایت از داده‌های شما به اینترنت ارسال نمی‌شود.</li>
-        <li><strong>سرعت فوق‌العاده:</strong> بدون نیاز به آپلود و دانلود مجدد، ابزارها در کسری از ثانیه در دستگاه شما اجرا می‌شوند.</li>
-        <li><strong>رایگان و بدون تبلیغات مزاحم:</strong> ما به پایداری و تجربه کاربری شما اهمیت می‌دهیم.</li>
-      </ul>
-
-      <h2>تکنولوژی</h2>
-      <p>
-        این پلتفرم با استفاده از <strong>Astro 5</strong> و <strong>TypeScript</strong> ساخته شده است. ما از هیچ فریم‌ورک سنگین جاوااسکریپتی استفاده نمی‌کنیم تا سرعت بارگذاری سایت روی گوشی‌های ضعیف‌تر نیز تضمین شود.
-      </p>
-      <h2>ارتباط با ما</h2>
-      <p>
-        برای ارتباط مستقیم با مدیر پلتفرم یا ارسال پیشنهادات، می‌توانید از طریق ایمیل زیر با ما در تماس باشید:
-      </p>
-      <p><a href="mailto:reza22farokhi@gmail.com">reza22farokhi@gmail.com</a></p>
     </div>
-  </div>
-</BaseLayout>
 
-<style>
-  .page { padding-block: var(--space-5); }
-  .page-header { margin-bottom: var(--space-5); text-align: center; }
-  .lead { color: var(--color-text-muted); }
-  .content-card { max-width: 800px; margin: 0 auto; line-height: 1.8; }
-  .content-card h2 { color: var(--color-primary); margin-top: var(--space-4); margin-bottom: var(--space-2); }
-  .content-card h2:first-child { margin-top: 0; }
-  .content-card ul { padding-inline-start: var(--space-5); margin-bottom: var(--space-3); }
-  .content-card li { margin-bottom: var(--space-2); }
-</style>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 4rem;">
+      
+      <div style="padding: 2rem; background: var(--color-surface, #fff); border: 1px solid var(--color-border, #eee); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">🔒</div>
+        <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">حریم خصوصی مطلق</h3>
+        <p style="color: var(--color-text-muted, #666); font-size: 0.95rem; line-height: 1.7; margin: 0;">داده‌های شما هرگز از دستگاه شما خارج نمی‌شوند. تمام پردازش‌ها سمت کلاینت (مرورگر) انجام می‌شود.</p>
+      </div>
+
+      <div style="padding: 2rem; background: var(--color-surface, #fff); border: 1px solid var(--color-border, #eee); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">⚡</div>
+        <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">سرعت خیره‌کننده</h3>
+        <p style="color: var(--color-text-muted, #666); font-size: 0.95rem; line-height: 1.7; margin: 0;">چون پردازش در دستگاه شماست، نیازی به انتظار برای پاسخ سرور نیست. ابزارها بلافاصله اجرا می‌شوند.</p>
+      </div>
+
+      <div style="padding: 2rem; background: var(--color-surface, #fff); border: 1px solid var(--color-border, #eee); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">📱</div>
+        <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">آفلاین و نصب‌شدنی</h3>
+        <p style="color: var(--color-text-muted, #666); font-size: 0.95rem; line-height: 1.7; margin: 0;">این سایت یک PWA است. می‌توانید آن را روی موبایل یا دسکتاپ نصب کنید و حتی بدون اینترنت از ابزارها استفاده کنید.</p>
+      </div>
+
+      <div style="padding: 2rem; background: var(--color-surface, #fff); border: 1px solid var(--color-border, #eee); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">🆓</div>
+        <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">همیشه رایگان</h3>
+        <p style="color: var(--color-text-muted, #666); font-size: 0.95rem; line-height: 1.7; margin: 0;">استفاده از تمامی ۴۱ ابزار ما بدون نیاز به ثبت‌نام، پرداخت یا اشتراک‌گذاری اطلاعات شخصی کاملاً رایگان است.</p>
+      </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(236, 72, 153, 0.05)); border: 1px solid rgba(79, 70, 229, 0.1); padding: 2.5rem; border-radius: 24px; margin-bottom: 4rem;">
+      <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">تکنولوژی‌های پشت صحنه</h2>
+      <p style="color: var(--color-text-muted, #666); line-height: 1.8; margin-bottom: 1.5rem;">
+        ما برای ساخت این پلتفرم از مدرن‌ترین و سریع‌ترین تکنولوژی‌های وب استفاده کرده‌ایم تا تجربه‌ای بی‌نقص به شما ارائه دهیم:
+      </p>
+      <ul style="list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <li style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">🚀 <span>Astro (بدون جاوااسکریپت اضافه)</span></li>
+        <li style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">📘 <span>TypeScript (توسعه امن)</span></li>
+        <li style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">🌐 <span>Web APIs (پردازش سمت کاربر)</span></li>
+        <li style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">📦 <span>PWA (نصب و کار آفلاین)</span></li>
+      </ul>
+    </div>
+
+    <div style="text-align: center;">
+      <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">آماده استفاده از ابزارها هستید؟</h2>
+      <a href="/online-tools/tools/" style="display: inline-block; background: #4f46e5; color: white; padding: 1rem 2.5rem; border-radius: 999px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);">
+        مشاهده تمام ابزارها ←
+      </a>
+    </div>
+
+  </section>
+</BaseLayout>
