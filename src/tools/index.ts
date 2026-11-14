@@ -39,6 +39,7 @@ import UnixTimestampTool from './date/unix-timestamp/Tool.astro';
 import DateCalculatorTool from './date/date-calculator/Tool.astro';
 import DateInfoTool from './date/date-info/Tool.astro';
 import CsvJsonTool from './file/csv-json-converter/Tool.astro';
+import TextDiffTool from './text/text-diff/Tool.astro';
 import PersianTextRefinerTool from './text/persian-text-refiner/Tool.astro';
 
 export const toolComponents: Record<string, AstroComponentFactory> = {
@@ -82,6 +83,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'date-calculator': DateCalculatorTool,
   'date-info': DateInfoTool,
   'csv-json-converter': CsvJsonTool,
+  'text-diff': TextDiffTool,
   'persian-text-refiner': PersianTextRefinerTool
 };
 
