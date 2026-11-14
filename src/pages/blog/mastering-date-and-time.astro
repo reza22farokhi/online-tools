@@ -1,28 +1,27 @@
 ---
 import BlogLayout from '../../layouts/BlogLayout.astro';
-import { buildBreadcrumbJsonLd, buildFaqJsonLd } from '../../lib/seo';
 
 const title = "راهنمای جامع مدیریت تاریخ و زمان در وب (Unix, UTC و تقویم شمسی)";
 const description = "بررسی عمیق چالش‌های زمان در برنامه‌نویسی، از Timestamp و منطقه‌های زمانی تا تقویم شمسی و ابزارهای آنلاین برای رفع خطاهای زمانی.";
-
-const breadcrumbs = buildBreadcrumbJsonLd([
-  { name: 'خانه', url: '/' },
-  { name: 'وبلاگ', url: '/blog/' },
-  { name: title, url: '/blog/mastering-date-and-time/' }
-]);
+const publishDate = "۱۴۰۵/۰۸/۲۳"; 
+const isoDate = "2026-11-14";
+const readTime = "۸ دقیقه";
+const slug = "mastering-date-and-time";
 
 const faqs = [
   { q: "Unix Timestamp چیست؟", a: "یک استاندارد برای نمایش زمان است که تعداد ثانیه‌های سپری‌شده از اول ژانویه ۱۹۷۰ (UTC) را نشان می‌دهد." },
   { q: "چرا تقویم شمسی در برنامه‌نویسی چالش‌برانگیز است؟", a: "به دلیل کبیسه‌های متفاوت و ساختار ۳۱/۳۰ روزه که با تقویم میلادی متفاوت است و نیاز به کتابخانه‌های تخصصی دارد." }
 ];
-const faqJsonLd = buildFaqJsonLd(faqs);
-const finalJsonLd = [breadcrumbs, faqJsonLd];
 ---
 
 <BlogLayout 
   title={title} 
   description={description} 
-  jsonLd={finalJsonLd}
+  publishDate={publishDate}
+  isoDate={isoDate}
+  readTime={readTime}
+  slug={slug}
+  faqs={faqs}
 >
   <div class="toc-box">
     <h3>در این مقاله می‌خوانید:</h3>
@@ -67,14 +66,6 @@ const finalJsonLd = [breadcrumbs, faqJsonLd];
     <li><a href="/tools/date-converter/">تبدیل تاریخ</a> (بین میلادی، شمسی و قمری).</li>
   </ul>
 
-  <h3>سوالات متداول</h3>
-  {faqs.map(faq => (
-    <div class="faq-item">
-      <strong>{faq.q}</strong>
-      <p>{faq.a}</p>
-    </div>
-  ))}
-
   <hr />
   <p><em>نوشته شده توسط تیم مهندسی Online Tools — برای مشاهده سایر مقالات، به <a href="/blog/">آرشیو وبلاگ</a> مراجعه کنید.</em></p>
 </BlogLayout>
@@ -103,11 +94,4 @@ const finalJsonLd = [breadcrumbs, faqJsonLd];
   }
   .callout-box strong { display: block; margin-bottom: 0.5rem; }
   .callout-box p { margin: 0; }
-  
-  .faq-item {
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px dashed var(--color-border);
-  }
-  .faq-item strong { color: var(--color-text); display: block; margin-bottom: 0.5rem; }
 </style>
