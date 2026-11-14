@@ -1,0 +1,113 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import { buildBreadcrumbJsonLd, buildFaqJsonLd } from '../../lib/seo';
+
+const title = "راهنمای جامع مدیریت تاریخ و زمان در وب (Unix, UTC و تقویم شمسی)";
+const description = "بررسی عمیق چالش‌های زمان در برنامه‌نویسی، از Timestamp و منطقه‌های زمانی تا تقویم شمسی و ابزارهای آنلاین برای رفع خطاهای زمانی.";
+
+const breadcrumbs = buildBreadcrumbJsonLd([
+  { name: 'خانه', url: '/' },
+  { name: 'وبلاگ', url: '/blog/' },
+  { name: title, url: '/blog/mastering-date-and-time/' }
+]);
+
+const faqs = [
+  { q: "Unix Timestamp چیست؟", a: "یک استاندارد برای نمایش زمان است که تعداد ثانیه‌های سپری‌شده از اول ژانویه ۱۹۷۰ (UTC) را نشان می‌دهد." },
+  { q: "چرا تقویم شمسی در برنامه‌نویسی چالش‌برانگیز است؟", a: "به دلیل کبیسه‌های متفاوت و ساختار ۳۱/۳۰ روزه که با تقویم میلادی متفاوت است و نیاز به کتابخانه‌های تخصصی دارد." }
+];
+const faqJsonLd = buildFaqJsonLd(faqs);
+const finalJsonLd = [breadcrumbs, faqJsonLd];
+---
+
+<BlogLayout 
+  title={title} 
+  description={description} 
+  jsonLd={finalJsonLd}
+>
+  <div class="toc-box">
+    <h3>در این مقاله می‌خوانید:</h3>
+    <ul>
+      <li><a href="#unix">۱. Unix Timestamp: زبان مادری کامپیوترها</a></li>
+      <li><a href="#utc">۲. UTC و منطقه‌های زمانی (Timezones)</a></li>
+      <li><a href="#shamsi">۳. چالش تقویم شمسی (جلالی) در وب</a></li>
+      <li><a href="#tools">۴. ابزارهای آنلاین برای رفع سریع مشکلات</a></li>
+    </ul>
+  </div>
+
+  <p>مدیریت تاریخ و زمان (Date and Time) یکی از سخت‌ترین و پرخطاترین بخش‌های توسعه نرم‌افزار است. اگر یک برنامه‌نویس بگویید "من در مدیریت زمان هیچ مشکلی ندارم"، یا دروغ می‌گوید یا هنوز با منطقه‌های زمانی (Timezones) و ساعت تابستانی (DST) برخورد نکرده است!</p>
+
+  <h2 id="unix">۱. Unix Timestamp: زبان مادری کامپیوترها</h2>
+  <p>کامپیوترها زمان را به صورت "سال و ماه و روز" نمی‌فهمند. آن‌ها یک عدد را می‌فهمند: <strong>تعداد ثانیه‌های سپری‌شده از نیمه‌شب اول ژانویه ۱۹۷۰ (UTC)</strong>. به این عدد، <code>Unix Timestamp</code> می‌گویند.</p>
+  <p>مزیت استفاده از Timestamp این است که یک عدد مطلق است و به منطقه زمانی کاربر وابسته نیست. وقتی می‌خواهید زمان را ذخیره کنید، همیشه بهتر است آن را به صورت Timestamp (یا ISO 8601 در دیتابیس) ذخیره کنید و موقع نمایش، آن را به زمان محلی کاربر تبدیل کنید.</p>
+  
+  <div class="callout-box">
+    <strong>💡 نیاز به تبدیل سریع دارید؟</strong>
+    <p>می‌توانید از ابزار <a href="/tools/unix-timestamp/">تبدیل Timestamp به تاریخ</a> در سایت ما استفاده کنید. این ابزار ۱۰۰٪ سمت کلاینت (Client-Side) کار می‌کند و امنیت داده‌های شما را تضمین می‌کند.</p>
+  </div>
+
+  <h2 id="utc">۲. UTC و منطقه‌های زمانی (Timezones)</h2>
+  <p>UTC (زمان هماهنگ جهانی) استاندارد اصلی است. اما کاربران شما در مناطق مختلفی زندگی می‌کنند. برای مثال، زمان در تهران (IRST) <code>UTC+3:30</code> است. این یعنی وقتی در لندن ساعت ۱۲ ظهر است، در تهران ساعت ۳:۳۰ بعدازظهر است.</p>
+  <p><strong>مشکل بزرگ:</strong> برخی کشورها (مثل آمریکا و اروپا) سیستم ساعت تابستانی (DST) دارند که در آن ساعت‌ها یک ساعت جلو یا عقب می‌شوند. اگر از کتابخانه‌های استاندارد جاوااسکریپت (مثل <code>Date</code>) به درستی استفاده نکنید، همیشه با ۱ ساعت اختلاف یا پرش‌های عجیب مواجه می‌شوید.</p>
+  <p>بهترین راهکار در وب مدرن: استفاده از API بومی مرورگر یعنی <code>Intl.DateTimeFormat</code> است که خودش تفاوت‌های منطقه زمانی را مدیریت می‌کند.</p>
+
+  <h2 id="shamsi">۳. چالش تقویم شمسی (جلالی) در وب</h2>
+  <p>برای توسعه‌دهندگان ایرانی، تقویم شمسی یک چالش جدی است. ساختار ماه‌ها (۶ ماه ۳۱ روزه، ۵ ماه ۳۰ روزه و ماه آخر ۲۹ یا ۳۰ روزه) با تقویم میلادی کاملاً متفاوت است.</p>
+  <p>جاوااسکریپت به صورت پیش‌فرض تقویم شمسی را نمی‌شناسد. به همین دلیل، برنامه‌نویسان از دو روش استفاده می‌کنند:</p>
+  <ul>
+    <li><strong>روش اول:</strong> استفاده از کتابخانه‌هایی مانند <code>jalali-moment</code> یا <code>date-fns-jalali</code>.</li>
+    <li><strong>روش دوم:</strong> استفاده از الگوریتم‌های ریاضی برای تبدیل تاریخ.</li>
+  </ul>
+  <p>در سایت ما، ابزار <a href="/tools/multi-calendar-converter/">تبدیل تقویم چندگانه</a> با دقت بالا این تبدیل‌ها را انجام می‌دهد و می‌توانید کدهای آن را به عنوان مرجع مطالعه کنید.</p>
+
+  <h2 id="tools">۴. ابزارهای آنلاین برای رفع سریع مشکلات</h2>
+  <p>در طول توسعه، گاهی نیاز دارید بدون نوشتن کد، یک تاریخ را بررسی کنید. ما مجموعه‌ای از ابزارهای کاربردی را فراهم کرده‌ایم:</p>
+  <ul>
+    <li><a href="/tools/date-diff/">محاسبه اختلاف دو تاریخ</a> (برای پیدا کردن فاصله دقیق بین دو رویداد).</li>
+    <li><a href="/tools/date-info/">اطلاعات کامل تاریخ</a> (مشاهده هفته سال، روز سال و ...).</li>
+    <li><a href="/tools/date-converter/">تبدیل تاریخ</a> (بین میلادی، شمسی و قمری).</li>
+  </ul>
+
+  <h3>سوالات متداول</h3>
+  {faqs.map(faq => (
+    <div class="faq-item">
+      <strong>{faq.q}</strong>
+      <p>{faq.a}</p>
+    </div>
+  ))}
+
+  <hr />
+  <p><em>نوشته شده توسط تیم مهندسی Online Tools — برای مشاهده سایر مقالات، به <a href="/blog/">آرشیو وبلاگ</a> مراجعه کنید.</em></p>
+</BlogLayout>
+
+<style>
+  .toc-box {
+    background: var(--color-surface-2);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border-inline-start: 4px solid var(--color-primary);
+    margin-bottom: 2rem;
+  }
+  .toc-box h3 { margin-top: 0; font-size: 1.1rem; }
+  .toc-box ul { list-style: none; padding: 0; margin-bottom: 0; }
+  .toc-box li { margin-bottom: 0.5rem; }
+  .toc-box a { text-decoration: none; color: var(--color-primary); font-weight: 500; }
+  .toc-box a:hover { text-decoration: underline; }
+  
+  .callout-box {
+    background: var(--color-primary-fg);
+    color: var(--color-primary);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-block: 1.5rem;
+    border: 1px solid var(--color-primary);
+  }
+  .callout-box strong { display: block; margin-bottom: 0.5rem; }
+  .callout-box p { margin: 0; }
+  
+  .faq-item {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--color-border);
+  }
+  .faq-item strong { color: var(--color-text); display: block; margin-bottom: 0.5rem; }
+</style>
