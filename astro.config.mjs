@@ -5,9 +5,9 @@ import sitemap from '@astrojs/sitemap';
 //   SITE_URL=https://user.github.io BASE_PATH=/repo/ npm run build
 // برای دامنه اصلی:
 //   SITE_URL=https://example.com npm run build
-const site = process.env.SITE_URL || 'https://reza22farokhi.github.io/online-tools';
+const site = process.env.SITE_URL || 'https://abzar-tools.ir';
 const isDev = process.env.NODE_ENV !== 'production';
-const base = process.env.BASE_PATH || (isDev ? '/' : '/online-tools/');
+const base = process.env.BASE_PATH !== undefined ? process.env.BASE_PATH : '/';
 
 export default defineConfig({
   site,
