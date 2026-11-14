@@ -159,12 +159,12 @@ export async function verify(
 
   const data = new TextEncoder().encode(
     `${decoded.raw.header}.${decoded.raw.payload}`
-  );
-  const sig = base64UrlToBytes(decoded.raw.signature);
+  ) as BufferSource; // Fix TS error
+  const sig = base64UrlToBytes(decoded.raw.signature) as BufferSource; // Fix TS error
 
   if (alg in HMAC) {
     const { hash } = HMAC[alg];
-    const secret = new TextEncoder().encode(keyInput);
+    const secret = new TextEncoder().encode(keyInput) as BufferSource; // Fix TS error
     const key = await crypto.subtle.importKey(
       'raw',
       secret,
@@ -178,7 +178,7 @@ export async function verify(
 
   if (alg in RSA) {
     const { hash, padding, saltLength } = RSA[alg];
-    const der = pemToDer(keyInput);
+    const der = pemToDer(keyInput) as BufferSource; // Fix TS error
     const key = await crypto.subtle.importKey(
       'spki',
       der,
@@ -196,7 +196,7 @@ export async function verify(
 
   if (alg in EC) {
     const { hash, namedCurve } = EC[alg];
-    const der = pemToDer(keyInput);
+    const der = pemToDer(keyInput) as BufferSource; // Fix TS error
     const key = await crypto.subtle.importKey(
       'spki',
       der,
