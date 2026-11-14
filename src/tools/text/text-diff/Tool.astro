@@ -1,0 +1,42 @@
+<div class="tool-container" style="display: flex; flex-direction: column; gap: 1rem;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <textarea id="text-old" placeholder="متن اول (قدیمی)..." style="width: 100%; min-height: 250px; padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border, #ccc); font-family: monospace; resize: vertical;"></textarea>
+    <textarea id="text-new" placeholder="متن دوم (جدید)..." style="width: 100%; min-height: 250px; padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border, #ccc); font-family: monospace; resize: vertical;"></textarea>
+  </div>
+  <button id="btn-compare" style="padding: 1rem; background: #4f46e5; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">مقایسه متن‌ها</button>
+  
+  <div id="diff-result" style="display: none; padding: 1rem; background: #f9fafb; border-radius: 8px; border: 1px solid #eaeaea; font-family: monospace; white-space: pre-wrap; overflow-x: auto; direction: ltr; text-align: left;"></div>
+</div>
+
+<script>
+  import { diffTexts } from './logic';
+
+  document.getElementById('btn-compare')?.addEventListener('click', () => {
+    const oldText = (document.getElementById('text-old') as HTMLTextAreaElement).value;
+    const newText = (document.getElementById('text-new') as HTMLTextAreaElement).value;
+    const result = diffTexts(oldText, newText);
+    
+    const resultDiv = document.getElementById('diff-result')!;
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '';
+
+    result.forEach(line => {
+      const div = document.createElement('div');
+      div.style.padding = '4px';
+      div.style.borderBottom = '1px solid #eee';
+      if (line.type === 'added') {
+        div.style.background = 'rgba(34, 197, 94, 0.15)';
+        div.style.color = '#16a34a';
+        div.textContent = '+ ' + line.value;
+      } else if (line.type === 'removed') {
+        div.style.background = 'rgba(239, 68, 68, 0.15)';
+        div.style.color = '#dc2626';
+        div.textContent = '- ' + line.value;
+      } else {
+        div.style.color = '#666';
+        div.textContent = '  ' + line.value;
+      }
+      resultDiv.appendChild(div);
+    });
+  });
+</script>
