@@ -9,26 +9,31 @@ on:
 permissions:
   contents: read
 
-env:
-  SITE_URL: https://reza22farokhi.github.io/online-tools
-  BASE_PATH: /online-tools/
-
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
+          
       - run: npm ci
+
+      - name: Security Audit
+        run: npm audit --audit-level=high
+      
       - name: Unit tests
         run: npx vitest run
+      
       - name: Type check
         run: npm run check
+      
       - name: Build
         run: npm run build
+      
       - name: Verify dist
         run: |
           test -f dist/index.html
@@ -39,17 +44,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
+          
       - run: npm ci
+      
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+      
       - name: Build
         run: npm run build
+      
       - name: Run E2E tests
         run: npx playwright test
+      
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
