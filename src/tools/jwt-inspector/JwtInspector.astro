@@ -1,0 +1,378 @@
+---
+// کامپوننت ابزار — منطق خالص از jwt.ts و claims.ts وارد می‌شود
+import { STANDARD_CLAIMS } from './claims';
+---
+
+<section class="jwt-inspector" dir="rtl" lang="fa">
+  <header class="jwt-header">
+    <h2>بازرس JWT</h2>
+    <p class="jwt-subtitle">
+      توکن JWT را اینجا وارد کنید. پردازش کاملاً در مرورگر شما انجام می‌شود — هیچ داده‌ای به سرور ارسال نمی‌شود.
+    </p>
+  </header>
+
+  <div class="jwt-grid">
+    <div class="jwt-column">
+      <label for="jwt-input" class="jwt-label">توکن JWT</label>
+      <textarea
+        id="jwt-input"
+        class="jwt-textarea"
+        rows="6"
+        spellcheck="false"
+        autocomplete="off"
+        placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.xxxxx"
+      ></textarea>
+
+      <div class="jwt-row">
+        <button id="jwt-sample-hs256" class="jwt-btn jwt-btn-secondary" type="button">
+          نمونه HS256
+        </button>
+        <button id="jwt-sample-rs256" class="jwt-btn jwt-btn-secondary" type="button">
+          نمونه RS256
+        </button>
+        <button id="jwt-clear" class="jwt-btn jwt-btn-ghost" type="button">پاک‌سازی</button>
+      </div>
+
+      <div id="jwt-error" class="jwt-error" hidden></div>
+
+      <section class="jwt-verify-section">
+        <h3>تأیید امضا (اختیاری)</h3>
+        <label for="jwt-alg" class="jwt-label">الگوریتم</label>
+        <select id="jwt-alg" class="jwt-select">
+          <option value="">خودکار (از هدر توکن)</option>
+          <option value="HS256">HS256 (HMAC-SHA256)</option>
+          <option value="HS384">HS384</option>
+          <option value="HS512">HS512</option>
+          <option value="RS256">RS256 (RSA)</option>
+          <option value="RS384">RS384</option>
+          <option value="RS512">RS512</option>
+          <option value="PS256">PS256 (RSA-PSS)</option>
+          <option value="ES256">ES256 (ECDSA)</option>
+          <option value="ES384">ES384</option>
+          <option value="ES512">ES512</option>
+        </select>
+
+        <label for="jwt-key" class="jwt-label">
+          کلید مخفی یا کلید عمومی (PEM)
+        </label>
+        <textarea
+          id="jwt-key"
+          class="jwt-textarea jwt-key"
+          rows="3"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="برای HS: رشته مخفی | برای RS/ES/PS: کلید عمومی PEM"
+        ></textarea>
+
+        <button id="jwt-verify" class="jwt-btn jwt-btn-primary" type="button">
+          تأیید امضا
+        </button>
+        <div id="jwt-verify-result" class="jwt-verify-result" hidden></div>
+      </section>
+    </div>
+
+    <div class="jwt-column">
+      <section id="jwt-result" class="jwt-result" hidden>
+        <div id="jwt-warnings"></div>
+
+        <div class="jwt-section">
+          <h3>وضعیت انقضا</h3>
+          <div id="jwt-exp-status" class="jwt-exp-status"></div>
+        </div>
+
+        <div class="jwt-section">
+          <div class="jwt-section-header">
+            <h3>هدر (Header)</h3>
+            <button class="jwt-copy" data-target="jwt-header-pre" type="button">کپی</button>
+          </div>
+          <pre id="jwt-header-pre" class="jwt-pre"></pre>
+        </div>
+
+        <div class="jwt-section">
+          <div class="jwt-section-header">
+            <h3>Payload</h3>
+            <button class="jwt-copy" data-target="jwt-payload-pre" type="button">کپی</button>
+          </div>
+          <pre id="jwt-payload-pre" class="jwt-pre"></pre>
+        </div>
+
+        <div class="jwt-section">
+          <h3>Claims (با توضیح)</h3>
+          <div class="jwt-table-wrapper">
+            <table class="jwt-claims" id="jwt-claims-table">
+              <thead>
+                <tr><th>کلید</th><th>توضیح</th><th>مقدار</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="jwt-placeholder" class="jwt-placeholder">
+        <p>توکن JWT خود را در سمت راست وارد کنید تا نتیجه اینجا نمایش داده شود.</p>
+      </section>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* طراحی مدرن و هماهنگ با Dark Mode */
+  .jwt-inspector {
+    padding: 2rem 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .jwt-header { margin-bottom: 2rem; text-align: center; }
+  .jwt-header h2 { margin: 0 0 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+  .jwt-subtitle { color: #94a3b8; font-size: 1rem; margin: 0; }
+  
+  .jwt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+  @media (max-width: 850px) { .jwt-grid { grid-template-columns: 1fr; } }
+  
+  .jwt-label { display: block; margin: 1rem 0 0.5rem; font-weight: 600; font-size: 0.9rem; color: #cbd5e1; }
+  
+  .jwt-textarea, .jwt-select {
+    width: 100%; padding: 0.75rem; border: 1px solid #334155;
+    border-radius: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.85rem;
+    background-color: #1e293b; color: #e2e8f0; resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .jwt-textarea:focus, .jwt-select:focus {
+    outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+  .jwt-textarea::placeholder { color: #64748b; }
+  
+  .jwt-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+  
+  .jwt-btn {
+    padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer;
+    border: 1px solid transparent; font-size: 0.9rem; font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .jwt-btn-primary { background: #3b82f6; color: #ffffff; width: 100%; margin-top: 1rem; }
+  .jwt-btn-primary:hover { background: #2563eb; }
+  .jwt-btn-secondary { background: #1e293b; color: #e2e8f0; border-color: #334155; }
+  .jwt-btn-secondary:hover { background: #334155; }
+  .jwt-btn-ghost { background: transparent; color: #94a3b8; }
+  .jwt-btn-ghost:hover { color: #f8fafc; background: #1e293b; }
+  
+  .jwt-error { margin-top: 1rem; padding: 0.75rem; border-radius: 8px;
+    background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); font-size: 0.9rem; }
+  
+  .jwt-verify-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #334155; }
+  .jwt-verify-section h3 { font-size: 1.1rem; color: #f8fafc; margin-bottom: 1rem; }
+  
+  .jwt-verify-result { margin-top: 1rem; padding: 0.75rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-align: center; }
+  .jwt-verify-result.ok { background: rgba(34, 197, 94, 0.1); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.2); }
+  .jwt-verify-result.fail { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); }
+  
+  .jwt-result { display: flex; flex-direction: column; gap: 1.5rem; }
+  .jwt-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1rem; }
+  .jwt-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .jwt-section h3 { font-size: 1rem; margin: 0; color: #f8fafc; }
+  
+  .jwt-pre {
+    background: #0f172a; color: #a5b4fc; padding: 1rem; border-radius: 8px;
+    font-size: 0.85rem; overflow-x: auto; margin: 0; direction: ltr; text-align: left;
+    border: 1px solid #334155;
+  }
+  
+  .jwt-copy {
+    font-size: 0.75rem; background: #334155; color: #cbd5e1;
+    border: none; border-radius: 6px; padding: 0.3rem 0.6rem;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .jwt-copy:hover { background: #475569; color: #ffffff; }
+  
+  .jwt-table-wrapper { overflow-x: auto; }
+  .jwt-claims { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .jwt-claims th, .jwt-claims td {
+    text-align: right; padding: 0.6rem; border-bottom: 1px solid #334155;
+  }
+  .jwt-claims th { color: #94a3b8; font-weight: 600; }
+  .jwt-claims td { color: #e2e8f0; }
+  .jwt-claims td:nth-child(3) { font-family: ui-monospace, monospace; font-size: 0.8rem; word-break: break-all; color: #a5b4fc; }
+  
+  .jwt-exp-status { font-size: 0.95rem; padding: 0.75rem; border-radius: 8px; font-weight: 500; }
+  .jwt-exp-status.valid { background: rgba(34, 197, 94, 0.1); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.2); }
+  .jwt-exp-status.expired { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); }
+  .jwt-exp-status.warn { background: rgba(245, 158, 11, 0.1); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.2); }
+  
+  .jwt-placeholder { color: #64748b; text-align: center; padding: 3rem 1rem; border: 2px dashed #334155; border-radius: 12px; }
+  
+  .jwt-warn-item { padding: 0.75rem; border-radius: 8px; margin-bottom: 0.5rem; font-size: 0.85rem; border: 1px solid transparent; }
+  .jwt-warn-item.info { background: rgba(59, 130, 246, 0.1); color: #93c5fd; border-color: rgba(59, 130, 246, 0.2); }
+  .jwt-warn-item.warn { background: rgba(245, 158, 11, 0.1); color: #fcd34d; border-color: rgba(245, 158, 11, 0.2); }
+  .jwt-warn-item.danger { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border-color: rgba(239, 68, 68, 0.2); }
+</style>
+
+<script>
+  import { decode, verify, checkExpiration, analyzeSecurity, JwtError } from './jwt';
+  import { STANDARD_CLAIMS, formatClaimValue } from './claims';
+
+  // DOM refs
+  const $input = document.getElementById('jwt-input') as HTMLTextAreaElement;
+  const $key = document.getElementById('jwt-key') as HTMLTextAreaElement;
+  const $alg = document.getElementById('jwt-alg') as HTMLSelectElement;
+  const $error = document.getElementById('jwt-error') as HTMLElement;
+  const $result = document.getElementById('jwt-result') as HTMLElement;
+  const $placeholder = document.getElementById('jwt-placeholder') as HTMLElement;
+  const $warnings = document.getElementById('jwt-warnings') as HTMLElement;
+  const $expStatus = document.getElementById('jwt-exp-status') as HTMLElement;
+  const $headerPre = document.getElementById('jwt-header-pre') as HTMLElement;
+  const $payloadPre = document.getElementById('jwt-payload-pre') as HTMLElement;
+  const $claimsTable = document.getElementById('jwt-claims-table') as HTMLElement;
+  const $verifyResult = document.getElementById('jwt-verify-result') as HTMLElement;
+
+  let debounce: number | undefined;
+
+  function setError(msg: string | null) {
+    if (!msg) { $error.hidden = true; $error.textContent = ''; return; }
+    $error.hidden = false;
+    $error.textContent = msg;
+  }
+
+  function render() {
+    const token = $input.value.trim();
+    if (!token) {
+      $result.hidden = true;
+      $placeholder.hidden = false;
+      setError(null);
+      return;
+    }
+    try {
+      const decoded = decode(token);
+      setError(null);
+      $placeholder.hidden = true;
+      $result.hidden = false;
+
+      $headerPre.textContent = JSON.stringify(decoded.header, null, 2);
+      $payloadPre.textContent = JSON.stringify(decoded.payload, null, 2);
+
+      // warnings
+      $warnings.innerHTML = '';
+      const warns = analyzeSecurity(decoded.header, decoded.payload);
+      for (const w of warns) {
+        const div = document.createElement('div');
+        div.className = `jwt-warn-item ${w.level}`;
+        div.textContent = w.message;
+        $warnings.appendChild(div);
+      }
+
+      // expiration
+      const exp = checkExpiration(decoded.payload);
+      $expStatus.className = 'jwt-exp-status';
+      if (exp.status === 'valid' && exp.remainingSeconds !== undefined) {
+        const min = Math.floor(exp.remainingSeconds / 60);
+        $expStatus.classList.add('valid');
+        $expStatus.textContent = `معتبر — ${min} دقیقه تا انقضا باقی مانده`;
+      } else if (exp.status === 'expired') {
+        $expStatus.classList.add('expired');
+        $expStatus.textContent = 'منقضی شده است';
+      } else if (exp.status === 'not-yet-valid') {
+        $expStatus.classList.add('warn');
+        $expStatus.textContent = 'هنوز معتبر نیست (nbf در آینده)';
+      } else if (exp.status === 'no-exp') {
+        $expStatus.classList.add('warn');
+        $expStatus.textContent = 'بدون تاریخ انقضا';
+      }
+
+      // claims table
+      const tbody = $claimsTable.querySelector('tbody') as HTMLElement;
+      tbody.innerHTML = '';
+      for (const [k, v] of Object.entries(decoded.payload)) {
+        const tr = document.createElement('tr');
+        const td1 = document.createElement('td'); td1.textContent = k;
+        const td2 = document.createElement('td');
+        const desc = STANDARD_CLAIMS[k];
+        td2.textContent = desc ? `${desc.fa} (${desc.en})` : '—';
+        const td3 = document.createElement('td');
+        td3.textContent = formatClaimValue(k, v);
+        tr.append(td1, td2, td3);
+        tbody.appendChild(tr);
+      }
+    } catch (err) {
+      const msg = err instanceof JwtError ? err.message : 'خطای نامشخص در پردازش توکن';
+      setError(msg);
+      $result.hidden = true;
+      $placeholder.hidden = false;
+    }
+  }
+
+  $input.addEventListener('input', () => {
+    window.clearTimeout(debounce);
+    debounce = window.setTimeout(render, 250);
+  });
+
+  // Verify
+  document.getElementById('jwt-verify')!.addEventListener('click', async () => {
+    $verifyResult.hidden = false;
+    $verifyResult.className = 'jwt-verify-result';
+    $verifyResult.textContent = 'در حال تأیید…';
+    try {
+      const result = await verify($input.value, $key.value, $alg.value || undefined);
+      if (result.valid) {
+        $verifyResult.classList.add('ok');
+        $verifyResult.textContent = `✓ امضا معتبر است (${result.algorithm})`;
+      } else {
+        $verifyResult.classList.add('fail');
+        $verifyResult.textContent = `✗ امضا نامعتبر است (${result.algorithm})`;
+      }
+    } catch (err) {
+      $verifyResult.classList.add('fail');
+      $verifyResult.textContent = err instanceof JwtError ? err.message : 'خطا در تأیید';
+    }
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.jwt-copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const target = (btn as HTMLElement).dataset.target!;
+      const el = document.getElementById(target);
+      if (!el) return;
+      try {
+        await navigator.clipboard.writeText(el.textContent ?? '');
+        const old = (btn as HTMLElement).textContent;
+        (btn as HTMLElement).textContent = 'کپی شد ✓';
+        setTimeout(() => { (btn as HTMLElement).textContent = old; }, 1500);
+      } catch { /* silent */ }
+    });
+  });
+
+  // Clear
+  document.getElementById('jwt-clear')!.addEventListener('click', () => {
+    $input.value = '';
+    $key.value = '';
+    $alg.value = '';
+    $verifyResult.hidden = true;
+    render();
+  });
+
+  // Pulisci chiave on unload (Section 13 — security)
+  window.addEventListener('beforeunload', () => {
+    $key.value = '';
+    $input.value = '';
+  });
+
+  // Sample tokens (unsigned legacy samples — for demo only)
+  const SAMPLES = {
+    hs256:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+    rs256:
+      'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.POstGetfAytaZS82wHcjoTyoqhMyxXiWdR7Nn7A29DNSl0EiXLdwJ6xC6AfgZWF1bOsS_TuYI3OG85AmiExREkrS6tDfTQ2B3WXlrr-wp5AokiRbz3_oB4OxG-W9KcEEbDRcZc0nH3L7LzYptiy1PtAylQGxHTWZXtGz4ht0bAecBgmpdgXMguEIcoqPJ1n3pIXmfDCVLSvQk6FymIqc0tSC5d8oPmYPIHk7rP8r9HY3yJh8k0y5zZ0kK9rN0q3L6wVZ4Fz6MwBaH7KbJ8nE2sP6Jx3sB6D7x2mE4nQ7Jx1jJ0x8FzJ9k0L2pM3nQ5R7tV8wX1yZ4aB6cD9eF2gH5jK8mN1pQ4rS7tU0vW3xY6zA9bC2dE5fG8hJ1kL4nM7pQ0rS3tU6vW9xY2zB5cD8eF1gH4jK7mN0pQ3rS6tU9vW2xY5zB8cD1eF4gH7jK0mN3pQ6rS9tU2vW5xY8z',
+  };
+
+  document.getElementById('jwt-sample-hs256')!.addEventListener('click', () => {
+    $input.value = SAMPLES.hs256;
+    render();
+  });
+  document.getElementById('jwt-sample-rs256')!.addEventListener('click', () => {
+    $input.value = SAMPLES.rs256;
+    render();
+  });
+
+  // initial
+  render();
+</script>

@@ -1,0 +1,61 @@
+---
+// ⚠️ مسیر Layout را با پروژه خود تطبیق دهید:
+import Layout from '../../../layouts/BaseLayout.astro';
+import JwtInspector from '../../../tools/jwt-inspector/JwtInspector.astro';
+
+const title = 'بازرس JWT — دیکد و تأیید توکن آنلاین و امن (بدون ارسال به سرور)';
+const description =
+  'توکن JWT را بدون ارسال به سرور، در مرورگر خود دیکد و امضا را تأیید کنید. پشتیبانی HS256/384/512، RS256/384/512، ES256/384/512، PS256/384/512. حریم‌خصوصی ۱۰۰٪.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'بازرس JWT',
+  description,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'آیا توکن من به سرور ارسال می‌شود؟',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'خیر. تمام پردازش دیکد و تأیید امضا با استفاده از Web Crypto API در مرورگر شما انجام می‌شود و هیچ درخواستی به سرور ارسال نمی‌گردد.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'چه الگوریتم‌هایی پشتیبانی می‌شوند؟',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'HS256/384/512 (HMAC)، RS256/384/512 (RSA)، PS256/384/512 (RSA-PSS) و ES256/384/512 (ECDSA).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'alg: none چه خطری دارد؟',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'الگوریتم none به معنای عدم امضاست. اگر سرور شما آن را بپذیرد، هر کسی می‌تواند توکن جعلی بسازد. ابزار ما هشدار قرمز نمایش می‌دهد.',
+      },
+    },
+  ],
+};
+---
+
+<Layout title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+  </Fragment>
+
+  <main>
+    <JwtInspector />
+  </main>
+</Layout>
