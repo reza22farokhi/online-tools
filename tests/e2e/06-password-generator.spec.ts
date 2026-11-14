@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('password-generator tool generates passwords and loads FAQ', async ({ page }) => {
-  await page.goto('/online-tools/tools/password-generator/');
+  await page.goto('/tools/password-generator/');
   await expect(page.locator('h1')).toContainText('تولیدکننده رمز عبور');
 
   const output = page.locator('#pass-output');

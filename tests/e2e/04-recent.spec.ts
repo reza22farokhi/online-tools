@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 test('recent tools appear after visiting a tool', async ({ page }) => {
-  await page.goto('/online-tools/');
+  await page.goto('/');
   await page.locator('#recent-section').evaluate(el => { (el as HTMLElement).hidden = true; });
 
-  await page.goto('/online-tools/tools/json-formatter/');
+  await page.goto('/tools/json-formatter/');
   await page.waitForTimeout(500);
-  await page.goto('/online-tools/');
+  await page.goto('/');
   await page.waitForTimeout(500);
 
   const recentSection = page.locator('#recent-section');

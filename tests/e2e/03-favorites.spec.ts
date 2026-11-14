@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('favorites toggle and section appears', async ({ page }) => {
-  await page.goto('/online-tools/');
+  await page.goto('/');
 
   const favSection = page.locator('#favorites-section');
   await expect(favSection).toBeHidden();

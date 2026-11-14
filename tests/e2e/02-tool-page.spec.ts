@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('word-counter tool loads with FAQ', async ({ page }) => {
-  await page.goto('/online-tools/tools/word-counter/');
+  await page.goto('/tools/word-counter/');
   await expect(page.locator('h1')).toContainText('شمارش کلمات');
 
   const textarea = page.locator('#wc-input');

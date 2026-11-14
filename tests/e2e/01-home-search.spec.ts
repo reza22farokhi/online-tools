@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('home page loads and search filters tools', async ({ page }) => {
-  await page.goto('/online-tools/');
+  await page.goto('/');
   await expect(page).toHaveTitle(/ابزارهای آنلاین/);
 
   const searchBox = page.locator('#tool-search');
@@ -21,7 +21,7 @@ test('home page loads and search filters tools', async ({ page }) => {
 });
 
 test('search shows no results message for gibberish', async ({ page }) => {
-  await page.goto('/online-tools/');
+  await page.goto('/');
   await page.locator('#tool-search').fill('xyzzzzzz12345');
   await page.waitForTimeout(300);
 

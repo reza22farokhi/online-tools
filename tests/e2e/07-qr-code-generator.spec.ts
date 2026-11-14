@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('qr-code-generator tool creates canvas and loads FAQ', async ({ page }) => {
-  await page.goto('/online-tools/tools/qr-code-generator/');
+  await page.goto('/tools/qr-code-generator/');
   await expect(page.locator('h1')).toContainText('تولیدکننده کد QR');
 
   const input = page.locator('#qr-input');
