@@ -40,6 +40,7 @@ import { meta as dateCalculatorMeta } from './date/date-calculator/meta';
 import { meta as dateInfoMeta } from './date/date-info/meta';
 import { meta as csvJsonMeta } from './file/csv-json-converter/meta';
 import { meta as textDiffMeta } from './text/text-diff/meta';
+import { meta as textDiffMeta } from './text/text-diff/meta';
 
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
@@ -68,6 +69,7 @@ export const registry: ToolMeta[] = [
   multiCalendarMeta, unixTimestampMeta,
   dateCalculatorMeta, dateInfoMeta,
   csvJsonMeta,
+  textDiffMeta,
   textDiffMeta,
   {
     slug: 'persian-text-refiner',
