@@ -1,49 +1,43 @@
-const CACHE_NAME = 'online-tools-v2'; // تغییر نسخه از v1 به v2
-const ASSETS_TO_CACHE = [
-  '/',
-  '/manifest.json'
-];
+const CACHE_NAME = 'online-tools-v3'; // تغییر نسخه
 
-// نصب سرویس‌ورکر جدید و پاک کردن کش‌های قدیمی
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // مجبور کردن سرویس‌ورکر جدید به فعال شدن فوری
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
+  self.skipWaiting(); // فعال‌سازی فوری
 });
 
-// فعال‌سازی و حذف کش‌های مربوط به نسخه‌های قبلی
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName); // پاک کردن کش قدیمی
+            return caches.delete(cacheName); // پاک کردن نسخه‌های قدیمی
           }
         })
       );
-    }).then(() => self.clients.claim()) // کنترل فوری تمام تب‌های باز
+    }).then(() => self.clients.claim())
   );
 });
 
-// استراتژی Network First (اول شبکه، بعد کش) برای جلوگیری از نمایش نسخه قدیمی
+// استراتژی Stale-While-Revalidate (سرعت بالا + آپدیت در پس‌زمینه)
 self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate' || (event.request.method === 'GET' && event.request.headers.get('accept').includes('text/html'))) {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match(event.request).then((response) => {
-          return response || caches.match('/');
-        });
-      })
-    );
-  } else {
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        return response || fetch(event.request);
-      })
-    );
-  }
+  if (event.request.method !== 'GET') return; // فقط درخواست‌های GET
+  
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      // ۱. اگر در کش بود، فوراً همان را نشان بده (سرعت بالا)
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        // همزمان در پس‌زمینه نسخه جدید را دانلود و کش کن
+        if (networkResponse && networkResponse.status === 200) {
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, networkResponse.clone());
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        // اگر شبکه قطع بود، هیچ کاری نکن (همان کش نمایش داده شده)
+      });
+      
+      return cachedResponse || fetchPromise;
+    })
+  );
 });
