@@ -1,13 +1,8 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// برای GitHub Pages زیرمسیر:
-//   SITE_URL=https://user.github.io BASE_PATH=/repo/ npm run build
-// برای دامنه اصلی:
-//   SITE_URL=https://example.com npm run build
-const site = process.env.SITE_URL || 'https://abzar-tools.ir';
-const isDev = process.env.NODE_ENV !== 'production';
-const base = process.env.BASE_PATH !== undefined ? process.env.BASE_PATH : '/';
+const site = 'https://abzar-tools.ir';
+const base = '/';
 
 export default defineConfig({
   site,

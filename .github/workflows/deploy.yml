@@ -1,20 +1,21 @@
 name: Deploy to GitHub Pages
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
+  push:
     branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
-    # فقط زمانی اجرا شود که CI موفق بوده یا دستی اجرا شده باشد
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,8 +26,8 @@ jobs:
       - run: npm ci
       - name: Build
         env:
-          SITE_URL: https://reza22farokhi.github.io/online-tools
-          BASE_PATH: /online-tools/
+          SITE_URL: https://abzar-tools.ir
+          BASE_PATH: /
         run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
