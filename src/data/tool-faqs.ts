@@ -41,6 +41,7 @@ import { faqs as csv_json_converter } from './faqs/csv-json-converter';
 import { faqs as qr_code_generator } from './faqs/qr-code-generator';
 import { faqs as password_generator } from './faqs/password-generator';
 import { faqs as date_converter } from './faqs/date-converter';
+import { faqs as text_diff } from './faqs/text-diff';
 
 import { faqs as persian_text_refiner } from './faqs/persian-text-refiner';
 
@@ -85,6 +86,7 @@ export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'qr-code-generator': qr_code_generator,
   'password-generator': password_generator,
   'date-converter': date_converter,
+  'text-diff': text_diff,
   'persian-text-refiner': persian_text_refiner,
 };
 
