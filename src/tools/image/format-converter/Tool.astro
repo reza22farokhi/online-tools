@@ -5,8 +5,8 @@
     <input type="file" id="fc-file" accept="image/*" class="sr-only" />
     <label for="fc-file" class="fc-upload-label">
       <span class="fc-icon">🔄</span>
-      <span>برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
-      <span class="fc-hint">حداکثر ۲۰ مگابایت (پردازش محلی)</span>
+      <span data-lang-fa="برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید" data-lang-en="Click to choose an image or drag it here">برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="fc-hint" data-lang-fa="حداکثر ۲۰ مگابایت (پردازش محلی)" data-lang-en="Maximum 20 MB (local processing)">حداکثر ۲۰ مگابایت (پردازش محلی)</span>
     </label>
   </div>
   <div class="fc-error" id="fc-error" hidden role="alert"></div>
@@ -17,7 +17,7 @@
     </div>
     <div class="fc-controls">
       <div class="fc-field">
-        <label for="fc-format">فرمت خروجی:</label>
+        <label for="fc-format" data-lang-fa="فرمت خروجی:" data-lang-en="Output format:">فرمت خروجی:</label>
         <select id="fc-format" class="select">
           <option value="image/jpeg" selected>JPG</option>
           <option value="image/png">PNG</option>
@@ -25,8 +25,8 @@
         </select>
       </div>
       <div class="fc-actions">
-        <button type="button" class="btn btn-primary" id="fc-process">✨ تبدیل فرمت</button>
-        <a id="fc-download" class="btn" style="display: none;">📥 دانلود تصویر</a>
+        <button type="button" class="btn btn-primary" id="fc-process">✨ <span data-lang-fa="تبدیل فرمت" data-lang-en="Convert format">تبدیل فرمت</span></button>
+        <a id="fc-download" class="btn" style="display: none;">📥 <span data-lang-fa="دانلود تصویر" data-lang-en="Download image">دانلود تصویر</span></a>
       </div>
     </div>
   </div>
