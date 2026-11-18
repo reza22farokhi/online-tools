@@ -13,7 +13,7 @@
           }
         } catch (e) {}
       })();
-    </script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"JWT چیست؟ راهنمای جامع توکن‌های وب (مبتدی تا پیشرفته)","description":"JWT (JSON Web Token) چیست و چگونه کار می‌کند؟ ساختار Header، Payload و Signature، تفاوت با Session و نکات امنیتی مهم. راهنمای جامع.","datePublished":"۲۰ آذر ۱۴۰۵","author":{"@type":"Organization","name":"Online Tools Team"},"publisher":{"@type":"Organization","name":"ابزارهای آنلاین","logo":{"@type":"ImageObject","url":"https://abzar-tools.ir/favicon.svg"}},"mainEntityOfPage":"https://abzar-tools.ir/blog/what-is-jwt-guide/"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"خانه","item":"https://abzar-tools.ir/"},{"@type":"ListItem","position":2,"name":"وبلاگ","item":"https://abzar-tools.ir/blog/"},{"@type":"ListItem","position":3,"name":"JWT چیست؟ راهنمای جامع توکن‌های وب (مبتدی تا پیشرفته)","item":"https://abzar-tools.ir/blog/what-is-jwt-guide/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"JWT یک روش رمزنگاری است؟","acceptedAnswer":{"@type":"Answer","text":"خیر. JWT فقط یک استاندارد برای تولید توکن است. محتوای آن Base64 است و هر کسی می‌تواند آن را رمزگشایی کند. امنیت JWT به امضای دیجیتال (Signature) آن بستگی دارد، نه به مخفی بودن محتوا."}},{"@type":"Question","name":"تفاوت JWT و Session چیست؟","acceptedAnswer":{"@type":"Answer","text":"Session در سرور ذخیره می‌شود اما JWT در سمت کلاینت (مرورگر) ذخیره می‌شود. JWT برای معماری‌های میکروسرویس و APIها مناسب‌تر است، اما Session برای برنامه‌های سنتی امنیت بیشتری دارد."}},{"@type":"Question","name":"چرا JWT محبوب است؟","acceptedAnswer":{"@type":"Answer","text":"چون Stateless است. یعنی سرور نیازی به نگهداری اطلاعات نشست (Session) ندارد و می‌تواند به راحتی مقیاس‌پذیر باشد. همچنین برای احراز هویت در اپلیکیشن‌های موبایل و APIها عالی است."}},{"@type":"Question","name":"آیا JWT امن است؟","acceptedAnswer":{"@type":"Answer","text":"اگر به درستی پیاده‌سازی شود، بله. اما اشتباهات رایج مثل ذخیره اطلاعات حساس در Payload یا عدم بررسی تاریخ انقضا (exp) می‌تواند خطرناک باشد. همیشه امضا را در سرور با کلید مخفی بررسی کنید."}}]}</script><script>
+    </script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"JWT چیست؟ راهنمای جامع توکن‌های وب (مبتدی تا پیشرفته)","description":"JWT (JSON Web Token) چیست و چگونه کار می‌کند؟ ساختار Header، Payload و Signature، تفاوت با Session و نکات امنیتی مهم. راهنمای جامع.","datePublished":"۲۰ آذر ۱۴۰۵","author":{"@type":"Organization","name":"Online Tools Team"},"publisher":{"@type":"Organization","name":"ابزارهای آنلاین","logo":{"@type":"ImageObject","url":"https://abzar-tools.ir/favicon.svg"}},"mainEntityOfPage":"https://abzar-tools.ir/blog/what-is-jwt-guide/"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"خانه","item":"https://abzar-tools.ir/"},{"@type":"ListItem","position":2,"name":"وبلاگ","item":"https://abzar-tools.ir/blog/"},{"@type":"ListItem","position":3,"name":"JWT چیست؟ راهنمای جامع توکن‌های وب (مبتدی تا پیشرفته)","item":"https://abzar-tools.ir/blog/what-is-jwt-guide/"}]}</script><script>
       !function(e,t,n){
           e.yektanetAnalyticsObject=n,
           e[n]=e[n]||function(){e[n].q.push(arguments)},
@@ -107,7 +107,7 @@ JWT یک ابزار قدرتمند برای احراز هویت است، اما 
           }
         } catch(e) {}
       })();
-    </script> <!-- data-tool-slug-tracker --> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.BGVpnxbv.js"></script> <div class="visitor-counter" data-astro-cid-k3mosimp> <span class="pulse-dot" data-astro-cid-k3mosimp></span> <span class="counter-label" data-astro-cid-k3mosimp>بازدیدکننده امروز:</span> <span class="counter-number" id="live-count" data-astro-cid-k3mosimp>...</span> </div>  <script>
+    </script> <!-- data-tool-slug-tracker --> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.BGVpnxbv.js"></script> <div class="visitor-counter" data-astro-cid-k3mosimp> <span class="pulse-dot" data-astro-cid-k3mosimp></span> <span class="counter-label" data-astro-cid-k3mosimp>تعداد بازدید ثبت‌شده:</span> <span class="counter-number" id="live-count" data-astro-cid-k3mosimp>...</span> </div>  <script>
   document.addEventListener('DOMContentLoaded', async () => {
     const countElement = document.getElementById('live-count');
     if (!countElement) return;
@@ -125,8 +125,8 @@ JWT یک ابزار قدرتمند برای احراز هویت است، اما 
       // فرمت‌دهی به فارسی
       countElement.textContent = data.value.toLocaleString('fa-IR');
     } catch (e) {
-      // در صورت خطای شبکه، حداقل یک عدد ثابت و واقعی نشان می‌دهیم
-      countElement.textContent = '۱٬۴۵۰';
+      // در صورت خطا، مقدار ناموجود نمایش داده می‌شود؛ عدد ساختگی ارائه نمی‌کنیم.
+      countElement.textContent = '—';
     }
   });
 </script> </body></html> 

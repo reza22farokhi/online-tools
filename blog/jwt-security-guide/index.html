@@ -13,7 +13,7 @@
           }
         } catch (e) {}
       })();
-    </script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"امنیت JWT: بهترین روش‌ها و جلوگیری از آسیب‌پذیری","description":"آموزش تامین امنیت JWT. بررسی خطرات ذخیره داده حساس در Payload، تفاوت Decode و Verify، و روش‌های استاندارد محافظت از توکن‌ها در سرور.","datePublished":"۱ آذر ۱۴۰۵","author":{"@type":"Organization","name":"Online Tools Team"},"publisher":{"@type":"Organization","name":"ابزارهای آنلاین","logo":{"@type":"ImageObject","url":"https://abzar-tools.ir/favicon.svg"}},"mainEntityOfPage":"https://abzar-tools.ir/blog/jwt-security-guide/"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"خانه","item":"https://abzar-tools.ir/"},{"@type":"ListItem","position":2,"name":"وبلاگ","item":"https://abzar-tools.ir/blog/"},{"@type":"ListItem","position":3,"name":"امنیت JWT: بهترین روش‌ها و جلوگیری از آسیب‌پذیری","item":"https://abzar-tools.ir/blog/jwt-security-guide/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"آیا رمزگشایی JWT به معنای هک کردن آن است؟","acceptedAnswer":{"@type":"Answer","text":"خیر. JWT ذاتاً کدگذاری شده است (Base64URL) و هر کسی می‌تواند محتوای آن را بخواند. \"رمزگشایی\" فقط خواندن اطلاعات است. امنیت JWT به امضای دیجیتال (Signature) بستگی دارد، نه به مخفی بودن محتوا."}},{"@type":"Question","name":"آیا می‌توان از JWT برای ذخیره اطلاعات حساس استفاده کرد؟","acceptedAnswer":{"@type":"Answer","text":"هرگز. هرگز داده‌های حساس مثل رمز عبور، شماره کارت بانکی یا اطلاعات پزشکی را در Payload ذخیره نکنید. JWT فقط برای انتقال اطلاعات شناسایی (Identity) مثل User ID یا نقش‌ها مناسب است."}},{"@type":"Question","name":"چگونه JWT را در سرور امن نگه داریم؟","acceptedAnswer":{"@type":"Answer","text":"امضای JWT باید در سرور با استفاده از کتابخانه‌های معتبر (مثل jsonwebtoken در Node.js) بررسی شود. هرگز امضا را در سمت کلاینت (مرورگر) تایید نکنید، چون کلید مخفی (Secret) در دسترس خواهد بود."}},{"@type":"Question","name":"آیا می‌توانم از ابزار JWT Decoder شما برای توکن‌های واقعی استفاده کنم؟","acceptedAnswer":{"@type":"Answer","text":"بله، چون پردازش ۱۰۰٪ محلی است و توکن به هیچ سروری ارسال نمی‌شود. اما برای امنیت بیشتر، توکن‌های حیاتی تولید را در محیط توسعه تست کنید، نه در نسخه Production."}}]}</script><script>
+    </script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"امنیت JWT: بهترین روش‌ها و جلوگیری از آسیب‌پذیری","description":"آموزش تامین امنیت JWT. بررسی خطرات ذخیره داده حساس در Payload، تفاوت Decode و Verify، و روش‌های استاندارد محافظت از توکن‌ها در سرور.","datePublished":"۱ آذر ۱۴۰۵","author":{"@type":"Organization","name":"Online Tools Team"},"publisher":{"@type":"Organization","name":"ابزارهای آنلاین","logo":{"@type":"ImageObject","url":"https://abzar-tools.ir/favicon.svg"}},"mainEntityOfPage":"https://abzar-tools.ir/blog/jwt-security-guide/"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"خانه","item":"https://abzar-tools.ir/"},{"@type":"ListItem","position":2,"name":"وبلاگ","item":"https://abzar-tools.ir/blog/"},{"@type":"ListItem","position":3,"name":"امنیت JWT: بهترین روش‌ها و جلوگیری از آسیب‌پذیری","item":"https://abzar-tools.ir/blog/jwt-security-guide/"}]}</script><script>
       !function(e,t,n){
           e.yektanetAnalyticsObject=n,
           e[n]=e[n]||function(){e[n].q.push(arguments)},
@@ -110,7 +110,7 @@ JWT یک ابزار قدرتمند است، اما امنیت آن به درک �
           }
         } catch(e) {}
       })();
-    </script> <!-- data-tool-slug-tracker --> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.BGVpnxbv.js"></script> <div class="visitor-counter" data-astro-cid-k3mosimp> <span class="pulse-dot" data-astro-cid-k3mosimp></span> <span class="counter-label" data-astro-cid-k3mosimp>بازدیدکننده امروز:</span> <span class="counter-number" id="live-count" data-astro-cid-k3mosimp>...</span> </div>  <script>
+    </script> <!-- data-tool-slug-tracker --> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.BGVpnxbv.js"></script> <div class="visitor-counter" data-astro-cid-k3mosimp> <span class="pulse-dot" data-astro-cid-k3mosimp></span> <span class="counter-label" data-astro-cid-k3mosimp>تعداد بازدید ثبت‌شده:</span> <span class="counter-number" id="live-count" data-astro-cid-k3mosimp>...</span> </div>  <script>
   document.addEventListener('DOMContentLoaded', async () => {
     const countElement = document.getElementById('live-count');
     if (!countElement) return;
@@ -128,8 +128,8 @@ JWT یک ابزار قدرتمند است، اما امنیت آن به درک �
       // فرمت‌دهی به فارسی
       countElement.textContent = data.value.toLocaleString('fa-IR');
     } catch (e) {
-      // در صورت خطای شبکه، حداقل یک عدد ثابت و واقعی نشان می‌دهیم
-      countElement.textContent = '۱٬۴۵۰';
+      // در صورت خطا، مقدار ناموجود نمایش داده می‌شود؛ عدد ساختگی ارائه نمی‌کنیم.
+      countElement.textContent = '—';
     }
   });
 </script> </body></html> 

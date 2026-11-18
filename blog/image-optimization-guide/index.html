@@ -108,7 +108,7 @@
           }
         } catch(e) {}
       })();
-    </script> <!-- data-tool-slug-tracker --> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.BGVpnxbv.js"></script> <div class="visitor-counter" data-astro-cid-k3mosimp> <span class="pulse-dot" data-astro-cid-k3mosimp></span> <span class="counter-label" data-astro-cid-k3mosimp>بازدیدکننده امروز:</span> <span class="counter-number" id="live-count" data-astro-cid-k3mosimp>...</span> </div>  <script>
+    </script> <!-- data-tool-slug-tracker --> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.BGVpnxbv.js"></script> <div class="visitor-counter" data-astro-cid-k3mosimp> <span class="pulse-dot" data-astro-cid-k3mosimp></span> <span class="counter-label" data-astro-cid-k3mosimp>تعداد بازدید ثبت‌شده:</span> <span class="counter-number" id="live-count" data-astro-cid-k3mosimp>...</span> </div>  <script>
   document.addEventListener('DOMContentLoaded', async () => {
     const countElement = document.getElementById('live-count');
     if (!countElement) return;
@@ -126,8 +126,8 @@
       // فرمت‌دهی به فارسی
       countElement.textContent = data.value.toLocaleString('fa-IR');
     } catch (e) {
-      // در صورت خطای شبکه، حداقل یک عدد ثابت و واقعی نشان می‌دهیم
-      countElement.textContent = '۱٬۴۵۰';
+      // در صورت خطا، مقدار ناموجود نمایش داده می‌شود؛ عدد ساختگی ارائه نمی‌کنیم.
+      countElement.textContent = '—';
     }
   });
 </script> </body></html> 
