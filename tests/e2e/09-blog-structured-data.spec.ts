@@ -42,7 +42,7 @@ test.describe('blog structured data', () => {
       const schemas = scripts.map((raw) => JSON.parse(raw));
       const articles = schemas.filter((schema) => schema['@type'] === 'BlogPosting');
       expect(articles).toHaveLength(1);
-      expect(articles[0].datePublished).toMatch(/^\\d{4}-\\d{2}-\\d{2}$/);
+      expect(articles[0].datePublished).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 
       const faqCount = schemas.filter((schema) => schema['@type'] === 'FAQPage').length;
       const visibleFaqCount = await page.locator('.blog-faq').count();
