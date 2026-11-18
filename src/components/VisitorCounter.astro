@@ -4,7 +4,7 @@
 ---
 <div class="visitor-counter">
   <span class="pulse-dot"></span>
-  <span class="counter-label">بازدیدکننده امروز:</span>
+  <span class="counter-label">تعداد بازدید ثبت‌شده:</span>
   <span class="counter-number" id="live-count">...</span>
 </div>
 
@@ -57,8 +57,8 @@
       // فرمت‌دهی به فارسی
       countElement.textContent = data.value.toLocaleString('fa-IR');
     } catch (e) {
-      // در صورت خطای شبکه، حداقل یک عدد ثابت و واقعی نشان می‌دهیم
-      countElement.textContent = '۱٬۴۵۰';
+      // در صورت خطا، مقدار ناموجود نمایش داده می‌شود؛ عدد ساختگی ارائه نمی‌کنیم.
+      countElement.textContent = '—';
     }
   });
 </script>
