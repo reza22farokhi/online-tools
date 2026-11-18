@@ -19,7 +19,7 @@ describe('Content Security Policy allowlist', () => {
 
     expect(fontSources).toContain('https://cdn.yektanet.com/fonts/');
     expect(fontSources).toContain('https://cdn.yektanet.com/assets/fonts/');
-    expect(fontSources).not.toMatch(/(?:^|\\s)https:(?:\\s|$)/);
+    expect(fontSources).not.toMatch(/(?:^|\s)https:(?:\s|$)/);
     expect(fontSources).not.toContain('*');
   });
 
