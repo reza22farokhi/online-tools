@@ -7,7 +7,9 @@ import { SITE_NAME_FA, DEFAULT_DESCRIPTION } from '../lib/seo';
 
 export interface Props {
   title: string;
+  titleEn?: string;
   description?: string;
+  descriptionEn?: string;
   lang?: 'fa' | 'en';
   canonical?: string;
   image?: string;
@@ -18,7 +20,9 @@ export interface Props {
 
 const {
   title,
+  titleEn,
   description = DEFAULT_DESCRIPTION,
+  descriptionEn,
   lang = 'fa',
   canonical,
   image = '/og-default.svg',
@@ -40,8 +44,8 @@ const dicts = getDicts();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title data-lang-fa={title} data-lang-en={titleEn ?? title}>{title}</title>
+    <meta name="description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     {/* Do not advertise an English alternate until every route has a real English document. */}
     <link rel="alternate" hreflang="fa" href={canonicalUrl} />
@@ -50,16 +54,16 @@ const dicts = getDicts();
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <meta property="og:type" content={type} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={title} data-lang-fa={title} data-lang-en={titleEn ?? title} />
+    <meta property="og:description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:site_name" content={SITE_NAME_FA} />
     <meta property="og:locale" content={lang === 'fa' ? 'fa_IR' : 'en_US'} />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={title} data-lang-fa={title} data-lang-en={titleEn ?? title} />
+    <meta name="twitter:description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
@@ -72,7 +76,8 @@ const dicts = getDicts();
             t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
           document.documentElement.setAttribute('data-theme', t);
-          var l = localStorage.getItem('pot.lang');
+          var queryLang = new URLSearchParams(window.location.search).get('lang');
+          var l = queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang');
           if (l === 'fa' || l === 'en') {
             document.documentElement.setAttribute('lang', l);
             document.documentElement.setAttribute('dir', l === 'fa' ? 'rtl' : 'ltr');
@@ -110,7 +115,7 @@ const dicts = getDicts();
     <link rel="apple-touch-icon" href={import.meta.env.BASE_URL + "favicon.svg"} />
   </head>
   <body>
-    <a href="#main" class="skip-link">پرش به محتوا</a>
+    <a href="#main" class="skip-link" data-i18n="accessibility.skip">پرش به محتوا</a>
     <Header />
     <div class="yn-bnr" id="ynpos-21471"></div>
     <main id="main">
