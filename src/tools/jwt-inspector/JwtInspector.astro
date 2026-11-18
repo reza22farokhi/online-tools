@@ -227,6 +227,14 @@ import { STANDARD_CLAIMS } from './claims';
   const $verifyResult = document.getElementById('jwt-verify-result') as HTMLElement;
 
   let debounce: number | undefined;
+  let verifyRequestId = 0;
+
+  function resetVerification() {
+    verifyRequestId++;
+    $verifyResult.hidden = true;
+    $verifyResult.className = 'jwt-verify-result';
+    $verifyResult.textContent = '';
+  }
 
   function setError(msg: string | null) {
     if (!msg) { $error.hidden = true; $error.textContent = ''; return; }
@@ -302,17 +310,25 @@ import { STANDARD_CLAIMS } from './claims';
   }
 
   $input.addEventListener('input', () => {
+    resetVerification();
     window.clearTimeout(debounce);
     debounce = window.setTimeout(render, 250);
   });
+  $key.addEventListener('input', resetVerification);
+  $alg.addEventListener('change', resetVerification);
 
-  // Verify
+  // Verify the exact token/key/algorithm snapshot; discard stale async results.
   document.getElementById('jwt-verify')!.addEventListener('click', async () => {
+    const token = $input.value;
+    const key = $key.value;
+    const algorithm = $alg.value || undefined;
+    const requestId = ++verifyRequestId;
     $verifyResult.hidden = false;
     $verifyResult.className = 'jwt-verify-result';
     $verifyResult.textContent = 'در حال تأیید…';
     try {
-      const result = await verify($input.value, $key.value, $alg.value || undefined);
+      const result = await verify(token, key, algorithm);
+      if (requestId !== verifyRequestId || token !== $input.value || key !== $key.value || (algorithm || '') !== $alg.value) return;
       if (result.valid) {
         $verifyResult.classList.add('ok');
         $verifyResult.textContent = `✓ امضا معتبر است (${result.algorithm})`;
@@ -321,6 +337,7 @@ import { STANDARD_CLAIMS } from './claims';
         $verifyResult.textContent = `✗ امضا نامعتبر است (${result.algorithm})`;
       }
     } catch (err) {
+      if (requestId !== verifyRequestId || token !== $input.value || key !== $key.value || (algorithm || '') !== $alg.value) return;
       $verifyResult.classList.add('fail');
       $verifyResult.textContent = err instanceof JwtError ? err.message : 'خطا در تأیید';
     }
@@ -346,7 +363,7 @@ import { STANDARD_CLAIMS } from './claims';
     $input.value = '';
     $key.value = '';
     $alg.value = '';
-    $verifyResult.hidden = true;
+    resetVerification();
     render();
   });
 
@@ -366,10 +383,12 @@ import { STANDARD_CLAIMS } from './claims';
 
   document.getElementById('jwt-sample-hs256')!.addEventListener('click', () => {
     $input.value = SAMPLES.hs256;
+    resetVerification();
     render();
   });
   document.getElementById('jwt-sample-rs256')!.addEventListener('click', () => {
     $input.value = SAMPLES.rs256;
+    resetVerification();
     render();
   });
 
