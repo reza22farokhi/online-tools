@@ -38,6 +38,19 @@ export function getStoredLang(): Lang | null {
 export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>) {
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+  document.documentElement.dataset.activeLang = lang;
+  document.querySelectorAll<HTMLElement>('[data-lang-fa][data-lang-en]').forEach(el => {
+    const value = lang === 'en' ? el.dataset.langEn : el.dataset.langFa;
+    if (value !== undefined) el.textContent = value;
+  });
+  document.querySelectorAll<HTMLMetaElement>('meta[data-lang-fa][data-lang-en]').forEach(el => {
+    const value = lang === 'en' ? el.dataset.langEn : el.dataset.langFa;
+    if (value !== undefined) el.content = value;
+  });
+  document.querySelectorAll<HTMLElement>('title[data-lang-fa][data-lang-en]').forEach(el => {
+    const value = lang === 'en' ? el.dataset.langEn : el.dataset.langFa;
+    if (value !== undefined) document.title = value;
+  });
   if (!dicts) return;
   document.querySelectorAll<HTMLElement>('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
@@ -55,6 +68,11 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
 
 export function setLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>) {
   try { localStorage.setItem(LANG_KEY, lang); } catch {}
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    window.history.replaceState({}, '', url);
+  } catch {}
   applyLang(lang, dicts);
 }
 
@@ -206,8 +224,12 @@ export function populateHomeSections(): void {
 export function initUI(dicts?: Record<Lang, Record<string, string>>) {
   setupFavoriteDelegation();
   initFavoriteButtons();
-  const storedLang = getStoredLang();
-  if (storedLang) applyLang(storedLang, dicts);
+  const queryLang = new URLSearchParams(window.location.search).get('lang');
+  const initialLang: Lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : (getStoredLang() ?? 'fa');
+  if (queryLang === 'fa' || queryLang === 'en') {
+    try { localStorage.setItem(LANG_KEY, queryLang); } catch {}
+  }
+  applyLang(initialLang, dicts);
   document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach(btn => {
     btn.addEventListener('click', () => toggleTheme());
   });
