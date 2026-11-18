@@ -54,7 +54,7 @@ const related = getRelated(meta.slug);
       <ol>
         <li><a href={base} data-i18n="breadcrumb.home">خانه</a></li>
         <li><a href={base + 'tools/'} data-i18n="breadcrumb.tools">ابزارها</a></li>
-        <li aria-current="page">{meta.name[lang]}</li>
+        <li aria-current="page"><span data-lang-fa={meta.name.fa} data-lang-en={meta.name.en}>{meta.name[lang]}</span></li>
       </ol>
     </nav>
 
