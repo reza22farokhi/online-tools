@@ -5,8 +5,8 @@
     <input type="file" id="ic-file" accept="image/jpeg, image/png, image/webp" class="sr-only" />
     <label for="ic-file" class="ic-upload-label">
       <span class="ic-icon">🗜️</span>
-      <span>برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
-      <span class="ic-hint">فرمت‌های مجاز: JPG, PNG, WebP (حداکثر ۲۰ مگابایت)</span>
+      <span data-lang-fa="برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید" data-lang-en="Click to choose an image or drag it here">برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="ic-hint" data-lang-fa="فرمت‌های مجاز: JPG, PNG, WebP (حداکثر ۲۰ مگابایت)" data-lang-en="Supported formats: JPG, PNG, WebP (max 20 MB)">فرمت‌های مجاز: JPG, PNG, WebP (حداکثر ۲۰ مگابایت)</span>
     </label>
   </div>
   <div class="ic-error" id="ic-error" hidden role="alert"></div>
@@ -14,26 +14,26 @@
     <div class="ic-preview-wrap">
       <img id="ic-preview" class="ic-preview" alt="Preview" />
       <div class="ic-stats">
-        <div>حجم اصلی: <strong id="ic-orig-size">-</strong></div>
-        <div>حجم جدید: <strong id="ic-new-size">-</strong></div>
-        <div class="ic-reduction" id="ic-reduction-wrap" hidden>کاهش حجم: <strong id="ic-reduction">-</strong></div>
+        <div><span data-lang-fa="حجم اصلی:" data-lang-en="Original size:">حجم اصلی:</span> <strong id="ic-orig-size">-</strong></div>
+        <div><span data-lang-fa="حجم جدید:" data-lang-en="New size:">حجم جدید:</span> <strong id="ic-new-size">-</strong></div>
+        <div class="ic-reduction" id="ic-reduction-wrap" hidden><span data-lang-fa="کاهش حجم:" data-lang-en="Size reduction:">کاهش حجم:</span> <strong id="ic-reduction">-</strong></div>
       </div>
     </div>
     <div class="ic-controls">
       <div class="ic-field">
-        <label for="ic-quality">کیفیت (Quality): <span id="ic-q-val">80</span>%</label>
+        <label for="ic-quality"><span data-lang-fa="کیفیت:" data-lang-en="Quality:">کیفیت (Quality):</span> <span id="ic-q-val">80</span>%</label>
         <input id="ic-quality" type="range" min="10" max="100" value="80" class="ic-range" />
       </div>
       <div class="ic-field">
-        <label for="ic-format">فرمت خروجی</label>
+        <label for="ic-format" data-lang-fa="فرمت خروجی" data-lang-en="Output format">فرمت خروجی</label>
         <select id="ic-format" class="select">
-          <option value="image/jpeg" selected>JPG (بهترین فشرده‌سازی)</option>
-          <option value="image/webp">WebP (کیفیت بالا + حجم کم)</option>
+          <option value="image/jpeg" selected>JPG (Best compression)</option>
+          <option value="image/webp">WebP (High quality, smaller size)</option>
         </select>
       </div>
       <div class="ic-actions">
-        <button type="button" class="btn btn-primary" id="ic-process">⚡ فشرده‌سازی</button>
-        <a id="ic-download" class="btn" style="display: none;">📥 دانلود تصویر فشرده</a>
+        <button type="button" class="btn btn-primary" id="ic-process">⚡ <span data-lang-fa="فشرده‌سازی" data-lang-en="Compress">فشرده‌سازی</span></button>
+        <a id="ic-download" class="btn" style="display: none;">📥 <span data-lang-fa="دانلود تصویر فشرده" data-lang-en="Download compressed image">دانلود تصویر فشرده</span></a>
       </div>
     </div>
   </div>
