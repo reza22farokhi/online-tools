@@ -8,13 +8,17 @@ export interface Props {
   title: string;
   description: string;
   publishDate: string;
-  isoDate?: string;
+  isoDate: string;
   readTime: string;
   slug: string;
   faqs?: FaqItem[];
 }
 
 const { title, description, publishDate, isoDate, readTime, slug, faqs = [] } = Astro.props;
+
+if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(isoDate) || Number.isNaN(Date.parse(`${isoDate}T00:00:00Z`))) {
+  throw new Error(`BlogLayout requires a valid ISO 8601 datePublished for slug: ${slug}`);
+}
 const base = import.meta.env.BASE_URL;
 const site = Astro.site?.toString() ?? 'https://example.com/';
 const canonical = new URL(`${base}blog/${slug}/`.replace(/^\//, ''), site).toString();
@@ -24,7 +28,7 @@ const articleLd = {
   '@type': 'BlogPosting',
   headline: title,
   description: description,
-  datePublished: isoDate || publishDate,
+  datePublished: isoDate,
   author: { '@type': 'Organization', name: 'Online Tools Team' },
   publisher: {
     '@type': 'Organization',
