@@ -63,6 +63,8 @@ const related = getRelated(meta.slug);
       <p class="lead" data-lang-fa={meta.description.fa} data-lang-en={meta.description.en}>{meta.description[lang]}</p>
     </header>
 
+    <aside class="tool-translation-note" data-lang-only="en" hidden>Some tool-specific controls, instructions, and FAQs are still being translated. The shared navigation and tool information are available in English.</aside>
+
     <div class="tool-body card">
       <slot />
     </div>
@@ -118,6 +120,7 @@ const related = getRelated(meta.slug);
   .tool-header { margin-bottom: var(--space-4); }
   .lead { font-size: 1.05rem; color: var(--color-text-muted); margin: 0; }
   .tool-body { margin-bottom: var(--space-4); }
+  .tool-translation-note { margin-bottom: var(--space-3); padding: var(--space-3); border-inline-start: 3px solid var(--color-primary); background: var(--color-surface-2); border-radius: var(--radius-sm); font-size: 0.9rem; color: var(--color-text-muted); }
   .tool-privacy { margin-bottom: var(--space-5); }
   .tool-privacy h2 { font-size: 1.1rem; }
   .tool-related { margin-top: var(--space-5); }
