@@ -115,7 +115,7 @@ Ali,"Tehran, Iran"</code></pre> <p>
       window.addEventListener('unhandledrejection', function(event) {
         showGlobalError('خطا در ارتباط با سرور. لطفاً اتصال خود را بررسی کنید.');
       });
-    </script> <script type="module">"serviceWorker"in navigator&&window.isSecureContext&&window.addEventListener("load",()=>{navigator.serviceWorker.register("/sw.js").then(e=>console.log("[PWA] SW registered:",e.scope)).catch(e=>console.warn("[PWA] SW failed:",e))});</script> <script>
+    </script> <script type="module">"serviceWorker"in navigator&&window.isSecureContext&&window.addEventListener("load",()=>{navigator.serviceWorker.register("/sw.js",{updateViaCache:"none"}).then(e=>console.log("[PWA] SW registered:",e.scope)).catch(e=>console.warn("[PWA] SW failed:",e))});</script> <script>
       (function() {
         try {
           var el = document.querySelector("[data-tool-slug]");
