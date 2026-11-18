@@ -1,0 +1,65 @@
+name: Generate secure dependency lockfile
+
+on:
+  push:
+    branches:
+      - security/astro7-vitest4-2026-11-18
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Regenerate lockfile
+        run: npm install --package-lock-only
+
+      - name: Install exact lockfile
+        run: npm ci
+
+      - name: Report dependency audit findings
+        run: |
+          npm audit --json > npm-audit.json || true
+          node -e 'const report = require("./npm-audit.json"); console.log(JSON.stringify({summary: report.metadata?.vulnerabilities, vulnerabilities: Object.entries(report.vulnerabilities || {}).map(([name, item]) => ({name, severity: item.severity, range: item.range, via: item.via, fixAvailable: item.fixAvailable}))}, null, 2))'
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Type check
+        run: npm run check
+
+      - name: Production build
+        run: npm run build
+
+      - name: Verify tool registry
+        run: node scripts/verify-tools.mjs
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npm run test:e2e
+
+      - name: Commit generated lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "No lockfile changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: refresh lockfile for Astro 7 and Vitest 4"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
