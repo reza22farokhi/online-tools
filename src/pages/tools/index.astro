@@ -8,13 +8,15 @@ const canonical = new URL('tools/', site).toString();
 ---
 <BaseLayout
   title="همه ابزارها | ابزارهای آنلاین"
+  titleEn="All Tools | Online Tools"
   description="فهرست کامل ابزارهای آنلاین حرفه‌ای در دسته‌های متن، برنامه‌نویسی، محاسبات، سئو، تصویر و فایل."
+  descriptionEn="Browse all free online tools for text, programming, calculations, SEO, images, colors, dates and files."
   canonical={canonical}
 >
   <div class="container page">
     <header class="page-header">
       <h1 data-i18n="tools.all">همه ابزارها</h1>
-      <p class="lead">مجموعه کامل ابزارها در دسته‌های مختلف.</p>
+      <p class="lead" data-lang-fa="مجموعه کامل ابزارها در دسته‌های مختلف." data-lang-en="Browse the complete collection of tools across all categories.">مجموعه کامل ابزارها در دسته‌های مختلف.</p>
     </header>
 
     {categories.map(c => {
@@ -23,7 +25,7 @@ const canonical = new URL('tools/', site).toString();
       return (
         <section class="cat-section" aria-labelledby={`cat-${c.slug}`}>
           <h2 id={`cat-${c.slug}`} class="cat-title">
-            <span aria-hidden="true">{c.icon}</span> {c.fa}
+            <span aria-hidden="true">{c.icon}</span> <span data-lang-fa={c.fa} data-lang-en={c.en}>{c.fa}</span>
           </h2>
           <div class="tools-grid">
             {items.map(t => <ToolCard tool={t} />)}
