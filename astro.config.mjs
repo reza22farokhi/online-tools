@@ -9,6 +9,8 @@ export default defineConfig({
   base,
   output: 'static',
   trailingSlash: 'always',
+  // Preserve the HTML-aware whitespace behavior from Astro 5 during the v7 migration.
+  compressHTML: true,
   build: {
     format: 'directory',
     inlineStylesheets: 'auto'
