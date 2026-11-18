@@ -7,7 +7,7 @@ test('service worker keeps an offline shell and bounds runtime caching', async (
 
   await page.goto('/tools/jwt-inspector/');
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
-  await page.evaluate(() => fetch('/robots.txt'));
+  await page.evaluate(async () => { await fetch('/robots.txt'); });
   await page.goto('/?cache-bypass-check=1');
 
   const cacheState = await page.evaluate(async () => {
@@ -28,6 +28,10 @@ test('service worker keeps an offline shell and bounds runtime caching', async (
   expect(cacheState.runtimeUrls.some((url) => url.includes('cache-bypass-check=1'))).toBe(false);
   expect(cacheState.runtimeUrls.some((url) => new URL(url).pathname === '/robots.txt')).toBe(false);
   expect(cacheState.runtimeUrls.length).toBeLessThanOrEqual(100);
+
+  await page.context().setOffline(true);
+  await page.goto('/tools/uncached-offline-test/');
+  await expect(page.getByRole('heading', { name: 'شما آفلاین هستید' })).toBeVisible();
 
   for (const cachedUrl of cacheState.runtimeUrls) {
     const url = new URL(cachedUrl);
