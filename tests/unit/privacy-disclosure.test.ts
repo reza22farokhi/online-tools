@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const privacy = readFileSync(new URL('../../src/pages/privacy.astro', import.meta.url), 'utf8');
-const about = readFileSync(new URL('../../src/pages/about.astro', import.meta.url), 'utf8');
-const toolLayout = readFileSync(new URL('../../src/layouts/ToolLayout.astro', import.meta.url), 'utf8');
+const privacy = readFileSync('src/pages/privacy.astro', 'utf8');
+const about = readFileSync('src/pages/about.astro', 'utf8');
+const toolLayout = readFileSync('src/layouts/ToolLayout.astro', 'utf8');
 
 describe('privacy disclosures', () => {
   it('distinguishes local tool-input processing from third-party advertising requests', () => {
