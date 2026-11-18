@@ -1,4 +1,3 @@
-import { jwtInspectorMeta } from './jwt-inspector/meta';
 import { meta as dateConverterMeta } from './date/date-converter/meta';
 import { meta as passwordGeneratorMeta } from './code/password-generator/meta';
 import { meta as qrCodeMeta } from './image/qr-code-generator/meta';
@@ -68,7 +67,6 @@ export const registry: ToolMeta[] = [
   multiCalendarMeta, unixTimestampMeta,
   dateCalculatorMeta, dateInfoMeta,
   csvJsonMeta,
-  textDiffMeta,
   textDiffMeta,
   {
     slug: 'persian-text-refiner',

@@ -180,7 +180,7 @@ const dicts = getDicts();
     <script>
     if ('serviceWorker' in navigator && window.isSecureContext) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js')
+        navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js', { updateViaCache: 'none' })
           .then((reg) => console.log('[PWA] SW registered:', reg.scope))
           .catch((err) => console.warn('[PWA] SW failed:', err));
       });
