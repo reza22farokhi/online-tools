@@ -35,7 +35,7 @@ function isRuntimeCacheable(request, url) {
 
   return (
     url.pathname.startsWith('/_astro/') &&
-    ['script', 'style', 'font', 'image'].includes(request.destination)
+    ['script', 'style', 'font'].includes(request.destination)
   );
 }
 
@@ -84,23 +84,35 @@ self.addEventListener('fetch', (event) => {
   const isNavigation = request.mode === 'navigate';
 
   event.respondWith((async () => {
-    const runtimeCache = await caches.open(RUNTIME_CACHE_NAME);
+    let runtimeCache = null;
+
+    try {
+      runtimeCache = await caches.open(RUNTIME_CACHE_NAME);
+    } catch {
+      // If Cache Storage is unavailable, continue with the network normally.
+    }
 
     try {
       const response = await fetch(request);
-      await putRuntimeEntry(runtimeCache, request, response);
+      if (runtimeCache) await putRuntimeEntry(runtimeCache, request, response);
       return response;
     } catch {
-      const cached = await runtimeCache.match(request);
-      if (cached) return cached;
+      if (runtimeCache) {
+        const cached = await runtimeCache.match(request);
+        if (cached) return cached;
+      }
 
       if (isNavigation) {
-        const shellCache = await caches.open(SHELL_CACHE_NAME);
-        const exactPage = await shellCache.match(request);
-        if (exactPage) return exactPage;
+        try {
+          const shellCache = await caches.open(SHELL_CACHE_NAME);
+          const exactPage = await shellCache.match(request);
+          if (exactPage) return exactPage;
 
-        const offlinePage = await shellCache.match('/offline/');
-        if (offlinePage) return offlinePage;
+          const offlinePage = await shellCache.match('/offline/');
+          if (offlinePage) return offlinePage;
+        } catch {
+          // Fall through to the plain offline response.
+        }
       }
 
       return new Response('Offline', {
