@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const headers = readFileSync(new URL('../../public/_headers', import.meta.url), 'utf8');
+const headers = readFileSync('public/_headers', 'utf8');
 const csp = headers.match(/^\s*Content-Security-Policy:\s*(.+)$/m)?.[1] ?? '';
 
 function directive(name: string): string {
