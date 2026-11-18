@@ -1,7 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import BlogFAQ from '../components/seo/BlogFAQ.astro';
-import { buildBreadcrumbJsonLd, buildFaqJsonLd } from '../lib/seo';
+import { buildBreadcrumbJsonLd } from '../lib/seo';
 
 export interface FaqItem { q: string; a: string; }
 export interface Props {
@@ -41,9 +41,6 @@ const breadcrumbLd = buildBreadcrumbJsonLd([
 ]);
 
 const jsonLdList: object[] = [articleLd, breadcrumbLd];
-if (faqs.length > 0) {
-  jsonLdList.push(buildFaqJsonLd(faqs));
-}
 ---
 <BaseLayout title={`${title} | وبلاگ`} description={description} canonical={canonical} jsonLd={jsonLdList}>
   <article class="blog-post container">
