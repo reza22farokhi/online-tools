@@ -1,9 +1,11 @@
-const CACHE_NAME = 'online-tools-v2';
+const SHELL_CACHE_NAME = 'online-tools-v3-shell';
+const RUNTIME_CACHE_NAME = 'online-tools-v3-runtime';
 const PRECACHE_URLS = ['/', '/offline/', '/manifest.json'];
+const MAX_RUNTIME_ENTRIES = 100;
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_NAME);
+    const cache = await caches.open(SHELL_CACHE_NAME);
     await cache.addAll(PRECACHE_URLS);
     await self.skipWaiting();
   })());
@@ -12,48 +14,105 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
+    const currentCaches = new Set([SHELL_CACHE_NAME, RUNTIME_CACHE_NAME]);
+
     await Promise.all(
       keys
-        .filter((key) => key.startsWith('online-tools-') && key !== CACHE_NAME)
+        .filter((key) => key.startsWith('online-tools-') && !currentCaches.has(key))
         .map((key) => caches.delete(key))
     );
+
     await self.clients.claim();
   })());
 });
 
+function isRuntimeCacheable(request, url) {
+  if (url.search) return false;
+
+  if (request.mode === 'navigate') {
+    return request.destination === 'document';
+  }
+
+  return (
+    url.pathname.startsWith('/_astro/') &&
+    ['script', 'style', 'font'].includes(request.destination)
+  );
+}
+
+async function putRuntimeEntry(cache, request, response) {
+  const cacheControl = response.headers.get('Cache-Control') || '';
+  const contentType = response.headers.get('Content-Type') || '';
+
+  if (
+    !response.ok ||
+    response.type !== 'basic' ||
+    /(?:no-store|private)/i.test(cacheControl)
+  ) {
+    return;
+  }
+
+  if (request.mode === 'navigate' && !contentType.toLowerCase().includes('text/html')) {
+    return;
+  }
+
+  // Cache failures must never turn a successful network response into an offline error.
+  try {
+    // Reinsert the key so FIFO eviction removes the least recently refreshed entry.
+    await cache.delete(request);
+    await cache.put(request, response.clone());
+
+    const keys = await cache.keys();
+    const overflow = keys.length - MAX_RUNTIME_ENTRIES;
+
+    if (overflow > 0) {
+      await Promise.all(keys.slice(0, overflow).map((key) => cache.delete(key)));
+    }
+  } catch {
+    // Storage can be unavailable or full; the network response remains usable.
+  }
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
 
-  if (request.method !== 'GET') return;
+  if (request.method !== 'GET' || request.headers.has('range')) return;
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (request.headers.has('range')) return;
+  if (!isRuntimeCacheable(request, url)) return;
+
+  const isNavigation = request.mode === 'navigate';
 
   event.respondWith((async () => {
-    const cache = await caches.open(CACHE_NAME);
+    let runtimeCache = null;
+
+    try {
+      runtimeCache = await caches.open(RUNTIME_CACHE_NAME);
+    } catch {
+      // If Cache Storage is unavailable, continue with the network normally.
+    }
 
     try {
       const response = await fetch(request);
-
-      const cacheControl = response.headers.get('Cache-Control') || '';
-      const mayCache =
-        response.ok &&
-        response.type === 'basic' &&
-        !/no-store/i.test(cacheControl);
-
-      if (mayCache) {
-        await cache.put(request, response.clone()).catch(() => {});
-      }
-
+      if (runtimeCache) await putRuntimeEntry(runtimeCache, request, response);
       return response;
     } catch {
-      const cached = await cache.match(request);
-      if (cached) return cached;
+      if (runtimeCache) {
+        const cached = await runtimeCache.match(request);
+        if (cached) return cached;
+      }
 
-      if (request.mode === 'navigate') {
-        const offlinePage = await cache.match('/offline/');
-        if (offlinePage) return offlinePage;
+      if (isNavigation) {
+        try {
+          const shellCache = await caches.open(SHELL_CACHE_NAME);
+          const exactPage = await shellCache.match(request);
+          if (exactPage) return exactPage;
+
+          const offlinePage = await shellCache.match('/offline/');
+          if (offlinePage) return offlinePage;
+        } catch {
+          // Fall through to the plain offline response.
+        }
       }
 
       return new Response('Offline', {
