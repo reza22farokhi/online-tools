@@ -55,15 +55,20 @@ async function putRuntimeEntry(cache, request, response) {
     return;
   }
 
-  // Reinsert the key so FIFO eviction removes the least recently refreshed entry.
-  await cache.delete(request);
-  await cache.put(request, response.clone());
+  // Cache failures must never turn a successful network response into an offline error.
+  try {
+    // Reinsert the key so FIFO eviction removes the least recently refreshed entry.
+    await cache.delete(request);
+    await cache.put(request, response.clone());
 
-  const keys = await cache.keys();
-  const overflow = keys.length - MAX_RUNTIME_ENTRIES;
+    const keys = await cache.keys();
+    const overflow = keys.length - MAX_RUNTIME_ENTRIES;
 
-  if (overflow > 0) {
-    await Promise.all(keys.slice(0, overflow).map((key) => cache.delete(key)));
+    if (overflow > 0) {
+      await Promise.all(keys.slice(0, overflow).map((key) => cache.delete(key)));
+    }
+  } catch {
+    // Storage can be unavailable or full; the network response remains usable.
   }
 }
 
