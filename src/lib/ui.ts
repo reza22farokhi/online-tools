@@ -170,7 +170,10 @@ export function initFavoriteButtons(root: ParentNode = document): void {
     const fav = isFavorite(slug);
     btn.classList.toggle("favorited", fav);
     btn.setAttribute("aria-pressed", fav ? "true" : "false");
-    const label = fav ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها";
+    const isEnglish = document.documentElement.lang === 'en';
+    const label = isEnglish
+      ? (fav ? "Remove from favorites" : "Add to favorites")
+      : (fav ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها");
     btn.setAttribute("aria-label", label);
     btn.setAttribute("title", label);
   });
