@@ -39,6 +39,9 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
   document.documentElement.dataset.activeLang = lang;
+  document.querySelectorAll<HTMLElement>('[data-lang-only]').forEach(el => {
+    el.hidden = el.dataset.langOnly !== lang;
+  });
   document.querySelectorAll<HTMLElement>('[data-lang-fa][data-lang-en]').forEach(el => {
     const value = lang === 'en' ? el.dataset.langEn : el.dataset.langFa;
     if (value !== undefined) el.textContent = value;
