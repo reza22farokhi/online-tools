@@ -1,5 +1,4 @@
 ---
-// ⚠️ مسیر Layout را با پروژه خود تطبیق دهید:
 import Layout from '../../../layouts/BaseLayout.astro';
 import JwtInspector from '../../../tools/jwt-inspector/JwtInspector.astro';
 
@@ -49,13 +48,6 @@ const faqJsonLd = {
 };
 ---
 
-<Layout title={title} description={description}>
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
-  </Fragment>
-
-  <main>
-    <JwtInspector />
-  </main>
+<Layout title={title} description={description} jsonLd={[jsonLd, faqJsonLd]}>
+  <JwtInspector />
 </Layout>
