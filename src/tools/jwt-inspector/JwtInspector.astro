@@ -5,9 +5,9 @@ import { STANDARD_CLAIMS } from './claims';
 
 <section class="jwt-inspector" dir="rtl" lang="fa">
   <header class="jwt-header">
-    <h2>بازرس JWT</h2>
+    <h1>بازرس JWT</h1>
     <p class="jwt-subtitle">
-      توکن JWT را اینجا وارد کنید. پردازش کاملاً در مرورگر شما انجام می‌شود — هیچ داده‌ای به سرور ارسال نمی‌شود.
+      توکن و کلید واردشده فقط در مرورگر شما پردازش می‌شوند و توسط این ابزار به سرور ارسال نمی‌شوند. سرویس‌های مستقل تبلیغات و شمارنده بازدید ممکن است درخواست‌های جداگانه دریافت کنند.
     </p>
   </header>
 
@@ -125,7 +125,7 @@ import { STANDARD_CLAIMS } from './claims';
     font-family: system-ui, -apple-system, sans-serif;
   }
   .jwt-header { margin-bottom: 2rem; text-align: center; }
-  .jwt-header h2 { margin: 0 0 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+  .jwt-header h1 { margin: 0 0 0.5rem; font-size: 1.8rem; color: #f8fafc; }
   .jwt-subtitle { color: #94a3b8; font-size: 1rem; margin: 0; }
   
   .jwt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
