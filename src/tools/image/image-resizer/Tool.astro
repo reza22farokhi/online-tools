@@ -5,8 +5,8 @@
     <input type="file" id="ir-file" accept="image/*" class="sr-only" />
     <label for="ir-file" class="ir-upload-label">
       <span class="ir-icon">🖼️</span>
-      <span>برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
-      <span class="ir-hint">حداکثر حجم: ۲۰ مگابایت (پردازش محلی)</span>
+      <span data-lang-fa="برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید" data-lang-en="Click to choose an image or drag it here">برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="ir-hint" data-lang-fa="حداکثر حجم: ۲۰ مگابایت (پردازش محلی)" data-lang-en="Maximum size: 20 MB (local processing)">حداکثر حجم: ۲۰ مگابایت (پردازش محلی)</span>
     </label>
   </div>
   <div class="ir-error" id="ir-error" hidden role="alert"></div>
@@ -17,20 +17,20 @@
     </div>
     <div class="ir-controls">
       <div class="ir-field">
-        <label for="ir-width">عرض (پیکسل)</label>
+        <label for="ir-width" data-lang-fa="عرض (پیکسل)" data-lang-en="Width (px)">عرض (پیکسل)</label>
         <input id="ir-width" type="number" class="input" min="1" max="10000" />
       </div>
       <div class="ir-field">
-        <label for="ir-height">ارتفاع (پیکسل)</label>
+        <label for="ir-height" data-lang-fa="ارتفاع (پیکسل)" data-lang-en="Height (px)">ارتفاع (پیکسل)</label>
         <input id="ir-height" type="number" class="input" min="1" max="10000" />
       </div>
       <label class="ir-checkbox">
         <input type="checkbox" id="ir-maintain" checked />
-        <span>حفظ نسبت تصویر (Aspect Ratio)</span>
+        <span data-lang-fa="حفظ نسبت تصویر (Aspect Ratio)" data-lang-en="Maintain aspect ratio">حفظ نسبت تصویر (Aspect Ratio)</span>
       </label>
       <div class="ir-actions">
-        <button type="button" class="btn btn-primary" id="ir-process">✂️ تغییر اندازه</button>
-        <a id="ir-download" class="btn" style="display: none;">📥 دانلود تصویر</a>
+        <button type="button" class="btn btn-primary" id="ir-process">✂️ <span data-lang-fa="تغییر اندازه" data-lang-en="Resize">تغییر اندازه</span></button>
+        <a id="ir-download" class="btn" style="display: none;">📥 <span data-lang-fa="دانلود تصویر" data-lang-en="Download image">دانلود تصویر</span></a>
       </div>
     </div>
   </div>
