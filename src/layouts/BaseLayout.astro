@@ -43,11 +43,9 @@ const dicts = getDicts();
     <title>{title}</title>
     <meta name="description" content={description} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-    
-    {/* TITAN X Ω — SEO Hreflang for i18n */}
-    <link rel="alternate" hreflang="fa" href={`${canonicalUrl}${canonicalUrl.includes('?') ? '&' : '?'}lang=fa`} />
-    <link rel="alternate" hreflang="en" href={`${canonicalUrl}${canonicalUrl.includes('?') ? '&' : '?'}lang=en`} />
-    <link rel="alternate" hreflang="x-default" href={`${canonicalUrl}${canonicalUrl.includes('?') ? '&' : '?'}lang=fa`} />
+    {/* Do not advertise an English alternate until every route has a real English document. */}
+    <link rel="alternate" hreflang="fa" href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
 
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
@@ -110,7 +108,7 @@ const dicts = getDicts();
     <link rel="manifest" href={import.meta.env.BASE_URL + "manifest.json"} />
     <meta name="theme-color" content="#4f46e5" />
     <link rel="apple-touch-icon" href={import.meta.env.BASE_URL + "favicon.svg"} />
-    </head>
+  </head>
   <body>
     <a href="#main" class="skip-link">پرش به محتوا</a>
     <Header />
@@ -155,7 +153,7 @@ const dicts = getDicts();
         if (e.persisted) populateHomeSections();
       });
     </script>
-  
+
     <script is:inline>
       (function() {
         try {
@@ -176,16 +174,15 @@ const dicts = getDicts();
       })();
     </script>
     <!-- data-tool-slug-tracker -->
-  
 
     <script>
-    if ('serviceWorker' in navigator && window.isSecureContext) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js', { updateViaCache: 'none' })
-          .then((reg) => console.log('[PWA] SW registered:', reg.scope))
-          .catch((err) => console.warn('[PWA] SW failed:', err));
-      });
-    }
-  </script>
-</body>
+      if ('serviceWorker' in navigator && window.isSecureContext) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js', { updateViaCache: 'none' })
+            .then((reg) => console.log('[PWA] SW registered:', reg.scope))
+            .catch((err) => console.warn('[PWA] SW failed:', err));
+        });
+      }
+    </script>
+  </body>
 </html>
