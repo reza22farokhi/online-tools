@@ -83,10 +83,14 @@ export function decode(token: string): DecodedJwt {
   }
   const [h, p, s] = parts;
   const header = bytesToJson(base64UrlToBytes(h)) as JwtHeader;
-  const payload = bytesToJson(base64UrlToBytes(p)) as JwtPayload;
+  const payloadValue = bytesToJson(base64UrlToBytes(p));
   if (!header || typeof header !== 'object' || typeof header.alg !== 'string') {
     throw new JwtError('INVALID_HEADER', 'هدر توکن باید شامل فیلد alg باشد');
   }
+  if (!payloadValue || typeof payloadValue !== 'object' || Array.isArray(payloadValue)) {
+    throw new JwtError('INVALID_PAYLOAD', 'بخش payload باید یک شیء JSON معتبر باشد');
+  }
+  const payload = payloadValue as JwtPayload;
   return { header, payload, signature: s, raw: { header: h, payload: p, signature: s } };
 }
 
@@ -148,7 +152,13 @@ export async function verify(
     throw new JwtError('NO_WEBCRYPTO', 'مرورگر شما از Web Crypto پشتیبانی نمی‌کند (نیاز به HTTPS)');
   }
   const decoded = decode(token);
-  const alg = (algorithmOverride || decoded.header.alg).toString();
+  if (algorithmOverride && algorithmOverride !== decoded.header.alg) {
+    throw new JwtError(
+      'ALGORITHM_MISMATCH',
+      `الگوریتم انتخاب‌شده (${algorithmOverride}) با alg هدر توکن (${decoded.header.alg}) مطابقت ندارد`
+    );
+  }
+  const alg = decoded.header.alg;
 
   if (alg === 'none' || alg === '') {
     throw new JwtError('UNSIGNED', 'توکن بدون امضا (alg: none) قابل تأیید نیست');
@@ -263,10 +273,10 @@ export function analyzeSecurity(header: JwtHeader, payload: JwtPayload): Securit
     warnings.push({
       level: 'warn',
       code: 'NO_EXP',
-      message: 'این توکن فاقد claim "exp" است و هرگز منقضی نمی‌شود.',
+      message: 'این توکن فاقد claim «exp» است؛ زمان انقضای مشخصی از روی آن قابل تشخیص نیست.',
     });
-  } else {
-    const ttl = payload.exp - (typeof payload.iat === 'number' ? payload.iat : 0);
+  } else if (typeof payload.iat === 'number') {
+    const ttl = payload.exp - payload.iat;
     if (ttl > 24 * 3600) {
       warnings.push({
         level: 'warn',

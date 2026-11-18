@@ -66,6 +66,14 @@ describe('decode()', () => {
     expect(() => decode('!!!.@@@.###')).toThrow(JwtError);
   });
 
+  it('rejects non-object JSON payloads', () => {
+    const header = base64UrlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const arrayPayload = base64UrlEncode(JSON.stringify(['not', 'a claims object']));
+    const nullPayload = base64UrlEncode('null');
+    expect(() => decode(`${header}.${arrayPayload}.sig`)).toThrow(JwtError);
+    expect(() => decode(`${header}.${nullPayload}.sig`)).toThrow(JwtError);
+  });
+
   it('rejects oversized token', () => {
     const big = 'a'.repeat(MAX_TOKEN_BYTES + 1) + '.b.c';
     expect(() => decode(big)).toThrow(JwtError);
@@ -93,6 +101,10 @@ describe('verify()', () => {
 
   it('rejects empty key', async () => {
     await expect(verify(HS256_TOKEN, '')).rejects.toThrow(JwtError);
+  });
+
+  it('rejects an algorithm override that differs from the JWT header', async () => {
+    await expect(verify(HS256_TOKEN, HS256_SECRET, 'HS512')).rejects.toThrow(/مطابقت ندارد/);
   });
 
   it('round-trip custom HS256 token', async () => {
@@ -136,10 +148,15 @@ describe('analyzeSecurity()', () => {
     expect(w.some((x) => x.code === 'NO_EXP')).toBe(true);
   });
 
-  it('flags long TTL', () => {
+  it('flags long TTL when both iat and exp are available', () => {
     const now = Math.floor(Date.now() / 1000);
     const w = analyzeSecurity({ alg: 'HS256' }, { iat: now, exp: now + 100000 });
     expect(w.some((x) => x.code === 'LONG_TTL')).toBe(true);
+  });
+
+  it('does not infer a long TTL when iat is missing', () => {
+    const w = analyzeSecurity({ alg: 'HS256' }, { exp: 4102444800 });
+    expect(w.some((x) => x.code === 'LONG_TTL')).toBe(false);
   });
 
   it('flags sensitive claim', () => {
