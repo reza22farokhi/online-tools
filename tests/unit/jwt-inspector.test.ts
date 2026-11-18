@@ -62,6 +62,18 @@ describe('decode()', () => {
     expect(() => decode('a.b')).toThrow(JwtError);
   });
 
+  it('rejects a non-object JSON payload', () => {
+    const header = base64UrlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const payload = base64UrlEncode('null');
+    expect(() => decode(`${header}.${payload}.c2ln`)).toThrow(JwtError);
+  });
+
+  it('rejects an array payload', () => {
+    const header = base64UrlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const payload = base64UrlEncode('[]');
+    expect(() => decode(`${header}.${payload}.c2ln`)).toThrow(JwtError);
+  });
+
   it('rejects invalid base64url', () => {
     expect(() => decode('!!!.@@@.###')).toThrow(JwtError);
   });
@@ -82,6 +94,12 @@ describe('verify()', () => {
   it('rejects wrong HS256 secret', async () => {
     const result = await verify(HS256_TOKEN, 'wrong-secret');
     expect(result.valid).toBe(false);
+  });
+
+  it('rejects an algorithm override that differs from the JWT header', async () => {
+    await expect(verify(HS256_TOKEN, HS256_SECRET, 'HS512')).rejects.toMatchObject({
+      code: 'ALG_MISMATCH',
+    });
   });
 
   it('rejects unsigned (alg: none)', async () => {
