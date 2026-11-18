@@ -83,10 +83,14 @@ export function decode(token: string): DecodedJwt {
   }
   const [h, p, s] = parts;
   const header = bytesToJson(base64UrlToBytes(h)) as JwtHeader;
-  const payload = bytesToJson(base64UrlToBytes(p)) as JwtPayload;
-  if (!header || typeof header !== 'object' || typeof header.alg !== 'string') {
-    throw new JwtError('INVALID_HEADER', 'هدر توکن باید شامل فیلد alg باشد');
+  const payloadValue = bytesToJson(base64UrlToBytes(p));
+  if (!header || typeof header !== 'object' || Array.isArray(header) || typeof header.alg !== 'string') {
+    throw new JwtError('INVALID_HEADER', 'هدر توکن باید یک شیء JSON شامل فیلد alg باشد');
   }
+  if (!payloadValue || typeof payloadValue !== 'object' || Array.isArray(payloadValue)) {
+    throw new JwtError('INVALID_PAYLOAD', 'Payload توکن JWT باید یک شیء JSON باشد');
+  }
+  const payload = payloadValue as JwtPayload;
   return { header, payload, signature: s, raw: { header: h, payload: p, signature: s } };
 }
 
@@ -150,6 +154,9 @@ export async function verify(
   const decoded = decode(token);
   const alg = (algorithmOverride || decoded.header.alg).toString();
 
+  if (alg !== decoded.header.alg) {
+    throw new JwtError('ALG_MISMATCH', 'الگوریتم انتخاب‌شده با الگوریتم ثبت‌شده در هدر توکن مطابقت ندارد');
+  }
   if (alg === 'none' || alg === '') {
     throw new JwtError('UNSIGNED', 'توکن بدون امضا (alg: none) قابل تأیید نیست');
   }
