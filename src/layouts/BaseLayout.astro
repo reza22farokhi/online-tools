@@ -58,7 +58,7 @@ const dicts = getDicts();
     <meta property="og:description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:image" content={ogImage} />
-    <meta property="og:site_name" content={SITE_NAME_FA} />
+    <meta property="og:site_name" content={SITE_NAME_FA} data-lang-fa={SITE_NAME_FA} data-lang-en="Online Tools" />
     <meta property="og:locale" content={lang === 'fa' ? 'fa_IR' : 'en_US'} />
 
     <meta name="twitter:card" content="summary_large_image" />
