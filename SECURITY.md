@@ -6,10 +6,10 @@ Currently, the latest production version deployed on [abzar-tools.ir](https://ab
 
 ## Reporting a Vulnerability
 
-We take the security of our tools seriously. Because all tools process data locally (100% client-side), the risk of data leaks is minimized. However, if you discover a vulnerability (such as XSS or supply chain issues), please do not open a public issue. 
+Please do not disclose suspected vulnerabilities in a public issue or discussion.
 
-Please report it privately using one of the following methods:
-- **GitHub Private Vulnerability Reporting:** Go to the "Security" tab of this repository and click "Report a vulnerability".
-- **Email:** [Insert Your Email Here]
+- If GitHub Private Vulnerability Reporting is enabled for this repository, use **Security → Report a vulnerability** to submit a private report.
+- Include the affected URL or file, reproducible steps, impact, and any relevant screenshots or logs. Do not include real user tokens, passwords, personal data, or production secrets.
+- If the private reporting option is unavailable, contact the repository maintainer through their GitHub profile and request a private reporting channel before sharing technical details.
 
-We will acknowledge your report within 48 hours and provide a timeline for a fix.
+Many tools are designed to process input locally in the browser. This does not mean every request made by the website is local: hosting, advertising, analytics, and other third-party integrations may make separate network requests. Review the privacy notice and the behavior of the specific tool before entering sensitive data.
