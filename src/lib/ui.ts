@@ -107,7 +107,9 @@ function translatedToolText(value: string, lang: Lang): string {
   if (exact !== undefined) return value.replace(trimmed, exact);
   for (const [pattern, replacement] of TOOL_TEXT_PREFIX_EN) {
     if (pattern.test(trimmed)) {
-      const converted = trimmed.replace(pattern, replacement);
+      const match = trimmed.match(pattern);
+      const suffix = match ? trimmed.slice(match[0].length) : '';
+      const converted = replacement + translatedToolText(suffix, lang);
       return value.replace(trimmed, converted.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))));
     }
   }
@@ -155,6 +157,7 @@ function translateToolNode(node: Node, lang: Lang): void {
   if (node.nodeType === Node.ELEMENT_NODE) {
     const el = node as HTMLElement;
     if (el.matches('script,style,code,pre,[contenteditable="true"]')) return;
+    if (el.matches('[data-lang-placeholder-fa][data-lang-placeholder-en],[data-i18n-placeholder],[data-i18n-aria-label]')) return;
     for (const attr of ['placeholder', 'title', 'aria-label']) {
       const value = el.getAttribute(attr);
       if (value === null) continue;
