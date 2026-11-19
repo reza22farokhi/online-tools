@@ -99,6 +99,7 @@
   birthInput?.addEventListener('change', refresh);
   birthInput?.addEventListener('input', refresh);
   refInput?.addEventListener('change', refresh);
+  document.addEventListener('app:languagechange', refresh);
   refInput?.addEventListener('input', refresh);
   refresh();
 </script>
