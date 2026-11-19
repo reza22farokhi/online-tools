@@ -151,7 +151,7 @@
     setHidden(matchesWrap, true);
     if (statusEl) statusEl.textContent = '';
 
-    if (pattern === '') { if (statusEl) statusEl.textContent = 'الگو خالی است'; return; }
+    if (!pattern.trim()) return;
 
     killWorker();
     const myToken = ++runToken;
