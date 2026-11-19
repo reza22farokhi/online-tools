@@ -1,12 +1,12 @@
 ---
 import Layout from '../../../layouts/BaseLayout.astro';
 import JwtInspector from '../../../tools/jwt-inspector/JwtInspector.astro';
+import { jwtInspectorMeta } from '../../../tools/jwt-inspector/meta';
 
-const title = 'بازرس JWT — دیکد و تأیید توکن آنلاین و امن (بدون ارسال به سرور)';
-const titleEn = 'JWT Inspector — Decode and Verify Tokens Online';
-const description =
-  'توکن JWT را در مرورگر خود دیکد کنید و در صورت داشتن کلید، امضای آن را بررسی کنید. توکن واردشده توسط ابزار به سرور ارسال نمی‌شود. پشتیبانی HS256/384/512، RS256/384/512، ES256/384/512 و PS256/384/512.';
-const descriptionEn = 'Decode JWTs in your browser and verify signatures when you have the key. Tokens are not sent to our servers. Supports HS, RS, PS, and ES algorithms.';
+const title = jwtInspectorMeta.title.fa;
+const titleEn = jwtInspectorMeta.title.en;
+const description = jwtInspectorMeta.description.fa;
+const descriptionEn = jwtInspectorMeta.description.en;
 
 const jsonLd = {
   '@context': 'https://schema.org',
