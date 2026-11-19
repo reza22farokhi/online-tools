@@ -15,8 +15,8 @@ const { meta, lang = 'fa' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const site = Astro.site?.toString() ?? 'https://example.com/';
 
-const pageTitle = `${meta.name[lang]} | ابزارهای آنلاین`;
-const pageTitleEn = `${meta.name.en} | Online Tools`;
+const pageTitle = meta.seoTitle?.fa ?? `${meta.name.fa} | ابزارهای آنلاین`;
+const pageTitleEn = meta.seoTitle?.en ?? `${meta.name.en} | Online Tools`;
 const pageDescription = meta.description[lang];
 const pageDescriptionEn = meta.description.en;
 const canonical = new URL(
