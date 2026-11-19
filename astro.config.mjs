@@ -19,7 +19,6 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.includes('/404') &&
-        !page.includes('/share-target') &&
         !page.includes('/offline')
     })
   ],
