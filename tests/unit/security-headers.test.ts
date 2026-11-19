@@ -23,8 +23,8 @@ describe('Content Security Policy allowlist', () => {
     expect(blogLayout).not.toMatch(/pos-article-display-card|yektanet|ynpos/i);
   });
 
-  it('retains only required same-origin and counter API connections', () => {
-    expect(directive('connect-src')).toBe("'self' https://api.counterapi.dev");
+  it('restricts browser connections to the same origin', () => {
+    expect(directive('connect-src')).toBe("'self'");
     expect(directive('img-src')).toBe("'self' data: blob:");
     expect(directive('font-src')).toBe("'self' data:");
     expect(directive('frame-src')).toBe('blob:');

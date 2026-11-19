@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const roots = ['src', 'public'];
 const textExtensions = new Set(['.astro', '.css', '.html', '.js', '.json', '.md', '.svg', '.ts', '.txt', '.xml']);
-const retiredAdMarkers = /yektanet|triboon|ynpos|yn-bnr|yn_pub|ad-slot-wrap|pos-article-display-card|cdn\.yektanet/i;
+const retiredThirdPartyMarkers = /yektanet|triboon|ynpos|yn-bnr|yn_pub|ad-slot-wrap|pos-article-display-card|cdn\.yektanet|counterapi\.dev|live-count|VisitorCounter/i;
 
 function collectTextFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -14,13 +14,21 @@ function collectTextFiles(directory: string): string[] {
   });
 }
 
-describe('retired advertising integration', () => {
-  it('leaves no provider scripts, slots, domains, or identifiers in shipped source and assets', () => {
+describe('retired third-party integrations', () => {
+  it('leaves no advertising provider or visitor-counter code in shipped source and assets', () => {
     const matches = roots.flatMap(root => collectTextFiles(root)).flatMap(path => {
       const content = readFileSync(path, 'utf8');
-      return retiredAdMarkers.test(content) ? [path] : [];
+      return retiredThirdPartyMarkers.test(content) ? [path] : [];
     });
 
     expect(matches).toEqual([]);
+  });
+
+  it('restricts browser connection permissions to the same origin', () => {
+    const headers = readFileSync('public/_headers', 'utf8');
+    const policy = headers.match(/Content-Security-Policy:\s*([^\r\n]+)/)?.[1] ?? '';
+    const connectSources = policy.match(/(?:^|;\s*)connect-src\s+([^;]+)/)?.[1]?.trim();
+
+    expect(connectSources).toBe("'self'");
   });
 });
