@@ -64,6 +64,8 @@ describe('language switching', () => {
     if (dynamic) dynamic.textContent = 'خطا: نامشخص';
     await new Promise<void>(resolve => queueMicrotask(resolve));
     expect(dynamic?.textContent).toBe('Error: Unknown');
+    // Let MutationObserver callbacks run and verify they do not starve the event loop.
+    await new Promise<void>(resolve => setTimeout(resolve, 0));
 
     if (dynamic) dynamic.textContent = '۱۲ تطابق پیدا شد';
     await new Promise<void>(resolve => queueMicrotask(resolve));
