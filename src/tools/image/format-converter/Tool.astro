@@ -121,6 +121,7 @@
     const format = formatSelect.value as ImageFormat;
     processBtn.disabled = true;
     if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    downloadBtn.hidden = true;
     const canvas = document.createElement('canvas');
     canvas.width = originalImage.naturalWidth;
     canvas.height = originalImage.naturalHeight;
@@ -137,6 +138,7 @@
       const url = URL.createObjectURL(blob);
       downloadUrl = url;
       downloadBtn.href = url;
+      downloadBtn.hidden = false;
       downloadBtn.download = `converted-image.${getFileExtension(format)}`;
       downloadBtn.style.display = 'inline-flex';
     }, format, 0.95);
