@@ -3,7 +3,8 @@
 
   var analyticsName = 'yektanet';
   var scriptId = 'yektanet-publisher-loader';
-  var existingScript = document.getElementById(scriptId);
+  var existingScript = document.getElementById(scriptId) ||
+    document.querySelector('script[src*="/superscript-v2/"][src*="/yn_pub.js"]');
 
   // The layout can be re-evaluated by client navigation or third-party code.
   // Never inject the publisher loader more than once per document.
