@@ -50,3 +50,17 @@ describe('Hijri conversion', () => {
     expect(back).toEqual({ jy: 1403, jm: 1, jd: 1 });
   });
 });
+
+
+describe('calendar input validation', () => {
+  it('rejects impossible Gregorian dates', () => {
+    expect(() => toJalali(2024, 2, 30)).toThrow(/Invalid Gregorian date/);
+  });
+  it('rejects impossible Jalali dates', () => {
+    expect(() => toGregorian(1402, 12, 30)).toThrow(/Invalid Jalali date/);
+  });
+  it('rejects impossible Hijri dates', () => {
+    expect(() => hijriToGregorian(1445, 13, 1)).toThrow(/Invalid Hijri date/);
+    expect(() => hijriToGregorian(1445, 12, 31)).toThrow(/Invalid Hijri date/);
+  });
+});
