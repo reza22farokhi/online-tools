@@ -138,6 +138,7 @@
     clearError();
     processBtn.disabled = true;
     if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    if (downloadBtn) downloadBtn.hidden = true;
     const canvas = document.createElement('canvas');
     canvas.width = originalImage.naturalWidth;
     canvas.height = originalImage.naturalHeight;
