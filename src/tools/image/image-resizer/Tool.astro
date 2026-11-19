@@ -141,6 +141,7 @@
     if (!dims.width || !dims.height || dims.width * dims.height > MAX_IMAGE_PIXELS) { showProcessError('ابعاد خروجی بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).'); return; }
     processBtn && (processBtn.disabled = true);
     if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    if (downloadBtn) downloadBtn.hidden = true;
     const canvas = document.createElement('canvas');
     canvas.width = dims.width;
     canvas.height = dims.height;
@@ -153,6 +154,7 @@
       const url = URL.createObjectURL(blob);
       downloadUrl = url;
       downloadBtn.href = url;
+      downloadBtn.hidden = false;
       downloadBtn.download = `resized-${dims.width}x${dims.height}.jpg`;
       downloadBtn.style.display = 'inline-flex';
     }, 'image/jpeg', 0.92);
