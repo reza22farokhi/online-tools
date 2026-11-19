@@ -61,7 +61,9 @@ export function testRegex(pattern: string, flags: string, input: string): RegexR
   }
 
   return { ok: true, matches };
-}export function killWorker(): void {
+}
+
+export function killWorker(): void {
   const cancel = pendingResolve;
   pendingResolve = null;
   if (worker) worker.terminate();
@@ -70,7 +72,7 @@ export function testRegex(pattern: string, flags: string, input: string): RegexR
   timeoutHandle = null;
   cancel?.({ ok: false, error: 'اجرای قبلی لغو شد', matches: [] });
 }
-export function runInWorker(pattern: string, flags: string, text: string): Promise<RegexWorkerResult> {
+export function runInWorker(pattern: string, flags: string, text: string): Promise<RegexResult> {
   return new Promise((resolve) => {
     if (typeof Worker === 'undefined') {
       resolve({ ok: false, error: 'مرورگر از Web Worker پشتیبانی نمی‌کند', matches: [] });
@@ -87,7 +89,7 @@ export function runInWorker(pattern: string, flags: string, text: string): Promi
 
     let settled = false;
     let localTimeout: number | null = null;
-    const finish = (result: RegexWorkerResult) => {
+    const finish = (result: RegexResult) => {
       if (settled) return;
       settled = true;
       if (localTimeout !== null) window.clearTimeout(localTimeout);
@@ -107,7 +109,7 @@ export function runInWorker(pattern: string, flags: string, text: string): Promi
     }, 2000);
     timeoutHandle = localTimeout;
 
-    currentWorker.onmessage = (e: MessageEvent<RegexWorkerResult>) => finish(e.data);
+    currentWorker.onmessage = (e: MessageEvent<RegexResult>) => finish(e.data);
     currentWorker.onerror = () => finish({ ok: false, error: 'خطا در اجرای الگو', matches: [] });
     try {
       currentWorker.postMessage({ pattern, flags, text });
