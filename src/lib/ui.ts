@@ -82,7 +82,7 @@ function translatedToolText(value: string, lang: Lang): string {
       return value.replace(trimmed, converted.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))));
     }
   }
-  const dateResult = trimmed.match(/^(?:(\\d+) سال و )?(?:(\\d+) ماه و )?(\\d+) روز$/);
+  const dateResult = trimmed.match(/^(?:(\d+) سال و )?(?:(\d+) ماه و )?(\d+) روز$/);
   if (dateResult) {
     const parts: string[] = [];
     if (dateResult[1]) parts.push(dateResult[1] + ' years');
@@ -92,7 +92,7 @@ function translatedToolText(value: string, lang: Lang): string {
   }
   const percentResult = trimmed.match(/^(.+) برابر است با (.+)٪ از (.+)$/);
   if (percentResult) return value.replace(trimmed, percentResult[1] + ' equals ' + percentResult[2] + '% of ' + percentResult[3]);
-  const changeResult = trimmed.match(/^(افزایش|کاهش|بدون تغییر) (.+)٪ \\(از (.+) به (.+)\\)$/);
+  const changeResult = trimmed.match(/^(افزایش|کاهش|بدون تغییر) (.+)٪ \(از (.+) به (.+)\)$/);
   if (changeResult) {
     const direction = TOOL_TEXT_EN[changeResult[1]];
     return value.replace(trimmed, direction + ' ' + changeResult[2] + '% (from ' + changeResult[3] + ' to ' + changeResult[4] + ')');
