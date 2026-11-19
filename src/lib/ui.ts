@@ -499,7 +499,7 @@ function translateToolNode(node: Node, lang: Lang): void {
   }
   if (node.nodeType === Node.ELEMENT_NODE) {
     const el = node as HTMLElement;
-    if (el.matches('script,style,code,pre,[contenteditable="true"],[data-user-content]')) return;
+    if (el.matches('script,style,code,pre,[contenteditable="true"],[data-user-content],.fav-btn')) return;
     if (el.matches('[data-lang-placeholder-fa][data-lang-placeholder-en],[data-i18n-placeholder],[data-i18n-aria-label],[data-lang-aria-fa][data-lang-aria-en],[data-lang-title-fa][data-lang-title-en]')) return;
     for (const attr of ['placeholder', 'title', 'aria-label', 'alt']) {
       const value = el.getAttribute(attr);
