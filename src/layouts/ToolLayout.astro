@@ -63,8 +63,6 @@ const related = getRelated(meta.slug);
       <p class="lead" data-lang-fa={meta.description.fa} data-lang-en={meta.description.en}>{meta.description[lang]}</p>
     </header>
 
-    <aside class="tool-translation-note" data-lang-only="en" hidden>Some tool-specific controls, instructions, and FAQs are still being translated. The shared navigation and tool information are available in English.</aside>
-
     <div class="tool-body card">
       <slot />
     </div>
@@ -76,7 +74,7 @@ const related = getRelated(meta.slug);
       <p><span data-lang-fa="محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در " data-lang-en="Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. Third-party advertising scripts may separately receive technical page-load information. See our ">محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در </span><a href="/privacy/" data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</a><span data-lang-fa=" آمده است." data-lang-en=" for details."> آمده است.</span></p>
     </section>
 
-    <ToolFAQ toolSlug={meta.slug} toolName={meta.name[lang]} />
+    <ToolFAQ toolSlug={meta.slug} toolName={meta.name[lang]} lang={lang} />
 
     {related.length > 0 && (
       <section class="tool-related" aria-labelledby="related-title">
