@@ -97,6 +97,14 @@ describe('verify()', () => {
     expect(result.valid).toBe(false);
   });
 
+  it.each(['constructor', 'toString', '__proto__'])('rejects inherited algorithm name %s', async (alg) => {
+    const header = base64UrlEncode(JSON.stringify({ alg, typ: 'JWT' }));
+    const payload = base64UrlEncode(JSON.stringify({ sub: 'x' }));
+    await expect(verify(`${header}.${payload}.c2ln`, 'secret')).rejects.toMatchObject({
+      code: 'UNSUPPORTED_ALG',
+    });
+  });
+
   it('rejects an algorithm override that differs from the JWT header', async () => {
     await expect(verify(HS256_TOKEN, HS256_SECRET, 'HS512')).rejects.toMatchObject({
       code: 'ALG_MISMATCH',
@@ -159,6 +167,11 @@ describe('analyzeSecurity()', () => {
     const now = Math.floor(Date.now() / 1000);
     const w = analyzeSecurity({ alg: 'HS256' }, { iat: now, exp: now + 100000 });
     expect(w.some((x) => x.code === 'LONG_TTL')).toBe(true);
+  });
+
+  it('does not infer a long TTL when iat is missing', () => {
+    const w = analyzeSecurity({ alg: 'HS256' }, { exp: 4102444800 });
+    expect(w.some((x) => x.code === 'LONG_TTL')).toBe(false);
   });
 
   it('flags sensitive claim', () => {
