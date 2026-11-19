@@ -82,10 +82,11 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   const isNavigation = request.mode === 'navigate';
+  const isPrecachedAsset = url.pathname === '/scripts/site-bootstrap.js';
   const cacheable = isRuntimeCacheable(request, url);
 
   // Query-bearing navigations still need offline handling, but are never cached.
-  if (!cacheable && !(isNavigation && url.search)) return;
+  if (!cacheable && !(isNavigation && url.search) && !isPrecachedAsset) return;
 
   event.respondWith((async () => {
     let runtimeCache = null;
@@ -108,14 +109,21 @@ self.addEventListener('fetch', (event) => {
         if (cached) return cached;
       }
 
-      if (isNavigation) {
+      if (isNavigation || isPrecachedAsset) {
         try {
           const shellCache = await caches.open(SHELL_CACHE_NAME);
+          if (isPrecachedAsset) {
+            const cachedAsset = await shellCache.match('/scripts/site-bootstrap.js');
+            if (cachedAsset) return cachedAsset;
+          }
+
           const exactPage = cacheable ? await shellCache.match(request) : null;
           if (exactPage) return exactPage;
 
-          const offlinePage = await shellCache.match('/offline/');
-          if (offlinePage) return offlinePage;
+          if (isNavigation) {
+            const offlinePage = await shellCache.match('/offline/');
+            if (offlinePage) return offlinePage;
+          }
         } catch {
           // Fall through to the plain offline response.
         }
