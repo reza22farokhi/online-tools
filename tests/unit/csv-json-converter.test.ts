@@ -6,7 +6,7 @@ describe('parseCSV', () => {
   it('quoted', () => expect(parseCSV('"a, b",c')).toEqual([['a, b','c']]));
   it('escaped', () => expect(parseCSV('"he said ""hi"""')).toEqual([['he said "hi"']]));
   it('delim', () => expect(parseCSV('a;b',';')).toEqual([['a','b']]));
-  it('quoted multiline field', () => expect(parseCSV('name,note\\r\\nAli,"line 1\\r\\nline 2"')).toEqual([['name','note'],['Ali','line 1\\r\\nline 2']]));
+  it('quoted multiline field', () => expect(parseCSV('name,note\r\nAli,"line 1\r\nline 2"')).toEqual([['name','note'],['Ali','line 1\r\nline 2']]));
   it('quoted empty field', () => expect(parseCSV('""')).toEqual([['']]));
   it('rejects unclosed quotes', () => expect(() => parseCSV('a,"b')).toThrow(/بسته نشده/));
   it('rejects quotes in the middle of unquoted fields', () => expect(() => parseCSV('ab"c,d')).toThrow(/ابتدای فیلد/));
@@ -20,7 +20,7 @@ describe('csvToJson', () => {
       .toEqual([{name:'Ali',age:'30'}]);
   });
   it('disambiguates duplicate headers and preserves extra columns', () => {
-    expect(JSON.parse(csvToJson('name,name\\nAli,30,Tehran',{delimiter:',',useHeaders:true})))
+    expect(JSON.parse(csvToJson('name,name\nAli,30,Tehran',{delimiter:',',useHeaders:true})))
       .toEqual([{name:'Ali',name_2:'30',column_3:'Tehran'}]);
   });
   it('no headers', () => {
