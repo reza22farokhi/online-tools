@@ -40,6 +40,7 @@ import { meta as dateCalculatorMeta } from './date/date-calculator/meta';
 import { meta as dateInfoMeta } from './date/date-info/meta';
 import { meta as csvJsonMeta } from './file/csv-json-converter/meta';
 import { meta as textDiffMeta } from './text/text-diff/meta';
+import { meta as persianTextRefinerMeta } from './text/persian-text-refiner/meta';
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
   { slug: 'code', fa: 'برنامه‌نویسی', en: 'Code', icon: '💻' },
@@ -68,15 +69,7 @@ export const registry: ToolMeta[] = [
   dateCalculatorMeta, dateInfoMeta,
   csvJsonMeta,
   textDiffMeta,
-  {
-    slug: 'persian-text-refiner',
-    name: { fa: 'پالایشگر متن فارسی', en: 'Persian Text Refiner' },
-    description: { fa: 'متن فارسی را با تبدیل حروف عربی، اصلاح نیم‌فاصله‌ها، یکدست‌سازی اعداد و تنظیم علائم نگارشی پاک‌سازی کنید تا نوشته‌ای خواناتر داشته باشید.', en: 'Clean Persian text by normalizing Arabic characters, fixing half-spaces, standardizing digits, and correcting punctuation for more consistent writing.' },
-    category: 'text',
-    popular: false,
-    keywords: ['persian', 'text', 'refiner', 'فارسی'],
-    addedAt: '2026-11-14'
-  }
+  persianTextRefinerMeta
 ];
 
 export function getToolBySlug(slug: string): ToolMeta | undefined {
