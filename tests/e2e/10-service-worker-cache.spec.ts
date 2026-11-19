@@ -24,6 +24,7 @@ test('service worker keeps an offline shell and bounds runtime caching', async (
 
   expect(cacheState.shellPaths).toContain('/offline/');
   expect(cacheState.shellPaths).toContain('/manifest.json');
+  expect(cacheState.shellPaths).toContain('/scripts/site-bootstrap.js');
   expect(cacheState.runtimeUrls.some((url) => new URL(url).pathname === '/tools/jwt-inspector/')).toBe(true);
   expect(cacheState.runtimeUrls.some((url) => url.includes('cache-bypass-check=1'))).toBe(false);
   expect(cacheState.runtimeUrls.some((url) => new URL(url).pathname === '/robots.txt')).toBe(false);
@@ -54,4 +55,24 @@ test('offline fallback is localized and offers a same-origin retry link', async 
   await expect(page.getByRole('heading', { name: 'You are offline' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute('href', '/');
   await expect(page).toHaveTitle('Offline | Online Tools');
+});
+
+test('offline fallback handles language and private query parameters without caching them', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+
+  await page.context().setOffline(true);
+  await page.goto('/tools/uncached-offline-test/?lang=en&token=do-not-cache').catch(() => undefined);
+
+  await expect(page.getByRole('heading', { name: 'You are offline' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute('href', '/');
+
+  const runtimeUrls = await page.evaluate(async () => {
+    const cache = await caches.open('online-tools-v3-runtime');
+    return (await cache.keys()).map(request => request.url);
+  });
+
+  expect(runtimeUrls.some(url => url.includes('token=do-not-cache'))).toBe(false);
+  expect(runtimeUrls.some(url => url.includes('lang=en'))).toBe(false);
 });
