@@ -71,7 +71,7 @@ export const registry: ToolMeta[] = [
   {
     slug: 'persian-text-refiner',
     name: { fa: 'پالایشگر متن فارسی', en: 'Persian Text Refiner' },
-    description: { fa: 'اصلاح خودکار حروف عربی، نیم‌فاصله‌ها و علائم نگارشی', en: 'Fix Arabic characters, half-spaces, and punctuation' },
+    description: { fa: 'متن فارسی را با تبدیل حروف عربی، اصلاح نیم‌فاصله‌ها، یکدست‌سازی اعداد و تنظیم علائم نگارشی پاک‌سازی کنید تا نوشته‌ای خواناتر داشته باشید.', en: 'Clean Persian text by normalizing Arabic characters, fixing half-spaces, standardizing digits, and correcting punctuation for more consistent writing.' },
     category: 'text',
     popular: false,
     keywords: ['persian', 'text', 'refiner', 'فارسی'],
