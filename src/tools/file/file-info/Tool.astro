@@ -40,6 +40,17 @@
   const copyBtn = document.getElementById('fi-copy-hash') as HTMLButtonElement | null;
 
   let isProcessing = false;
+  let currentFile: File | null = null;
+  function renderFileInfo(file: File) {
+    const isEnglish = document.documentElement.lang === 'en';
+    if (nameEl) nameEl.textContent = file.name;
+    if (sizeEl) sizeEl.textContent = formatBytes(file.size);
+    if (typeEl) typeEl.textContent = file.type || (isEnglish ? 'Unknown' : 'نامشخص');
+    const parts = file.name.split('.');
+    const ext = parts.length > 1 ? parts.pop()!.toUpperCase() : (isEnglish ? 'Unknown' : 'نامشخص');
+    if (extEl) extEl.textContent = ext;
+  }
+  document.addEventListener('app:languagechange', () => { if (currentFile) renderFileInfo(currentFile); });
 
   function showError(msg: string) {
     if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
@@ -68,12 +79,8 @@
     if (uploadZone) uploadZone.hidden = true;
     if (workspace) workspace.hidden = false;
     if (copyBtn) copyBtn.disabled = true;
-    if (nameEl) nameEl.textContent = file.name;
-    if (sizeEl) sizeEl.textContent = formatBytes(file.size);
-    if (typeEl) typeEl.textContent = file.type || 'نامشخص';
-    const parts = file.name.split('.');
-    const ext = parts.length > 1 ? parts.pop()!.toUpperCase() : 'نامشخص';
-    if (extEl) extEl.textContent = ext;
+    currentFile = file;
+    renderFileInfo(file);
     if (hashEl) hashEl.value = 'در حال محاسبه هش...';
     try {
       const hash = await calculateFileSha256(file);
