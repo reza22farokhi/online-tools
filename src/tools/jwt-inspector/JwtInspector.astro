@@ -240,6 +240,35 @@ import { STANDARD_CLAIMS } from './claims';
     $error.textContent = msg;
   }
 
+  const ERROR_MESSAGES_EN: Record<string, string> = {
+    INVALID_BASE64URL: 'The token contains invalid Base64URL data.',
+    INVALID_UTF8: 'The token content is not valid UTF-8.',
+    INVALID_JSON: 'The token content is not valid JSON.',
+    INVALID_INPUT: 'Invalid token input.',
+    EMPTY: 'The token is empty.',
+    TOO_LARGE: 'The token exceeds the 1 MB size limit.',
+    INVALID_FORMAT: 'A JWT must contain three parts: header.payload.signature.',
+    INVALID_HEADER: 'The JWT header must be a JSON object containing an alg field.',
+    INVALID_PAYLOAD: 'The JWT payload must be a JSON object.',
+    INVALID_KEY: 'The PEM key is invalid.',
+    NO_WEBCRYPTO: 'This browser does not support Web Crypto. HTTPS is required.',
+    ALG_MISMATCH: 'The selected algorithm does not match the token header.',
+    UNSIGNED: 'Unsigned tokens (alg: none) cannot be verified.',
+    NO_KEY: 'Enter a verification key.',
+    UNSUPPORTED_ALG: 'This algorithm is not supported.'
+  };
+  const WARNING_MESSAGES_EN: Record<string, string> = {
+    ALG_NONE: 'The none algorithm means the token is unsigned. Never use it in production.',
+    NO_EXP: 'This token has no exp claim and therefore does not expire.',
+    LONG_TTL: 'The token lifetime exceeds 24 hours. Consider reducing it.',
+    SENSITIVE_CLAIM: 'A sensitive password claim is present in the payload. This is unsafe.',
+    TYP_UNUSUAL: 'The token typ header is not set to JWT.'
+  };
+  function errorMessage(err: unknown, isEn: boolean, fallback: string): string {
+    if (err instanceof JwtError) return isEn ? (ERROR_MESSAGES_EN[err.code] ?? err.message) : err.message;
+    return fallback;
+  }
+
   function render() {
     const token = $input.value.trim();
     const isEn = document.documentElement.lang === 'en';
@@ -264,7 +293,7 @@ import { STANDARD_CLAIMS } from './claims';
       for (const w of warns) {
         const div = document.createElement('div');
         div.className = `jwt-warn-item ${w.level}`;
-        div.textContent = w.message;
+        div.textContent = isEn ? (WARNING_MESSAGES_EN[w.code] ?? w.message) : w.message;
         $warnings.appendChild(div);
       }
 
@@ -296,12 +325,12 @@ import { STANDARD_CLAIMS } from './claims';
         const desc = STANDARD_CLAIMS[k];
         td2.textContent = desc ? (isEn ? desc.en : desc.fa) : '—';
         const td3 = document.createElement('td');
-        td3.textContent = formatClaimValue(k, v);
+        td3.textContent = formatClaimValue(k, v, isEn ? 'en' : 'fa');
         tr.append(td1, td2, td3);
         tbody.appendChild(tr);
       }
     } catch (err) {
-      const msg = err instanceof JwtError ? err.message : (document.documentElement.lang === 'en' ? 'Unknown token processing error' : 'خطای نامشخص در پردازش توکن');
+      const msg = errorMessage(err, isEn, isEn ? 'Unknown token processing error' : 'خطای نامشخص در پردازش توکن');
       setError(msg);
       $result.hidden = true;
       $placeholder.hidden = false;
@@ -338,7 +367,7 @@ import { STANDARD_CLAIMS } from './claims';
     } catch (err) {
       if (requestId !== verifyRequestId || token !== $input.value || key !== $key.value || (algorithm || '') !== $alg.value) return;
       $verifyResult.classList.add('fail');
-      $verifyResult.textContent = err instanceof JwtError ? err.message : (document.documentElement.lang === 'en' ? 'Verification failed' : 'خطا در تأیید');
+      $verifyResult.textContent = errorMessage(err, document.documentElement.lang === 'en', document.documentElement.lang === 'en' ? 'Verification failed' : 'خطا در تأیید');
     }
   });
 
