@@ -8,7 +8,7 @@ describe('calculateReduction', () => {
   });
   it('handles zero original size', () => expect(calculateReduction(0, 100)).toBe(0));
   it('reports a negative reduction when output is larger', () => expect(calculateReduction(100, 125)).toBe(-25));
-  it('does not go below 0 if compressed is larger', () => {
-    expect(calculateReduction(500, 1000)).toBe(0);
+  it('reports size increase when output is larger', () => {
+    expect(calculateReduction(500, 1000)).toBe(-100);
   });
 });
