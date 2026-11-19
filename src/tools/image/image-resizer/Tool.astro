@@ -53,6 +53,9 @@
   let originalHeight = 0;
   let objectUrl: string | null = null;
   let isProcessing = false;
+  let downloadUrl: string | null = null;
+  const MAX_IMAGE_PIXELS = 16_000_000;
+  const SUPPORTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/bmp'];
   function showError(msg: string) {
     if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
     if (uploadZone) uploadZone.hidden = false;
@@ -65,7 +68,7 @@
   function handleFile(file: File) {
     clearError();
     if (isProcessing) { showError('یک پردازش در حال انجام است. لطفاً صبر کنید.'); return; }
-    if (!file.type.startsWith('image/')) { showError('لطفاً یک فایل تصویری انتخاب کنید.'); return; }
+    if (!SUPPORTED_TYPES.includes(file.type)) { showError('فرمت تصویر پشتیبانی نمی‌شود. JPG، PNG، WebP، GIF، AVIF یا BMP انتخاب کنید.'); return; }
     const v = validateFileSize(file.size, MAX_IMAGE_SIZE, MAX_IMAGE_SIZE_LABEL);
     if (!v.ok) { showError(v.error ?? 'خطای نامشخص'); return; }
     isProcessing = true;
@@ -73,6 +76,11 @@
     objectUrl = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
+      if (img.naturalWidth * img.naturalHeight > MAX_IMAGE_PIXELS) {
+        if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = null;
+        showError('ابعاد تصویر بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).');
+        return;
+      }
       originalImage = img;
       originalWidth = img.naturalWidth;
       originalHeight = img.naturalHeight;
@@ -85,7 +93,7 @@
       if (downloadBtn) downloadBtn.style.display = 'none';
       isProcessing = false;
     };
-    img.onerror = () => { showError('فایل تصویری معتبر نیست.'); };
+    img.onerror = () => { if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = null; showError('فایل تصویری معتبر نیست.'); };
     img.src = objectUrl;
   }
   fileInput?.addEventListener('change', (e) => {
@@ -113,17 +121,22 @@
     if (!originalImage || !widthInput || !heightInput) return;
     const tW = Number(widthInput.value);
     const tH = Number(heightInput.value);
-    if (tW <= 0 || tH <= 0) { showError('ابعاد باید بزرگتر از صفر باشند.'); return; }
+    if (!Number.isInteger(tW) || !Number.isInteger(tH) || tW <= 0 || tH <= 0 || tW > 10000 || tH > 10000) { showError('ابعاد باید عدد صحیح بین ۱ تا ۱۰٬۰۰۰ باشند.'); return; }
     const dims = calculateDimensions(originalWidth, originalHeight, tW, tH, maintainCb?.checked ?? true);
+    if (!dims.width || !dims.height || dims.width * dims.height > MAX_IMAGE_PIXELS) { showError('ابعاد خروجی بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).'); return; }
+    processBtn && (processBtn.disabled = true);
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
     const canvas = document.createElement('canvas');
     canvas.width = dims.width;
     canvas.height = dims.height;
     const ctx = canvas.getContext('2d');
-    if (!ctx) { showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
+    if (!ctx) { if (processBtn) processBtn.disabled = false; showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
     ctx.drawImage(originalImage, 0, 0, dims.width, dims.height);
     canvas.toBlob((blob) => {
-      if (!blob || !downloadBtn) return;
+      if (processBtn) processBtn.disabled = false;
+      if (!blob || !downloadBtn) { showError('ساخت تصویر خروجی ناموفق بود.'); return; }
       const url = URL.createObjectURL(blob);
+      downloadUrl = url;
       downloadBtn.href = url;
       downloadBtn.download = `resized-${dims.width}x${dims.height}.jpg`;
       downloadBtn.style.display = 'inline-flex';
