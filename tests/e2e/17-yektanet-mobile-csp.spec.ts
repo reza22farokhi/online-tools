@@ -31,3 +31,14 @@ test('publisher loader is injected only once and ad slots stay within mobile wid
   expect(dimensions!.slotWidth).toBeLessThanOrEqual(dimensions!.viewportWidth);
   expect(dimensions!.documentWidth).toBeLessThanOrEqual(dimensions!.viewportWidth);
 });
+
+test('favorite controls expose accessible labels in the active language', async ({ page }) => {
+  await page.goto('/?lang=en');
+  const favorite = page.locator('.fav-btn').first();
+  await expect(favorite).toHaveAttribute('aria-label', 'Add to favorites');
+  await expect(favorite).toHaveAttribute('title', 'Add to favorites');
+
+  await page.locator('[data-lang-toggle]').click();
+  await expect(favorite).toHaveAttribute('aria-label', 'افزودن به علاقه‌مندی‌ها');
+  await expect(favorite).toHaveAttribute('title', 'افزودن به علاقه‌مندی‌ها');
+});
