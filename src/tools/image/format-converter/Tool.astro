@@ -45,6 +45,16 @@
   const downloadBtn = document.getElementById('fc-download') as HTMLAnchorElement | null;
   let originalImage: HTMLImageElement | null = null;
   let originalSize = 0;
+  let originalWidth = 0;
+  let originalHeight = 0;
+  function renderFileInfo() {
+    if (!fileInfo) return;
+    const isEnglish = document.documentElement.lang === 'en';
+    fileInfo.textContent = isEnglish
+      ? `Original size: ${formatBytes(originalSize)} | Dimensions: ${originalWidth}×${originalHeight}`
+      : `حجم اصلی: ${formatBytes(originalSize)} | ابعاد: ${originalWidth}×${originalHeight}`;
+  }
+  document.addEventListener('app:languagechange', renderFileInfo);
   let objectUrl: string | null = null;
   let isProcessing = false;
   let downloadUrl: string | null = null;
@@ -82,8 +92,10 @@
         return;
       }
       originalImage = img;
+      originalWidth = img.naturalWidth;
+      originalHeight = img.naturalHeight;
       if (previewImg) previewImg.src = objectUrl!;
-      if (fileInfo) fileInfo.textContent = `حجم اصلی: ${formatBytes(originalSize)} | ابعاد: ${img.naturalWidth}×${img.naturalHeight}`;
+      renderFileInfo();
       if (uploadZone) uploadZone.hidden = true;
       if (workspace) workspace.hidden = false;
       if (downloadBtn) downloadBtn.style.display = 'none';
