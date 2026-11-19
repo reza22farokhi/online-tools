@@ -149,3 +149,25 @@ test('Unix timestamp converter supports timestamp-to-date and date-to-timestamp 
   expect(Number.isFinite(seconds)).toBe(true);
   expect(milliseconds).toBe(seconds * 1000);
 });
+
+
+test('standalone JWT Inspector decodes locally, escapes untrusted claims, and shows the correct privacy notice', async ({ page }) => {
+  await page.goto('/tools/jwt-inspector/?lang=en');
+  const privacy = page.locator('.jwt-subtitle');
+  await expect(privacy).toContainText('not sent to our servers');
+  await expect(privacy).toContainText('Essential technical requests');
+  await expect(privacy).not.toContainText(/advert|ad network|ads/i);
+
+  const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+  const payload = Buffer.from(JSON.stringify({
+    sub: '123',
+    name: '<img src=x onerror=alert(1)>',
+    iat: 1516239022
+  })).toString('base64url');
+  await page.locator('#jwt-input').fill(`${header}.${payload}.signature`);
+
+  await expect(page.locator('#jwt-result')).toBeVisible();
+  await expect(page.locator('#jwt-payload-pre')).toContainText('<img src=x onerror=alert(1)>');
+  await expect(page.locator('#jwt-result img')).toHaveCount(0);
+  await expect(page.locator('#jwt-claims-table tbody')).toContainText('<img src=x onerror=alert(1)>');
+});
