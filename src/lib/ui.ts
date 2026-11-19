@@ -49,8 +49,8 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'encodeURI (برای URL کامل)': 'encodeURI (for a complete URL)'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
-  [/^خطا:\\s*/, 'Error: '],
-  [/^تایم‌اوت ۲ ثانیه — الگو ممکن است خطرناک باشد \\(ReDoS\\)$/, 'Timed out after 2 seconds — the pattern may be unsafe (ReDoS)'],
+  [/^خطا:\s*/, 'Error: '],
+  [/^تایم‌اوت ۲ ثانیه — الگو ممکن است خطرناک باشد \(ReDoS\)$/, 'Timed out after 2 seconds — the pattern may be unsafe (ReDoS)'],
   [/^([0-9۰-۹,٬]+) تطابق پیدا شد$/, '$1 matches found'],
   [/^\.\.\. و ([0-9۰-۹,٬]+) نتیجه دیگر$/, '... and $1 more results']
 ];
