@@ -26,6 +26,7 @@
     </div>
   </div>
   
+  <div class="mtg-error" id="mtg-error" hidden role="alert"></div>
   <div class="mtg-output-wrap">
     <label for="mtg-output" class="mtg-label">کد HTML تولید شده:</label>
     <textarea id="mtg-output" class="textarea mtg-output" readonly></textarea>
@@ -42,18 +43,29 @@
   const inputIds = ['mtg-title', 'mtg-desc', 'mtg-url', 'mtg-image', 'mtg-author'];
   const output = document.getElementById('mtg-output') as HTMLTextAreaElement | null;
   const copyBtn = document.getElementById('mtg-copy') as HTMLButtonElement | null;
+  const errorEl = document.getElementById('mtg-error');
 
   function refresh() {
     if (!output) return;
     const getVal = (id: string) => (document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null)?.value || '';
-    
-    output.value = generateMetaTags({
-      title: getVal('mtg-title'),
-      description: getVal('mtg-desc'),
-      url: getVal('mtg-url'),
-      image: getVal('mtg-image'),
-      author: getVal('mtg-author')
-    });
+    try {
+      output.value = generateMetaTags({
+        title: getVal('mtg-title'),
+        description: getVal('mtg-desc'),
+        url: getVal('mtg-url'),
+        image: getVal('mtg-image'),
+        author: getVal('mtg-author')
+      });
+      if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+      if (copyBtn) copyBtn.disabled = !output.value;
+    } catch (error) {
+      output.value = '';
+      if (errorEl) {
+        errorEl.hidden = false;
+        errorEl.textContent = error instanceof Error ? error.message : 'خطای ورودی';
+      }
+      if (copyBtn) copyBtn.disabled = true;
+    }
   }
 
   for (const id of inputIds) {
@@ -71,6 +83,7 @@
 
 <style>
   .mtg-tool { display: flex; flex-direction: column; gap: var(--space-4); }
+  .mtg-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
   .mtg-form { display: flex; flex-direction: column; gap: var(--space-3); }
   .mtg-row { display: flex; flex-wrap: wrap; gap: var(--space-3); }
   .mtg-row > .mtg-field { flex: 1; min-width: 200px; }
