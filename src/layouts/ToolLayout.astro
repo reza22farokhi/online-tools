@@ -1,5 +1,4 @@
 ---
-import AdSlot from "../components/ui/AdSlot.astro";
 import BaseLayout from './BaseLayout.astro';
 import ToolCard from '../components/ui/ToolCard.astro';
 import type { ToolMeta } from '../tools/types';
@@ -67,11 +66,10 @@ const related = getRelated(meta.slug);
       <slot />
     </div>
 
-    <AdSlot id="pos-article-display-card-124132" />
 
     <section class="tool-privacy card" aria-labelledby="privacy-title">
       <h2 id="privacy-title" data-i18n="tool.privacyTitle">حریم خصوصی</h2>
-      <p><span data-lang-fa="محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در " data-lang-en="Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. Third-party advertising scripts may separately receive technical page-load information. See our ">محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در </span><a href="/privacy/" data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</a><span data-lang-fa=" آمده است." data-lang-en=" for details."> آمده است.</span></p>
+      <p><span data-lang-fa="محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. برای جزئیات بیشتر، " data-lang-en="Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. See our ">محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. برای جزئیات بیشتر، </span><a href="/privacy/" data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</a><span data-lang-fa=" را بخوانید." data-lang-en=" for details."> را بخوانید.</span></p>
     </section>
 
     <ToolFAQ toolSlug={meta.slug} toolName={meta.name.fa} />
