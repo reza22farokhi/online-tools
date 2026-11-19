@@ -148,7 +148,15 @@
       downloadBtn.style.display = 'inline-flex';
       newSizeEl.textContent = formatBytes(blob.size);
       const reduction = calculateReduction(originalSize, blob.size);
-      reductionEl.textContent = `${reduction}%`;
+      const isEnglish = document.documentElement.lang === 'en';
+      const reductionLabel = reduction > 0
+        ? (isEnglish ? 'Size reduction:' : 'کاهش حجم:')
+        : reduction < 0
+          ? (isEnglish ? 'Size increase:' : 'افزایش حجم:')
+          : (isEnglish ? 'No size change:' : 'بدون تغییر حجم:');
+      const reductionLabelEl = reductionWrap.querySelector('span');
+      if (reductionLabelEl) reductionLabelEl.textContent = reductionLabel;
+      reductionEl.textContent = `${Math.abs(reduction)}%`;
       reductionWrap.hidden = false;
     }, format, quality);
   });
