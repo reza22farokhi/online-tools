@@ -59,6 +59,14 @@ describe('language switching', () => {
     await new Promise<void>(resolve => queueMicrotask(resolve));
     expect(dynamic?.textContent).toBe('Error: Unknown');
 
+    if (dynamic) dynamic.textContent = '۱۲ تطابق پیدا شد';
+    await new Promise<void>(resolve => queueMicrotask(resolve));
+    expect(dynamic?.textContent).toBe('12 matches found');
+
+    if (dynamic) dynamic.textContent = '20٪ از 500 = 100';
+    await new Promise<void>(resolve => queueMicrotask(resolve));
+    expect(dynamic?.textContent).toBe('20% of 500 = 100');
+
     applyLang('fa', dicts);
     expect(document.getElementById('tool-text')?.textContent).toBe('پاک کردن');
     expect((document.getElementById('tool-placeholder') as HTMLInputElement).placeholder).toBe('متن خود را وارد کنید...');
