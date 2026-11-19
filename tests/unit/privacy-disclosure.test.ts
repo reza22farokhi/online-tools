@@ -7,7 +7,7 @@ const toolLayout = readFileSync('src/layouts/ToolLayout.astro', 'utf8');
 
 describe('privacy disclosures', () => {
   it('explains local tool-input processing without advertising disclosures', () => {
-    expect(privacy).toContain('محتوای ورودی ابزارها');
+    expect(privacy).toContain('محتوای واردشده در ابزارها');
     expect(privacy).toContain('هیچ اسکریپت یا شبکه تبلیغاتی شخص ثالثی');
     expect(privacy).not.toContain('یکتانت');
   });
