@@ -52,19 +52,27 @@ test('date difference calculator computes and localizes its result', async ({ pa
 
 test('date calculator keeps results hidden until a calculation is requested', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 1200 });
-  await page.goto('/tools/date-calculator/?lang=en');
+  const response = await page.goto('/tools/date-calculator/?lang=en');
+  expect(response?.status(), 'date-calculator route should return HTTP 200').toBe(200);
+  await expect(page.locator('article[data-tool-slug="date-calculator"]')).toHaveCount(1);
+  await expect(page.locator('.dc-tool'), 'date calculator component should be rendered').toHaveCount(1);
+  await expect(page.locator('#dc-calc'), 'calculate button should exist in rendered HTML').toHaveCount(1);
   await expect(page.locator('#dc-results')).toBeHidden();
   await page.locator('#dc-base').fill('1403/01/01');
-  await page.locator('#dc-calc').dispatchEvent('click');
+  await page.locator('#dc-calc').click();
   await expect(page.locator('#dc-results')).toBeVisible();
 });
 
 test('multi-calendar converter hides stale results after invalid input', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 1200 });
-  await page.goto('/tools/multi-calendar-converter/?lang=en');
+  const response = await page.goto('/tools/multi-calendar-converter/?lang=en');
+  expect(response?.status(), 'multi-calendar route should return HTTP 200').toBe(200);
+  await expect(page.locator('article[data-tool-slug="multi-calendar-converter"]')).toHaveCount(1);
+  await expect(page.locator('.mcc-tool'), 'multi-calendar component should be rendered').toHaveCount(1);
+  await expect(page.locator('#mcc-convert'), 'convert button should exist in rendered HTML').toHaveCount(1);
   await expect(page.locator('#mcc-results')).toBeVisible();
   await page.locator('#mcc-year').fill('');
-  await page.locator('#mcc-convert').dispatchEvent('click');
+  await page.locator('#mcc-convert').click();
   await expect(page.locator('#mcc-error')).toBeVisible();
   await expect(page.locator('#mcc-results')).toBeHidden();
 });
