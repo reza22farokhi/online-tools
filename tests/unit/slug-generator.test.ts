@@ -29,6 +29,9 @@ describe('generateSlug', () => {
   it('removes ZWNJ', () => {
     expect(generateSlug('می\u200Cرود', DEFAULT_OPTIONS)).toBe('میرود');
   });
+  it('strips Arabic and Persian vowel marks', () => {
+    expect(generateSlug('سَلامُ', DEFAULT_OPTIONS)).toBe('سلام');
+  });
   it('strips Latin diacritics', () => {
     expect(generateSlug('Café Crème', DEFAULT_OPTIONS)).toBe('cafe-creme');
   });
