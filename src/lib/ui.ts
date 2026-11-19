@@ -582,6 +582,8 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
   document.documentElement.dataset.activeLang = lang;
+  // Keep dynamic accessibility labels synchronized with the active locale.
+  initFavoriteButtons();
   document.querySelectorAll<HTMLElement>('[data-lang-only]').forEach(el => {
     el.hidden = el.dataset.langOnly !== lang;
   });
@@ -786,7 +788,6 @@ export function populateHomeSections(): void {
 
 export function initUI(dicts?: Record<Lang, Record<string, string>>) {
   setupFavoriteDelegation();
-  initFavoriteButtons();
   const queryLang = new URLSearchParams(window.location.search).get('lang');
   const initialLang: Lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : (getStoredLang() ?? 'fa');
   if (queryLang === 'fa' || queryLang === 'en') {
