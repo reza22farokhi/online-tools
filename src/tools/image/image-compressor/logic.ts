@@ -5,5 +5,5 @@ export const MAX_IMAGE_SIZE_LABEL = '۲۰ مگابایت';
 
 export function calculateReduction(original: number, compressed: number): number {
   if (original === 0) return 0;
-  return Math.max(0, Math.round(((original - compressed) / original) * 100));
+  return Math.round(((original - compressed) / original) * 100);
 }
