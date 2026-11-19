@@ -135,6 +135,22 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'مقدار User-agent شامل نویسه‌های پشتیبانی‌نشده است.': 'User-agent contains unsupported characters.'
   'این مرورگر اجرای ایمن Regex در Worker را پشتیبانی نمی‌کند': 'This browser does not support safe Regex execution in a Worker.',
   'امکان راه‌اندازی Worker برای اجرای ایمن Regex وجود ندارد': 'A Worker could not be started for safe Regex execution.'
+  'صعودی (A→Z)': 'Ascending (A→Z)', 'نزولی (Z→A)': 'Descending (Z→A)',
+  'کوتاه به بلند': 'Shortest to longest', 'بلند به کوتاه': 'Longest to shortest',
+  'معکوس ترتیب اصلی': 'Reverse original order', 'Slug کپی شد': 'Slug copied',
+  'جداکننده:': 'Separator:', 'خط تیره (-)': 'Hyphen (-)', 'زیرخط (_)': 'Underscore (_)',
+  'حداکثر طول:': 'Maximum length:',
+  'حذف اعراب لاتین (é → e)': 'Remove Latin diacritics (é → e)',
+  'تبدیل فارسی به لاتین (تقریبی)': 'Transliterate Persian to Latin (approximate)',
+  'کلمه': 'Words', 'بدون فاصله': 'Characters without spaces', 'خط': 'Lines',
+  'پاراگراف': 'Paragraphs', 'دقیقه خواندن': 'Reading time (minutes)',
+  'آمار کپی شد': 'Statistics copied', 'کلمات:': 'Words:', 'کاراکترها:': 'Characters:',
+  'جمله‌ها:': 'Sentences:', 'خطوط:': 'Lines:', 'پاراگراف‌ها:': 'Paragraphs:',
+  'زمان خواندن (دقیقه):': 'Reading time (minutes):',
+  'متن اول (قدیمی)...': 'First text (original)...', 'متن دوم (جدید)...': 'Second text (new)...',
+  'مقایسه متن‌ها': 'Compare texts',
+  'حداکثر ۱ میلیون کاراکتر. پردازش کاملاً محلی و بدون ارسال به سرور.': 'Maximum 1 million characters. Processed locally and never sent to the server.',
+  'این ابزار برای اصلاح متن فارسی طراحی شده است؛ متن انگلیسی ممکن است تغییری نکند.': 'This tool is designed to refine Persian text; English text may remain unchanged.'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
