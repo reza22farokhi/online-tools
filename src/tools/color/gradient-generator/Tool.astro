@@ -72,6 +72,7 @@
       colorIn.type = 'color';
       colorIn.value = stop.color;
       colorIn.className = 'gg-color';
+      colorIn.setAttribute('aria-label', isEnglish() ? `Color stop ${i + 1}` : `رنگ مرحله ${i + 1}`);
       colorIn.addEventListener('input', () => { stops[i].color = colorIn.value; render(); });
 
       const posIn = document.createElement('input');
@@ -80,6 +81,7 @@
       posIn.max = '100';
       posIn.value = String(stop.position);
       posIn.className = 'gg-range';
+      posIn.setAttribute('aria-label', isEnglish() ? `Color stop ${i + 1} position` : `موقعیت رنگ مرحله ${i + 1}`);
       posIn.addEventListener('input', () => { stops[i].position = Number(posIn.value); render(); });
 
       const posLabel = document.createElement('span');
@@ -90,6 +92,7 @@
       removeBtn.type = 'button';
       removeBtn.className = 'btn btn-sm gg-remove';
       removeBtn.textContent = '✕';
+      removeBtn.setAttribute('aria-label', isEnglish() ? `Remove color stop ${i + 1}` : `حذف رنگ مرحله ${i + 1}`);
       removeBtn.disabled = stops.length <= 2;
       removeBtn.addEventListener('click', () => {
         if (stops.length > 2) { stops.splice(i, 1); render(); }
