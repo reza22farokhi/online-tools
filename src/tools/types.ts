@@ -13,6 +13,7 @@ export interface ToolMeta {
   category: ToolCategory;
   name: { fa: string; en: string };
   description: { fa: string; en: string };
+  seoTitle?: { fa: string; en: string };
   keywords: string[];
   popular?: boolean;
   addedAt: string;
