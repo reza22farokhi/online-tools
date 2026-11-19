@@ -313,6 +313,12 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'ذی‌الحجه': 'Dhu al-Hijjah',
   'تاریخ شمسی (مثل 1403/01/01):': 'Jalali date (e.g. 1403/01/01):',
   'تاریخ شمسی (مثل 1403/01/01)': 'Jalali date (e.g. 1403/01/01)'
+  'جداکننده CSV باید دقیقاً یک نویسه معتبر باشد.': 'CSV delimiter must be exactly one valid character.',
+  'پس از پایان فیلد نقل‌قول‌شده، نویسه غیرمجاز وجود دارد.': 'Unexpected character after a quoted CSV field.',
+  'نقل‌قول باید در ابتدای فیلد CSV باشد.': 'A quote must appear at the beginning of a CSV field.',
+  'فیلد نقل‌قول‌شده در CSV بسته نشده است.': 'A quoted CSV field was not closed.',
+  'JSON باید آرایه‌ای از اشیا باشد.': 'JSON must be an array of objects.',
+  'هر ردیف JSON باید یک شیء باشد.': 'Each JSON row must be an object.'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
