@@ -1,6 +1,6 @@
 const SHELL_CACHE_NAME = 'online-tools-v3-shell';
 const RUNTIME_CACHE_NAME = 'online-tools-v3-runtime';
-const PRECACHE_URLS = ['/', '/offline/', '/manifest.json'];
+const PRECACHE_URLS = ['/', '/offline/', '/manifest.json', '/scripts/site-bootstrap.js'];
 const MAX_RUNTIME_ENTRIES = 100;
 
 self.addEventListener('install', (event) => {
