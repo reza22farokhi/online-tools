@@ -18,6 +18,7 @@
   <div class="cjc-actions">
     <button type="button" class="btn btn-primary" id="cjc-copy" disabled>📋 کپی</button>
   </div>
+  <p class="cjc-note" data-lang-only="en" hidden>For spreadsheet safety, exported text cells that begin with formula characters are prefixed with an apostrophe.</p>
 </div>
 
 <script>
@@ -65,6 +66,7 @@
 
 <style>
   .cjc { display: flex; flex-direction: column; gap: var(--space-3); }
+  .cjc-note { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
   .cjc-modes { display: flex; gap: var(--space-1); flex-wrap: wrap; }
   .cjc-mode { padding: 6px 12px; font-size: 0.85rem; }
   .cjc-mode.active { background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary); }
