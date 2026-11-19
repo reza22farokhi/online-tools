@@ -1,6 +1,6 @@
 const SHELL_CACHE_NAME = 'online-tools-v3-shell';
 const RUNTIME_CACHE_NAME = 'online-tools-v3-runtime';
-const PRECACHE_URLS = ['/', '/offline/', '/manifest.json'];
+const PRECACHE_URLS = ['/', '/offline/', '/manifest.json', '/scripts/site-bootstrap.js'];
 const MAX_RUNTIME_ENTRIES = 100;
 
 self.addEventListener('install', (event) => {
@@ -27,6 +27,7 @@ self.addEventListener('activate', (event) => {
 });
 
 function isRuntimeCacheable(request, url) {
+  // Query strings can contain language preferences or private data. Never cache them.
   if (url.search) return false;
 
   if (request.mode === 'navigate') {
@@ -79,17 +80,23 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (!isRuntimeCacheable(request, url)) return;
 
   const isNavigation = request.mode === 'navigate';
+  const isPrecachedAsset = url.pathname === '/scripts/site-bootstrap.js';
+  const cacheable = isRuntimeCacheable(request, url);
+
+  // Query-bearing navigations still need offline handling, but are never cached.
+  if (!cacheable && !(isNavigation && url.search) && !isPrecachedAsset) return;
 
   event.respondWith((async () => {
     let runtimeCache = null;
 
-    try {
-      runtimeCache = await caches.open(RUNTIME_CACHE_NAME);
-    } catch {
-      // If Cache Storage is unavailable, continue with the network normally.
+    if (cacheable) {
+      try {
+        runtimeCache = await caches.open(RUNTIME_CACHE_NAME);
+      } catch {
+        // If Cache Storage is unavailable, continue with the network normally.
+      }
     }
 
     try {
@@ -102,14 +109,21 @@ self.addEventListener('fetch', (event) => {
         if (cached) return cached;
       }
 
-      if (isNavigation) {
+      if (isNavigation || isPrecachedAsset) {
         try {
           const shellCache = await caches.open(SHELL_CACHE_NAME);
-          const exactPage = await shellCache.match(request);
+          if (isPrecachedAsset) {
+            const cachedAsset = await shellCache.match('/scripts/site-bootstrap.js');
+            if (cachedAsset) return cachedAsset;
+          }
+
+          const exactPage = cacheable ? await shellCache.match(request) : null;
           if (exactPage) return exactPage;
 
-          const offlinePage = await shellCache.match('/offline/');
-          if (offlinePage) return offlinePage;
+          if (isNavigation) {
+            const offlinePage = await shellCache.match('/offline/');
+            if (offlinePage) return offlinePage;
+          }
         } catch {
           // Fall through to the plain offline response.
         }
