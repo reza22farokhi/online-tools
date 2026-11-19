@@ -44,3 +44,14 @@ test('service worker keeps an offline shell and bounds runtime caching', async (
     ).toBe(true);
   }
 });
+
+test('offline fallback is localized and offers a same-origin retry link', async ({ page }) => {
+  await page.goto('/offline/?lang=fa');
+  await expect(page.getByRole('heading', { name: 'شما آفلاین هستید' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'تلاش مجدد' })).toHaveAttribute('href', '/');
+
+  await page.goto('/offline/?lang=en');
+  await expect(page.getByRole('heading', { name: 'You are offline' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute('href', '/');
+  await expect(page).toHaveTitle('Offline | Online Tools');
+});
