@@ -23,6 +23,7 @@ test('date converter converts both directions and keeps month names localized', 
 
 test('age calculator renders correct English results and validation', async ({ page }) => {
   await page.goto('/tools/age/?lang=en');
+  await expect(page.locator('#age-results')).toBeHidden();
   await page.locator('#age-birth').fill('2000-01-01');
   await page.locator('#age-ref').fill('2020-01-01');
   await expect(page.locator('#age-results')).toBeVisible();
@@ -37,6 +38,7 @@ test('age calculator renders correct English results and validation', async ({ p
 
 test('date difference calculator computes and localizes its result', async ({ page }) => {
   await page.goto('/tools/date-diff/?lang=en');
+  await expect(page.locator('#dd-results')).toBeHidden();
   await page.locator('#dd-from').fill('2024-01-01');
   await page.locator('#dd-to').fill('2024-01-11');
   await expect(page.locator('#dd-results')).toBeVisible();
