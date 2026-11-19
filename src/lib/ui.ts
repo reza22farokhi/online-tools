@@ -131,7 +131,9 @@ const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^\.\.\. و ([0-9۰-۹,٬]+) نتیجه دیگر$/, '... and $1 more results'],
   [/^خطا در محاسبه هش:\s*/, 'Error calculating hash: '],
   [/^خطا در تبدیل فایل:\s*/, 'Error converting file: '],
-  [/^تاریخ نامعتبر:\s*/, 'Invalid date: ']
+  [/^تاریخ نامعتبر:\s*/, 'Invalid date: '],
+  [/^خطوط یکتا:\s*([0-9۰-۹,٬]+)$/, 'Unique lines: $1'],
+  [/^تکراری حذف‌شده:\s*([0-9۰-۹,٬]+)$/, 'Duplicates removed: $1']
 ];
 const toolTextOriginal = new WeakMap<Text, string>();
 const toolAttributeOriginal = new WeakMap<Element, Map<string, string>>();
@@ -196,7 +198,7 @@ function translateToolNode(node: Node, lang: Lang): void {
     const el = node as HTMLElement;
     if (el.matches('script,style,code,pre,[contenteditable="true"]')) return;
     if (el.matches('[data-lang-placeholder-fa][data-lang-placeholder-en],[data-i18n-placeholder],[data-i18n-aria-label]')) return;
-    for (const attr of ['placeholder', 'title', 'aria-label']) {
+    for (const attr of ['placeholder', 'title', 'aria-label', 'alt']) {
       const value = el.getAttribute(attr);
       if (value === null) continue;
       let originals = toolAttributeOriginal.get(el);
