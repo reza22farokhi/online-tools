@@ -223,7 +223,8 @@ const TOOL_DATE_WORDS_EN: Record<string, string> = {
 
 function translateToolDateText(value: string): string {
   let result = value;
-  for (const [fa, en] of Object.entries(TOOL_DATE_WORDS_EN)) result = result.replaceAll(fa, en);
+  const dateWords = Object.entries(TOOL_DATE_WORDS_EN).sort((a, b) => b[0].length - a[0].length);
+  for (const [fa, en] of dateWords) result = result.replaceAll(fa, en);
   return result.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
 }
 
