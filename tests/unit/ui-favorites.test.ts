@@ -8,7 +8,7 @@ const store: Record<string, string> = {};
   clear: () => { for (const k in store) delete store[k]; },
 };
 
-import { getFavorites, isFavorite, toggleFavorite, getRecent, pushRecent } from '../../src/lib/ui';
+import { getFavorites, isFavorite, toggleFavorite, getRecent, pushRecent, populateHomeSections } from '../../src/lib/ui';
 
 describe('favorites', () => {
   beforeEach(() => { (globalThis as any).localStorage.clear(); });
@@ -27,6 +27,11 @@ describe('favorites', () => {
     toggleFavorite('a');
     toggleFavorite('b');
     expect(getFavorites().length).toBe(2);
+  });
+  it('does not throw when stored favorite slugs contain selector syntax', () => {
+    document.body.innerHTML = '<div id="all-tools-grid"></div><section id="favorites-section"><div id="favorites-grid"></div></section><section id="recent-section"><div id="recent-grid"></div></section>';
+    localStorage.setItem('pot.favorites', JSON.stringify(['"']));
+    expect(() => populateHomeSections()).not.toThrow();
   });
 });
 

@@ -771,8 +771,13 @@ export function populateHomeSections(): void {
     if (!section || !grid) return;
     grid.textContent = "";
     let count = 0;
+    const toolLinks = new Map<string, HTMLElement>();
+    document.querySelectorAll<HTMLElement>('#all-tools-grid [data-slug]').forEach(link => {
+      const slug = link.dataset.slug;
+      if (slug) toolLinks.set(slug, link);
+    });
     for (const slug of slugs) {
-      const link = document.querySelector<HTMLElement>(`#all-tools-grid [data-slug="${slug}"]`);
+      const link = toolLinks.get(slug);
       if (link) {
         const wrapper = link.closest(".tool-card-wrap");
         if (wrapper) {
