@@ -73,7 +73,6 @@ const dicts = getDicts();
     {jsonLdList.map(obj => (
       <script type="application/ld+json" set:html={JSON.stringify(obj)}></script>
     ))}
-    <script src={import.meta.env.BASE_URL + "scripts/yektanet-loader.js"} defer></script>
 
     <link rel="manifest" href={import.meta.env.BASE_URL + "manifest.json"} />
     <meta name="theme-color" content="#4f46e5" />
@@ -82,11 +81,9 @@ const dicts = getDicts();
   <body>
     <a href="#main" class="skip-link" data-i18n="accessibility.skip">پرش به محتوا</a>
     <Header />
-    <div class="yn-bnr" id="ynpos-21471"></div>
     <main id="main">
       <slot />
     </main>
-    <div class="yn-bnr" id="ynpos-21470"></div>
     <Footer />
 
     <script type="application/json" id="i18n-data" set:html={JSON.stringify(dicts)}></script>
