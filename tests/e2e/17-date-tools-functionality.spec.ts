@@ -51,6 +51,7 @@ test('date difference calculator computes and localizes its result', async ({ pa
 });
 
 test('date calculator keeps results hidden until a calculation is requested', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 1200 });
   await page.goto('/tools/date-calculator/?lang=en');
   await expect(page.locator('#dc-results')).toBeHidden();
   await page.locator('#dc-base').fill('1403/01/01');
@@ -59,6 +60,7 @@ test('date calculator keeps results hidden until a calculation is requested', as
 });
 
 test('multi-calendar converter hides stale results after invalid input', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 1200 });
   await page.goto('/tools/multi-calendar-converter/?lang=en');
   await expect(page.locator('#mcc-results')).toBeVisible();
   await page.locator('#mcc-year').fill('');
