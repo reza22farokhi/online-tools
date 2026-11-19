@@ -59,6 +59,41 @@ describe('decodeJwt', () => {
     expect(r.isExpired).toBe(false);
   });
 
+  it('treats epoch-zero NumericDate claims as valid dates', () => {
+    const header = b64url(JSON.stringify({ alg: 'HS256' }));
+    const payload = b64url(JSON.stringify({ exp: 0, iat: 0 }));
+    const r = decodeJwt(`${header}.${payload}.sig`);
+    expect(r.ok).toBe(true);
+    expect(r.isExpired).toBe(true);
+    expect(r.expiresAt?.getTime()).toBe(0);
+    expect(r.issuedAt?.getTime()).toBe(0);
+  });
+
+  it('rejects array headers and payloads', () => {
+    const arrayHeader = b64url('[]');
+    const objectPayload = b64url('{}');
+    expect(decodeJwt(`${arrayHeader}.${objectPayload}.sig`).ok).toBe(false);
+    const objectHeader = b64url('{}');
+    const arrayPayload = b64url('[]');
+    expect(decodeJwt(`${objectHeader}.${arrayPayload}.sig`).ok).toBe(false);
+  });
+
+  it('flags invalid NumericDate claims instead of creating Invalid Date objects', () => {
+    const header = b64url('{}');
+    const payload = b64url(JSON.stringify({ exp: 1e100 }));
+    const r = decodeJwt(`${header}.${payload}.sig`);
+    expect(r.ok).toBe(true);
+    expect(r.invalidTimestamps).toContain('exp');
+    expect(r.expiresAt).toBeUndefined();
+    expect(r.isExpired).toBeUndefined();
+  });
+
+  it('rejects oversized tokens', () => {
+    const r = decodeJwt('a'.repeat(10_001));
+    expect(r.ok).toBe(false);
+    expect(r.error).toContain('۱۰٬۰۰۰');
+  });
+
   it('handles token without exp', () => {
     const r = decodeJwt(SAMPLE_JWT);
     expect(r.isExpired).toBeUndefined();
@@ -88,6 +123,13 @@ describe('getTimeRemaining', () => {
   it('shows past tense for expired', () => {
     const past = new Date(Date.now() - 3600_000);
     expect(getTimeRemaining(past)).toContain('پیش منقضی شده');
+  });
+
+  it('returns English remaining-time messages', () => {
+    const future = new Date(Date.now() + 3600_000);
+    expect(getTimeRemaining(future, 'en')).toContain('remaining');
+    const past = new Date(Date.now() - 3600_000);
+    expect(getTimeRemaining(past, 'en')).toContain('Expired');
   });
 
   it('shows remaining for future', () => {
