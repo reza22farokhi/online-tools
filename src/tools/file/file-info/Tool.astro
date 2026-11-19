@@ -53,8 +53,20 @@
   }
   document.addEventListener('app:languagechange', () => { if (currentFile) renderFileInfo(currentFile); });
 
+  function localizeFileError(message: string): string {
+    if (document.documentElement.lang !== 'en') return message;
+    const exact: Record<string, string> = {
+      'اندازه فایل نامعتبر است.': 'The file size is invalid.',
+      'فایل خالی است و قابل پردازش نیست.': 'The file is empty and cannot be processed.'
+    };
+    if (exact[message]) return exact[message];
+    const tooLarge = message.match(/^حجم فایل \((.+) مگابایت\) بیشتر از حد مجاز ۵۰ مگابایت است\. لطفاً فایل کوچک‌تری انتخاب کنید\.$/);
+    if (tooLarge) return `File size (${tooLarge[1]} MB) exceeds the 50 MB limit. Please choose a smaller file.`;
+    return message;
+  }
+
   function showError(msg: string) {
-    if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
+    if (errorEl) { errorEl.hidden = false; errorEl.textContent = localizeFileError(msg); }
     if (uploadZone) uploadZone.hidden = false;
     if (workspace) workspace.hidden = true;
     if (fileInput) fileInput.value = '';
