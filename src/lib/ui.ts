@@ -123,6 +123,16 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'عنوان صفحه شما در اینجا نمایش داده می‌شود': 'Your page title will appear here',
   'توضیحات متا شما در اینجا نمایش داده می‌شود. سعی کنید آن را جذاب و مرتبط با محتوای صفحه بنویسید تا کاربران روی لینک شما کلیک کنند.': 'Your meta description will appear here. Make it engaging and relevant to encourage users to click your link.',
   'کاراکتر': 'characters'
+  'آدرس نقشه سایت باید از HTTP یا HTTPS استفاده کند.': 'Sitemap URL must use HTTP or HTTPS.',
+  'آدرس نقشه سایت معتبر وارد کنید.': 'Enter a valid sitemap URL.',
+  'آدرس نقشه سایت باید HTTP یا HTTPS باشد و نباید اطلاعات ورود داشته باشد.': 'Sitemap URL must use HTTP or HTTPS and must not contain credentials.',
+  'آدرس نقشه سایت نباید شامل نویسه‌های کنترلی باشد.': 'Sitemap URL must not contain control characters.',
+  'User-agent نباید شامل نویسه‌های کنترلی باشد.': 'User-agent must not contain control characters.',
+  'مسیر غیرمجاز نباید شامل نویسه‌های کنترلی باشد.': 'Disallow path must not contain control characters.',
+  'مسیر مجاز نباید شامل نویسه‌های کنترلی باشد.': 'Allow path must not contain control characters.',
+  'مسیر غیرمجاز نباید فاصله داشته باشد.': 'Disallow path must not contain spaces.',
+  'مسیر مجاز نباید فاصله داشته باشد.': 'Allow path must not contain spaces.',
+  'مقدار User-agent شامل نویسه‌های پشتیبانی‌نشده است.': 'User-agent contains unsupported characters.'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
