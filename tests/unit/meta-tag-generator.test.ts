@@ -44,7 +44,7 @@ describe('generateMetaTags', () => {
   });
 
   it('rejects control characters in URLs', () => {
-    expect(() => generateMetaTags({ title: '', description: '', url: 'https://example.com\\n<meta>', image: '', author: '' })).toThrow(/نویسه‌های کنترلی/);
+    expect(() => generateMetaTags({ title: '', description: '', url: 'https://example.com\n<meta>', image: '', author: '' })).toThrow(/نویسه‌های کنترلی/);
   });
 
   it('omits empty tags', () => {
