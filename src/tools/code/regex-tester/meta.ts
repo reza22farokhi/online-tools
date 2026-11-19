@@ -4,10 +4,9 @@ export const meta: ToolMeta = {
   slug: 'regex-tester',
   category: 'code',
   name: { fa: 'تست Regex', en: 'Regex Tester' },
-  description: {
-    fa: 'الگوهای Regex را روی متن تست کنید. نمایش هایلایت، لیست تطابق‌ها، گروه‌های نام‌دار، با محافظت از ReDoS.',
-    en: 'Test regex patterns against text. Highlighted matches, match list, named groups, with ReDoS protection.'
-  },
+  seoTitle: { fa: "تست Regex و بررسی عبارت منظم | ابزارهای آنلاین", en: "Regex Tester and Pattern Checker | Online Tools" },
+
+  description: { fa: "عبارت‌های منظم را روی متن آزمایش کنید، تطابق‌ها و گروه‌ها را هایلایت کنید و نتیجه را در فهرست ببینید؛ اجرای الگو با محافظت در برابر ReDoS.", en: "Test regular expressions against sample text, highlight matches and capture groups, and inspect results in a list with ReDoS-aware execution safeguards." },
   keywords: ['regex', 'regex tester', 'regexp', 'regex online', 'تست regex', 'تست الگو', 'عبارت منظم'],
   popular: true,
   addedAt: '2026-11-11',
