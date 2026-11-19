@@ -3,11 +3,11 @@
 <div class="age-tool">
   <div class="age-fields">
     <div class="age-field">
-      <label for="age-birth">تاریخ تولد</label>
+      <label for="age-birth" data-lang-fa="تاریخ تولد" data-lang-en="Date of birth">تاریخ تولد</label>
       <input id="age-birth" type="date" class="input" />
     </div>
     <div class="age-field">
-      <label for="age-ref">تاریخ مرجع (پیش‌فرض: امروز)</label>
+      <label for="age-ref" data-lang-fa="تاریخ مرجع (پیش‌فرض: امروز)" data-lang-en="Reference date (default: today)">تاریخ مرجع (پیش‌فرض: امروز)</label>
       <input id="age-ref" type="date" class="input" />
     </div>
   </div>
@@ -17,15 +17,15 @@
   <div class="age-results" id="age-results" hidden>
     <div class="age-main" id="age-main" data-date-output>—</div>
     <div class="age-grid" data-date-output>
-      <div class="age-cell"><span class="age-num" id="age-years">0</span><span class="age-lbl">سال</span></div>
-      <div class="age-cell"><span class="age-num" id="age-months">0</span><span class="age-lbl">ماه</span></div>
-      <div class="age-cell"><span class="age-num" id="age-days">0</span><span class="age-lbl">روز</span></div>
-      <div class="age-cell"><span class="age-num" id="age-total-days">0</span><span class="age-lbl">کل روزها</span></div>
-      <div class="age-cell"><span class="age-num" id="age-total-weeks">0</span><span class="age-lbl">کل هفته‌ها</span></div>
-      <div class="age-cell"><span class="age-num" id="age-total-months">0</span><span class="age-lbl">کل ماه‌ها</span></div>
-      <div class="age-cell"><span class="age-num" id="age-total-hours">0</span><span class="age-lbl">کل ساعت‌ها</span></div>
-      <div class="age-cell"><span class="age-num" id="age-total-minutes">0</span><span class="age-lbl">کل دقیقه‌ها</span></div>
-      <div class="age-cell age-cell-wide"><span class="age-num" id="age-next-bd">0</span><span class="age-lbl">روز تا تولد بعدی</span></div>
+      <div class="age-cell"><span class="age-num" id="age-years">0</span><span class="age-lbl" data-lang-fa="سال" data-lang-en="Years">سال</span></div>
+      <div class="age-cell"><span class="age-num" id="age-months">0</span><span class="age-lbl" data-lang-fa="ماه" data-lang-en="Months">ماه</span></div>
+      <div class="age-cell"><span class="age-num" id="age-days">0</span><span class="age-lbl" data-lang-fa="روز" data-lang-en="Days">روز</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-days">0</span><span class="age-lbl" data-lang-fa="کل روزها" data-lang-en="Total days">کل روزها</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-weeks">0</span><span class="age-lbl" data-lang-fa="کل هفته‌ها" data-lang-en="Total weeks">کل هفته‌ها</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-months">0</span><span class="age-lbl" data-lang-fa="کل ماه‌ها" data-lang-en="Total months">کل ماه‌ها</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-hours">0</span><span class="age-lbl" data-lang-fa="کل ساعت‌ها" data-lang-en="Total hours">کل ساعت‌ها</span></div>
+      <div class="age-cell"><span class="age-num" id="age-total-minutes">0</span><span class="age-lbl" data-lang-fa="کل دقیقه‌ها" data-lang-en="Total minutes">کل دقیقه‌ها</span></div>
+      <div class="age-cell age-cell-wide"><span class="age-num" id="age-next-bd">0</span><span class="age-lbl" data-lang-fa="روز تا تولد بعدی" data-lang-en="Days until next birthday">روز تا تولد بعدی</span></div>
     </div>
   </div>
 </div>
@@ -65,29 +65,29 @@
     const birth = parseIsoDate(bStr);
     if (!birth) {
       setHidden(resultsEl, true);
-      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تاریخ تولد نامعتبر است'; }
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = numberLocale === 'en-US' ? 'Invalid date of birth.' : 'تاریخ تولد نامعتبر است'; }
       return;
     }
 
     const ref = refInput.value ? parseIsoDate(refInput.value) : new Date();
     if (!ref) {
       setHidden(resultsEl, true);
-      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تاریخ مرجع نامعتبر است'; }
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = numberLocale === 'en-US' ? 'Invalid reference date.' : 'تاریخ مرجع نامعتبر است'; }
       return;
     }
 
     const r = calculateAge(birth, ref);
     if (!r) {
       setHidden(resultsEl, true);
-      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تاریخ تولد نمی‌تواند بعد از تاریخ مرجع باشد'; }
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = numberLocale === 'en-US' ? 'Date of birth cannot be after the reference date.' : 'تاریخ تولد نمی‌تواند بعد از تاریخ مرجع باشد'; }
       return;
     }
 
     setHidden(resultsEl, false);
-    if (mainEl) mainEl.textContent = `${r.years} سال و ${r.months} ماه و ${r.days} روز`;
-    if (nums.years) nums.years.textContent = String(r.years);
-    if (nums.months) nums.months.textContent = String(r.months);
-    if (nums.days) nums.days.textContent = String(r.days);
+    if (mainEl) mainEl.textContent = numberLocale === 'en-US' ? `${r.years} years, ${r.months} months, ${r.days} days` : `${r.years} سال و ${r.months} ماه و ${r.days} روز`;
+    if (nums.years) nums.years.textContent = r.years.toLocaleString(numberLocale);
+    if (nums.months) nums.months.textContent = r.months.toLocaleString(numberLocale);
+    if (nums.days) nums.days.textContent = r.days.toLocaleString(numberLocale);
     if (nums.totalDays) nums.totalDays.textContent = r.totalDays.toLocaleString(numberLocale);
     if (nums.totalWeeks) nums.totalWeeks.textContent = r.totalWeeks.toLocaleString(numberLocale);
     if (nums.totalMonths) nums.totalMonths.textContent = r.totalMonths.toLocaleString(numberLocale);
