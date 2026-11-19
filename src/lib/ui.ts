@@ -90,7 +90,10 @@ const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
   [/^تایم‌اوت ۲ ثانیه — الگو ممکن است خطرناک باشد \(ReDoS\)$/, 'Timed out after 2 seconds — the pattern may be unsafe (ReDoS)'],
   [/^([0-9۰-۹,٬]+) تطابق پیدا شد$/, '$1 matches found'],
-  [/^\.\.\. و ([0-9۰-۹,٬]+) نتیجه دیگر$/, '... and $1 more results']
+  [/^\.\.\. و ([0-9۰-۹,٬]+) نتیجه دیگر$/, '... and $1 more results'],
+  [/^خطا در محاسبه هش:\s*/, 'Error calculating hash: '],
+  [/^خطا در تبدیل فایل:\s*/, 'Error converting file: '],
+  [/^تاریخ نامعتبر:\s*/, 'Invalid date: ']
 ];
 const toolTextOriginal = new WeakMap<Text, string>();
 const toolAttributeOriginal = new WeakMap<Element, Map<string, string>>();
