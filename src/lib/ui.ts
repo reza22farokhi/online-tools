@@ -151,6 +151,16 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'مقایسه متن‌ها': 'Compare texts',
   'حداکثر ۱ میلیون کاراکتر. پردازش کاملاً محلی و بدون ارسال به سرور.': 'Maximum 1 million characters. Processed locally and never sent to the server.',
   'این ابزار برای اصلاح متن فارسی طراحی شده است؛ متن انگلیسی ممکن است تغییری نکند.': 'This tool is designed to refine Persian text; English text may remain unchanged.'
+  'Encode (به Base64)': 'Encode to Base64', 'Decode (از Base64)': 'Decode from Base64',
+  'متن یا URL را اینجا وارد کنید...': 'Enter text or a URL here...',
+  'رمز عبور کپی شد': 'Password copied', 'تولید UUID امن در این مرورگر در دسترس نیست.': 'Secure UUID generation is not available in this browser.',
+  'توکن JWT را اینجا جای‌گذاری کنید...': 'Paste a JWT here...',
+  'پردازش ۱۰۰٪ محلی. امضای توکن تایید نمی‌شود (برای تایید، به کلید مخفی سرور نیاز است).': '100% local processing. The token signature is not verified (verification requires the server secret key).',
+  'رمزگشایی': 'Decode', 'توکن منقضی شده است': 'Token has expired; signature not verified',
+  'توکن معتبر است (منقضی نشده)': 'Token has not expired; signature not verified',
+  'تاریخ انقضا (exp) در توکن وجود ندارد': 'No expiration (exp) claim is present',
+  'امضا در مرورگر تایید نمی‌شود. برای تایید اصالت، آن را در سرور با کلید مخفی بررسی کنید.': 'The signature is not verified in the browser. Verify authenticity on the server using the secret key.',
+  'صادر شده (iat)': 'Issued at (iat)', 'معتبر از (nbf)': 'Not before (nbf)', 'انقضا (exp)': 'Expires at (exp)'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
