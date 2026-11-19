@@ -9,13 +9,26 @@ test('JWT Inspector headings, labels, and placeholder remain visible in light an
     const subtitle = getComputedStyle(document.querySelector('.jwt-subtitle')!).color;
     const label = getComputedStyle(document.querySelector('.jwt-label')!).color;
     const placeholder = getComputedStyle(document.querySelector('#jwt-placeholder')!).color;
-    return { body, title, subtitle, label, placeholder };
+    const clear = getComputedStyle(document.querySelector('#jwt-clear')!).color;
+    const rgb = (value: string) => value.match(/[\\d.]+/g)!.slice(0, 3).map(Number);
+    const luminance = (value: string) => {
+      const [r, g, b] = rgb(value).map(channel => {
+        const normalized = channel / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const l1 = luminance(clear);
+    const l2 = luminance(body);
+    const clearContrast = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    return { body, title, subtitle, label, placeholder, clearContrast };
   });
 
   expect(light.title).not.toBe(light.body);
   expect(light.subtitle).not.toBe(light.body);
   expect(light.label).not.toBe(light.body);
   expect(light.placeholder).not.toBe(light.body);
+  expect(light.clearContrast).toBeGreaterThanOrEqual(4.5);
 
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
   const dark = await page.evaluate(() => {
@@ -24,15 +37,43 @@ test('JWT Inspector headings, labels, and placeholder remain visible in light an
     const subtitle = getComputedStyle(document.querySelector('.jwt-subtitle')!).color;
     const label = getComputedStyle(document.querySelector('.jwt-label')!).color;
     const placeholder = getComputedStyle(document.querySelector('#jwt-placeholder')!).color;
-    return { body, title, subtitle, label, placeholder };
+    const clear = getComputedStyle(document.querySelector('#jwt-clear')!).color;
+    const rgb = (value: string) => value.match(/[\\d.]+/g)!.slice(0, 3).map(Number);
+    const luminance = (value: string) => {
+      const [r, g, b] = rgb(value).map(channel => {
+        const normalized = channel / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const l1 = luminance(clear);
+    const l2 = luminance(body);
+    const clearContrast = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    return { body, title, subtitle, label, placeholder, clearContrast };
   });
 
   expect(dark.title).not.toBe(dark.body);
   expect(dark.subtitle).not.toBe(dark.body);
   expect(dark.label).not.toBe(dark.body);
   expect(dark.placeholder).not.toBe(dark.body);
+  expect(dark.clearContrast).toBeGreaterThanOrEqual(4.5);
   expect(dark.title).not.toBe(light.title);
   expect(dark.subtitle).not.toBe(light.subtitle);
   expect(dark.label).not.toBe(light.label);
   expect(dark.placeholder).not.toBe(light.placeholder);
+});
+
+
+test('language toggle accessible name includes its visible language code', async ({ page }) => {
+  await page.goto('/tools/jwt-inspector/?lang=en');
+  const toggle = page.locator('[data-lang-toggle]');
+
+  await expect(toggle).toContainText('FA');
+  await expect(toggle).toHaveAttribute('aria-label', /FA/);
+
+  await toggle.click();
+
+  await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
+  await expect(toggle).toContainText('EN');
+  await expect(toggle).toHaveAttribute('aria-label', /EN/);
 });
