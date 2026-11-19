@@ -3,23 +3,22 @@
 ---
 <div class="pass-tool">
   <div class="output-group">
-    <input type="text" id="pass-output" readonly autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="رمز عبور اینجا نمایش داده می‌شود" dir="ltr" />
-    <button id="copy-btn" class="btn-secondary" title="کپی">📋</button>
+    <input type="text" id="pass-output" readonly autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="رمز عبور اینجا نمایش داده می‌شود" data-lang-placeholder-fa="رمز عبور اینجا نمایش داده می‌شود" data-lang-placeholder-en="Your password will appear here" dir="ltr" />
+    <button id="copy-btn" class="btn-secondary" type="button" title="Copy password" aria-label="Copy password">📋</button>
   </div>
 
-  <button id="generate-btn" class="btn-primary">تولید رمز عبور جدید</button>
+  <button id="generate-btn" class="btn-primary" type="button"><span data-lang-fa="تولید رمز عبور جدید" data-lang-en="Generate new password">تولید رمز عبور جدید</span></button>
 
   <div class="options">
     <div class="option-row">
-      <label for="pass-length">طول رمز: <span id="length-val">16</span></label>
+      <label for="pass-length"><span data-lang-fa="طول رمز:" data-lang-en="Password length:">طول رمز:</span> <span id="length-val">16</span></label>
       <input type="range" id="pass-length" min="8" max="64" value="16" />
     </div>
-    
     <div class="checkbox-group">
-      <label><input type="checkbox" id="inc-upper" checked> شامل حروف بزرگ (A-Z)</label>
-      <label><input type="checkbox" id="inc-lower" checked> شامل حروف کوچک (a-z)</label>
-      <label><input type="checkbox" id="inc-numbers" checked> شامل اعداد (0-9)</label>
-      <label><input type="checkbox" id="inc-symbols" checked> شامل نمادها (!@#$%)</label>
+      <label><input type="checkbox" id="inc-upper" checked> <span data-lang-fa="شامل حروف بزرگ (A-Z)" data-lang-en="Include uppercase letters (A-Z)">شامل حروف بزرگ (A-Z)</span></label>
+      <label><input type="checkbox" id="inc-lower" checked> <span data-lang-fa="شامل حروف کوچک (a-z)" data-lang-en="Include lowercase letters (a-z)">شامل حروف کوچک (a-z)</span></label>
+      <label><input type="checkbox" id="inc-numbers" checked> <span data-lang-fa="شامل اعداد (0-9)" data-lang-en="Include numbers (0-9)">شامل اعداد (0-9)</span></label>
+      <label><input type="checkbox" id="inc-symbols" checked> <span data-lang-fa="شامل نمادها (!@#$%)" data-lang-en="Include symbols (!@#$%)">شامل نمادها (!@#$%)</span></label>
     </div>
   </div>
 </div>
@@ -33,27 +32,27 @@
   const lengthValEl = document.getElementById('length-val') as HTMLSpanElement;
   const generateBtn = document.getElementById('generate-btn') as HTMLButtonElement;
   const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
-  
   const incUpper = document.getElementById('inc-upper') as HTMLInputElement;
   const incLower = document.getElementById('inc-lower') as HTMLInputElement;
   const incNumbers = document.getElementById('inc-numbers') as HTMLInputElement;
   const incSymbols = document.getElementById('inc-symbols') as HTMLInputElement;
   let generationError = false;
 
+  const isEnglish = () => document.documentElement.lang === 'en';
+
   function updatePassword() {
     try {
       const length = parseInt(lengthEl.value, 10);
-      const password = generatePassword(length, {
+      outputEl.value = generatePassword(length, {
         upper: incUpper.checked,
         lower: incLower.checked,
         numbers: incNumbers.checked,
         symbols: incSymbols.checked
       });
-      outputEl.value = password;
       generationError = false;
-    } catch (error) {
+    } catch {
       generationError = true;
-      outputEl.value = document.documentElement.lang === 'en' ? 'Select at least one character set.' : 'حداقل یک گزینه را انتخاب کنید!';
+      outputEl.value = isEnglish() ? 'Select at least one character set.' : 'حداقل یک گزینه را انتخاب کنید!';
     }
     copyBtn.disabled = generationError;
   }
@@ -62,7 +61,6 @@
     lengthValEl.textContent = lengthEl.value;
     updatePassword();
   });
-
   generateBtn.addEventListener('click', updatePassword);
   [incUpper, incLower, incNumbers, incSymbols].forEach(el => el.addEventListener('change', updatePassword));
   document.addEventListener('app:languagechange', () => { if (generationError) updatePassword(); });
@@ -70,9 +68,12 @@
   copyBtn.addEventListener('click', async () => {
     if (!outputEl.value || generationError) return;
     const ok = await copyText(outputEl.value);
-    toast(ok ? 'رمز عبور کپی شد' : 'کپی نشد', ok ? 'success' : 'error');
+    toast(
+      ok ? (isEnglish() ? 'Password copied.' : 'رمز عبور کپی شد.')
+         : (isEnglish() ? 'Could not copy the password.' : 'کپی رمز عبور انجام نشد.'),
+      ok ? 'success' : 'error'
+    );
   });
-
   updatePassword();
 </script>
 
