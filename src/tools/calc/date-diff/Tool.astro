@@ -91,6 +91,7 @@
   fromInput?.addEventListener('input', refresh);
   toInput?.addEventListener('change', refresh);
   toInput?.addEventListener('input', refresh);
+  document.addEventListener('app:languagechange', refresh);
   refresh();
 </script>
 
