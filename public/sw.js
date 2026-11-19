@@ -27,6 +27,7 @@ self.addEventListener('activate', (event) => {
 });
 
 function isRuntimeCacheable(request, url) {
+  // Query strings can contain language preferences or private data. Never cache them.
   if (url.search) return false;
 
   if (request.mode === 'navigate') {
@@ -79,17 +80,22 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (!isRuntimeCacheable(request, url)) return;
 
   const isNavigation = request.mode === 'navigate';
+  const cacheable = isRuntimeCacheable(request, url);
+
+  // Query-bearing navigations still need offline handling, but are never cached.
+  if (!cacheable && !(isNavigation && url.search)) return;
 
   event.respondWith((async () => {
     let runtimeCache = null;
 
-    try {
-      runtimeCache = await caches.open(RUNTIME_CACHE_NAME);
-    } catch {
-      // If Cache Storage is unavailable, continue with the network normally.
+    if (cacheable) {
+      try {
+        runtimeCache = await caches.open(RUNTIME_CACHE_NAME);
+      } catch {
+        // If Cache Storage is unavailable, continue with the network normally.
+      }
     }
 
     try {
@@ -105,7 +111,7 @@ self.addEventListener('fetch', (event) => {
       if (isNavigation) {
         try {
           const shellCache = await caches.open(SHELL_CACHE_NAME);
-          const exactPage = await shellCache.match(request);
+          const exactPage = cacheable ? await shellCache.match(request) : null;
           if (exactPage) return exactPage;
 
           const offlinePage = await shellCache.match('/offline/');
