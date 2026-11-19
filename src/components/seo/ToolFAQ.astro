@@ -12,7 +12,7 @@ const faqs = getFaqsFor(toolSlug);
 const faqLd = faqs.length > 0 ? buildFaqJsonLd(faqs) : null;
 ---
 {faqs.length > 0 && (
-  <section class="tool-faq" aria-labelledby="faq-title">
+  <section class="tool-faq" aria-labelledby="faq-title" data-lang-only="fa">
     <h2 id="faq-title">سوالات متداول درباره {toolName}</h2>
     <div class="faq-list">
       {faqs.map(faq => (
@@ -24,9 +24,11 @@ const faqLd = faqs.length > 0 ? buildFaqJsonLd(faqs) : null;
     </div>
     {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
   </section>
+  <p class="faq-translation-note" data-lang-only="en" hidden>Tool FAQs are currently available in Persian only.</p>
 )}
 <style>
   .tool-faq { margin-top: var(--space-5); }
+  .faq-translation-note { color: var(--color-text-muted); font-size: 0.9rem; }
   .tool-faq h2 { font-size: 1.2rem; margin-bottom: var(--space-3); color: var(--color-text); }
   .faq-list { display: flex; flex-direction: column; gap: var(--space-2); }
   .faq-item { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); }
