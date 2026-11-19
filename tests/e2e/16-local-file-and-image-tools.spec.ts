@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const tinyPng = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAwMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==',
+  'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==',
   'base64'
 );
 
@@ -84,8 +84,8 @@ test('QR code generator renders a real canvas for a URL', async ({ page }) => {
 
 test('CSV and JSON converter transforms both directions', async ({ page }) => {
   await page.goto('/tools/csv-json-converter/?lang=en');
-  await expect(page.locator('#cjc-out')).toContainText(/"name"/);
+  await expect(page.locator('#cjc-out')).toHaveValue(/"name"/);
   await page.locator('.cjc-mode[data-mode="json2csv"]').click();
-  await expect(page.locator('#cjc-out')).toContainText('name,age');
+  await expect(page.locator('#cjc-out')).toHaveValue(/name,age/);
   await expect(page.locator('#cjc-copy')).toBeEnabled();
 });
