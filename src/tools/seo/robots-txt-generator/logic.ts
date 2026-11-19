@@ -16,6 +16,10 @@ function assertSingleLine(value: string, field: string): string {
 function normalizeSitemap(value: string): string {
   const raw = assertSingleLine(value, 'Sitemap URL');
   if (!raw) return '';
+  const explicitScheme = raw.match(/^([a-z][a-z0-9+.-]*):/i)?.[1].toLowerCase();
+  if (explicitScheme && explicitScheme !== 'http' && explicitScheme !== 'https') {
+    throw new Error('Sitemap URL must use HTTP or HTTPS.');
+  }
   const candidate = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : 'https://' + raw;
   let url: URL;
   try {
