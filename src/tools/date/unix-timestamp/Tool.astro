@@ -63,6 +63,11 @@
   document.getElementById('uts-convert-ts')?.addEventListener('click', () => {
     if (!tsInput || !resultsTs) return;
     if (errorEl) errorEl.hidden = true;
+    resultsTs.hidden = true;
+    if (!tsInput.value.trim()) {
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'عدد نامعتبر'; }
+      return;
+    }
     const ts = Number(tsInput.value.trim());
     if (!Number.isFinite(ts)) {
       if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'عدد نامعتبر'; }
@@ -88,6 +93,7 @@
 
   document.getElementById('uts-convert-date')?.addEventListener('click', () => {
     if (!dateInput || !resultsDate) return;
+    resultsDate.hidden = true;
     if (!dateInput.value) return;
     const d = new Date(dateInput.value);
     if (isNaN(d.getTime())) return;
