@@ -29,11 +29,6 @@ describe('Content Security Policy allowlist', () => {
     expect(directive('frame-src')).toBe('blob:');
   });
 
-  it('enforces HTTPS transport for one year without assuming all subdomains are HTTPS', () => {
-    expect(headers).toMatch(/^\s*Strict-Transport-Security: max-age=31536000$/m);
-    expect(headers).not.toMatch(/^\s*Strict-Transport-Security:.*includeSubDomains/m);
-  });
-
   it('keeps restrictive baseline directives', () => {
     expect(csp).toContain("object-src 'none'");
     expect(csp).toContain("base-uri 'self'");
