@@ -270,10 +270,10 @@ export function analyzeSecurity(header: JwtHeader, payload: JwtPayload): Securit
     warnings.push({
       level: 'warn',
       code: 'NO_EXP',
-      message: 'این توکن فاقد claim "exp" است و هرگز منقضی نمی‌شود.',
+      message: 'این توکن فاقد claim «exp» است؛ زمان انقضای مشخصی از روی آن قابل تشخیص نیست.',
     });
-  } else {
-    const ttl = payload.exp - (typeof payload.iat === 'number' ? payload.iat : 0);
+  } else if (typeof payload.iat === 'number') {
+    const ttl = payload.exp - payload.iat;
     if (ttl > 24 * 3600) {
       warnings.push({
         level: 'warn',
