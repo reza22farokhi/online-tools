@@ -173,8 +173,8 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'حذف فاصله‌های تکراری (چند فاصله ← یک فاصله)': 'Collapse repeated spaces (multiple spaces → one)',
   'حذف فاصله ابتدا و انتهای هر خط': 'Trim each line',
   'حذف فاصله ابتدا و انتهای کل متن': 'Trim the entire text',
-  'اصلاح حروف عربی (ي، ك)': 'Normalize Arabic characters (ي, ك)',
-  'اصلاح نیم‌فاصله (می‌روم، کتاب‌ها)': 'Fix Persian half-spaces (می‌روم، کتاب‌ها)',
+  'اصلاح حروف عربی (ي، ك)': 'Normalize Arabic Yeh and Kaf variants',
+  'اصلاح نیم‌فاصله (می‌روم، کتاب‌ها)': 'Correct Persian half-space placement',
   'اصلاح علائم نگارشی': 'Normalize punctuation',
   'تبدیل اعداد به فارسی': 'Convert digits to Persian',
   'متن اصلاح شده...': 'Refined text...',
@@ -359,6 +359,36 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'زمان اجرای الگو بیش از حد مجاز شد (۲ ثانیه)': 'Pattern execution exceeded the 2-second limit.',
   'خطا در اجرای الگو': 'Pattern execution failed.',
   'ارسال داده به Worker ناموفق بود': 'Could not send data to the Web Worker.'
+  'شمسی به میلادی': 'Jalali to Gregorian',
+  'میلادی به شمسی': 'Gregorian to Jalali',
+  'کپی آمار': 'Copy statistics',
+  'متن خود را اینجا تایپ یا جای‌گذاری کنید...': 'Type or paste your text here...',
+  '🔄 تولید': '🔄 Generate',
+  'توکن JWT': 'JWT token',
+  '🗑️ پاک کردن': '🗑️ Clear',
+  '📋 نمونه': '📋 Sample',
+  '🔓 رمزگشایی': '🔓 Decode',
+  'کپی کد': 'Copy code',
+  'عنوان (Title)': 'Title',
+  '/ 60 کاراکتر': '/ 60 characters',
+  '/ 160 کاراکتر': '/ 160 characters',
+  'کپی محتوا': 'Copy content',
+  'رنگ متن': 'Text color',
+  'رنگ پس‌زمینه': 'Background color',
+  'نسبت کنتراست': 'Contrast ratio',
+  '📅 شمسی': '📅 Jalali',
+  '🌍 میلادی': '🌍 Gregorian',
+  '🌙 قمری': '🌙 Hijri',
+  '📌 امروز': '📌 Today',
+  '🔄 تبدیل': '🔄 Convert',
+  '📋 کپی': '📋 Copy',
+  'تاریخ میلادی': 'Gregorian date',
+  'هفته': 'Weeks',
+  'عملیات:': 'Operation:',
+  '🧮 محاسبه': '🧮 Calculate',
+  '🔍 نمایش اطلاعات': '🔍 Show details',
+  'ورودی:': 'Input:',
+  '🗑️ پاک': '🗑️ Clear',
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
@@ -407,6 +437,8 @@ function translatedToolText(value: string, lang: Lang): string {
   if (lang === 'fa') return value;
   const exact = TOOL_TEXT_EN[trimmed];
   if (exact !== undefined) return value.replace(trimmed, exact);
+  const dateWord = TOOL_DATE_WORDS_EN[trimmed];
+  if (dateWord !== undefined) return value.replace(trimmed, dateWord);
   for (const [pattern, replacement] of TOOL_TEXT_PREFIX_EN) {
     if (pattern.test(trimmed)) {
       if (pattern.source.endsWith('\\s*')) {
