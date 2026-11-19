@@ -12,8 +12,7 @@ export interface Props {
   lang?: 'fa' | 'en';
 }
 
-const { meta, lang: explicitLang } = Astro.props;
-const lang = explicitLang ?? (Astro.url.searchParams.get('lang') === 'en' ? 'en' : 'fa');
+const { meta, lang = 'fa' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const site = Astro.site?.toString() ?? 'https://example.com/';
 
@@ -75,7 +74,7 @@ const related = getRelated(meta.slug);
       <p><span data-lang-fa="محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در " data-lang-en="Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. Third-party advertising scripts may separately receive technical page-load information. See our ">محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در </span><a href="/privacy/" data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</a><span data-lang-fa=" آمده است." data-lang-en=" for details."> آمده است.</span></p>
     </section>
 
-    <ToolFAQ toolSlug={meta.slug} toolName={meta.name[lang]} lang={lang} />
+    <ToolFAQ toolSlug={meta.slug} toolName={meta.name.fa} />
 
     {related.length > 0 && (
       <section class="tool-related" aria-labelledby="related-title">
