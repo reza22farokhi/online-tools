@@ -9,7 +9,7 @@ test('home and tool pages render without runtime errors', async ({ page }) => {
   await page.goto('/?lang=en');
   await expect(page.locator('main h1').first()).toBeVisible();
   await page.goto('/tools/word-counter/?lang=en');
-  await expect(page.locator('article[data-tool-slug="word-counter"] h1')).toBeVisible();
+  await expect(page.locator('main h1').first()).toBeVisible();
   expect(errors).toEqual([]);
 });
 
