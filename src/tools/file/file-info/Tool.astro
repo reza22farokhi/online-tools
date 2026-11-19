@@ -5,22 +5,22 @@
     <input type="file" id="fi-file" class="sr-only" />
     <label for="fi-file" class="fi-upload-label">
       <span class="fi-icon">📁</span>
-      <span>برای انتخاب فایل کلیک کنید یا آن را اینجا رها کنید</span>
-      <span class="fi-hint">حداکثر حجم: ۵۰ مگابایت (پردازش محلی)</span>
+      <span data-lang-fa="برای انتخاب فایل کلیک کنید یا آن را اینجا رها کنید" data-lang-en="Click to choose a file or drop it here">برای انتخاب فایل کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="fi-hint" data-lang-fa="حداکثر حجم: ۵۰ مگابایت (پردازش محلی)" data-lang-en="Maximum size: 50 MB (processed locally)">حداکثر حجم: ۵۰ مگابایت (پردازش محلی)</span>
     </label>
   </div>
   <div class="fi-error" id="fi-error" hidden role="alert"></div>
   <div class="fi-workspace" id="fi-workspace" hidden>
     <div class="fi-grid">
-      <div class="fi-card"><div class="fi-label">نام فایل</div><div class="fi-val" id="fi-name" data-user-content="true">-</div></div>
-      <div class="fi-card"><div class="fi-label">حجم</div><div class="fi-val" id="fi-size">-</div></div>
-      <div class="fi-card"><div class="fi-label">نوع (MIME)</div><div class="fi-val" id="fi-type" dir="ltr">-</div></div>
-      <div class="fi-card"><div class="fi-label">پسوند</div><div class="fi-val" id="fi-ext">-</div></div>
+      <div class="fi-card"><div class="fi-label" data-lang-fa="نام فایل" data-lang-en="File name">نام فایل</div><div class="fi-val" id="fi-name" data-user-content="true">-</div></div>
+      <div class="fi-card"><div class="fi-label" data-lang-fa="حجم" data-lang-en="Size">حجم</div><div class="fi-val" id="fi-size">-</div></div>
+      <div class="fi-card"><div class="fi-label" data-lang-fa="نوع (MIME)" data-lang-en="Type (MIME)">نوع (MIME)</div><div class="fi-val" id="fi-type" dir="ltr">-</div></div>
+      <div class="fi-card"><div class="fi-label" data-lang-fa="پسوند" data-lang-en="Extension">پسوند</div><div class="fi-val" id="fi-ext">-</div></div>
     </div>
     <div class="fi-hash-wrap">
-      <div class="fi-label">هش SHA-256:</div>
-      <textarea id="fi-hash" class="textarea fi-hash" readonly rows="2" placeholder="در حال محاسبه..."></textarea>
-      <button type="button" class="btn" id="fi-copy-hash" disabled>📋 کپی هش</button>
+      <div class="fi-label" data-lang-fa="هش SHA-256:" data-lang-en="SHA-256 hash:">هش SHA-256:</div>
+      <textarea id="fi-hash" class="textarea fi-hash" readonly rows="2" placeholder="در حال محاسبه..." data-lang-placeholder-fa="در حال محاسبه..." data-lang-placeholder-en="Calculating..."></textarea>
+      <button type="button" class="btn" id="fi-copy-hash" disabled>📋 <span data-lang-fa="کپی هش" data-lang-en="Copy hash">کپی هش</span></button>
     </div>
   </div>
 </div>
@@ -39,6 +39,7 @@
   const hashEl = document.getElementById('fi-hash') as HTMLTextAreaElement | null;
   const copyBtn = document.getElementById('fi-copy-hash') as HTMLButtonElement | null;
 
+  const t = (fa: string, en: string) => document.documentElement.lang === 'en' ? en : fa;
   let isProcessing = false;
   let currentFile: File | null = null;
   function renderFileInfo(file: File) {
@@ -67,12 +68,12 @@
   async function handleFile(file: File) {
     clearError();
     if (isProcessing) {
-      showError('یک پردازش در حال انجام است. لطفاً کمی صبر کنید.');
+      showError(t('یک پردازش در حال انجام است. لطفاً کمی صبر کنید.', 'A file is already being processed. Please wait.'));
       return;
     }
     const validation = validateFileSize(file.size);
     if (!validation.ok) {
-      showError(validation.error ?? 'خطای نامشخص در فایل.');
+      showError(validation.error ?? t('خطای نامشخص در فایل.', 'Unknown file error.'));
       return;
     }
     isProcessing = true;
@@ -81,13 +82,13 @@
     if (copyBtn) copyBtn.disabled = true;
     currentFile = file;
     renderFileInfo(file);
-    if (hashEl) hashEl.value = 'در حال محاسبه هش...';
+    if (hashEl) hashEl.value = t('در حال محاسبه هش...', 'Calculating hash...');
     try {
       const hash = await calculateFileSha256(file);
       if (hashEl) hashEl.value = hash;
       if (copyBtn) copyBtn.disabled = false;
     } catch (e) {
-      showError('خطا در محاسبه هش: ' + (e instanceof Error ? e.message : 'نامشخص'));
+      showError(t('خطا در محاسبه هش: ', 'Hash calculation failed: ') + (e instanceof Error ? e.message : t('نامشخص', 'Unknown')));
     } finally {
       isProcessing = false;
     }
@@ -107,7 +108,7 @@
   copyBtn?.addEventListener('click', async () => {
     if (!hashEl?.value) return;
     const ok = await copyText(hashEl.value);
-    if (ok) toast('هش کپی شد', 'success'); else toast('کپی نشد', 'error');
+    if (ok) toast(t('هش کپی شد', 'Hash copied'), 'success'); else toast(t('کپی نشد', 'Copy failed'), 'error');
   });
 </script>
 <style>
