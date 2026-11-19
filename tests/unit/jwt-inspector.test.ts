@@ -97,6 +97,14 @@ describe('verify()', () => {
     expect(result.valid).toBe(false);
   });
 
+  it.each(['constructor', 'toString', '__proto__'])('rejects inherited algorithm name %s', async (alg) => {
+    const header = base64UrlEncode(JSON.stringify({ alg, typ: 'JWT' }));
+    const payload = base64UrlEncode(JSON.stringify({ sub: 'x' }));
+    await expect(verify(`${header}.${payload}.c2ln`, 'secret')).rejects.toMatchObject({
+      code: 'UNSUPPORTED_ALG',
+    });
+  });
+
   it('rejects an algorithm override that differs from the JWT header', async () => {
     await expect(verify(HS256_TOKEN, HS256_SECRET, 'HS512')).rejects.toMatchObject({
       code: 'ALG_MISMATCH',
