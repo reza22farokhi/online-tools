@@ -355,8 +355,8 @@ const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطوط یکتا:\s*([0-9۰-۹,٬]+)$/, 'Unique lines: $1'],
   [/^(.+)٪ از (.+) = (.+)$/, '$1% of $2 = $3'],
   [/^تکراری حذف‌شده:\s*([0-9۰-۹,٬]+)$/, 'Duplicates removed: $1'],
-  [/^WCAG (AA|AAA) \\(متن معمولی\\) \\(حداقل ([0-9.]+):1\\)$/, 'WCAG $1 (normal text, minimum $2:1)'],
-  [/^WCAG (AA|AAA) \\(متن بزرگ\\) \\(حداقل ([0-9.]+):1\\)$/, 'WCAG $1 (large text, minimum $2:1)']
+  [/^WCAG (AA|AAA) \(متن معمولی\) \(حداقل ([0-9.]+):1\)$/, 'WCAG $1 (normal text, minimum $2:1)'],
+  [/^WCAG (AA|AAA) \(متن بزرگ\) \(حداقل ([0-9.]+):1\)$/, 'WCAG $1 (large text, minimum $2:1)']
 ];
 const TOOL_DATE_WORDS_EN: Record<string, string> = {
   'فروردین': 'Farvardin', 'اردیبهشت': 'Ordibehesht', 'خرداد': 'Khordad', 'تیر': 'Tir',
