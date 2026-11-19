@@ -42,10 +42,10 @@
 - Consumes: registry ToolMeta array and DEFAULT_DESCRIPTION.
 - Produces: automated checks for all registered Persian/English descriptions and generated title lengths.
 
-- [ ] Write tests for 42 registered tools' Persian and English descriptions (120–155 characters).
-- [ ] Write tests for generated Persian/English SEO titles (30–60 characters).
-- [ ] Write a test for the homepage default description.
-- [ ] Run the focused test and confirm it fails on current metadata.
+- [x] Write tests for 42 registered tools' Persian and English descriptions (120–155 characters).
+- [x] Write tests for generated Persian/English SEO titles (30–60 characters).
+- [x] Write a test for the homepage default description.
+- [x] Run the focused test and confirm it fails on current metadata.
 
 ### Task 2: Support SEO-specific titles without changing visible names
 
@@ -58,10 +58,10 @@
 - Consumes: existing ToolMeta.name and optional SEO title.
 - Produces: optional seoTitle with fa/en strings; HTML title falls back to existing name plus brand.
 
-- [ ] Add the optional type.
-- [ ] Use the optional title in the HTML title tag only; preserve H1 and tool-card names.
-- [ ] Add titles only to pages currently outside the 30–60 character range.
-- [ ] Run metadata tests and type checks.
+- [x] Add the optional type.
+- [x] Use the optional title in the HTML title tag only; preserve H1 and tool-card names.
+- [x] Add titles only to pages currently outside the 30–60 character range.
+- [x] Run metadata tests and type checks.
 
 ### Task 3: Refresh metadata descriptions and JWT Inspector headings
 
@@ -71,16 +71,16 @@
 - Modify: src/pages/index.astro English homepage description if needed.
 - Modify: src/tools/jwt-inspector/JwtInspector.astro.
 
-- [ ] Write unique Persian and English descriptions of 120–155 characters for every registered tool.
-- [ ] Update homepage descriptions in both languages.
-- [ ] Shorten JWT Inspector title and description; use H2 for top-level sections currently marked H3.
-- [ ] Run metadata tests, unit tests, type checks, and build.
+- [x] Write unique Persian and English descriptions of 120–155 characters for every registered tool.
+- [x] Update homepage descriptions in both languages.
+- [x] Shorten JWT Inspector title and description; use H2 for top-level sections currently marked H3.
+- [x] Run metadata tests, unit tests, type checks, and build.
 
 ### Task 4: Verify generated production HTML
 
 **Files:** No additional production files.
 
-- [ ] Run all Playwright E2E tests.
-- [ ] Verify generated HTML for the homepage, all 42 tool routes, and standalone JWT Inspector.
-- [ ] Verify title and description lengths, canonical URLs, H1 counts, JSON-LD presence, and no ad-provider references.
-- [ ] Open a PR and merge only after all checks pass.
+- [x] Run all Playwright E2E tests.
+- [x] Verify generated HTML for the homepage, all 42 tool routes, and standalone JWT Inspector.
+- [x] Verify title and description lengths, canonical URLs, H1 counts, JSON-LD presence, and no ad-provider references.
+- [x] Open PR #37; all CI checks are green. Merge is the final release action.
