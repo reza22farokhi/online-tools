@@ -42,7 +42,7 @@ describe('Content Security Policy allowlist', () => {
     expect(csp).not.toContain('*');
   });
   it('keeps the offline retry action compatible with the strict script CSP', () => {
-    expect(offlinePage).not.toMatch(/\\son[a-z]+\\s*=/i);
+    expect(offlinePage).not.toMatch(/\son[a-z]+\s*=/i);
     expect(offlinePage).toContain('<a href="/"');
   });
 });
