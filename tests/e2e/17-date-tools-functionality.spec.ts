@@ -18,6 +18,7 @@ test('date converter converts both directions and keeps month names localized', 
 
   await page.locator('[data-lang-toggle]').first().click();
   await expect(page.locator('#result-j')).toContainText('1 فروردین 1403');
+  await expect(page.locator('#result-g')).toContainText('2024 مارس 20');
 });
 
 test('age calculator renders correct English results and validation', async ({ page }) => {
