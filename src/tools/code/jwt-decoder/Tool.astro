@@ -71,6 +71,14 @@
 
   const isEnglish = () => document.documentElement.lang === 'en';
   const t = (fa: string, en: string) => isEnglish() ? en : fa;
+  const jwtErrorsEn: Record<string, string> = {
+    'توکن خالی است': 'The token is empty.',
+    'ساختار JWT نامعتبر است (باید ۳ بخش داشته باشد: header.payload.signature)': 'Invalid JWT structure. A token must contain three parts: header.payload.signature.',
+    'Header نامعتبر است (Base64URL یا JSON معتبر نیست)': 'Invalid header: the Base64URL or JSON is malformed.',
+    'Payload نامعتبر است (Base64URL یا JSON معتبر نیست)': 'Invalid payload: the Base64URL or JSON is malformed.',
+    'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).': 'Token is too long (maximum 10,000 characters).'
+  };
+  const localizeJwtError = (message: string) => isEnglish() ? (jwtErrorsEn[message] ?? message) : message;
 
   function setHidden(el: HTMLElement | null, hidden: boolean) {
     if (el) el.hidden = hidden;
@@ -97,7 +105,7 @@
     if (!result.ok) {
       if (errorEl) {
         errorEl.hidden = false;
-        errorEl.textContent = t('خطا: ', 'Error: ') + (result.error || t('نامشخص', 'Unknown'));
+        errorEl.textContent = t('خطا: ', 'Error: ') + localizeJwtError(result.error || t('نامشخص', 'Unknown'));
       }
       return;
     }
