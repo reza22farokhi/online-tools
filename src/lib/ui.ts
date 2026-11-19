@@ -189,7 +189,7 @@ function translateToolNode(node: Node, lang: Lang): void {
   if (node.nodeType === Node.TEXT_NODE) {
     const textNode = node as Text;
     const parent = textNode.parentElement;
-    if (!parent || parent.closest('script,style,textarea,input,code,pre,[contenteditable="true"]')) return;
+    if (!parent || parent.closest('script,style,textarea,input,code,pre,[contenteditable="true"],[data-user-content]')) return;
     const original = toolTextOriginal.get(textNode);
     if (lang === 'fa') {
       if (original !== undefined && textNode.data !== original) textNode.data = original;
@@ -208,7 +208,7 @@ function translateToolNode(node: Node, lang: Lang): void {
   }
   if (node.nodeType === Node.ELEMENT_NODE) {
     const el = node as HTMLElement;
-    if (el.matches('script,style,code,pre,[contenteditable="true"]')) return;
+    if (el.matches('script,style,code,pre,[contenteditable="true"],[data-user-content]')) return;
     if (el.matches('[data-lang-placeholder-fa][data-lang-placeholder-en],[data-i18n-placeholder],[data-i18n-aria-label]')) return;
     for (const attr of ['placeholder', 'title', 'aria-label', 'alt']) {
       const value = el.getAttribute(attr);
