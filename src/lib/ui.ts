@@ -133,6 +133,8 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'مسیر غیرمجاز نباید فاصله داشته باشد.': 'Disallow path must not contain spaces.',
   'مسیر مجاز نباید فاصله داشته باشد.': 'Allow path must not contain spaces.',
   'مقدار User-agent شامل نویسه‌های پشتیبانی‌نشده است.': 'User-agent contains unsupported characters.'
+  'این مرورگر اجرای ایمن Regex در Worker را پشتیبانی نمی‌کند': 'This browser does not support safe Regex execution in a Worker.',
+  'امکان راه‌اندازی Worker برای اجرای ایمن Regex وجود ندارد': 'A Worker could not be started for safe Regex execution.'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
