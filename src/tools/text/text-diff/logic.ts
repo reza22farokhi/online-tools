@@ -1,8 +1,12 @@
 export type DiffResult = { type: 'added' | 'removed' | 'unchanged'; value: string };
 
 export function diffTexts(oldText: string, newText: string): DiffResult[] {
+  if (oldText.length + newText.length > 200_000) throw new Error('حجم متن برای مقایسه بیش از حد مجاز است (حداکثر ۲۰۰ هزار نویسه).');
   const oldLines = oldText.split('\n');
   const newLines = newText.split('\n');
+  if (oldLines.length > 2_000 || newLines.length > 2_000 || oldLines.length * newLines.length > 1_000_000) {
+    throw new Error('تعداد خطوط برای مقایسه بیش از حد مجاز است (حداکثر ۱ میلیون خانه مقایسه).');
+  }
   const dp = Array(oldLines.length + 1).fill(0).map(() => Array(newLines.length + 1).fill(0));
 
   for (let i = 1; i <= oldLines.length; i++) {
