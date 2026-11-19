@@ -169,7 +169,7 @@ export async function verify(
   ) as BufferSource; // Fix TS error
   const sig = base64UrlToBytes(decoded.raw.signature) as BufferSource; // Fix TS error
 
-  if (alg in HMAC) {
+  if (Object.prototype.hasOwnProperty.call(HMAC, alg)) {
     const { hash } = HMAC[alg];
     const secret = new TextEncoder().encode(keyInput) as BufferSource; // Fix TS error
     const key = await crypto.subtle.importKey(
@@ -183,7 +183,7 @@ export async function verify(
     return { valid, algorithm: alg };
   }
 
-  if (alg in RSA) {
+  if (Object.prototype.hasOwnProperty.call(RSA, alg)) {
     const { hash, padding, saltLength } = RSA[alg];
     const der = pemToDer(keyInput) as BufferSource; // Fix TS error
     const key = await crypto.subtle.importKey(
@@ -201,7 +201,7 @@ export async function verify(
     return { valid, algorithm: alg };
   }
 
-  if (alg in EC) {
+  if (Object.prototype.hasOwnProperty.call(EC, alg)) {
     const { hash, namedCurve } = EC[alg];
     const der = pemToDer(keyInput) as BufferSource; // Fix TS error
     const key = await crypto.subtle.importKey(
