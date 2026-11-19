@@ -12,6 +12,7 @@
     <input type="number" id="qr-size" value="300" min="100" max="1000" step="50" />
   </div>
 
+  <div id="qr-error" class="qr-error" role="alert" hidden></div>
   <button id="generate-btn" class="btn-primary">تولید کد QR</button>
 
   <div id="qr-result" class="result-container hidden">
@@ -29,33 +30,43 @@
   const resultEl = document.getElementById('qr-result') as HTMLDivElement;
   const canvasEl = document.getElementById('qr-canvas') as HTMLCanvasElement;
   const downloadEl = document.getElementById('download-btn') as HTMLAnchorElement;
+  const errorEl = document.getElementById('qr-error') as HTMLDivElement;
+  const MAX_QR_BYTES = 2000;
 
   if (btnEl && canvasEl && resultEl) {
     btnEl.addEventListener('click', async () => {
       const text = inputEl.value.trim();
-      const size = parseInt(sizeEl.value, 10) || 300;
+      const requestedSize = Number.parseInt(sizeEl.value, 10);
+      const size = Number.isFinite(requestedSize) ? Math.max(100, Math.min(1000, requestedSize)) : 300;
+      sizeEl.value = String(size);
+      errorEl.hidden = true;
+      resultEl.classList.add('hidden');
 
       if (!text) {
-        alert('لطفاً متنی برای تبدیل وارد کنید.');
+        errorEl.textContent = 'لطفاً متنی برای تبدیل وارد کنید.';
+        errorEl.hidden = false;
+        return;
+      }
+      if (new TextEncoder().encode(text).length > MAX_QR_BYTES) {
+        errorEl.textContent = 'حجم متن برای ساخت QR بیش از حد مجاز است (حداکثر ۲۰۰۰ بایت).';
+        errorEl.hidden = false;
         return;
       }
 
+      btnEl.disabled = true;
       try {
         await QRCode.toCanvas(canvasEl, text, {
           width: size,
           margin: 2,
-          color: {
-            dark: '#000000',
-            light: '#ffffff'
-          }
+          color: { dark: '#000000', light: '#ffffff' }
         });
-        
-        // Prepare download link
         downloadEl.href = canvasEl.toDataURL('image/png');
         resultEl.classList.remove('hidden');
-      } catch (err) {
-        console.error(err);
-        alert('خطایی در تولید کد QR رخ داد.');
+      } catch {
+        errorEl.textContent = 'خطایی در تولید کد QR رخ داد. متن کوتاه‌تری وارد کنید.';
+        errorEl.hidden = false;
+      } finally {
+        btnEl.disabled = false;
       }
     });
   }
@@ -98,6 +109,7 @@
   .btn-primary:hover {
     opacity: 0.9;
   }
+  .qr-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
   .result-container {
     display: flex;
     flex-direction: column;
