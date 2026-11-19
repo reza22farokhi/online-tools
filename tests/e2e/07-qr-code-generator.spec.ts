@@ -11,15 +11,13 @@ test('qr-code-generator tool creates canvas and loads FAQ', async ({ page }) => 
   const generateBtn = page.locator('#generate-btn');
   await generateBtn.click();
 
-  // Verify the result container and canvas become visible
   const resultContainer = page.locator('#qr-result');
   await expect(resultContainer).toBeVisible();
-  
+
   const canvas = page.locator('#qr-canvas');
   await expect(canvas).toBeVisible();
 
-  // Verify FAQ is present
-  const faq = page.locator('.tool-faq');
+  const faq = page.locator('.tool-faq[data-lang-only="fa"]');
   await expect(faq).toBeVisible();
   await expect(faq.locator('.faq-item').first()).toBeVisible();
 });
