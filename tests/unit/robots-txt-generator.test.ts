@@ -23,11 +23,11 @@ describe('generateRobotsTxt', () => {
   });
   it('rejects non-HTTP sitemap schemes', () => {
     expect(() => generateRobotsTxt({ userAgent: '*', disallow: '', allow: '', sitemap: 'javascript:alert(1)' })).toThrow(/HTTP یا HTTPS/);
-    expect(() => generateRobotsTxt({ userAgent: '*', disallow: '', allow: '', sitemap: 'ftp://example.com/sitemap.xml' })).toThrow(/HTTP or HTTPS/);
+    expect(() => generateRobotsTxt({ userAgent: '*', disallow: '', allow: '', sitemap: 'ftp://example.com/sitemap.xml' })).toThrow(/HTTP یا HTTPS/);
   });
   it('rejects directive injection through sitemap and user-agent fields', () => {
     expect(() => generateRobotsTxt({ userAgent: '*', disallow: '', allow: '', sitemap: 'https://example.com/sitemap.xml\nDisallow: /' })).toThrow(/نویسه‌های کنترلی/);
-    expect(() => generateRobotsTxt({ userAgent: '*\nDisallow: /', disallow: '', allow: '', sitemap: '' })).toThrow(/control characters/);
+    expect(() => generateRobotsTxt({ userAgent: '*\nDisallow: /', disallow: '', allow: '', sitemap: '' })).toThrow(/نویسه‌های کنترلی/);
   });
   it('rejects whitespace in path directives', () => {
     expect(() => generateRobotsTxt({ userAgent: '*', disallow: '/private area', allow: '', sitemap: '' })).toThrow(/فاصله/);
