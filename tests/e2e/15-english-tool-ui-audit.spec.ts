@@ -165,3 +165,36 @@ test('tool FAQ switches between English and Persian without mixing languages', a
   await expect(persianFaq).toContainText('سوالات متداول');
   await expect(englishFaq).toBeHidden();
 });
+
+test('JWT decoder rejects malformed payloads and safely renders untrusted claims', async ({ page }) => {
+  await page.goto('/tools/jwt-decoder/?lang=en');
+
+  const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+  const invalidPayload = Buffer.from('not-json').toString('base64url');
+  const input = page.locator('#jwt-input');
+
+  await input.fill(`${header}.${invalidPayload}.signature`);
+  await expect(page.locator('#jwt-error')).toContainText('Invalid payload');
+  await expect(page.locator('#jwt-results')).toBeHidden();
+
+  const untrustedClaim = '<img src=x onerror=alert(1)>';
+  const payload = Buffer.from(JSON.stringify({ sub: 'e2e', name: untrustedClaim })).toString('base64url');
+  await input.fill(`${header}.${payload}.signature`);
+
+  await expect(page.locator('#jwt-results')).toBeVisible();
+  await expect(page.locator('#jwt-payload')).toContainText(untrustedClaim);
+  await expect(page.locator('#jwt-results img')).toHaveCount(0);
+});
+
+test('file information tool rejects empty files without exposing stale results', async ({ page }) => {
+  await page.goto('/tools/file-info/?lang=en');
+  await page.locator('#fi-file').setInputFiles({
+    name: 'empty.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.alloc(0)
+  });
+
+  await expect(page.locator('#fi-error')).toContainText('The file is empty and cannot be processed.');
+  await expect(page.locator('#fi-workspace')).toBeHidden();
+  await expect(page.locator('#fi-copy-hash')).toBeDisabled();
+});
