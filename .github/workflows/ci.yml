@@ -41,6 +41,7 @@ jobs:
         run: |
           test -f dist/index.html
           node scripts/verify-tools.mjs
+          npm run verify:performance
 
   e2e:
     needs: test
