@@ -14,7 +14,7 @@ const dicts = {
 
 describe('language switching', () => {
   beforeEach(() => {
-    document.documentElement.innerHTML = '<head><title data-lang-fa="عنوان فارسی" data-lang-en="English title">عنوان فارسی</title><meta name="description" data-lang-fa="توضیح فارسی" data-lang-en="English description" content="توضیح فارسی"></head><body><a id="home" data-i18n="nav.home">خانه</a><span id="tool" data-lang-fa="ابزار" data-lang-en="Tool">ابزار</span><input id="search" data-i18n-placeholder="nav.home" placeholder="خانه"><button id="skip" data-i18n-aria-label="accessibility.skip" aria-label="پرش به محتوا"></button><aside id="notice" data-lang-only="en" hidden></aside></body>';
+    document.documentElement.innerHTML = '<head><title data-lang-fa="عنوان فارسی" data-lang-en="English title">عنوان فارسی</title><meta name="description" data-lang-fa="توضیح فارسی" data-lang-en="English description" content="توضیح فارسی"></head><body><a id="home" data-i18n="nav.home">خانه</a><span id="tool" data-lang-fa="ابزار" data-lang-en="Tool">ابزار</span><input id="search" data-i18n-placeholder="nav.home" placeholder="خانه"><textarea id="localized-placeholder" data-lang-placeholder-fa="متن فارسی" data-lang-placeholder-en="English text" placeholder="متن فارسی"></textarea><button id="skip" data-i18n-aria-label="accessibility.skip" aria-label="پرش به محتوا"></button><aside id="notice" data-lang-only="en" hidden></aside></body>';
     localStorage.clear();
     window.history.replaceState({}, '', '/');
   });
@@ -27,6 +27,7 @@ describe('language switching', () => {
     expect(document.getElementById('home')?.textContent).toBe('Home');
     expect(document.getElementById('tool')?.textContent).toBe('Tool');
     expect((document.getElementById('search') as HTMLInputElement).placeholder).toBe('Home');
+    expect((document.getElementById('localized-placeholder') as HTMLTextAreaElement).placeholder).toBe('English text');
     expect(document.getElementById('skip')?.getAttribute('aria-label')).toBe('Skip to content');
     expect(document.title).toBe('English title');
     expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toBe('English description');
@@ -42,6 +43,7 @@ describe('language switching', () => {
     expect(document.getElementById('home')?.textContent).toBe('خانه');
     expect(document.getElementById('tool')?.textContent).toBe('ابزار');
     expect(document.title).toBe('عنوان فارسی');
+    expect((document.getElementById('localized-placeholder') as HTMLTextAreaElement).placeholder).toBe('متن فارسی');
     expect((document.getElementById('notice') as HTMLElement).hidden).toBe(true);
   });
 
