@@ -358,7 +358,7 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'ساخت Worker ناموفق بود': 'Could not create the Web Worker.',
   'زمان اجرای الگو بیش از حد مجاز شد (۲ ثانیه)': 'Pattern execution exceeded the 2-second limit.',
   'خطا در اجرای الگو': 'Pattern execution failed.',
-  'ارسال داده به Worker ناموفق بود': 'Could not send data to the Web Worker.'
+  'ارسال داده به Worker ناموفق بود': 'Could not send data to the Web Worker.',
   'شمسی به میلادی': 'Jalali to Gregorian',
   'میلادی به شمسی': 'Gregorian to Jalali',
   'کپی آمار': 'Copy statistics',
