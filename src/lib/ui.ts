@@ -46,7 +46,20 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'در حال اجرا...': 'Running...', 'هیچ تطابقی پیدا نشد': 'No matches found',
   '(خالی)': '(empty)', 'حالت:': 'Mode:',
   'encodeURIComponent (برای یک مقدار)': 'encodeURIComponent (for a single component)',
-  'encodeURI (برای URL کامل)': 'encodeURI (for a complete URL)'
+  'encodeURI (برای URL کامل)': 'encodeURI (for a complete URL)',
+  'از تاریخ': 'From date', 'تا تاریخ': 'To date', 'روزهای کاری': 'Business days',
+  'روزهای تعطیل': 'Weekend days', 'تاریخ نامعتبر است': 'Invalid date',
+  'خطا در محاسبه': 'Calculation error', 'حالت محاسبه': 'Calculation mode',
+  'تغییر درصدی': 'Percentage change', 'مقدار (X)': 'Value (X)', 'از مقدار (Y)': 'Of value (Y)',
+  'کل (Y)': 'Total (Y)', 'مقدار اولیه (X)': 'Initial value (X)', 'مقدار نهایی (Y)': 'Final value (Y)',
+  'تقسیم بر صفر ممکن نیست': 'Division by zero is not possible',
+  'مقدار اولیه نمی‌تواند صفر باشد': 'The initial value cannot be zero',
+  'افزایش': 'Increase', 'کاهش': 'Decrease', 'بدون تغییر': 'No change',
+  'دسته:': 'Category:', 'مقدار:': 'Value:', 'نتیجه:': 'Result:',
+  'از:': 'From:', 'به:': 'To:', 'تعداد:': 'Count:',
+  'حروف بزرگ': 'Uppercase', 'بدون خط تیره': 'No hyphens', 'تولید': 'Generate',
+  'UUIDها:': 'UUIDs:', 'برای تولید، روی دکمه کلیک کنید...': 'Click Generate to create UUIDs...',
+  'کپی همه': 'Copy all', 'UUIDها کپی شد': 'UUIDs copied'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
@@ -64,7 +77,25 @@ function translatedToolText(value: string, lang: Lang): string {
   const exact = TOOL_TEXT_EN[trimmed];
   if (exact !== undefined) return value.replace(trimmed, exact);
   for (const [pattern, replacement] of TOOL_TEXT_PREFIX_EN) {
-    if (pattern.test(trimmed)) return value.replace(trimmed, trimmed.replace(pattern, replacement));
+    if (pattern.test(trimmed)) {
+      const converted = trimmed.replace(pattern, replacement);
+      return value.replace(trimmed, converted.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))));
+    }
+  }
+  const dateResult = trimmed.match(/^(?:(\\d+) سال و )?(?:(\\d+) ماه و )?(\\d+) روز$/);
+  if (dateResult) {
+    const parts = [];
+    if (dateResult[1]) parts.push(dateResult[1] + ' years');
+    if (dateResult[2]) parts.push(dateResult[2] + ' months');
+    parts.push(dateResult[3] + ' days');
+    return value.replace(trimmed, parts.join(', '));
+  }
+  const percentResult = trimmed.match(/^(.+) برابر است با (.+)٪ از (.+)$/);
+  if (percentResult) return value.replace(trimmed, percentResult[1] + ' equals ' + percentResult[2] + '% of ' + percentResult[3]);
+  const changeResult = trimmed.match(/^(افزایش|کاهش|بدون تغییر) (.+)٪ \\(از (.+) به (.+)\\)$/);
+  if (changeResult) {
+    const direction = TOOL_TEXT_EN[changeResult[1]];
+    return value.replace(trimmed, direction + ' ' + changeResult[2] + '% (from ' + changeResult[3] + ' to ' + changeResult[4] + ')');
   }
   return value;
 }
