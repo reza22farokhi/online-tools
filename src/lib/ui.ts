@@ -499,7 +499,7 @@ function translateToolNode(node: Node, lang: Lang): void {
   }
   if (node.nodeType === Node.ELEMENT_NODE) {
     const el = node as HTMLElement;
-    if (el.matches('script,style,code,pre,[contenteditable="true"],[data-user-content]')) return;
+    if (el.matches('script,style,code,pre,[contenteditable="true"],[data-user-content],.fav-btn')) return;
     if (el.matches('[data-lang-placeholder-fa][data-lang-placeholder-en],[data-i18n-placeholder],[data-i18n-aria-label],[data-lang-aria-fa][data-lang-aria-en],[data-lang-title-fa][data-lang-title-en]')) return;
     for (const attr of ['placeholder', 'title', 'aria-label', 'alt']) {
       const value = el.getAttribute(attr);
@@ -582,6 +582,8 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
   document.documentElement.dataset.activeLang = lang;
+  // Keep dynamic accessibility labels synchronized with the active locale.
+  initFavoriteButtons();
   document.querySelectorAll<HTMLElement>('[data-lang-only]').forEach(el => {
     el.hidden = el.dataset.langOnly !== lang;
   });
@@ -786,7 +788,6 @@ export function populateHomeSections(): void {
 
 export function initUI(dicts?: Record<Lang, Record<string, string>>) {
   setupFavoriteDelegation();
-  initFavoriteButtons();
   const queryLang = new URLSearchParams(window.location.search).get('lang');
   const initialLang: Lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : (getStoredLang() ?? 'fa');
   if (queryLang === 'fa' || queryLang === 'en') {
