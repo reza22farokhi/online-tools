@@ -3,11 +3,11 @@
 <div class="dd-tool">
   <div class="dd-fields">
     <div class="dd-field">
-      <label for="dd-from">از تاریخ</label>
+      <label for="dd-from" data-lang-fa="از تاریخ" data-lang-en="From date">از تاریخ</label>
       <input id="dd-from" type="date" class="input" />
     </div>
     <div class="dd-field">
-      <label for="dd-to">تا تاریخ</label>
+      <label for="dd-to" data-lang-fa="تا تاریخ" data-lang-en="To date">تا تاریخ</label>
       <input id="dd-to" type="date" class="input" />
     </div>
   </div>
@@ -15,12 +15,12 @@
   <div class="dd-results" id="dd-results" hidden>
     <div class="dd-main" id="dd-main" data-date-output>—</div>
     <div class="dd-grid" data-date-output>
-      <div class="dd-cell"><span class="dd-num" id="dd-total-days">0</span><span class="dd-lbl">کل روزها</span></div>
-      <div class="dd-cell"><span class="dd-num" id="dd-total-weeks">0</span><span class="dd-lbl">کل هفته‌ها</span></div>
-      <div class="dd-cell"><span class="dd-num" id="dd-total-hours">0</span><span class="dd-lbl">کل ساعت‌ها</span></div>
-      <div class="dd-cell"><span class="dd-num" id="dd-total-minutes">0</span><span class="dd-lbl">کل دقیقه‌ها</span></div>
-      <div class="dd-cell dd-cell-green"><span class="dd-num" id="dd-business">0</span><span class="dd-lbl">روزهای کاری</span></div>
-      <div class="dd-cell dd-cell-orange"><span class="dd-num" id="dd-weekend">0</span><span class="dd-lbl">روزهای تعطیل</span></div>
+      <div class="dd-cell"><span class="dd-num" id="dd-total-days">0</span><span class="dd-lbl" data-lang-fa="کل روزها" data-lang-en="Total days">کل روزها</span></div>
+      <div class="dd-cell"><span class="dd-num" id="dd-total-weeks">0</span><span class="dd-lbl" data-lang-fa="کل هفته‌ها" data-lang-en="Total weeks">کل هفته‌ها</span></div>
+      <div class="dd-cell"><span class="dd-num" id="dd-total-hours">0</span><span class="dd-lbl" data-lang-fa="کل ساعت‌ها" data-lang-en="Total hours">کل ساعت‌ها</span></div>
+      <div class="dd-cell"><span class="dd-num" id="dd-total-minutes">0</span><span class="dd-lbl" data-lang-fa="کل دقیقه‌ها" data-lang-en="Total minutes">کل دقیقه‌ها</span></div>
+      <div class="dd-cell dd-cell-green"><span class="dd-num" id="dd-business">0</span><span class="dd-lbl" data-lang-fa="روزهای کاری" data-lang-en="Business days">روزهای کاری</span></div>
+      <div class="dd-cell dd-cell-orange"><span class="dd-num" id="dd-weekend">0</span><span class="dd-lbl" data-lang-fa="روزهای تعطیل" data-lang-en="Weekend days">روزهای تعطیل</span></div>
     </div>
   </div>
 </div>
@@ -60,24 +60,31 @@
     const to = parseIsoDate(toInput.value);
     if (!from || !to) {
       setHidden(resultsEl, true);
-      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تاریخ نامعتبر است'; }
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = numberLocale === 'en-US' ? 'Enter valid dates.' : 'تاریخ نامعتبر است'; }
       return;
     }
 
     const r = calculateDateDiff(from, to);
     if (!r) {
       setHidden(resultsEl, true);
-      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'خطا در محاسبه'; }
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = numberLocale === 'en-US' ? 'Could not calculate the date difference.' : 'خطا در محاسبه'; }
       return;
     }
 
     setHidden(resultsEl, false);
     if (mainEl) {
       const parts: string[] = [];
-      if (r.years > 0) parts.push(`${r.years} سال`);
-      if (r.months > 0) parts.push(`${r.months} ماه`);
-      parts.push(`${r.days} روز`);
-      mainEl.textContent = parts.join(' و ');
+      if (numberLocale === 'en-US') {
+        if (r.years > 0) parts.push(`${r.years} years`);
+        if (r.months > 0) parts.push(`${r.months} months`);
+        parts.push(`${r.days} days`);
+        mainEl.textContent = parts.join(', ');
+      } else {
+        if (r.years > 0) parts.push(`${r.years} سال`);
+        if (r.months > 0) parts.push(`${r.months} ماه`);
+        parts.push(`${r.days} روز`);
+        mainEl.textContent = parts.join(' و ');
+      }
     }
     if (nums.totalDays) nums.totalDays.textContent = r.totalDays.toLocaleString(numberLocale);
     if (nums.totalWeeks) nums.totalWeeks.textContent = r.totalWeeks.toLocaleString(numberLocale);
@@ -103,6 +110,7 @@
   .dd-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
   .dd-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
   .dd-results { display: flex; flex-direction: column; gap: var(--space-3); }
+  .dd-results[hidden] { display: none !important; }
   .dd-main { padding: var(--space-3); background: color-mix(in srgb, var(--color-primary) 8%, transparent); border: 1px solid var(--color-primary); border-radius: var(--radius-md); font-size: 1.15rem; font-weight: 700; text-align: center; }
   .dd-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
   @media (min-width: 640px) { .dd-grid { grid-template-columns: repeat(3, 1fr); } }

@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+/* Preserve the native hidden attribute even when component display rules are more specific. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;

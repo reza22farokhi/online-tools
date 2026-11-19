@@ -487,7 +487,10 @@ function translateToolNode(node: Node, lang: Lang): void {
       return;
     }
     if (original !== undefined) {
-      textNode.data = localize(original);
+      const translated = localize(original);
+      // Avoid writing an unchanged value: MutationObserver watches characterData,
+      // so repeated same-value writes can create an endless observer feedback loop.
+      if (textNode.data !== translated) textNode.data = translated;
     } else {
       const translated = localize(textNode.data);
       if (translated !== textNode.data) {
