@@ -345,7 +345,14 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'لطفاً یک فایل تصویری انتخاب کنید.': 'Please choose an image file.',
   'حجم متن برای مقایسه بیش از حد مجاز است (حداکثر ۲۰۰ هزار نویسه).': 'Text is too large to compare (maximum 200,000 characters).',
   'تعداد خطوط برای مقایسه بیش از حد مجاز است (حداکثر ۱ میلیون خانه مقایسه).': 'Too many lines to compare (maximum 1 million comparison cells).',
-  'خطا در مقایسه متن‌ها': 'Text comparison failed.'
+  'خطا در مقایسه متن‌ها': 'Text comparison failed.',
+  'مقدار exp معتبر نیست؛ امضا بررسی نشده': 'The exp claim is invalid; signature not verified.',
+  'ادعاهای زمانی نامعتبر': 'Invalid time claims',
+  'توکن خالی است': 'Token is empty',
+  'ساختار JWT نامعتبر است (باید ۳ بخش داشته باشد: header.payload.signature)': 'Invalid JWT structure (expected 3 parts: header.payload.signature).',
+  'Header نامعتبر است (Base64URL یا JSON معتبر نیست)': 'Invalid header (invalid Base64URL or JSON).',
+  'Payload نامعتبر است (Base64URL یا JSON معتبر نیست)': 'Invalid payload (invalid Base64URL or JSON).',
+  'Header نامعتبر است': 'Invalid header', 'Payload نامعتبر است': 'Invalid payload'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
