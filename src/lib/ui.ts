@@ -352,7 +352,13 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'ساختار JWT نامعتبر است (باید ۳ بخش داشته باشد: header.payload.signature)': 'Invalid JWT structure (expected 3 parts: header.payload.signature).',
   'Header نامعتبر است (Base64URL یا JSON معتبر نیست)': 'Invalid header (invalid Base64URL or JSON).',
   'Payload نامعتبر است (Base64URL یا JSON معتبر نیست)': 'Invalid payload (invalid Base64URL or JSON).',
-  'Header نامعتبر است': 'Invalid header', 'Payload نامعتبر است': 'Invalid payload'
+  'Header نامعتبر است': 'Invalid header', 'Payload نامعتبر است': 'Invalid payload',
+  'اجرای قبلی لغو شد': 'Previous run was cancelled.',
+  'مرورگر از Web Worker پشتیبانی نمی‌کند': 'This browser does not support Web Workers.',
+  'ساخت Worker ناموفق بود': 'Could not create the Web Worker.',
+  'زمان اجرای الگو بیش از حد مجاز شد (۲ ثانیه)': 'Pattern execution exceeded the 2-second limit.',
+  'خطا در اجرای الگو': 'Pattern execution failed.',
+  'ارسال داده به Worker ناموفق بود': 'Could not send data to the Web Worker.'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
