@@ -52,7 +52,7 @@
 <script>
   import { toJalaali, toGregorian } from './logic';
 
-  document.getElementById('btn-to-g')?.addEventListener('click', () => {
+  function convertToGregorian() {
     const jy = parseInt((document.getElementById('j-year') as HTMLInputElement).value);
     const jm = parseInt((document.getElementById('j-month') as HTMLInputElement).value);
     const jd = parseInt((document.getElementById('j-day') as HTMLInputElement).value);
@@ -65,9 +65,9 @@
     } catch (e) {
       (document.getElementById('result-g') as HTMLElement).textContent = document.documentElement.lang === 'en' ? 'Invalid date' : 'تاریخ نامعتبر است';
     }
-  });
+  }
 
-  document.getElementById('btn-to-j')?.addEventListener('click', () => {
+  function convertToJalali() {
     const gy = parseInt((document.getElementById('g-year') as HTMLInputElement).value);
     const gm = parseInt((document.getElementById('g-month') as HTMLInputElement).value);
     const gd = parseInt((document.getElementById('g-day') as HTMLInputElement).value);
@@ -80,13 +80,16 @@
     } catch (e) {
       (document.getElementById('result-j') as HTMLElement).textContent = document.documentElement.lang === 'en' ? 'Invalid date' : 'تاریخ نامعتبر است';
     }
-  });
+  }
+
+  document.getElementById('btn-to-g')?.addEventListener('click', convertToGregorian);
+  document.getElementById('btn-to-j')?.addEventListener('click', convertToJalali);
 
   document.addEventListener('app:languagechange', () => {
     const resultG = document.getElementById('result-g');
     const resultJ = document.getElementById('result-j');
-    if (resultG && resultG.textContent !== '---') document.getElementById('btn-to-g')?.dispatchEvent(new Event('click'));
-    if (resultJ && resultJ.textContent !== '---') document.getElementById('btn-to-j')?.dispatchEvent(new Event('click'));
+    if (resultG && resultG.textContent !== '---') convertToGregorian();
+    if (resultJ && resultJ.textContent !== '---') convertToJalali();
   });
 </script>
 
