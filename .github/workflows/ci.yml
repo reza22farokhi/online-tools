@@ -45,6 +45,8 @@ jobs:
   e2e:
     needs: test
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.0-noble
     steps:
       - uses: actions/checkout@v4
       
@@ -55,8 +57,8 @@ jobs:
           
       - run: npm ci
       
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+      - name: Verify preinstalled Playwright browser
+        run: npx playwright --version
       
       - name: Build
         run: npm run build
