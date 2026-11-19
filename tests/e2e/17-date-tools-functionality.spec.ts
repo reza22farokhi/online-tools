@@ -49,3 +49,20 @@ test('date difference calculator computes and localizes its result', async ({ pa
   await page.locator('[data-lang-toggle]').first().click();
   await expect(page.locator('#dd-main')).toContainText('10 روز');
 });
+
+test('date calculator keeps results hidden until a calculation is requested', async ({ page }) => {
+  await page.goto('/tools/date-calculator/?lang=en');
+  await expect(page.locator('#dc-results')).toBeHidden();
+  await page.locator('#dc-base').fill('1403/01/01');
+  await page.locator('#dc-calc').click();
+  await expect(page.locator('#dc-results')).toBeVisible();
+});
+
+test('multi-calendar converter hides stale results after invalid input', async ({ page }) => {
+  await page.goto('/tools/multi-calendar-converter/?lang=en');
+  await expect(page.locator('#mcc-results')).toBeVisible();
+  await page.locator('#mcc-year').fill('');
+  await page.locator('#mcc-convert').click();
+  await expect(page.locator('#mcc-error')).toBeVisible();
+  await expect(page.locator('#mcc-results')).toBeHidden();
+});
