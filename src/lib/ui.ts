@@ -342,7 +342,10 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'ساخت تصویر خروجی ناموفق بود.': 'Could not create the output image.',
   'مرورگر از Canvas پشتیبانی نمی‌کند.': 'This browser does not support Canvas.',
   'فایل تصویری معتبر نیست.': 'Invalid image file.',
-  'لطفاً یک فایل تصویری انتخاب کنید.': 'Please choose an image file.'
+  'لطفاً یک فایل تصویری انتخاب کنید.': 'Please choose an image file.',
+  'حجم متن برای مقایسه بیش از حد مجاز است (حداکثر ۲۰۰ هزار نویسه).': 'Text is too large to compare (maximum 200,000 characters).',
+  'تعداد خطوط برای مقایسه بیش از حد مجاز است (حداکثر ۱ میلیون خانه مقایسه).': 'Too many lines to compare (maximum 1 million comparison cells).',
+  'خطا در مقایسه متن‌ها': 'Text comparison failed.'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
