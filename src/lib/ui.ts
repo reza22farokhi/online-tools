@@ -156,11 +156,12 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'رمز عبور کپی شد': 'Password copied', 'تولید UUID امن در این مرورگر در دسترس نیست.': 'Secure UUID generation is not available in this browser.',
   'توکن JWT را اینجا جای‌گذاری کنید...': 'Paste a JWT here...',
   'پردازش ۱۰۰٪ محلی. امضای توکن تایید نمی‌شود (برای تایید، به کلید مخفی سرور نیاز است).': '100% local processing. The token signature is not verified (verification requires the server secret key).',
-  'رمزگشایی': 'Decode', 'توکن منقضی شده است': 'Token has expired; signature not verified',
-  'توکن معتبر است (منقضی نشده)': 'Token has not expired; signature not verified',
-  'تاریخ انقضا (exp) در توکن وجود ندارد': 'No expiration (exp) claim is present',
+  'رمزگشایی': 'Decode', 'توکن منقضی شده است؛ امضا بررسی نشده': 'Token has expired; signature not verified',
+  'توکن منقضی نشده است؛ امضا بررسی نشده': 'Token has not expired; signature not verified',
+  'تاریخ انقضا (exp) در توکن وجود ندارد؛ امضا بررسی نشده': 'No expiration (exp) claim is present; signature not verified',
   'امضا در مرورگر تایید نمی‌شود. برای تایید اصالت، آن را در سرور با کلید مخفی بررسی کنید.': 'The signature is not verified in the browser. Verify authenticity on the server using the secret key.',
   'صادر شده (iat)': 'Issued at (iat)', 'معتبر از (nbf)': 'Not before (nbf)', 'انقضا (exp)': 'Expires at (exp)'
+  'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).': 'Token exceeds the maximum allowed length (10,000 characters).'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
