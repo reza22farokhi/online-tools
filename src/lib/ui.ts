@@ -59,7 +59,7 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'از:': 'From:', 'به:': 'To:', 'تعداد:': 'Count:',
   'حروف بزرگ': 'Uppercase', 'بدون خط تیره': 'No hyphens', 'تولید': 'Generate',
   'UUIDها:': 'UUIDs:', 'برای تولید، روی دکمه کلیک کنید...': 'Click Generate to create UUIDs...',
-  'کپی همه': 'Copy all', 'UUIDها کپی شد': 'UUIDs copied'
+  'کپی همه': 'Copy all', 'UUIDها کپی شد': 'UUIDs copied',
   'شمسی (جلالی)': 'Jalali', 'میلادی (گرگوری)': 'Gregorian', 'قمری (هجری)': 'Hijri',
   'همه فیلدها را پر کنید': 'Please fill in all fields', 'تایم‌استمپ فعلی (Unix):': 'Current Unix timestamp:',
   'Timestamp → تاریخ': 'Timestamp → Date', 'تاریخ → Timestamp': 'Date → Timestamp',
@@ -84,7 +84,7 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'نمایش اطلاعات': 'Show information', 'تاریخ نامعتبر': 'Invalid date',
   'تاریخ پایه (شمسی):': 'Base date (Jalali):', 'واحد:': 'Unit:',
   'اضافه (+)': 'Add (+)', 'کم کردن (−)': 'Subtract (−)',
-  'روز هفته': 'Day of week', 'شمسی': 'Jalali', 'میلادی': 'Gregorian', 'قمری': 'Hijri'
+  'روز هفته': 'Day of week', 'شمسی': 'Jalali', 'میلادی': 'Gregorian', 'قمری': 'Hijri',
   'نوع تبدیل': 'Conversion type', 'حروف کوچک': 'lowercase', 'عنوان': 'Title Case',
   'جمله': 'Sentence case', 'یک‌درمیان': 'Alternating case',
   'هر خط یک آیتم. مثال:': 'One item per line. Example:',
@@ -122,7 +122,7 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'توضیحات متا...': 'Meta description...', 'پیش‌نمایش در گوگل (دسکتاپ):': 'Google preview (desktop):',
   'عنوان صفحه شما در اینجا نمایش داده می‌شود': 'Your page title will appear here',
   'توضیحات متا شما در اینجا نمایش داده می‌شود. سعی کنید آن را جذاب و مرتبط با محتوای صفحه بنویسید تا کاربران روی لینک شما کلیک کنند.': 'Your meta description will appear here. Make it engaging and relevant to encourage users to click your link.',
-  'کاراکتر': 'characters'
+  'کاراکتر': 'characters',
   'آدرس نقشه سایت باید از HTTP یا HTTPS استفاده کند.': 'Sitemap URL must use HTTP or HTTPS.',
   'آدرس نقشه سایت معتبر وارد کنید.': 'Enter a valid sitemap URL.',
   'آدرس نقشه سایت باید HTTP یا HTTPS باشد و نباید اطلاعات ورود داشته باشد.': 'Sitemap URL must use HTTP or HTTPS and must not contain credentials.',
@@ -132,9 +132,9 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'مسیر مجاز نباید شامل نویسه‌های کنترلی باشد.': 'Allow path must not contain control characters.',
   'مسیر غیرمجاز نباید فاصله داشته باشد.': 'Disallow path must not contain spaces.',
   'مسیر مجاز نباید فاصله داشته باشد.': 'Allow path must not contain spaces.',
-  'مقدار User-agent شامل نویسه‌های پشتیبانی‌نشده است.': 'User-agent contains unsupported characters.'
+  'مقدار User-agent شامل نویسه‌های پشتیبانی‌نشده است.': 'User-agent contains unsupported characters.',
   'این مرورگر اجرای ایمن Regex در Worker را پشتیبانی نمی‌کند': 'This browser does not support safe Regex execution in a Worker.',
-  'امکان راه‌اندازی Worker برای اجرای ایمن Regex وجود ندارد': 'A Worker could not be started for safe Regex execution.'
+  'امکان راه‌اندازی Worker برای اجرای ایمن Regex وجود ندارد': 'A Worker could not be started for safe Regex execution.',
   'صعودی (A→Z)': 'Ascending (A→Z)', 'نزولی (Z→A)': 'Descending (Z→A)',
   'کوتاه به بلند': 'Shortest to longest', 'بلند به کوتاه': 'Longest to shortest',
   'معکوس ترتیب اصلی': 'Reverse original order', 'Slug کپی شد': 'Slug copied',
@@ -150,7 +150,7 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'متن اول (قدیمی)...': 'First text (original)...', 'متن دوم (جدید)...': 'Second text (new)...',
   'مقایسه متن‌ها': 'Compare texts',
   'حداکثر ۱ میلیون کاراکتر. پردازش کاملاً محلی و بدون ارسال به سرور.': 'Maximum 1 million characters. Processed locally and never sent to the server.',
-  'این ابزار برای اصلاح متن فارسی طراحی شده است؛ متن انگلیسی ممکن است تغییری نکند.': 'This tool is designed to refine Persian text; English text may remain unchanged.'
+  'این ابزار برای اصلاح متن فارسی طراحی شده است؛ متن انگلیسی ممکن است تغییری نکند.': 'This tool is designed to refine Persian text; English text may remain unchanged.',
   'Encode (به Base64)': 'Encode to Base64', 'Decode (از Base64)': 'Decode from Base64',
   'متن یا URL را اینجا وارد کنید...': 'Enter text or a URL here...',
   'رمز عبور کپی شد': 'Password copied', 'تولید UUID امن در این مرورگر در دسترس نیست.': 'Secure UUID generation is not available in this browser.',
@@ -160,8 +160,8 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'توکن منقضی نشده است؛ امضا بررسی نشده': 'Token has not expired; signature not verified',
   'تاریخ انقضا (exp) در توکن وجود ندارد؛ امضا بررسی نشده': 'No expiration (exp) claim is present; signature not verified',
   'امضا در مرورگر تایید نمی‌شود. برای تایید اصالت، آن را در سرور با کلید مخفی بررسی کنید.': 'The signature is not verified in the browser. Verify authenticity on the server using the secret key.',
-  'صادر شده (iat)': 'Issued at (iat)', 'معتبر از (nbf)': 'Not before (nbf)', 'انقضا (exp)': 'Expires at (exp)'
-  'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).': 'Token exceeds the maximum allowed length (10,000 characters).'
+  'صادر شده (iat)': 'Issued at (iat)', 'معتبر از (nbf)': 'Not before (nbf)', 'انقضا (exp)': 'Expires at (exp)',
+  'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).': 'Token exceeds the maximum allowed length (10,000 characters).',
   'متن یا لینک خود را وارد کنید:': 'Enter text or a link:',
   'اندازه تصویر (پیکسل):': 'Image size (pixels):', 'تولید کد QR': 'Generate QR code',
   'دانلود تصویر': 'Download image', 'لطفاً متنی برای تبدیل وارد کنید.': 'Please enter text to encode.',
