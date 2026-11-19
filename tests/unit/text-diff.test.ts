@@ -31,7 +31,7 @@ describe('Text Diff', () => {
   });
 
   it('rejects excessive line-matrix sizes', () => {
-    const lines = Array.from({ length: 1_001 }, (_, i) => String(i)).join('\\n');
+    const lines = Array.from({ length: 1_001 }, (_, i) => String(i)).join('\n');
     expect(() => diffTexts(lines, lines)).toThrow(/۱ میلیون/);
   });
 
