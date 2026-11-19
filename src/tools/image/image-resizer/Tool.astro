@@ -124,6 +124,7 @@
   });
   processBtn?.addEventListener('click', () => {
     if (!originalImage || !widthInput || !heightInput) return;
+    clearError();
     const tW = Number(widthInput.value);
     const tH = Number(heightInput.value);
     if (!Number.isInteger(tW) || !Number.isInteger(tH) || tW <= 0 || tH <= 0 || tW > 10000 || tH > 10000) { showProcessError('ابعاد باید عدد صحیح بین ۱ تا ۱۰٬۰۰۰ باشند.'); return; }
