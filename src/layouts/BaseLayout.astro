@@ -68,47 +68,12 @@ const dicts = getDicts();
 
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
 
-    <script is:inline>
-      (function () {
-        try {
-          var t = localStorage.getItem('pot.theme');
-          if (t !== 'light' && t !== 'dark') {
-            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          }
-          document.documentElement.setAttribute('data-theme', t);
-          var queryLang = new URLSearchParams(window.location.search).get('lang');
-          var l = queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang');
-          if (l === 'fa' || l === 'en') {
-            document.documentElement.setAttribute('lang', l);
-            document.documentElement.setAttribute('dir', l === 'fa' ? 'rtl' : 'ltr');
-          }
-        } catch (e) {}
-      })();
-    </script>
+    <script src={import.meta.env.BASE_URL + "scripts/site-bootstrap.js"}></script>
 
     {jsonLdList.map(obj => (
       <script type="application/ld+json" set:html={JSON.stringify(obj)}></script>
     ))}
-    <script is:inline>
-      !function(e,t,n){
-          e.yektanetAnalyticsObject=n,
-          e[n]=e[n]||function(){e[n].q.push(arguments)},
-          e[n].q=e[n].q||[];
-          var a=t.getElementsByTagName("head")[0],
-              r=new Date,
-              c="https://cdn.yektanet.ir/superscript-v2/Cg1anVr4/native-49280/yn_pub.js?v="
-                  +r.getFullYear().toString()+"0"+r.getMonth()+"0"+r.getDate()+"0"+r.getHours(),
-              s=t.createElement("link");
-          s.rel="preload",
-          s.as="script",
-          s.href=c,
-          a.appendChild(s);
-          var l=t.createElement("script");
-          l.async=!0,
-          l.src=c,
-          a.appendChild(l);
-      }(window,document,"yektanet");
-    </script>
+    <script src={import.meta.env.BASE_URL + "scripts/yektanet-loader.js"} defer></script>
 
     <link rel="manifest" href={import.meta.env.BASE_URL + "manifest.json"} />
     <meta name="theme-color" content="#4f46e5" />
@@ -125,37 +90,7 @@ const dicts = getDicts();
     <Footer />
 
     <script type="application/json" id="i18n-data" set:html={JSON.stringify(dicts)}></script>
-    <script is:inline>
-      // TITAN X Ω — Self-Contained Global Error Handler
-      function showGlobalError(messageFa, messageEn) {
-        var isEnglish = document.documentElement.lang === 'en';
-        console.error(isEnglish ? messageEn : messageFa);
-        var el = document.getElementById('global-error-toast');
-        if (!el) {
-          el = document.createElement('div');
-          el.id = 'global-error-toast';
-          el.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:12px 24px;border-radius:8px;z-index:9999;font-family:inherit;box-shadow:0 4px 12px rgba(0,0,0,0.15);max-width:calc(100vw - 32px);';
-          document.body.appendChild(el);
-        }
-        el.style.direction = isEnglish ? 'ltr' : 'rtl';
-        el.style.textAlign = isEnglish ? 'left' : 'right';
-        el.textContent = isEnglish ? messageEn : messageFa;
-        setTimeout(function() { if (el) el.remove(); }, 5000);
-      }
-
-      window.addEventListener('error', function() {
-        showGlobalError(
-          'یک خطای غیرمنتظره رخ داد. لطفاً صفحه را رفرش کنید.',
-          'An unexpected error occurred. Please refresh the page.'
-        );
-      });
-      window.addEventListener('unhandledrejection', function() {
-        showGlobalError(
-          'در اجرای بخشی از صفحه خطایی رخ داد. لطفاً دوباره تلاش کنید.',
-          'A page operation failed. Please try again.'
-        );
-      });
-    </script>
+    <script src={import.meta.env.BASE_URL + "scripts/global-errors.js"} defer></script>
 
     <script>
       import { initUI, populateHomeSections } from '../lib/ui';
@@ -168,25 +103,7 @@ const dicts = getDicts();
       });
     </script>
 
-    <script is:inline>
-      (function() {
-        try {
-          var el = document.querySelector("[data-tool-slug]");
-          if (el) {
-            var slug = el.getAttribute("data-tool-slug");
-            if (slug) {
-              var key = "pot.recent";
-              var raw = localStorage.getItem(key);
-              var list = raw ? JSON.parse(raw) : [];
-              if (!Array.isArray(list)) list = [];
-              list = list.filter(function(s) { return s !== slug; });
-              list.unshift(slug);
-              localStorage.setItem(key, JSON.stringify(list.slice(0, 6)));
-            }
-          }
-        } catch(e) {}
-      })();
-    </script>
+    <script src={import.meta.env.BASE_URL + "scripts/recent-tool-tracker.js"} defer></script>
     <!-- data-tool-slug-tracker -->
 
     <script>
