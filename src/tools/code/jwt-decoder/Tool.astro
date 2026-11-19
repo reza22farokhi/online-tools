@@ -83,7 +83,10 @@
 
     let token = input.value.trim().replace(/\s+/g, '');
     if (!token) return;
-    if (token.length > MAX_INPUT) token = token.slice(0, MAX_INPUT);
+    if (token.length > MAX_INPUT) {
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).'; }
+      return;
+    }
 
     const result = decodeJwt(token);
 
@@ -98,13 +101,13 @@
     if (statusEl) {
       if (result.isExpired === true) {
         statusEl.className = 'jwt-status jwt-status-danger';
-        statusEl.textContent = '❌ توکن منقضی شده است';
+        statusEl.textContent = '❌ توکن منقضی شده است؛ امضا بررسی نشده';
       } else if (result.isExpired === false) {
         statusEl.className = 'jwt-status jwt-status-success';
-        statusEl.textContent = '✅ توکن معتبر است (منقضی نشده)';
+        statusEl.textContent = '✅ توکن منقضی نشده است؛ امضا بررسی نشده';
       } else {
         statusEl.className = 'jwt-status jwt-status-warning';
-        statusEl.textContent = '⚠️ تاریخ انقضا (exp) در توکن وجود ندارد';
+        statusEl.textContent = '⚠️ تاریخ انقضا (exp) در توکن وجود ندارد؛ امضا بررسی نشده';
       }
     }
 
