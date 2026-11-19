@@ -54,7 +54,7 @@ test('every registered tool has English UI and loads without first-party runtime
 
     const result = await page.evaluate(() => {
       const persian = /[\u0600-\u06FF]/;
-      const skipSelector = 'script,style,[hidden],[aria-hidden="true"],.yn-bnr,.yn-notification,.yn-footer-sticky';
+      const skipSelector = 'script,style,[hidden],[aria-hidden="true"]';
       const text: string[] = [];
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       let node: Node | null;
