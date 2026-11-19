@@ -7,6 +7,137 @@ const FAV_KEY = 'pot.favorites';
 const RECENT_KEY = 'pot.recent';
 const RECENT_MAX = 6;
 
+const TOOL_TEXT_EN: Record<string, string> = {
+  'عملیات': 'Operations', 'ورودی': 'Input', 'خروجی:': 'Output:', 'خروجی': 'Output',
+  'پاک کردن': 'Clear', 'کپی خروجی': 'Copy output', 'کپی هش': 'Copy hash',
+  'کپی': 'Copy', 'کپی شد': 'Copied', 'کپی نشد': 'Copy failed',
+  'خطا:': 'Error:', 'خطا': 'Error', 'نامشخص': 'Unknown',
+  'JSON ورودی': 'Input JSON', 'JSON را جای‌گذاری کنید. حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.': 'Paste JSON here. Maximum 100,000 characters. Processed entirely in your browser.',
+  'تورفتگی:': 'Indentation:', '۲ فاصله': '2 spaces', '۴ فاصله': '4 spaces',
+  'پس از جای‌گذاری JSON، خروجی اینجا نمایش داده می‌شود...': 'The formatted JSON will appear here...',
+  'متن یا Base64 را اینجا وارد کنید...': 'Enter text or Base64 here...',
+  'حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.': 'Maximum 100,000 characters. Processed entirely in your browser.',
+  'حالت URL-safe (بدون +/ و =، مناسب URL)': 'URL-safe mode (without +/ or =, suitable for URLs)',
+  'خروجی اینجا نمایش داده می‌شود...': 'Output will appear here...',
+  'متن ورودی': 'Input text', 'متن خود را وارد کنید...': 'Enter your text...',
+  'حداکثر ۱ میلیون کاراکتر. محاسبه محلی و امن. اتصال امن (HTTPS) لازم است.': 'Maximum 1 million characters. Computed locally and securely. A secure HTTPS connection is required.',
+  'الگوریتم:': 'Algorithm:', 'هش (hex):': 'Hash (hex):',
+  'هش کپی شد': 'Hash copied',
+  'Escape (تبدیل به entity)': 'Escape (convert to HTML entities)',
+  'Unescape (بازگردانی)': 'Unescape (decode HTML entities)',
+  'مثلاً: <a href="x">لینک</a>': 'Example: <a href="x">link</a>',
+  'تاریخ تولد': 'Date of birth', 'تاریخ مرجع (پیش‌فرض: امروز)': 'Reference date (default: today)',
+  'سال': 'Years', 'ماه': 'Months', 'روز': 'Days', 'کل روزها': 'Total days',
+  'کل هفته‌ها': 'Total weeks', 'کل ماه‌ها': 'Total months', 'کل ساعت‌ها': 'Total hours',
+  'کل دقیقه‌ها': 'Total minutes', 'روز تا تولد بعدی': 'Days until next birthday',
+  'تاریخ تولد نامعتبر است': 'Invalid date of birth', 'تاریخ مرجع نامعتبر است': 'Invalid reference date',
+  'تاریخ تولد نمی‌تواند بعد از تاریخ مرجع باشد': 'Date of birth cannot be after the reference date',
+  'رمز عبور اینجا نمایش داده می‌شود': 'Your password will appear here',
+  'تولید رمز عبور جدید': 'Generate new password', 'طول رمز:': 'Password length:',
+  'شامل حروف بزرگ (A-Z)': 'Include uppercase letters (A-Z)',
+  'شامل حروف کوچک (a-z)': 'Include lowercase letters (a-z)',
+  'شامل اعداد (0-9)': 'Include numbers (0-9)',
+  'شامل نمادها (!@#$%)': 'Include symbols (!@#$%)',
+  'حداقل یک گزینه را انتخاب کنید!': 'Select at least one option!',
+  'الگوی Regex': 'Regex pattern', 'متن تست:': 'Test text:',
+  'متن خود را اینجا وارد کنید...': 'Enter your text here...',
+  'نمایش هایلایت:': 'Highlighted preview:', 'لیست تطابق‌ها:': 'Match list:',
+  'خطا در اجرای Worker': 'Worker execution error', 'الگو خالی است': 'Pattern is empty',
+  'در حال اجرا...': 'Running...', 'هیچ تطابقی پیدا نشد': 'No matches found',
+  '(خالی)': '(empty)', 'حالت:': 'Mode:',
+  'encodeURIComponent (برای یک مقدار)': 'encodeURIComponent (for a single component)',
+  'encodeURI (برای URL کامل)': 'encodeURI (for a complete URL)'
+};
+const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
+  [/^خطا:\\s*/, 'Error: '],
+  [/^تایم‌اوت ۲ ثانیه — الگو ممکن است خطرناک باشد \\(ReDoS\\)$/, 'Timed out after 2 seconds — the pattern may be unsafe (ReDoS)'],
+  [/^([0-9۰-۹,٬]+) تطابق پیدا شد$/, '$1 matches found'],
+  [/^\.\.\. و ([0-9۰-۹,٬]+) نتیجه دیگر$/, '... and $1 more results']
+];
+const toolTextOriginal = new WeakMap<Text, string>();
+const toolAttributeOriginal = new WeakMap<Element, Map<string, string>>();
+let toolTranslationObserver: MutationObserver | null = null;
+
+function translatedToolText(value: string, lang: Lang): string {
+  const trimmed = value.trim();
+  if (lang === 'fa') return value;
+  const exact = TOOL_TEXT_EN[trimmed];
+  if (exact !== undefined) return value.replace(trimmed, exact);
+  for (const [pattern, replacement] of TOOL_TEXT_PREFIX_EN) {
+    if (pattern.test(trimmed)) return value.replace(trimmed, trimmed.replace(pattern, replacement));
+  }
+  return value;
+}
+
+function translateToolNode(node: Node, lang: Lang): void {
+  if (node.nodeType === Node.TEXT_NODE) {
+    const textNode = node as Text;
+    const parent = textNode.parentElement;
+    if (!parent || parent.closest('script,style,textarea,input,code,pre,[contenteditable="true"]')) return;
+    const original = toolTextOriginal.get(textNode);
+    if (lang === 'fa') {
+      if (original !== undefined && textNode.data !== original) textNode.data = original;
+      return;
+    }
+    if (original !== undefined) {
+      textNode.data = translatedToolText(original, lang);
+    } else {
+      const translated = translatedToolText(textNode.data, lang);
+      if (translated !== textNode.data) {
+        toolTextOriginal.set(textNode, textNode.data);
+        textNode.data = translated;
+      }
+    }
+    return;
+  }
+  if (node.nodeType === Node.ELEMENT_NODE) {
+    const el = node as HTMLElement;
+    if (el.matches('script,style,textarea,input,code,pre,[contenteditable="true"]')) return;
+    for (const attr of ['placeholder', 'title', 'aria-label']) {
+      const value = el.getAttribute(attr);
+      if (value === null) continue;
+      let originals = toolAttributeOriginal.get(el);
+      if (!originals) { originals = new Map(); toolAttributeOriginal.set(el, originals); }
+      if (lang === 'fa') {
+        const original = originals.get(attr);
+        if (original !== undefined && value !== original) el.setAttribute(attr, original);
+      } else {
+        if (!originals.has(attr)) originals.set(attr, value);
+        const translated = translatedToolText(originals.get(attr)!, lang);
+        if (translated !== value) el.setAttribute(attr, translated);
+      }
+    }
+  }
+}
+
+function translateToolUi(lang: Lang): void {
+  if (typeof document === 'undefined' || !document.body) return;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+  let node: Node | null = document.body;
+  while (node) {
+    translateToolNode(node, lang);
+    node = walker.nextNode();
+  }
+  if (!toolTranslationObserver) {
+    toolTranslationObserver = new MutationObserver(records => {
+      const current = (document.documentElement.lang as Lang) || 'fa';
+      for (const record of records) {
+        if (record.type === 'characterData') translateToolNode(record.target, current);
+        for (const added of Array.from(record.addedNodes)) {
+          translateToolNode(added, current);
+          if (added.nodeType === Node.ELEMENT_NODE) {
+            const walker = document.createTreeWalker(added, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+            let child = walker.nextNode();
+            while (child) { translateToolNode(child, current); child = walker.nextNode(); }
+          }
+        }
+        if (record.type === 'attributes') translateToolNode(record.target, current);
+      }
+    });
+    toolTranslationObserver.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['placeholder', 'title', 'aria-label'] });
+  }
+}
+
 export function getStoredTheme(): Theme | null {
   try {
     const v = localStorage.getItem(THEME_KEY);
@@ -71,6 +202,7 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
     const key = el.dataset.i18nAriaLabel;
     if (key && dicts[lang][key]) el.setAttribute('aria-label', dicts[lang][key]);
   });
+  translateToolUi(lang);
   document.dispatchEvent(new Event('app:languagechange'));
 }
 
