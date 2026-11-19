@@ -14,7 +14,7 @@ function assertSingleLine(value: string, field: string): string {
 }
 
 function normalizeSitemap(value: string): string {
-  const raw = assertSingleLine(value, 'Sitemap URL');
+  const raw = assertSingleLine(value, 'آدرس نقشه سایت');
   if (!raw) return '';
   const explicitScheme = raw.match(/^([a-z][a-z0-9+.-]*):/i)?.[1].toLowerCase();
   if (explicitScheme && explicitScheme !== 'http' && explicitScheme !== 'https') {
@@ -49,14 +49,14 @@ export function generateRobotsTxt(opts: RobotsOptions): string {
 
   lines.push(`User-agent: ${ua}`);
 
-  const disallowPaths = normalizePathLines(opts.disallow, 'Disallow path');
+  const disallowPaths = normalizePathLines(opts.disallow, 'مسیر غیرمجاز');
   if (disallowPaths.length === 0) {
     lines.push('Disallow:');
   } else {
     disallowPaths.forEach(path => lines.push(`Disallow: ${path}`));
   }
 
-  const allowPaths = normalizePathLines(opts.allow, 'Allow path');
+  const allowPaths = normalizePathLines(opts.allow, 'مسیر مجاز');
   allowPaths.forEach(path => lines.push(`Allow: ${path}`));
 
   const sitemap = normalizeSitemap(opts.sitemap);
