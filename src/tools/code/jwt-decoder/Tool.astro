@@ -8,6 +8,7 @@
     placeholder="توکن JWT را اینجا جای‌گذاری کنید..."
     spellcheck="false"
     rows="4"
+    maxlength="10000"
   ></textarea>
   <p class="jwt-help">پردازش ۱۰۰٪ محلی. امضای توکن تایید نمی‌شود (برای تایید، به کلید مخفی سرور نیاز است).</p>
 
@@ -51,10 +52,9 @@
 </div>
 
 <script>
-  import { decodeJwt, formatTimestamp, getTimeRemaining } from './logic';
+  import { decodeJwt, formatTimestamp, getTimeRemaining, MAX_TOKEN_LENGTH } from './logic';
   import { copyText, toast } from '../../../lib/ui';
 
-  const MAX_INPUT = 10_000;
   const SAMPLE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
   const input = document.getElementById('jwt-input') as HTMLTextAreaElement | null;
@@ -81,12 +81,13 @@
     setHidden(errorEl, true);
     setHidden(resultsEl, true);
 
-    let token = input.value.trim().replace(/\s+/g, '');
-    if (!token) return;
-    if (token.length > MAX_INPUT) {
+    const rawToken = input.value;
+    if (rawToken.length > MAX_TOKEN_LENGTH) {
       if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).'; }
       return;
     }
+    const token = rawToken.trim().replace(/\s+/g, '');
+    if (!token) return;
 
     const result = decodeJwt(token);
 
@@ -99,7 +100,10 @@
     }
 
     if (statusEl) {
-      if (result.isExpired === true) {
+      if (result.invalidTimestamps?.includes('exp')) {
+        statusEl.className = 'jwt-status jwt-status-warning';
+        statusEl.textContent = '⚠️ مقدار exp معتبر نیست؛ امضا بررسی نشده';
+      } else if (result.isExpired === true) {
         statusEl.className = 'jwt-status jwt-status-danger';
         statusEl.textContent = '❌ توکن منقضی شده است؛ امضا بررسی نشده';
       } else if (result.isExpired === false) {
@@ -123,9 +127,12 @@
       if (result.expiresAt) {
         rows.push({
           label: 'انقضا (exp)',
-          value: formatTimestamp(result.expiresAt) + ' — ' + getTimeRemaining(result.expiresAt),
+          value: formatTimestamp(result.expiresAt) + ' — ' + getTimeRemaining(result.expiresAt, document.documentElement.lang === 'en' ? 'en' : 'fa'),
           cls: result.isExpired ? 'ts-expired' : 'ts-active'
         });
+      }
+      if (result.invalidTimestamps && result.invalidTimestamps.length > 0) {
+        rows.push({ label: 'ادعاهای زمانی نامعتبر', value: result.invalidTimestamps.join(', '), cls: 'ts-expired' });
       }
       if (rows.length > 0) {
         setHidden(timestampsEl, false);
@@ -160,7 +167,10 @@
     if (decodeBtn) decodeBtn.disabled = !hasContent;
 
     const trimmed = input.value.trim();
-    if (trimmed.length > 30 && trimmed.split('.').length === 3) {
+    if (input.value.length > MAX_TOKEN_LENGTH) {
+      setHidden(resultsEl, true);
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).'; }
+    } else if (trimmed.length > 30 && trimmed.split('.').length === 3) {
       decode();
     } else {
       setHidden(resultsEl, true);
@@ -169,6 +179,7 @@
   });
 
   decodeBtn?.addEventListener('click', decode);
+  document.addEventListener('app:languagechange', () => { if (input?.value.trim()) decode(); });
 
   clearBtn?.addEventListener('click', () => {
     if (input) input.value = '';
