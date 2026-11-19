@@ -13,7 +13,7 @@ test('word-counter tool loads with FAQ', async ({ page }) => {
   const words = page.locator('#stat-words');
   await expect(words).toHaveText('6');
 
-  const faq = page.locator('.tool-faq');
+  const faq = page.locator('.tool-faq[data-lang-only="fa"]');
   await expect(faq).toBeVisible();
   await expect(faq.locator('.faq-item').first()).toBeVisible();
 });
