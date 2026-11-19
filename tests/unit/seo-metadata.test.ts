@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { registry } from '../../src/tools/registry';
-import { DEFAULT_DESCRIPTION } from '../../src/lib/seo';
+import { DEFAULT_DESCRIPTION, DEFAULT_DESCRIPTION_EN } from '../../src/lib/seo';
+import { jwtInspectorMeta } from '../../src/tools/jwt-inspector/meta';
 
 type SeoTitle = { fa: string; en: string };
 
@@ -8,6 +9,22 @@ describe('SEO metadata quality', () => {
   it('keeps the homepage Persian description within the recommended length', () => {
     expect(DEFAULT_DESCRIPTION.length).toBeGreaterThanOrEqual(120);
     expect(DEFAULT_DESCRIPTION.length).toBeLessThanOrEqual(155);
+  });
+
+  it('keeps the homepage English description within the recommended length', () => {
+    expect(DEFAULT_DESCRIPTION_EN.length).toBeGreaterThanOrEqual(120);
+    expect(DEFAULT_DESCRIPTION_EN.length).toBeLessThanOrEqual(155);
+  });
+
+  it('keeps standalone JWT Inspector titles and descriptions within recommended lengths', () => {
+    expect(jwtInspectorMeta.title.fa.length).toBeGreaterThanOrEqual(30);
+    expect(jwtInspectorMeta.title.fa.length).toBeLessThanOrEqual(60);
+    expect(jwtInspectorMeta.title.en.length).toBeGreaterThanOrEqual(30);
+    expect(jwtInspectorMeta.title.en.length).toBeLessThanOrEqual(60);
+    expect(jwtInspectorMeta.description.fa.length).toBeGreaterThanOrEqual(120);
+    expect(jwtInspectorMeta.description.fa.length).toBeLessThanOrEqual(155);
+    expect(jwtInspectorMeta.description.en.length).toBeGreaterThanOrEqual(120);
+    expect(jwtInspectorMeta.description.en.length).toBeLessThanOrEqual(155);
   });
 
   for (const tool of registry) {
