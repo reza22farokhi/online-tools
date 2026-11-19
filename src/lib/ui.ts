@@ -70,6 +70,7 @@ const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
 const toolTextOriginal = new WeakMap<Text, string>();
 const toolAttributeOriginal = new WeakMap<Element, Map<string, string>>();
 let toolTranslationObserver: MutationObserver | null = null;
+let toolTranslationObservedBody: HTMLElement | null = null;
 
 function translatedToolText(value: string, lang: Lang): string {
   const trimmed = value.trim();
@@ -165,7 +166,11 @@ function translateToolUi(lang: Lang): void {
         if (record.type === 'attributes') translateToolNode(record.target, current);
       }
     });
+  }
+  if (toolTranslationObservedBody !== document.body && toolTranslationObserver) {
+    toolTranslationObserver.disconnect();
     toolTranslationObserver.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['placeholder', 'title', 'aria-label'] });
+    toolTranslationObservedBody = document.body;
   }
 }
 
