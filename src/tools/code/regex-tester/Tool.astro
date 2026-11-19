@@ -154,7 +154,7 @@
     setHidden(matchesWrap, true);
     if (statusEl) statusEl.textContent = '';
 
-    if (!pattern.trim()) return;
+    if (!pattern.trim()) { killWorker(); runToken++; return; }
 
     killWorker();
     const myToken = ++runToken;
