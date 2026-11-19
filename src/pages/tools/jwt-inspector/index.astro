@@ -11,8 +11,8 @@ const descriptionEn = 'Decode JWTs in your browser and verify signatures when yo
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'JWT Inspector',
-  description: descriptionEn,
+  name: 'بازرس JWT',
+  description,
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Any',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -24,26 +24,26 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Is my token sent to a server?',
+      name: 'آیا توکن من به سرور ارسال می‌شود؟',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'The token and key entered into this tool are not sent to our servers. Decoding and signature verification run in your browser using the Web Crypto API. Independent advertising services may make separate requests.',
+        text: 'توکن و کلید واردشده توسط ابزار به سرور ارسال نمی‌شوند؛ دیکد و بررسی امضا با Web Crypto API در مرورگر انجام می‌شود. سرویس‌های مستقل تبلیغات ممکن است درخواست‌های جداگانه داشته باشند.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Which algorithms are supported?',
+      name: 'چه الگوریتم‌هایی پشتیبانی می‌شوند؟',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'HS256/384/512 (HMAC), RS256/384/512 (RSA), PS256/384/512 (RSA-PSS), and ES256/384/512 (ECDSA).',
+        text: 'HS256/384/512 (HMAC)، RS256/384/512 (RSA)، PS256/384/512 (RSA-PSS) و ES256/384/512 (ECDSA).',
       },
     },
     {
       '@type': 'Question',
-      name: 'Why is alg: none dangerous?',
+      name: 'alg: none چه خطری دارد؟',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'The none algorithm means the token is unsigned. If your server accepts it, an attacker may be able to forge tokens. This tool displays a critical warning.',
+        text: 'الگوریتم none به معنای عدم امضاست. اگر سرور شما آن را بپذیرد، هر کسی می‌تواند توکن جعلی بسازد. ابزار ما هشدار قرمز نمایش می‌دهد.',
       },
     },
   ],
