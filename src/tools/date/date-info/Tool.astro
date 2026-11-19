@@ -3,11 +3,11 @@
 <div class="di-tool">
   <div class="di-input-row">
     <div class="di-field">
-      <label for="di-input">تاریخ شمسی (مثل 1403/01/01):</label>
+      <label for="di-input" data-lang-fa="تاریخ شمسی (مثل 1403/01/01):" data-lang-en="Jalali date (e.g. 1403/01/01):">تاریخ شمسی (مثل 1403/01/01):</label>
       <input id="di-input" type="text" class="input" placeholder="1403/01/01" dir="ltr" />
     </div>
-    <button type="button" class="btn btn-primary" id="di-calc">🔍 نمایش اطلاعات</button>
-    <button type="button" class="btn" id="di-today">📌 امروز</button>
+    <button type="button" class="btn btn-primary" id="di-calc" data-lang-fa="🔍 نمایش اطلاعات" data-lang-en="🔍 Show date details">🔍 نمایش اطلاعات</button>
+    <button type="button" class="btn" id="di-today" data-lang-fa="📌 امروز" data-lang-en="📌 Today">📌 امروز</button>
   </div>
   <div class="di-error" id="di-error" hidden></div>
   <div class="di-results" id="di-results" hidden>
@@ -29,8 +29,21 @@
     return { jy: p[0], jm: p[1], jd: p[2] };
   }
 
-  function infoItem(label: string, value: string): string {
-    return `<div class="di-item"><span class="di-label">${label}</span><span class="di-value">${value}</span></div>`;
+  const isEnglish = () => document.documentElement.lang === 'en';
+  const WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const JALALI_MONTHS_EN = ['Farvardin', 'Ordibehesht', 'Khordad', 'Tir', 'Mordad', 'Shahrivar', 'Mehr', 'Aban', 'Azar', 'Dey', 'Bahman', 'Esfand'];
+
+  function infoItem(label: string, value: string): HTMLElement {
+    const item = document.createElement('div');
+    item.className = 'di-item';
+    const labelEl = document.createElement('span');
+    labelEl.className = 'di-label';
+    labelEl.textContent = label;
+    const valueEl = document.createElement('span');
+    valueEl.className = 'di-value';
+    valueEl.textContent = value;
+    item.append(labelEl, valueEl);
+    return item;
   }
 
   function calculate() {
@@ -39,7 +52,7 @@
     results.hidden = true;
 
     const p = parseJalali(input.value);
-    if (!p) { errorEl.hidden = false; errorEl.textContent = 'تاریخ نامعتبر'; return; }
+    if (!p) { errorEl.hidden = false; errorEl.textContent = isEnglish() ? 'Enter a valid Jalali date in YYYY/MM/DD format.' : 'تاریخ شمسی معتبر وارد کنید.'; return; }
 
     try {
       const g = toGregorian(p.jy, p.jm, p.jd);
@@ -49,24 +62,24 @@
       const doy = dayOfYear(d);
       const remaining = daysRemainingInYear(d);
       const leap = isLeapYear(g.gy);
-      const monthName = JALALI_MONTHS[p.jm - 1] || '—';
+      const monthName = (isEnglish() ? JALALI_MONTHS_EN : JALALI_MONTHS)[p.jm - 1] || '—';
 
-      grid.innerHTML = [
-        infoItem('📅 تاریخ شمسی', formatJalali(p.jy, p.jm, p.jd)),
-        infoItem('🌍 تاریخ میلادی', `${g.gy}-${String(g.gm).padStart(2,'0')}-${String(g.gd).padStart(2,'0')}`),
-        infoItem('📆 روز هفته', WEEKDAYS_FA[d.getDay()]),
-        infoItem('🏷️ نام ماه', monthName),
-        infoItem('🔢 شماره روز سال', doy.toLocaleString(numberLocale)),
-        infoItem('📊 شماره هفته ISO', isoWeek.toLocaleString('fa-IR')),
-        infoItem('📈 روزهای سال', daysInYear(g.gy).toLocaleString('fa-IR')),
-        infoItem('⏳ باقیمانده تا پایان سال', remaining.toLocaleString('fa-IR')),
-        infoItem('✨ سال کبیسه؟', leap ? '✅ بله' : '❌ خیر'),
-      ].join('');
+      grid.replaceChildren(...[
+        infoItem(isEnglish() ? '📅 Jalali date' : '📅 تاریخ شمسی', formatJalali(p.jy, p.jm, p.jd)),
+        infoItem(isEnglish() ? '🌍 Gregorian date' : '🌍 تاریخ میلادی', `${g.gy}-${String(g.gm).padStart(2,'0')}-${String(g.gd).padStart(2,'0')}`),
+        infoItem(isEnglish() ? '📆 Weekday' : '📆 روز هفته', (isEnglish() ? WEEKDAYS_EN : WEEKDAYS_FA)[d.getDay()]),
+        infoItem(isEnglish() ? '🏷️ Jalali month' : '🏷️ نام ماه', monthName),
+        infoItem(isEnglish() ? '🔢 Day of year' : '🔢 شماره روز سال', doy.toLocaleString(numberLocale)),
+        infoItem(isEnglish() ? '📊 ISO week number' : '📊 شماره هفته ISO', isoWeek.toLocaleString(numberLocale)),
+        infoItem(isEnglish() ? '📈 Days in year' : '📈 روزهای سال', daysInYear(g.gy).toLocaleString(numberLocale)),
+        infoItem(isEnglish() ? '⏳ Days remaining in year' : '⏳ باقیمانده تا پایان سال', remaining.toLocaleString(numberLocale)),
+        infoItem(isEnglish() ? '✨ Leap year?' : '✨ سال کبیسه؟', leap ? (isEnglish() ? '✅ Yes' : '✅ بله') : (isEnglish() ? '❌ No' : '❌ خیر')),
+      ]));
 
       results.hidden = false;
     } catch (e) {
       errorEl.hidden = false;
-      errorEl.textContent = 'خطا: ' + (e instanceof Error ? e.message : '');
+      errorEl.textContent = isEnglish() ? 'The date could not be processed. Check the entered date.' : 'خطا در پردازش تاریخ: ' + (e instanceof Error ? e.message : '');
     }
   }
 
