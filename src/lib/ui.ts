@@ -48,7 +48,7 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'encodeURIComponent (برای یک مقدار)': 'encodeURIComponent (for a single component)',
   'encodeURI (برای URL کامل)': 'encodeURI (for a complete URL)',
   'از تاریخ': 'From date', 'تا تاریخ': 'To date', 'روزهای کاری': 'Business days',
-  'روزهای تعطیل': 'Weekend days', 'تاریخ نامعتبر است': 'Invalid date',
+  'روزهای تعطیل': 'Weekend days (Friday/Saturday)', 'تاریخ نامعتبر است': 'Invalid date',
   'خطا در محاسبه': 'Calculation error', 'حالت محاسبه': 'Calculation mode',
   'تغییر درصدی': 'Percentage change', 'مقدار (X)': 'Value (X)', 'از مقدار (Y)': 'Of value (Y)',
   'کل (Y)': 'Total (Y)', 'مقدار اولیه (X)': 'Initial value (X)', 'مقدار نهایی (Y)': 'Final value (Y)',
@@ -162,6 +162,26 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'امضا در مرورگر تایید نمی‌شود. برای تایید اصالت، آن را در سرور با کلید مخفی بررسی کنید.': 'The signature is not verified in the browser. Verify authenticity on the server using the secret key.',
   'صادر شده (iat)': 'Issued at (iat)', 'معتبر از (nbf)': 'Not before (nbf)', 'انقضا (exp)': 'Expires at (exp)'
   'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).': 'Token exceeds the maximum allowed length (10,000 characters).'
+  'متن یا لینک خود را وارد کنید:': 'Enter text or a link:',
+  'اندازه تصویر (پیکسل):': 'Image size (pixels):', 'تولید کد QR': 'Generate QR code',
+  'دانلود تصویر': 'Download image', 'لطفاً متنی برای تبدیل وارد کنید.': 'Please enter text to encode.',
+  'حجم متن برای ساخت QR بیش از حد مجاز است (حداکثر ۲۰۰۰ بایت).': 'QR content is too large (maximum 2,000 bytes).',
+  'خطایی در تولید کد QR رخ داد. متن کوتاه‌تری وارد کنید.': 'QR generation failed. Try a shorter input.',
+  'برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید': 'Click to choose an image or drop it here',
+  'حداکثر ۲۰ مگابایت (پردازش محلی)': 'Maximum 20 MB (processed locally)',
+  'روی هر نقطه از تصویر کلیک کنید تا کد رنگ آن را ببینید.': 'Click any point in the image to inspect its color.',
+  'فرمت تصویر پشتیبانی نمی‌شود. PNG، JPEG، WebP، GIF، AVIF یا BMP انتخاب کنید.': 'Unsupported image format. Choose PNG, JPEG, WebP, GIF, AVIF, or BMP.',
+  'حجم فایل باید بیشتر از صفر و حداکثر ۲۰ مگابایت باشد.': 'File size must be greater than zero and no more than 20 MB.',
+  'ابعاد تصویر بیش از حد مجاز است (حداکثر ۲۰ مگاپیکسل).': 'Image dimensions exceed the limit (maximum 20 megapixels).',
+  'بوم تصویر در دسترس نیست.': 'Image canvas is unavailable.',
+  'امکان پردازش تصویر در این مرورگر وجود ندارد.': 'This browser cannot process the image.',
+  'خواندن تصویر ناموفق بود. یک فایل تصویری معتبر انتخاب کنید.': 'Could not read the image. Choose a valid image file.',
+  'خواندن پیکسل تصویر ممکن نشد.': 'Could not read the image pixel.',
+  'HEX کپی شد': 'HEX copied', 'RGB کپی شد': 'RGB copied',
+  'X چند درصد Y است': 'What percentage of Y is X?',
+  'تغییر از X به Y': 'Percentage change from X to Y',
+  'درصد (X)': 'Percentage (X)', 'مقدار اولیه (X)': 'Initial value (X)',
+  'مقدار نهایی (Y)': 'Final value (Y)'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
@@ -172,6 +192,7 @@ const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا در تبدیل فایل:\s*/, 'Error converting file: '],
   [/^تاریخ نامعتبر:\s*/, 'Invalid date: '],
   [/^خطوط یکتا:\s*([0-9۰-۹,٬]+)$/, 'Unique lines: $1'],
+  [/^(.+)٪ از (.+) = (.+)$/, '$1% of $2 = $3'],
   [/^تکراری حذف‌شده:\s*([0-9۰-۹,٬]+)$/, 'Duplicates removed: $1']
 ];
 const toolTextOriginal = new WeakMap<Text, string>();
