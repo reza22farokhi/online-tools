@@ -17,6 +17,11 @@ describe('Date Converter Logic', () => {
     expect(res.gd).toBe(20);
   });
 
+  it('rejects impossible Jalali dates', () => {
+    expect(() => toGregorian(1402, 12, 30)).toThrow(/Invalid Jalali date/);
+    expect(() => toGregorian(1403, 13, 1)).toThrow(/Invalid Jalali date/);
+  });
+
   it('should handle leap years correctly (1403 is a leap year)', () => {
     const res = toGregorian(1403, 12, 30);
     expect(res.gy).toBe(2025);
