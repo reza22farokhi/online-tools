@@ -65,13 +65,13 @@
   function runInWorker(pattern: string, flags: string, input: string): Promise<RegexResult> {
     return new Promise((resolve) => {
       if (typeof Worker === 'undefined') {
-        resolve(testRegex(pattern, flags, input));
+        resolve({ ok: false, error: 'این مرورگر اجرای ایمن Regex در Worker را پشتیبانی نمی‌کند', matches: [] });
         return;
       }
       try {
         worker = new Worker(new URL('./regex.worker.ts', import.meta.url), { type: 'module' });
       } catch {
-        resolve(testRegex(pattern, flags, input));
+        resolve({ ok: false, error: 'امکان راه‌اندازی Worker برای اجرای ایمن Regex وجود ندارد', matches: [] });
         return;
       }
       worker.onmessage = (e) => {
