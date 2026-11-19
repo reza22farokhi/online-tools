@@ -259,7 +259,7 @@ import { STANDARD_CLAIMS } from './claims';
   };
   const WARNING_MESSAGES_EN: Record<string, string> = {
     ALG_NONE: 'The none algorithm means the token is unsigned. Never use it in production.',
-    NO_EXP: 'This token has no exp claim and therefore does not expire.',
+    NO_EXP: 'This token has no exp claim; its expiration cannot be determined.',
     LONG_TTL: 'The token lifetime exceeds 24 hours. Consider reducing it.',
     SENSITIVE_CLAIM: 'A sensitive password claim is present in the payload. This is unsafe.',
     TYP_UNUSUAL: 'The token typ header is not set to JWT.'
