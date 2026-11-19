@@ -3,7 +3,7 @@ import { CATEGORIES } from './logic';
 ---
 <div class="uc-tool">
   <div class="uc-field">
-    <label for="uc-cat">دسته:</label>
+    <label for="uc-cat"><span data-lang-fa="دسته:" data-lang-en="Category:">دسته:</span></label>
     <select id="uc-cat" class="select">
       {CATEGORIES.map((c, i) => (
         <option value={c.id} selected={i === 0}>{c.label}</option>
@@ -13,11 +13,11 @@ import { CATEGORIES } from './logic';
 
   <div class="uc-row">
     <div class="uc-field uc-field-grow">
-      <label for="uc-value">مقدار:</label>
+      <label for="uc-value"><span data-lang-fa="مقدار:" data-lang-en="Value:">مقدار:</span></label>
       <input id="uc-value" type="number" class="input" value="1" step="any" />
     </div>
     <div class="uc-field">
-      <label for="uc-from">از:</label>
+      <label for="uc-from"><span data-lang-fa="از:" data-lang-en="From:">از:</span></label>
       <select id="uc-from" class="select"></select>
     </div>
   </div>
@@ -26,18 +26,18 @@ import { CATEGORIES } from './logic';
 
   <div class="uc-row">
     <div class="uc-field uc-field-grow">
-      <label for="uc-result">نتیجه:</label>
+      <label for="uc-result"><span data-lang-fa="نتیجه:" data-lang-en="Result:">نتیجه:</span></label>
       <input id="uc-result" type="text" class="input uc-result" readonly />
     </div>
     <div class="uc-field">
-      <label for="uc-to">به:</label>
+      <label for="uc-to"><span data-lang-fa="به:" data-lang-en="To:">به:</span></label>
       <select id="uc-to" class="select"></select>
     </div>
   </div>
 </div>
 
 <script>
-  import { UNITS, convert, formatNumber } from './logic';
+  import { UNITS, CATEGORIES, convert, formatNumber } from './logic';
   import type { Category } from './logic';
 
   const catSelect = document.getElementById('uc-cat') as HTMLSelectElement | null;
@@ -46,21 +46,62 @@ import { CATEGORIES } from './logic';
   const toSelect = document.getElementById('uc-to') as HTMLSelectElement | null;
   const resultInput = document.getElementById('uc-result') as HTMLInputElement | null;
 
+  const categoryLabels: Record<Category, { fa: string; en: string }> = {
+    length: { fa: 'طول', en: 'Length' },
+    weight: { fa: 'وزن', en: 'Weight' },
+    temperature: { fa: 'دما', en: 'Temperature' },
+    volume: { fa: 'حجم', en: 'Volume' },
+    area: { fa: 'مساحت', en: 'Area' }
+  };
+
+  const unitLabels: Record<string, { fa: string; en: string }> = {
+    mm: { fa: 'میلی‌متر', en: 'Millimeter' }, cm: { fa: 'سانتی‌متر', en: 'Centimeter' },
+    m: { fa: 'متر', en: 'Meter' }, km: { fa: 'کیلومتر', en: 'Kilometer' },
+    in: { fa: 'اینچ', en: 'Inch' }, ft: { fa: 'فوت', en: 'Foot' }, mi: { fa: 'مایل', en: 'Mile' },
+    mg: { fa: 'میلی‌گرم', en: 'Milligram' }, g: { fa: 'گرم', en: 'Gram' },
+    kg: { fa: 'کیلوگرم', en: 'Kilogram' }, t: { fa: 'تن', en: 'Metric ton' },
+    lb: { fa: 'پوند', en: 'Pound' }, oz: { fa: 'اونس', en: 'Ounce' },
+    c: { fa: 'سلسیوس (°C)', en: 'Celsius (°C)' }, f: { fa: 'فارنهایت (°F)', en: 'Fahrenheit (°F)' },
+    k: { fa: 'کلوین (K)', en: 'Kelvin (K)' }, ml: { fa: 'میلی‌لیتر', en: 'Milliliter' },
+    l: { fa: 'لیتر', en: 'Liter' }, m3: { fa: 'متر مکعب', en: 'Cubic meter' },
+    gal: { fa: 'گالن آمریکایی', en: 'US gallon' }, cup: { fa: 'پیمانه', en: 'US cup' },
+    cm2: { fa: 'سانتی‌متر مربع', en: 'Square centimeter' }, m2: { fa: 'متر مربع', en: 'Square meter' },
+    km2: { fa: 'کیلومتر مربع', en: 'Square kilometer' }, ha: { fa: 'هکتار', en: 'Hectare' },
+    ft2: { fa: 'فوت مربع', en: 'Square foot' }
+  };
+
+  const isEnglish = () => document.documentElement.lang === 'en';
+  const unitLabel = (id: string, fallback: string) => unitLabels[id]?.[isEnglish() ? 'en' : 'fa'] ?? fallback;
+
   function populateUnits(cat: Category) {
     if (!fromSelect || !toSelect) return;
     const units = UNITS[cat];
     const buildOpts = (el: HTMLSelectElement, def: number) => {
-      el.innerHTML = '';
+      el.replaceChildren();
       units.forEach((u, i) => {
         const o = document.createElement('option');
         o.value = u.id;
-        o.textContent = u.label;
+        o.textContent = unitLabel(u.id, u.label);
         if (i === def) o.selected = true;
         el.appendChild(o);
       });
     };
     buildOpts(fromSelect, 0);
     buildOpts(toSelect, Math.min(1, units.length - 1));
+  }
+
+  function refreshLanguage() {
+    if (!catSelect || !fromSelect || !toSelect) return;
+    Array.from(catSelect.options).forEach(option => {
+      const category = categoryLabels[option.value as Category];
+      if (category) option.textContent = category[isEnglish() ? 'en' : 'fa'];
+    });
+    [fromSelect, toSelect].forEach(select => {
+      Array.from(select.options).forEach(option => {
+        const unit = UNITS[catSelect.value as Category].find(item => item.id === option.value);
+        if (unit) option.textContent = unitLabel(unit.id, unit.label);
+      });
+    });
   }
 
   function refresh() {
@@ -82,6 +123,7 @@ import { CATEGORIES } from './logic';
   valueInput?.addEventListener('input', refresh);
   fromSelect?.addEventListener('change', refresh);
   toSelect?.addEventListener('change', refresh);
+  document.addEventListener('app:languagechange', refreshLanguage);
 
   if (catSelect) {
     populateUnits(catSelect.value as Category);
