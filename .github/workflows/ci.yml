@@ -75,3 +75,29 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 7
+
+  cross-browser:
+    needs: test
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.1-noble
+    env:
+      HOME: /root
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verify preinstalled Playwright browsers
+        run: npx playwright --version
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Firefox and WebKit smoke tests
+        run: npx playwright test --config=playwright.cross-browser.config.ts
