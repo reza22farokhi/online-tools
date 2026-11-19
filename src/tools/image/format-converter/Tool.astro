@@ -2,7 +2,7 @@
 ---
 <div class="fc-tool">
   <div class="fc-upload-zone" id="fc-upload-zone">
-    <input type="file" id="fc-file" accept="image/*" class="sr-only" />
+    <input type="file" id="fc-file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/bmp" class="sr-only" />
     <label for="fc-file" class="fc-upload-label">
       <span class="fc-icon">🔄</span>
       <span data-lang-fa="برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید" data-lang-en="Click to choose an image or drag it here">برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
@@ -59,6 +59,11 @@
     isProcessing = false;
   }
   function clearError() { if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; } }
+  function showProcessError(msg: string) {
+    if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
+    if (workspace) workspace.hidden = false;
+    if (uploadZone) uploadZone.hidden = true;
+  }
   function handleFile(file: File) {
     clearError();
     if (isProcessing) { showError('یک پردازش در حال انجام است.'); return; }
@@ -99,7 +104,7 @@
     if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
   });
   processBtn?.addEventListener('click', () => {
-    if (!originalImage || !formatSelect || !downloadBtn) return;
+    if (!originalImage || !formatSelect || !downloadBtn || !processBtn) return;
     const format = formatSelect.value as ImageFormat;
     processBtn.disabled = true;
     if (downloadUrl) URL.revokeObjectURL(downloadUrl);
@@ -107,7 +112,7 @@
     canvas.width = originalImage.naturalWidth;
     canvas.height = originalImage.naturalHeight;
     const ctx = canvas.getContext('2d');
-    if (!ctx) { processBtn.disabled = false; showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
+    if (!ctx) { processBtn.disabled = false; showProcessError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
     if (format === 'image/jpeg') {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -115,7 +120,7 @@
     ctx.drawImage(originalImage, 0, 0);
     canvas.toBlob((blob) => {
       processBtn.disabled = false;
-      if (!blob) { showError('ساخت تصویر خروجی ناموفق بود.'); return; }
+      if (!blob) { showProcessError('ساخت تصویر خروجی ناموفق بود.'); return; }
       const url = URL.createObjectURL(blob);
       downloadUrl = url;
       downloadBtn.href = url;
