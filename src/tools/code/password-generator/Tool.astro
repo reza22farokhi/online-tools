@@ -3,7 +3,7 @@
 ---
 <div class="pass-tool">
   <div class="output-group">
-    <input type="text" id="pass-output" readonly placeholder="رمز عبور اینجا نمایش داده می‌شود" dir="ltr" />
+    <input type="text" id="pass-output" readonly autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="رمز عبور اینجا نمایش داده می‌شود" dir="ltr" />
     <button id="copy-btn" class="btn-secondary" title="کپی">📋</button>
   </div>
 
@@ -26,6 +26,7 @@
 
 <script>
   import { generatePassword } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
 
   const outputEl = document.getElementById('pass-output') as HTMLInputElement;
   const lengthEl = document.getElementById('pass-length') as HTMLInputElement;
@@ -37,6 +38,7 @@
   const incLower = document.getElementById('inc-lower') as HTMLInputElement;
   const incNumbers = document.getElementById('inc-numbers') as HTMLInputElement;
   const incSymbols = document.getElementById('inc-symbols') as HTMLInputElement;
+  let generationError = false;
 
   function updatePassword() {
     try {
@@ -48,9 +50,12 @@
         symbols: incSymbols.checked
       });
       outputEl.value = password;
+      generationError = false;
     } catch (error) {
-      outputEl.value = 'حداقل یک گزینه را انتخاب کنید!';
+      generationError = true;
+      outputEl.value = document.documentElement.lang === 'en' ? 'Select at least one character set.' : 'حداقل یک گزینه را انتخاب کنید!';
     }
+    copyBtn.disabled = generationError;
   }
 
   lengthEl.addEventListener('input', () => {
@@ -59,13 +64,13 @@
   });
 
   generateBtn.addEventListener('click', updatePassword);
+  [incUpper, incLower, incNumbers, incSymbols].forEach(el => el.addEventListener('change', updatePassword));
+  document.addEventListener('app:languagechange', () => { if (generationError) updatePassword(); });
 
-  copyBtn.addEventListener('click', () => {
-    if (!outputEl.value || outputEl.value.includes('انتخاب کنید')) return;
-    navigator.clipboard.writeText(outputEl.value).then(() => {
-      copyBtn.textContent = '✅';
-      setTimeout(() => copyBtn.textContent = '📋', 2000);
-    });
+  copyBtn.addEventListener('click', async () => {
+    if (!outputEl.value || generationError) return;
+    const ok = await copyText(outputEl.value);
+    toast(ok ? 'رمز عبور کپی شد' : 'کپی نشد', ok ? 'success' : 'error');
   });
 
   updatePassword();
