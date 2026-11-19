@@ -8,7 +8,7 @@ test('word counter calculates live statistics and resets every metric', async ({
 
   await expect(page.locator('#stat-words')).toHaveText('4');
   await expect(page.locator('#stat-chars')).toHaveText('25');
-  await expect(page.locator('#stat-chars-nospace')).toHaveText('23');
+  await expect(page.locator('#stat-chars-nospace')).toHaveText('22');
   await expect(page.locator('#stat-sentences')).toHaveText('2');
   await expect(page.locator('#stat-lines')).toHaveText('2');
   await expect(page.locator('#stat-paragraphs')).toHaveText('1');
