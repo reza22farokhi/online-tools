@@ -22,13 +22,13 @@ import { STANDARD_CLAIMS } from './claims';
       ></textarea>
 
       <div class="jwt-row">
-        <button id="jwt-sample-hs256" class="jwt-btn jwt-btn-secondary" type="button">
+        <button id="jwt-sample-hs256" class="jwt-btn jwt-btn-secondary" type="button" data-lang-fa="نمونه HS256" data-lang-en="HS256 Sample">
           نمونه HS256
         </button>
-        <button id="jwt-sample-rs256" class="jwt-btn jwt-btn-secondary" type="button">
+        <button id="jwt-sample-rs256" class="jwt-btn jwt-btn-secondary" type="button" data-lang-fa="نمونه RS256" data-lang-en="RS256 Sample">
           نمونه RS256
         </button>
-        <button id="jwt-clear" class="jwt-btn jwt-btn-ghost" type="button">پاک‌سازی</button>
+        <button id="jwt-clear" class="jwt-btn jwt-btn-ghost" type="button" data-lang-fa="پاک‌سازی" data-lang-en="Clear">پاک‌سازی</button>
       </div>
 
       <div id="jwt-error" class="jwt-error" hidden></div>
@@ -59,7 +59,7 @@ import { STANDARD_CLAIMS } from './claims';
           rows="3"
           spellcheck="false"
           autocomplete="off"
-          placeholder="برای HS: رشته مخفی | برای RS/ES/PS: کلید عمومی PEM"
+          placeholder="برای HS: رشته مخفی | برای RS/ES/PS: کلید عمومی PEM" data-lang-placeholder-fa="برای HS: رشته مخفی | برای RS/ES/PS: کلید عمومی PEM" data-lang-placeholder-en="For HS: secret string | For RS/ES/PS: public PEM key"
         ></textarea>
 
         <button id="jwt-verify" class="jwt-btn jwt-btn-primary" type="button" data-lang-fa="تأیید امضا" data-lang-en="Verify Signature">
@@ -81,7 +81,7 @@ import { STANDARD_CLAIMS } from './claims';
         <div class="jwt-section">
           <div class="jwt-section-header">
             <h3 data-lang-fa="هدر (Header)" data-lang-en="Header">هدر (Header)</h3>
-            <button class="jwt-copy" data-target="jwt-header-pre" type="button">کپی</button>
+            <button class="jwt-copy" data-target="jwt-header-pre" type="button" data-lang-fa="کپی" data-lang-en="Copy">کپی</button>
           </div>
           <pre id="jwt-header-pre" class="jwt-pre"></pre>
         </div>
@@ -89,7 +89,7 @@ import { STANDARD_CLAIMS } from './claims';
         <div class="jwt-section">
           <div class="jwt-section-header">
             <h3>Payload</h3>
-            <button class="jwt-copy" data-target="jwt-payload-pre" type="button">کپی</button>
+            <button class="jwt-copy" data-target="jwt-payload-pre" type="button" data-lang-fa="کپی" data-lang-en="Copy">کپی</button>
           </div>
           <pre id="jwt-payload-pre" class="jwt-pre"></pre>
         </div>
@@ -187,7 +187,7 @@ import { STANDARD_CLAIMS } from './claims';
   .jwt-table-wrapper { overflow-x: auto; }
   .jwt-claims { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   .jwt-claims th, .jwt-claims td {
-    text-align: right; padding: 0.6rem; border-bottom: 1px solid #334155;
+    text-align: start; padding: 0.6rem; border-bottom: 1px solid #334155;
   }
   .jwt-claims th { color: #94a3b8; font-weight: 600; }
   .jwt-claims td { color: #e2e8f0; }
