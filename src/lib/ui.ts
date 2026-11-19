@@ -207,9 +207,13 @@ function translatedToolText(value: string, lang: Lang): string {
   if (exact !== undefined) return value.replace(trimmed, exact);
   for (const [pattern, replacement] of TOOL_TEXT_PREFIX_EN) {
     if (pattern.test(trimmed)) {
-      const match = trimmed.match(pattern);
-      const suffix = match ? trimmed.slice(match[0].length) : '';
-      const converted = replacement + translatedToolText(suffix, lang);
+      if (pattern.source.endsWith('\\s*')) {
+        const match = trimmed.match(pattern);
+        const suffix = match ? trimmed.slice(match[0].length) : '';
+        const converted = replacement + translatedToolText(suffix, lang);
+        return value.replace(trimmed, converted.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))));
+      }
+      const converted = trimmed.replace(pattern, replacement);
       return value.replace(trimmed, converted.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))));
     }
   }
