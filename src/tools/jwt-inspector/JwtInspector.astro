@@ -34,7 +34,7 @@ import { STANDARD_CLAIMS } from './claims';
       <div id="jwt-error" class="jwt-error" hidden></div>
 
       <section class="jwt-verify-section">
-        <h3 data-lang-fa="تأیید امضا (اختیاری)" data-lang-en="Verify Signature (Optional)">تأیید امضا (اختیاری)</h3>
+        <h2 data-lang-fa="تأیید امضا (اختیاری)" data-lang-en="Verify Signature (Optional)">تأیید امضا (اختیاری)</h2>
         <label for="jwt-alg" class="jwt-label" data-lang-fa="الگوریتم" data-lang-en="Algorithm">الگوریتم</label>
         <select id="jwt-alg" class="jwt-select">
           <option value="" data-lang-fa="خودکار (از هدر توکن)" data-lang-en="Auto (from token header)">خودکار (از هدر توکن)</option>
@@ -74,13 +74,13 @@ import { STANDARD_CLAIMS } from './claims';
         <div id="jwt-warnings"></div>
 
         <div class="jwt-section">
-          <h3 data-lang-fa="وضعیت انقضا" data-lang-en="Expiration Status">وضعیت انقضا</h3>
+          <h2 data-lang-fa="وضعیت انقضا" data-lang-en="Expiration Status">وضعیت انقضا</h2>
           <div id="jwt-exp-status" class="jwt-exp-status"></div>
         </div>
 
         <div class="jwt-section">
           <div class="jwt-section-header">
-            <h3 data-lang-fa="هدر (Header)" data-lang-en="Header">هدر (Header)</h3>
+            <h2 data-lang-fa="هدر (Header)" data-lang-en="Header">هدر (Header)</h2>
             <button class="jwt-copy" data-target="jwt-header-pre" type="button" data-lang-fa="کپی" data-lang-en="Copy">کپی</button>
           </div>
           <pre id="jwt-header-pre" class="jwt-pre"></pre>
@@ -88,14 +88,14 @@ import { STANDARD_CLAIMS } from './claims';
 
         <div class="jwt-section">
           <div class="jwt-section-header">
-            <h3>Payload</h3>
+            <h2>Payload</h2>
             <button class="jwt-copy" data-target="jwt-payload-pre" type="button" data-lang-fa="کپی" data-lang-en="Copy">کپی</button>
           </div>
           <pre id="jwt-payload-pre" class="jwt-pre"></pre>
         </div>
 
         <div class="jwt-section">
-          <h3 data-lang-fa="Claims (با توضیح)" data-lang-en="Claims (with descriptions)">Claims (با توضیح)</h3>
+          <h2 data-lang-fa="Claims (با توضیح)" data-lang-en="Claims (with descriptions)">Claims (با توضیح)</h2>
           <div class="jwt-table-wrapper">
             <table class="jwt-claims" id="jwt-claims-table">
               <thead>
@@ -160,7 +160,7 @@ import { STANDARD_CLAIMS } from './claims';
     background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); font-size: 0.9rem; }
   
   .jwt-verify-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #334155; }
-  .jwt-verify-section h3 { font-size: 1.1rem; color: #f8fafc; margin-bottom: 1rem; }
+  .jwt-verify-section h2 { font-size: 1.1rem; color: #f8fafc; margin-bottom: 1rem; }
   
   .jwt-verify-result { margin-top: 1rem; padding: 0.75rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-align: center; }
   .jwt-verify-result.ok { background: rgba(34, 197, 94, 0.1); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.2); }
@@ -169,7 +169,7 @@ import { STANDARD_CLAIMS } from './claims';
   .jwt-result { display: flex; flex-direction: column; gap: 1.5rem; }
   .jwt-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1rem; }
   .jwt-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
-  .jwt-section h3 { font-size: 1rem; margin: 0; color: #f8fafc; }
+  .jwt-section h2 { font-size: 1rem; margin: 0; color: #f8fafc; }
   
   .jwt-pre {
     background: #0f172a; color: #a5b4fc; padding: 1rem; border-radius: 8px;
