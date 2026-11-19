@@ -565,6 +565,14 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
     const value = lang === 'en' ? el.dataset.langEn : el.dataset.langFa;
     if (value !== undefined) document.title = value;
   });
+  document.querySelectorAll<HTMLElement>('[data-lang-aria-fa][data-lang-aria-en]').forEach(el => {
+    const value = lang === 'en' ? el.dataset.langAriaEn : el.dataset.langAriaFa;
+    if (value !== undefined) el.setAttribute('aria-label', value);
+  });
+  document.querySelectorAll<HTMLElement>('[data-lang-title-fa][data-lang-title-en]').forEach(el => {
+    const value = lang === 'en' ? el.dataset.langTitleEn : el.dataset.langTitleFa;
+    if (value !== undefined) el.setAttribute('title', value);
+  });
   if (!dicts) return;
   document.querySelectorAll<HTMLElement>('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
