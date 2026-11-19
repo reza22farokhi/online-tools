@@ -21,7 +21,7 @@ test('password generator creates a non-empty cryptographic password', async ({ p
   expect(initial.length).toBeGreaterThanOrEqual(8);
 
   await page.locator('#generate-btn').click();
-  await expect.poll(async () => (await output.inputValue()).length).toBe(initial.length);
+  await expect(output).not.toHaveValue(initial);
 });
 
 test('date converter preserves Jalali and Gregorian conversion results', async ({ page }) => {
