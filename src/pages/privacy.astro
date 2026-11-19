@@ -1,39 +1,39 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="حریم خصوصی | ابزارهای آنلاین" description="سیاست حریم خصوصی. توضیح پردازش محلی ابزارها و شبکه تبلیغات یکتانت.">
+<BaseLayout title="حریم خصوصی | ابزارهای آنلاین" titleEn="Privacy Policy | Online Tools" description="سیاست حریم خصوصی. توضیح پردازش محلی ابزارها و شبکه تبلیغات یکتانت." descriptionEn="Privacy policy explaining local tool processing, browser storage, and third-party advertising.">
   <div class="container page">
     <header class="page-header">
-      <h1>سیاست حریم خصوصی</h1>
-      <p class="lead">شفافیت کامل درباره اینکه داده‌های شما چگونه پردازش می‌شوند.</p>
+      <h1 data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</h1>
+      <p class="lead" data-lang-fa="شفافیت کامل درباره اینکه داده‌های شما چگونه پردازش می‌شوند." data-lang-en="A clear explanation of how your information is processed.">شفافیت کامل درباره اینکه داده‌های شما چگونه پردازش می‌شوند.</p>
     </header>
     <div class="content-card card">
-      <h2>۱. پردازش محلی ابزارها</h2>
-      <p>در ابزارهایی که پردازش محلی دارند، متن، فایل یا تصویری که برای انجام کار انتخاب می‌کنید در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. این توضیح درباره محتوای ورودی ابزارهاست؛ درخواست‌های فنی صفحه و درخواست‌های شبکه تبلیغاتی شخص ثالث موضوع جداگانه‌ای هستند و در بخش بعد توضیح داده شده‌اند.</p>
+      <h2 data-lang-fa="۱. پردازش محلی ابزارها" data-lang-en="1. Local tool processing">۱. پردازش محلی ابزارها</h2>
+      <p data-lang-fa="در ابزارهایی که پردازش محلی دارند، متن، فایل یا تصویری که برای انجام کار انتخاب می‌کنید در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. این توضیح درباره محتوای ورودی ابزارهاست؛ درخواست‌های فنی صفحه و درخواست‌های شبکه تبلیغاتی شخص ثالث موضوع جداگانه‌ای هستند و در بخش بعد توضیح داده شده‌اند." data-lang-en="For tools that process data locally, the text, file, or image you provide is processed in your browser and is not sent to our servers for that processing. This statement concerns tool input only; page infrastructure requests and third-party advertising requests are separate and are described below.">در ابزارهایی که پردازش محلی دارند، متن، فایل یا تصویری که برای انجام کار انتخاب می‌کنید در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. این توضیح درباره محتوای ورودی ابزارهاست؛ درخواست‌های فنی صفحه و درخواست‌های شبکه تبلیغاتی شخص ثالث موضوع جداگانه‌ای هستند و در بخش بعد توضیح داده شده‌اند.</p>
 
-      <h2>۲. ذخیره‌سازی محلی (LocalStorage)</h2>
-      <p>ما از حافظه مرورگر شما فقط برای ذخیره تنظیمات UI استفاده می‌کنیم:</p>
+      <h2 data-lang-fa="۲. ذخیره‌سازی محلی (LocalStorage)" data-lang-en="2. Local storage (LocalStorage)">۲. ذخیره‌سازی محلی (LocalStorage)</h2>
+      <p data-lang-fa="ما از حافظه مرورگر شما فقط برای ذخیره تنظیمات UI استفاده می‌کنیم:" data-lang-en="We use your browser storage only for interface preferences:">ما از حافظه مرورگر شما فقط برای ذخیره تنظیمات UI استفاده می‌کنیم:</p>
       <ul>
-        <li>تم انتخابی (تاریک/روشن) با کلید <code>pot.theme</code></li>
-        <li>زبان انتخابی (فارسی/انگلیسی) با کلید <code>pot.lang</code></li>
-        <li>ابزارهای مورد علاقه با کلید <code>pot.favorites</code></li>
-        <li>۶ ابزار اخیراً استفاده‌شده با کلید <code>pot.recent</code></li>
+        <li><span data-lang-fa="تم انتخابی (تاریک/روشن) با کلید" data-lang-en="Selected theme (dark/light), key">تم انتخابی (تاریک/روشن) با کلید</span> <code>pot.theme</code></li>
+        <li><span data-lang-fa="زبان انتخابی (فارسی/انگلیسی) با کلید" data-lang-en="Selected language (Persian/English), key">زبان انتخابی (فارسی/انگلیسی) با کلید</span> <code>pot.lang</code></li>
+        <li><span data-lang-fa="ابزارهای مورد علاقه با کلید" data-lang-en="Favorite tools, key">ابزارهای مورد علاقه با کلید</span> <code>pot.favorites</code></li>
+        <li><span data-lang-fa="۶ ابزار اخیراً استفاده‌شده با کلید" data-lang-en="Six recently used tools, key">۶ ابزار اخیراً استفاده‌شده با کلید</span> <code>pot.recent</code></li>
       </ul>
-      <p>این اطلاعات فقط روی دستگاه خود شما ذخیره می‌شوند و برای ما قابل دسترسی نیستند.</p>
+      <p data-lang-fa="این اطلاعات فقط روی دستگاه خود شما ذخیره می‌شوند و برای ما قابل دسترسی نیستند." data-lang-en="These preferences are stored on your device and are not accessible to us.">این اطلاعات فقط روی دستگاه خود شما ذخیره می‌شوند و برای ما قابل دسترسی نیستند.</p>
 
-      <h2>۳. شبکه تبلیغاتی یکتانت (شخص ثالث)</h2>
-      <p>این سایت برای تأمین هزینه‌های نگهداری از شبکه تبلیغاتی <strong>یکتانت</strong> استفاده می‌کند. اسکریپت تبلیغاتی در صفحات بارگذاری می‌شود و مرورگر ممکن است برای نمایش و سنجش تبلیغات به دامنه‌های یکتانت و زیرساخت‌های مرتبط درخواست ارسال کند. این درخواست‌ها ممکن است اطلاعات فنی مانند نشانی IP، نوع مرورگر و دستگاه، مبدأ درخواست و شناسه‌های کوکی یا تبلیغاتی را در اختیار ارائه‌دهنده تبلیغات قرار دهند.</p>
-      <p>ما کنترل مستقیمی بر نحوه جمع‌آوری، نگهداری و پردازش داده‌ها توسط یکتانت نداریم. پردازش محلی فایل‌ها و متن‌های واردشده در ابزارها مانع دریافت اطلاعات فنی از طریق اسکریپت تبلیغاتی نمی‌شود.</p>
+      <h2 data-lang-fa="۳. شبکه تبلیغاتی یکتانت (شخص ثالث)" data-lang-en="3. Yektanet third-party advertising network">۳. شبکه تبلیغاتی یکتانت (شخص ثالث)</h2>
+      <p><span data-lang-fa="این سایت برای تأمین هزینه‌های نگهداری از شبکه تبلیغاتی" data-lang-en="This site uses the advertising network">این سایت برای تأمین هزینه‌های نگهداری از شبکه تبلیغاتی</span> <strong>یکتانت</strong><span data-lang-fa=" استفاده می‌کند. اسکریپت تبلیغاتی در صفحات بارگذاری می‌شود و مرورگر ممکن است برای نمایش و سنجش تبلیغات به دامنه‌های یکتانت و زیرساخت‌های مرتبط درخواست ارسال کند. این درخواست‌ها ممکن است اطلاعات فنی مانند نشانی IP، نوع مرورگر و دستگاه، مبدأ درخواست و شناسه‌های کوکی یا تبلیغاتی را در اختیار ارائه‌دهنده تبلیغات قرار دهند." data-lang-en=". Its advertising script loads on pages, and your browser may contact Yektanet domains and related infrastructure to display and measure ads. Those requests may expose technical information such as your IP address, browser and device type, request referrer, and advertising or cookie identifiers to the ad provider."> استفاده می‌کند. اسکریپت تبلیغاتی در صفحات بارگذاری می‌شود و مرورگر ممکن است برای نمایش و سنجش تبلیغات به دامنه‌های یکتانت و زیرساخت‌های مرتبط درخواست ارسال کند. این درخواست‌ها ممکن است اطلاعات فنی مانند نشانی IP، نوع مرورگر و دستگاه، مبدأ درخواست و شناسه‌های کوکی یا تبلیغاتی را در اختیار ارائه‌دهنده تبلیغات قرار دهند.</span></p>
+      <p data-lang-fa="ما کنترل مستقیمی بر نحوه جمع‌آوری، نگهداری و پردازش داده‌ها توسط یکتانت نداریم. پردازش محلی فایل‌ها و متن‌های واردشده در ابزارها مانع دریافت اطلاعات فنی از طریق اسکریپت تبلیغاتی نمی‌شود." data-lang-en="We do not directly control how Yektanet collects, retains, or processes data. Local processing of files and text entered into tools does not prevent the advertising script from receiving technical information.">ما کنترل مستقیمی بر نحوه جمع‌آوری، نگهداری و پردازش داده‌ها توسط یکتانت نداریم. پردازش محلی فایل‌ها و متن‌های واردشده در ابزارها مانع دریافت اطلاعات فنی از طریق اسکریپت تبلیغاتی نمی‌شود.</p>
 
-      <h2>۴. آنچه ما جمع نمی‌کنیم</h2>
+      <h2 data-lang-fa="۴. آنچه ما جمع نمی‌کنیم" data-lang-en="4. Information we do not collect">۴. آنچه ما جمع نمی‌کنیم</h2>
       <ul>
-        <li>هیچ داده‌ای از ابزارها روی سرور ذخیره نمی‌شود</li>
-        <li>هیچ سیستم تحلیلی مانند Google Analytics نصب نیست</li>
-        <li>هیچ ایمیل یا اطلاعات هویتی درخواست نمی‌شود</li>
+        <li data-lang-fa="هیچ داده‌ای از ابزارها روی سرور ذخیره نمی‌شود" data-lang-en="Tool input data is not stored on our servers">هیچ داده‌ای از ابزارها روی سرور ذخیره نمی‌شود</li>
+        <li data-lang-fa="هیچ سیستم تحلیلی مانند Google Analytics نصب نیست" data-lang-en="No analytics system such as Google Analytics is installed">هیچ سیستم تحلیلی مانند Google Analytics نصب نیست</li>
+        <li data-lang-fa="هیچ ایمیل یا اطلاعات هویتی درخواست نمی‌شود" data-lang-en="We do not request an email address or identity information">هیچ ایمیل یا اطلاعات هویتی درخواست نمی‌شود</li>
       </ul>
 
-      <h2>۵. تغییرات</h2>
-      <p>هرگونه تغییر در این صفحه منتشر می‌شود. آخرین به‌روزرسانی: ۱۸ نوامبر ۲۰۲۶.</p>
+      <h2 data-lang-fa="۵. تغییرات" data-lang-en="5. Changes">۵. تغییرات</h2>
+      <p data-lang-fa="هرگونه تغییر در این صفحه منتشر می‌شود. آخرین به‌روزرسانی: ۱۸ نوامبر ۲۰۲۶." data-lang-en="Any changes will be published on this page. Last updated: November 18, 2026.">هرگونه تغییر در این صفحه منتشر می‌شود. آخرین به‌روزرسانی: ۱۸ نوامبر ۲۰۲۶.</p>
     </div>
   </div>
 </BaseLayout>
