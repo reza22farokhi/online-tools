@@ -124,7 +124,7 @@ test('JWT decoder presents sample results and warnings in English', async ({ pag
   await page.locator('#jwt-sample').click();
   await expect(page.locator('#jwt-results')).toBeVisible();
   await expect(page.locator('.jwt-sig-note')).toContainText('The signature is not verified in this browser');
-  await expect(page.locator('#jwt-results')).not.toContainText(/[\\u0600-\\u06FF]/);
+  await expect(page.locator('#jwt-results')).not.toContainText(/[\u0600-\u06FF]/);
 });
 
 test('file information tool computes a real SHA-256 digest from a local file', async ({ page }) => {
@@ -147,5 +147,5 @@ test('Unix timestamp converter renders English calendar labels and converts time
   await expect(page.locator('#uts-results-ts')).toContainText('Gregorian:');
   await expect(page.locator('#uts-results-ts')).toContainText('Jalali:');
   await expect(page.locator('#uts-results-ts')).toContainText('Hijri:');
-  await expect(page.locator('#uts-results-ts')).not.toContainText(/[\\u0600-\\u06FF]/);
+  await expect(page.locator('#uts-results-ts')).not.toContainText(/[\u0600-\u06FF]/);
 });
