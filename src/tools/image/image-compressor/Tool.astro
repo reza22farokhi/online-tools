@@ -124,6 +124,7 @@
     if (!originalImage || !qualityInput || !formatSelect || !processBtn) return;
     const quality = Number(qualityInput.value) / 100;
     const format = formatSelect.value;
+    clearError();
     processBtn.disabled = true;
     if (downloadUrl) URL.revokeObjectURL(downloadUrl);
     const canvas = document.createElement('canvas');
