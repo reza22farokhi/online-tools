@@ -4,7 +4,7 @@ test('word counter calculates live statistics and resets every metric', async ({
   await page.goto('/tools/word-counter/?lang=en');
 
   const input = page.locator('#wc-input');
-  await input.fill('Hello world.\\nSecond line!');
+  await input.fill('Hello world.\nSecond line!');
 
   await expect(page.locator('#stat-words')).toHaveText('4');
   await expect(page.locator('#stat-chars')).toHaveText('25');
