@@ -31,6 +31,22 @@ describe('generateMetaTags', () => {
     expect(html).toContain('&quot;&gt;&lt;script&gt;');
   });
 
+  it('normalizes scheme-less HTTP URLs', () => {
+    const html = generateMetaTags({ title: '', description: '', url: 'example.com/page', image: 'cdn.example.com/og.png', author: '' });
+    expect(html).toContain('href="https://example.com/page"');
+    expect(html).toContain('content="https://cdn.example.com/og.png"');
+  });
+
+  it('rejects non-HTTP URL schemes and credentials', () => {
+    expect(() => generateMetaTags({ title: '', description: '', url: 'javascript:alert(1)', image: '', author: '' })).toThrow(/HTTP یا HTTPS/);
+    expect(() => generateMetaTags({ title: '', description: '', url: 'ftp://example.com', image: '', author: '' })).toThrow(/HTTP یا HTTPS/);
+    expect(() => generateMetaTags({ title: '', description: '', url: 'https://user:pass@example.com', image: '', author: '' })).toThrow(/اطلاعات ورود/);
+  });
+
+  it('rejects control characters in URLs', () => {
+    expect(() => generateMetaTags({ title: '', description: '', url: 'https://example.com\\n<meta>', image: '', author: '' })).toThrow(/نویسه‌های کنترلی/);
+  });
+
   it('omits empty tags', () => {
     const html = generateMetaTags({ title: '', description: '', url: '', image: '', author: '' });
     expect(html).not.toContain('<title>');
