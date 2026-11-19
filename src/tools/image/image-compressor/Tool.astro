@@ -52,6 +52,17 @@
   const qualityInput = document.getElementById('ic-quality') as HTMLInputElement | null;
   const qValEl = document.getElementById('ic-q-val');
   const formatSelect = document.getElementById('ic-format') as HTMLSelectElement | null;
+  let lastReduction: number | null = null;
+  function renderReductionLabel() {
+    if (lastReduction === null || !reductionWrap) return;
+    const isEnglish = document.documentElement.lang === 'en';
+    const label = lastReduction > 0 ? (isEnglish ? 'Size reduction:' : 'کاهش حجم:')
+      : lastReduction < 0 ? (isEnglish ? 'Size increase:' : 'افزایش حجم:')
+      : (isEnglish ? 'No size change:' : 'بدون تغییر حجم:');
+    const labelEl = reductionWrap.querySelector('span');
+    if (labelEl) labelEl.textContent = label;
+  }
+  document.addEventListener('app:languagechange', renderReductionLabel);
   const processBtn = document.getElementById('ic-process') as HTMLButtonElement | null;
   const downloadBtn = document.getElementById('ic-download') as HTMLAnchorElement | null;
   let originalImage: HTMLImageElement | null = null;
@@ -148,14 +159,8 @@
       downloadBtn.style.display = 'inline-flex';
       newSizeEl.textContent = formatBytes(blob.size);
       const reduction = calculateReduction(originalSize, blob.size);
-      const isEnglish = document.documentElement.lang === 'en';
-      const reductionLabel = reduction > 0
-        ? (isEnglish ? 'Size reduction:' : 'کاهش حجم:')
-        : reduction < 0
-          ? (isEnglish ? 'Size increase:' : 'افزایش حجم:')
-          : (isEnglish ? 'No size change:' : 'بدون تغییر حجم:');
-      const reductionLabelEl = reductionWrap.querySelector('span');
-      if (reductionLabelEl) reductionLabelEl.textContent = reductionLabel;
+      lastReduction = reduction;
+      renderReductionLabel();
       reductionEl.textContent = `${Math.abs(reduction)}%`;
       reductionWrap.hidden = false;
     }, format, quality);
