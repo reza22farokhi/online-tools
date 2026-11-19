@@ -26,6 +26,10 @@ describe('daysRemainingInYear', () => {
 
 describe('isoWeekNumber', () => {
   it('Jan 4 2024 is week 1', () => expect(isoWeekNumber(new Date(2024, 0, 4))).toBe(1));
+  it('handles ISO week-year boundaries', () => {
+    expect(isoWeekNumber(new Date(2021, 0, 1))).toBe(53);
+    expect(isoWeekNumber(new Date(2021, 0, 4))).toBe(1);
+  });
 });
 
 describe('daysBetween', () => {
