@@ -3,30 +3,30 @@
 ---
 <div class="date-tool">
   <div class="date-col">
-    <h3>شمسی به میلادی</h3>
+    <h3 data-lang-fa="شمسی به میلادی" data-lang-en="Jalali to Gregorian">شمسی به میلادی</h3>
     <div class="inputs-row">
       <div class="input-group">
-        <label>سال</label>
+        <label data-lang-fa="سال" data-lang-en="Year">سال</label>
         <input type="number" id="j-year" placeholder="1402" min="1300" max="1500" value="1402" />
       </div>
       <div class="input-group">
-        <label>ماه</label>
+        <label data-lang-fa="ماه" data-lang-en="Month">ماه</label>
         <input type="number" id="j-month" placeholder="1" min="1" max="12" value="1" />
       </div>
       <div class="input-group">
-        <label>روز</label>
+        <label data-lang-fa="روز" data-lang-en="Day">روز</label>
         <input type="number" id="j-day" placeholder="1" min="1" max="31" value="1" />
       </div>
     </div>
-    <button id="btn-to-g" class="btn-convert">تبدیل به میلادی <span>←</span></button>
+    <button id="btn-to-g" class="btn-convert" data-lang-fa="تبدیل به میلادی" data-lang-en="Convert to Gregorian">تبدیل به میلادی <span>←</span></button>
     <div class="result-box">
-      <span class="result-label">نتیجه:</span>
+      <span class="result-label" data-lang-fa="نتیجه:" data-lang-en="Result:">نتیجه:</span>
       <div id="result-g" data-date-output class="result-value">---</div>
     </div>
   </div>
 
   <div class="date-col">
-    <h3>میلادی به شمسی</h3>
+    <h3 data-lang-fa="میلادی به شمسی" data-lang-en="Gregorian to Jalali">میلادی به شمسی</h3>
     <div class="inputs-row">
       <div class="input-group">
         <label>سال</label>
@@ -41,7 +41,7 @@
         <input type="number" id="g-day" placeholder="1" min="1" max="31" value="1" />
       </div>
     </div>
-    <button id="btn-to-j" class="btn-convert">تبدیل به شمسی <span>←</span></button>
+    <button id="btn-to-j" class="btn-convert" data-lang-fa="تبدیل به شمسی" data-lang-en="Convert to Jalali">تبدیل به شمسی <span>←</span></button>
     <div class="result-box">
       <span class="result-label">نتیجه:</span>
       <div id="result-j" data-date-output class="result-value">---</div>
@@ -61,7 +61,7 @@
       const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       (document.getElementById('result-g') as HTMLElement).textContent = `${res.gy} ${monthNames[res.gm - 1]} ${res.gd}`;
     } catch (e) {
-      (document.getElementById('result-g') as HTMLElement).textContent = 'تاریخ نامعتبر است';
+      (document.getElementById('result-g') as HTMLElement).textContent = document.documentElement.lang === 'en' ? 'Invalid date' : 'تاریخ نامعتبر است';
     }
   });
 
@@ -71,11 +71,20 @@
     const gd = parseInt((document.getElementById('g-day') as HTMLInputElement).value);
     try {
       const res = toJalaali(gy, gm, gd);
-      const monthNames = ["فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"];
+      const monthNamesFa = ["فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"];
+      const monthNamesEn = ["Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar", "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"];
+      const monthNames = document.documentElement.lang === 'en' ? monthNamesEn : monthNamesFa;
       (document.getElementById('result-j') as HTMLElement).textContent = `${res.jd} ${monthNames[res.jm - 1]} ${res.jy}`;
     } catch (e) {
-      (document.getElementById('result-j') as HTMLElement).textContent = 'تاریخ نامعتبر است';
+      (document.getElementById('result-j') as HTMLElement).textContent = document.documentElement.lang === 'en' ? 'Invalid date' : 'تاریخ نامعتبر است';
     }
+  });
+
+  document.addEventListener('app:languagechange', () => {
+    const resultG = document.getElementById('result-g');
+    const resultJ = document.getElementById('result-j');
+    if (resultG && resultG.textContent !== '---') document.getElementById('btn-to-g')?.dispatchEvent(new Event('click'));
+    if (resultJ && resultJ.textContent !== '---') document.getElementById('btn-to-j')?.dispatchEvent(new Event('click'));
   });
 </script>
 
