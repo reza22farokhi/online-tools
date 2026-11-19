@@ -47,8 +47,9 @@ test('every registered tool has English UI and loads without first-party runtime
 
     await expect(page.locator('article[data-tool-slug]')).toHaveAttribute('data-tool-slug', slug);
     await expect(page.locator('article h1').first()).toBeVisible();
-    await expect(page.locator('.tool-faq')).toBeVisible();
-    await expect(page.locator('.tool-faq')).toContainText('Frequently asked questions');
+    await expect(page.locator('.tool-faq[data-lang-only="en"]')).toBeVisible();
+    await expect(page.locator('.tool-faq[data-lang-only="en"]')).toContainText('Frequently asked questions');
+    await expect(page.locator('.tool-faq[data-lang-only="fa"]')).toBeHidden();
     await expect(page.locator('.faq-translation-note, .tool-translation-note')).toHaveCount(0);
 
     const result = await page.evaluate(() => {
@@ -148,4 +149,19 @@ test('Unix timestamp converter renders English calendar labels and converts time
   await expect(page.locator('#uts-results-ts')).toContainText('Jalali:');
   await expect(page.locator('#uts-results-ts')).toContainText('Hijri:');
   await expect(page.locator('#uts-results-ts')).not.toContainText(/[\u0600-\u06FF]/);
+});
+
+
+test('tool FAQ switches between English and Persian without mixing languages', async ({ page }) => {
+  await page.goto('/tools/word-counter/?lang=en');
+  const englishFaq = page.locator('.tool-faq[data-lang-only="en"]');
+  const persianFaq = page.locator('.tool-faq[data-lang-only="fa"]');
+  await expect(englishFaq).toBeVisible();
+  await expect(englishFaq).not.toContainText(/[\\u0600-\\u06FF]/);
+  await expect(persianFaq).toBeHidden();
+
+  await page.goto('/tools/word-counter/?lang=fa');
+  await expect(persianFaq).toBeVisible();
+  await expect(persianFaq).toContainText('سوالات متداول');
+  await expect(englishFaq).toBeHidden();
 });
