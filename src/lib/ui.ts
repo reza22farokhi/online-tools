@@ -59,14 +59,19 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
     const key = el.dataset.i18n;
     if (key && dicts[lang][key]) el.textContent = dicts[lang][key];
   });
-  document.querySelectorAll<HTMLInputElement>('[data-i18n-placeholder]').forEach(el => {
+  document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-i18n-placeholder]').forEach(el => {
     const key = el.dataset.i18nPlaceholder;
     if (key && dicts[lang][key]) el.placeholder = dicts[lang][key];
+  });
+  document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-lang-placeholder-fa][data-lang-placeholder-en]').forEach(el => {
+    const value = lang === 'en' ? el.dataset.langPlaceholderEn : el.dataset.langPlaceholderFa;
+    if (value !== undefined) el.placeholder = value;
   });
   document.querySelectorAll<HTMLElement>('[data-i18n-aria-label]').forEach(el => {
     const key = el.dataset.i18nAriaLabel;
     if (key && dicts[lang][key]) el.setAttribute('aria-label', dicts[lang][key]);
   });
+  document.dispatchEvent(new Event('app:languagechange'));
 }
 
 export function setLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>) {
