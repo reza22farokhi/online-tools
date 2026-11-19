@@ -52,9 +52,21 @@
     if (titleCount) titleCount.textContent = String(titleVal.length);
     if (descCount) descCount.textContent = String(descVal.length);
 
-    if (prevUrl) prevUrl.textContent = formatUrlForSerp(urlVal);
-    if (prevTitle) prevTitle.textContent = titleVal ? truncate(titleVal, MAX_TITLE_LEN) : 'عنوان صفحه شما در اینجا نمایش داده می‌شود';
-    if (prevDesc) prevDesc.textContent = descVal ? truncate(descVal, MAX_DESC_LEN) : 'توضیحات متا شما در اینجا نمایش داده می‌شود. سعی کنید آن را جذاب و مرتبط با محتوای صفحه بنویسید تا کاربران روی لینک شما کلیک کنند.';
+    if (prevUrl) {
+      if (urlVal.trim()) prevUrl.setAttribute('data-user-content', 'true');
+      else prevUrl.removeAttribute('data-user-content');
+      prevUrl.textContent = formatUrlForSerp(urlVal);
+    }
+    if (prevTitle) {
+      if (titleVal) prevTitle.setAttribute('data-user-content', 'true');
+      else prevTitle.removeAttribute('data-user-content');
+      prevTitle.textContent = titleVal ? truncate(titleVal, MAX_TITLE_LEN) : 'عنوان صفحه شما در اینجا نمایش داده می‌شود';
+    }
+    if (prevDesc) {
+      if (descVal) prevDesc.setAttribute('data-user-content', 'true');
+      else prevDesc.removeAttribute('data-user-content');
+      prevDesc.textContent = descVal ? truncate(descVal, MAX_DESC_LEN) : 'توضیحات متا شما در اینجا نمایش داده می‌شود. سعی کنید آن را جذاب و مرتبط با محتوای صفحه بنویسید تا کاربران روی لینک شما کلیک کنند.';
+    }
   }
 
   urlInput?.addEventListener('input', refresh);
