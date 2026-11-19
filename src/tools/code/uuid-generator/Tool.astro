@@ -3,18 +3,18 @@
 <div class="ug-tool">
   <div class="ug-controls">
     <div class="ug-field">
-      <label for="ug-count">تعداد:</label>
+      <label for="ug-count" data-lang-fa="تعداد:" data-lang-en="Count:">تعداد:</label>
       <input id="ug-count" type="number" class="input ug-num" value="1" min="1" max="1000" />
     </div>
-    <label class="ug-opt"><input type="checkbox" id="ug-upper" /><span>حروف بزرگ</span></label>
-    <label class="ug-opt"><input type="checkbox" id="ug-nohyphen" /><span>بدون خط تیره</span></label>
-    <button type="button" class="btn btn-primary" id="ug-generate">🔄 تولید</button>
+    <label class="ug-opt"><input type="checkbox" id="ug-upper" /><span data-lang-fa="حروف بزرگ" data-lang-en="Uppercase">حروف بزرگ</span></label>
+    <label class="ug-opt"><input type="checkbox" id="ug-nohyphen" /><span data-lang-fa="بدون خط تیره" data-lang-en="No hyphens">بدون خط تیره</span></label>
+    <button type="button" class="btn btn-primary" id="ug-generate" data-lang-fa="🔄 تولید" data-lang-en="🔄 Generate">🔄 تولید</button>
   </div>
   <div class="ug-error" id="ug-error" hidden role="alert"></div>
-  <label for="ug-output" class="ug-output-label">UUIDها:</label>
-  <textarea id="ug-output" class="textarea ug-output" readonly rows="10" placeholder="برای تولید، روی دکمه کلیک کنید..."></textarea>
+  <label for="ug-output" class="ug-output-label" data-lang-fa="UUIDها:" data-lang-en="UUIDs:">UUIDها:</label>
+  <textarea id="ug-output" class="textarea ug-output" readonly rows="10" placeholder="برای تولید، روی دکمه کلیک کنید..." data-lang-placeholder-fa="برای تولید، روی دکمه کلیک کنید..." data-lang-placeholder-en="Click Generate to create UUIDs..."></textarea>
   <div class="ug-actions">
-    <button type="button" class="btn" id="ug-copy" disabled><span aria-hidden="true">📋</span> کپی همه</button>
+    <button type="button" class="btn" id="ug-copy" disabled><span aria-hidden="true">📋</span> <span data-lang-fa="کپی همه" data-lang-en="Copy all">کپی همه</span></button>
   </div>
 </div>
 <script>
@@ -27,6 +27,7 @@
   const generateBtn = document.getElementById('ug-generate') as HTMLButtonElement | null;
   const copyBtn = document.getElementById('ug-copy') as HTMLButtonElement | null;
   const errorEl = document.getElementById('ug-error');
+  const isEnglish = () => document.documentElement.lang === 'en';
   function refresh() {
     if (!output) return;
     try {
@@ -49,7 +50,7 @@
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('UUIDها کپی شد', 'success'); else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish() ? 'UUIDs copied.' : 'UUIDها کپی شد', 'success'); else toast(isEnglish() ? 'Copy failed.' : 'کپی نشد', 'error');
   });
   refresh();
 </script>

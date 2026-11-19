@@ -107,8 +107,8 @@
       ? `Words: ${lastStats.words}\nCharacters: ${lastStats.characters}\nCharacters without spaces: ${lastStats.charactersNoSpaces}\nSentences: ${lastStats.sentences}\nLines: ${lastStats.lines}\nParagraphs: ${lastStats.paragraphs}\nReading time (minutes): ${lastStats.readingTimeMin}`
       : `کلمات: ${lastStats.words}\nکاراکترها: ${lastStats.characters}\nبدون فاصله: ${lastStats.charactersNoSpaces}\nجمله‌ها: ${lastStats.sentences}\nخطوط: ${lastStats.lines}\nپاراگراف‌ها: ${lastStats.paragraphs}\nزمان خواندن (دقیقه): ${lastStats.readingTimeMin}`;
     const ok = await copyText(text);
-    if (ok) toast('آمار کپی شد', 'success');
-    else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish ? 'Statistics copied.' : 'آمار کپی شد', 'success');
+    else toast(isEnglish ? 'Copy failed.' : 'کپی نشد', 'error');
   });
 
   refresh();
