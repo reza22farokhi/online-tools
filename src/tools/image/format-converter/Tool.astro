@@ -105,6 +105,7 @@
   });
   processBtn?.addEventListener('click', () => {
     if (!originalImage || !formatSelect || !downloadBtn || !processBtn) return;
+    clearError();
     const format = formatSelect.value as ImageFormat;
     processBtn.disabled = true;
     if (downloadUrl) URL.revokeObjectURL(downloadUrl);
