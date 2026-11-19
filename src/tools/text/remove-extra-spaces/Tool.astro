@@ -1,53 +1,53 @@
 ---
 ---
 <div class="res-tool">
-  <label for="res-input" class="sr-only">متن ورودی</label>
+  <label for="res-input" class="sr-only"><span data-lang-fa="متن ورودی" data-lang-en="Input text">متن ورودی</span></label>
   <textarea
     id="res-input"
     class="textarea"
-    placeholder="متن خود را اینجا تایپ یا جای‌گذاری کنید..."
+    placeholder="متن خود را اینجا تایپ یا جای‌گذاری کنید..." data-lang-placeholder-fa="متن خود را اینجا تایپ یا جای‌گذاری کنید..." data-lang-placeholder-en="Type or paste your text here..."
     spellcheck="false"
     aria-describedby="res-help"
   ></textarea>
   <p id="res-help" class="res-help">
-    حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.
+    <span data-lang-fa="حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی." data-lang-en="Maximum 100,000 characters. Processing stays entirely in your browser.">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</span>
   </p>
 
   <fieldset class="res-options">
-    <legend>گزینه‌ها:</legend>
+    <legend><span data-lang-fa="گزینه‌ها:" data-lang-en="Options:">گزینه‌ها:</span></legend>
     <label class="res-opt">
       <input type="checkbox" id="res-collapse" checked />
-      <span>حذف فاصله‌های تکراری (چند فاصله ← یک فاصله)</span>
+      <span data-lang-fa="حذف فاصله‌های تکراری (چند فاصله ← یک فاصله)" data-lang-en="Collapse repeated spaces (multiple spaces → one)">حذف فاصله‌های تکراری (چند فاصله ← یک فاصله)</span>
     </label>
     <label class="res-opt">
       <input type="checkbox" id="res-trim-lines" checked />
-      <span>حذف فاصله ابتدا و انتهای هر خط</span>
+      <span data-lang-fa="حذف فاصله ابتدا و انتهای هر خط" data-lang-en="Trim leading and trailing spaces on each line">حذف فاصله ابتدا و انتهای هر خط</span>
     </label>
     <label class="res-opt">
       <input type="checkbox" id="res-trim-text" checked />
-      <span>حذف فاصله ابتدا و انتهای کل متن</span>
+      <span data-lang-fa="حذف فاصله ابتدا و انتهای کل متن" data-lang-en="Trim the beginning and end of the whole text">حذف فاصله ابتدا و انتهای کل متن</span>
     </label>
     <label class="res-opt">
       <input type="checkbox" id="res-remove-empty" />
-      <span>حذف خطوط خالی</span>
+      <span data-lang-fa="حذف خطوط خالی" data-lang-en="Remove empty lines">حذف خطوط خالی</span>
     </label>
   </fieldset>
 
   <div class="res-actions">
     <button type="button" class="btn" id="res-clear">
-      <span aria-hidden="true">🗑️</span> پاک کردن
+      <span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span>
     </button>
     <button type="button" class="btn btn-primary" id="res-copy" disabled>
-      <span aria-hidden="true">📋</span> کپی خروجی
+      <span aria-hidden="true">📋</span> <span data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</span>
     </button>
   </div>
 
-  <label for="res-output" class="res-output-label">خروجی:</label>
+  <label for="res-output" class="res-output-label"><span data-lang-fa="خروجی:" data-lang-en="Output:">خروجی:</span></label>
   <textarea
     id="res-output"
     class="textarea res-output"
     readonly
-    placeholder="خروجی اینجا نمایش داده می‌شود..."
+    placeholder="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-fa="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-en="Output will appear here..."
   ></textarea>
 </div>
 
@@ -68,6 +68,8 @@
     trimText: document.getElementById('res-trim-text') as HTMLInputElement | null,
     removeEmptyLines: document.getElementById('res-remove-empty') as HTMLInputElement | null
   };
+
+  const isEnglish = () => document.documentElement.lang === "en";
 
   function readOptions(): SpaceOptions {
     return {
@@ -101,8 +103,8 @@
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('خروجی کپی شد', 'success');
-    else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish() ? 'Output copied.' : 'خروجی کپی شد', 'success');
+    else toast(isEnglish() ? 'Copy failed.' : 'کپی نشد', 'error');
   });
 
   refresh();

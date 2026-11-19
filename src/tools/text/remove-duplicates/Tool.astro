@@ -1,25 +1,25 @@
 ---
 ---
 <div class="rd-tool">
-  <label for="rd-input" class="sr-only">متن ورودی</label>
-  <textarea id="rd-input" class="textarea" rows="8" placeholder="هر خط یک آیتم. خطوط تکراری حذف خواهند شد." spellcheck="false" aria-describedby="rd-help"></textarea>
-  <p id="rd-help" class="rd-help">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</p>
+  <label for="rd-input" class="sr-only"><span data-lang-fa="متن ورودی" data-lang-en="Input text">متن ورودی</span></label>
+  <textarea id="rd-input" class="textarea" rows="8" placeholder="هر خط یک آیتم. خطوط تکراری حذف خواهند شد." data-lang-placeholder-fa="هر خط یک آیتم. خطوط تکراری حذف خواهند شد." data-lang-placeholder-en="One item per line. Duplicate lines will be removed." spellcheck="false" aria-describedby="rd-help"></textarea>
+  <p id="rd-help" class="rd-help"><span data-lang-fa="حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی." data-lang-en="Maximum 100,000 characters. Processing stays entirely in your browser.">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</span></p>
   <fieldset class="rd-options">
-    <legend>گزینه‌ها:</legend>
-    <label class="rd-opt"><input type="checkbox" id="rd-ci" /><span>مقایسه بدون حساسیت به حروف (A = a)</span></label>
-    <label class="rd-opt"><input type="checkbox" id="rd-trim" checked /><span>حذف فاصله ابتدا/انتهای هر خط پیش از مقایسه</span></label>
-    <label class="rd-opt"><input type="checkbox" id="rd-remove-empty" checked /><span>حذف خطوط خالی</span></label>
+    <legend><span data-lang-fa="گزینه‌ها:" data-lang-en="Options:">گزینه‌ها:</span></legend>
+    <label class="rd-opt"><input type="checkbox" id="rd-ci" /><span><span data-lang-fa="مقایسه بدون حساسیت به حروف (A = a)" data-lang-en="Case-insensitive comparison (A = a)">مقایسه بدون حساسیت به حروف (A = a)</span></span></label>
+    <label class="rd-opt"><input type="checkbox" id="rd-trim" checked /><span><span data-lang-fa="حذف فاصله ابتدا/انتهای هر خط پیش از مقایسه" data-lang-en="Trim each line before comparison">حذف فاصله ابتدا/انتهای هر خط پیش از مقایسه</span></span></label>
+    <label class="rd-opt"><input type="checkbox" id="rd-remove-empty" checked /><span><span data-lang-fa="حذف خطوط خالی" data-lang-en="Remove empty lines">حذف خطوط خالی</span></span></label>
   </fieldset>
   <div class="rd-stats" aria-live="polite">
-    <span class="rd-stat">خطوط یکتا: <strong id="rd-kept">0</strong></span>
-    <span class="rd-stat">تکراری حذف‌شده: <strong id="rd-removed">0</strong></span>
+    <span class="rd-stat"><span data-lang-fa="خطوط یکتا:" data-lang-en="Unique lines:">خطوط یکتا:</span> <strong id="rd-kept">0</strong></span>
+    <span class="rd-stat"><span data-lang-fa="تکراری حذف‌شده:" data-lang-en="Duplicates removed:">تکراری حذف‌شده:</span> <strong id="rd-removed">0</strong></span>
   </div>
   <div class="rd-actions">
-    <button type="button" class="btn" id="rd-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
-    <button type="button" class="btn btn-primary" id="rd-copy" disabled><span aria-hidden="true">📋</span> کپی خروجی</button>
+    <button type="button" class="btn" id="rd-clear"><span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
+    <button type="button" class="btn btn-primary" id="rd-copy" disabled><span aria-hidden="true">📋</span> <span data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</span></button>
   </div>
-  <label for="rd-output" class="rd-output-label">خروجی:</label>
-  <textarea id="rd-output" class="textarea rd-output" readonly rows="8" placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+  <label for="rd-output" class="rd-output-label"><span data-lang-fa="خروجی:" data-lang-en="Output:">خروجی:</span></label>
+  <textarea id="rd-output" class="textarea rd-output" readonly rows="8" placeholder="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-fa="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-en="Output will appear here..."></textarea>
 </div>
 
 <script>
@@ -39,6 +39,8 @@
     trim: document.getElementById('rd-trim') as HTMLInputElement | null,
     removeEmpty: document.getElementById('rd-remove-empty') as HTMLInputElement | null
   };
+
+  const isEnglish = () => document.documentElement.lang === "en";
 
   function readOptions(): DedupOptions {
     return {
@@ -64,7 +66,7 @@
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('خروجی کپی شد', 'success'); else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish() ? 'Output copied.' : 'خروجی کپی شد', 'success'); else toast(isEnglish() ? 'Copy failed.' : 'کپی نشد', 'error');
   });
   refresh();
 </script>

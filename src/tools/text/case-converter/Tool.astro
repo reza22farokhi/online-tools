@@ -2,19 +2,19 @@
 import { MODES } from './logic';
 ---
 <div class="cc-tool">
-  <label for="cc-input" class="sr-only">متن ورودی</label>
+  <label for="cc-input" class="sr-only"><span data-lang-fa="متن ورودی" data-lang-en="Input text">متن ورودی</span></label>
   <textarea
     id="cc-input"
     class="textarea"
-    placeholder="متن خود را اینجا تایپ یا جای‌گذاری کنید..."
+    placeholder="متن خود را اینجا تایپ یا جای‌گذاری کنید..." data-lang-placeholder-fa="متن خود را اینجا تایپ یا جای‌گذاری کنید..." data-lang-placeholder-en="Type or paste your text here..."
     spellcheck="false"
     aria-describedby="cc-help"
   ></textarea>
   <p id="cc-help" class="cc-help">
-    حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.
+    <span data-lang-fa="حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی." data-lang-en="Maximum 100,000 characters. Processing stays entirely in your browser.">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</span>
   </p>
 
-  <div class="cc-modes" role="group" aria-label="نوع تبدیل">
+  <div class="cc-modes" role="group" aria-label="نوع تبدیل" data-lang-aria-fa="نوع تبدیل" data-lang-aria-en="Conversion type">
     {MODES.map((m, i) => (
       <button
         type="button"
@@ -22,27 +22,27 @@ import { MODES } from './logic';
         data-mode={m.value}
         aria-pressed={i === 0 ? "true" : "false"}
       >
-        {m.labelFa}
+        <span data-lang-fa={m.labelFa} data-lang-en={m.labelEn}>{m.labelFa}</span>
       </button>
     ))}
   </div>
 
   <div class="cc-actions">
     <button type="button" class="btn" id="cc-clear">
-      <span aria-hidden="true">🗑️</span> پاک کردن
+      <span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span>
     </button>
     <button type="button" class="btn btn-primary" id="cc-copy" disabled>
-      <span aria-hidden="true">📋</span> کپی خروجی
+      <span aria-hidden="true">📋</span> <span data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</span>
     </button>
   </div>
 
   <div class="cc-output-wrap">
-    <label for="cc-output" class="cc-output-label">خروجی:</label>
+    <label for="cc-output" class="cc-output-label"><span data-lang-fa="خروجی:" data-lang-en="Output:">خروجی:</span></label>
     <textarea
       id="cc-output"
       class="textarea cc-output"
       readonly
-      placeholder="خروجی اینجا نمایش داده می‌شود..."
+      placeholder="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-fa="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-en="Output will appear here..."
     ></textarea>
   </div>
 </div>
@@ -60,6 +60,8 @@ import { MODES } from './logic';
 
   const MAX_INPUT = 100_000;
   let currentMode: CaseMode = 'lower';
+
+  const isEnglish = () => document.documentElement.lang === 'en';
 
   function refresh() {
     if (!input || !output) return;
@@ -94,8 +96,8 @@ import { MODES } from './logic';
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('خروجی کپی شد', 'success');
-    else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish() ? 'Output copied.' : 'خروجی کپی شد', 'success');
+    else toast(isEnglish() ? 'Copy failed.' : 'کپی نشد', 'error');
   });
 
   refresh();
