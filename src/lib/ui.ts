@@ -321,6 +321,19 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'هر ردیف JSON باید یک شیء باشد.': 'Each JSON row must be an object.'
   'متن نمونه در اینجا نمایش داده می‌شود': 'Sample text appears here',
   'متن بزرگ (۲۴px) نمونه': 'Large text sample (24px)'
+  'آدرس سایت نباید شامل نویسه‌های کنترلی باشد.': 'Website URL must not contain control characters.',
+  'آدرس تصویر نباید شامل نویسه‌های کنترلی باشد.': 'Image URL must not contain control characters.',
+  'آدرس سایت باید از HTTP یا HTTPS استفاده کند.': 'Website URL must use HTTP or HTTPS.',
+  'آدرس تصویر باید از HTTP یا HTTPS استفاده کند.': 'Image URL must use HTTP or HTTPS.',
+  'آدرس سایت معتبر نیست.': 'Website URL is invalid.',
+  'آدرس سایت باید یک آدرس HTTP/HTTPS معتبر و بدون اطلاعات ورود باشد.': 'Website URL must be a valid HTTP/HTTPS URL without credentials.',
+  'آدرس تصویر باید یک آدرس HTTP/HTTPS معتبر و بدون اطلاعات ورود باشد.': 'Image URL must be a valid HTTP/HTTPS URL without credentials.',
+  'یا تصویر را از دستگاه انتخاب کنید': 'Or choose an image from your device',
+  'برای رعایت سیاست امنیتی، تصویر خارجی بارگذاری نمی‌شود؛ از آدرس هم‌دامنه یا بارگذاری فایل استفاده کنید.': 'External images are blocked by the site security policy. Use a same-origin URL or upload a local file.',
+  'بارگذاری تصویر هم‌دامنه ناموفق بود.': 'Could not load the same-origin image.',
+  'تصویر باید PNG/JPEG/WebP/GIF/AVIF و حداکثر ۱۰ مگابایت باشد.': 'Image must be PNG/JPEG/WebP/GIF/AVIF and no larger than 10 MB.',
+  'تصویر محلی برای پیش‌نمایش بارگذاری شد.': 'Local image loaded for preview.',
+  'خواندن تصویر ناموفق بود.': 'Could not read the image.'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
