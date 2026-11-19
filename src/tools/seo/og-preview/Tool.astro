@@ -17,6 +17,9 @@
     <div class="og-field">
       <label for="og-image">آدرس تصویر (Image URL)</label>
       <input id="og-image" type="url" class="input" placeholder="https://example.com/image.jpg" dir="ltr" />
+      <label for="og-image-file">یا تصویر را از دستگاه انتخاب کنید</label>
+      <input id="og-image-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" />
+      <p id="og-image-note" class="og-image-note" role="status" aria-live="polite" hidden></p>
     </div>
   </div>
 
@@ -42,13 +45,18 @@
   const titleInput = document.getElementById('og-title') as HTMLInputElement | null;
   const descInput = document.getElementById('og-desc') as HTMLTextAreaElement | null;
   const imageInput = document.getElementById('og-image') as HTMLInputElement | null;
+  const imageFileInput = document.getElementById('og-image-file') as HTMLInputElement | null;
+  const imageNote = document.getElementById('og-image-note');
+  let localImageUrl = '';
+  const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+  const MAX_IMAGE_PIXELS = 20_000_000;
 
   const prevDomain = document.getElementById('prev-domain');
   const prevTitle = document.getElementById('prev-title');
   const prevDesc = document.getElementById('prev-desc');
   const prevImg = document.getElementById('prev-img') as HTMLImageElement | null;
 
-  const defaultImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='14' fill='%2364748b' text-anchor='middle' dy='.3em'%3Eتصویر پیش‌نمایش%3C/text%3E%3C/svg%3E";
+  const defaultImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='314' viewBox='0 0 600 314'%3E%3Crect width='600' height='314' fill='%23e2e8f0'/%3E%3Crect x='250' y='105' width='100' height='90' rx='10' fill='%2394a3b8'/%3E%3Ccircle cx='280' cy='135' r='10' fill='%23e2e8f0'/%3E%3Cpath d='M260 180l30-30 18 18 14-14 18 26z' fill='%23e2e8f0'/%3E%3C/svg%3E";
 
   function refresh() {
     if (!urlInput || !titleInput || !descInput || !imageInput) return;
@@ -72,8 +80,25 @@
     if (prevImg) {
       const imgUrl = imageInput.value.trim();
       if (imgUrl) {
-        prevImg.src = imgUrl;
-        prevImg.onerror = () => { prevImg.src = defaultImg; };
+        try {
+          const parsed = new URL(imgUrl, window.location.href);
+          if (!['http:', 'https:'].includes(parsed.protocol) || parsed.origin !== window.location.origin) {
+            prevImg.src = defaultImg;
+            if (imageNote) { imageNote.hidden = false; imageNote.textContent = 'برای رعایت سیاست امنیتی، تصویر خارجی بارگذاری نمی‌شود؛ از آدرس هم‌دامنه یا بارگذاری فایل استفاده کنید.'; }
+          } else {
+            if (imageNote) { imageNote.hidden = true; imageNote.textContent = ''; }
+            prevImg.onerror = () => {
+              prevImg!.src = defaultImg;
+              if (imageNote) { imageNote.hidden = false; imageNote.textContent = 'بارگذاری تصویر هم‌دامنه ناموفق بود.'; }
+            };
+            prevImg.src = parsed.href;
+          }
+        } catch {
+          prevImg.src = defaultImg;
+          if (imageNote) { imageNote.hidden = false; imageNote.textContent = 'آدرس تصویر معتبر نیست.'; }
+        }
+      } else if (localImageUrl) {
+        prevImg.src = localImageUrl;
       } else {
         prevImg.src = defaultImg;
       }
@@ -84,6 +109,39 @@
   titleInput?.addEventListener('input', refresh);
   descInput?.addEventListener('input', refresh);
   imageInput?.addEventListener('input', refresh);
+  imageFileInput?.addEventListener('change', () => {
+    const file = imageFileInput.files?.[0];
+    if (!file || !prevImg) return;
+    const allowed = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/avif'];
+    if (!allowed.includes(file.type) || file.size <= 0 || file.size > MAX_IMAGE_BYTES) {
+      if (imageNote) { imageNote.hidden = false; imageNote.textContent = 'تصویر باید PNG/JPEG/WebP/GIF/AVIF و حداکثر ۱۰ مگابایت باشد.'; }
+      imageFileInput.value = '';
+      return;
+    }
+    const nextUrl = URL.createObjectURL(file);
+    const probe = new Image();
+    probe.onload = () => {
+      if (probe.naturalWidth * probe.naturalHeight > MAX_IMAGE_PIXELS) {
+        URL.revokeObjectURL(nextUrl);
+        if (imageNote) { imageNote.hidden = false; imageNote.textContent = 'ابعاد تصویر بیش از حد مجاز است (حداکثر ۲۰ مگاپیکسل).'; }
+        imageFileInput.value = '';
+        return;
+      }
+      if (localImageUrl) URL.revokeObjectURL(localImageUrl);
+      localImageUrl = nextUrl;
+      imageInput!.value = '';
+      prevImg.src = localImageUrl;
+      if (imageNote) { imageNote.hidden = false; imageNote.textContent = 'تصویر محلی برای پیش‌نمایش بارگذاری شد.'; }
+      imageFileInput.value = '';
+    };
+    probe.onerror = () => {
+      URL.revokeObjectURL(nextUrl);
+      if (imageNote) { imageNote.hidden = false; imageNote.textContent = 'خواندن تصویر ناموفق بود.'; }
+      imageFileInput.value = '';
+    };
+    probe.src = nextUrl;
+  });
+
 
   refresh();
 </script>
@@ -93,6 +151,7 @@
   .og-form { display: flex; flex-direction: column; gap: var(--space-3); }
   .og-field { display: flex; flex-direction: column; gap: var(--space-1); }
   .og-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+  .og-image-note { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
   .og-preview-wrap { padding: var(--space-3); background: var(--color-surface-2); border-radius: var(--radius-md); border: 1px solid var(--color-border); display: flex; flex-direction: column; align-items: center; }
   .og-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); margin-bottom: var(--space-3); align-self: flex-start; }
   .og-card { width: 100%; max-width: 450px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; background: #fff; text-align: left; font-family: system-ui, -apple-system, sans-serif; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
