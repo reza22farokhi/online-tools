@@ -84,7 +84,7 @@ function translatedToolText(value: string, lang: Lang): string {
   }
   const dateResult = trimmed.match(/^(?:(\\d+) سال و )?(?:(\\d+) ماه و )?(\\d+) روز$/);
   if (dateResult) {
-    const parts = [];
+    const parts: string[] = [];
     if (dateResult[1]) parts.push(dateResult[1] + ' years');
     if (dateResult[2]) parts.push(dateResult[2] + ' months');
     parts.push(dateResult[3] + ' days');
