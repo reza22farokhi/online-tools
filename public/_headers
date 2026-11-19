@@ -4,7 +4,7 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.yektanet.ir https://cdn.yektanet.com https://native-scripts.yektanet.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://cdn.yektanet.com https://panel-cdn.yektanet.ir; font-src 'self' data: https://cdn.yektanet.com/fonts/ https://cdn.yektanet.com/assets/fonts/; connect-src 'self' https://api.counterapi.dev https://jamssp.yektanet.com https://audience.yektanet.com https://ua.yektanet.com https://event.yektanet.com/api/viewed-impression/v1/collect; frame-src https://cdn.yektanet.com blob:; object-src 'none'; base-uri 'self'; form-action 'self';
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.yektanet.ir https://cdn.yektanet.com https://native-scripts.yektanet.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://cdn.yektanet.com https://panel-cdn.yektanet.ir; font-src 'self' data: https://cdn.yektanet.com/fonts/ https://cdn.yektanet.com/assets/fonts/; connect-src 'self' https://api.counterapi.dev https://jamssp.yektanet.com https://audience.yektanet.com https://ua.yektanet.com https://event.yektanet.com/api/viewed-impression/v1/collect; frame-src https://cdn.yektanet.com blob:; object-src 'none'; base-uri 'self'; form-action 'self';
 
 /_astro/*
   ! Cache-Control
