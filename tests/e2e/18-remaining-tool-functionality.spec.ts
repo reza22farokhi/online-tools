@@ -156,7 +156,7 @@ test('standalone JWT Inspector decodes locally, escapes untrusted claims, and sh
   const privacy = page.locator('.jwt-subtitle');
   await expect(privacy).toContainText('not sent to our servers');
   await expect(privacy).toContainText('Essential technical requests');
-  await expect(privacy).not.toContainText(/\\b(advertising|advertisements|ad network|ads)\\b/i);
+  await expect(privacy).not.toContainText(/\b(advertising|advertisements|ad network|ads)\b/i);
 
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
   const payload = Buffer.from(JSON.stringify({
