@@ -8,21 +8,42 @@ export interface JwtResult {
   expiresAt?: Date;
   issuedAt?: Date;
   notBefore?: Date;
+  invalidTimestamps?: string[];
 }
 
+export const MAX_TOKEN_LENGTH = 10_000;
+const MAX_DATE_SECONDS = 8_640_000_000_000;
+
 function base64UrlDecode(str: string): string {
+  if (!/^[A-Za-z0-9_-]*$/.test(str) || str.length % 4 === 1) {
+    throw new Error('Invalid base64url');
+  }
   let s = str.replace(/-/g, '+').replace(/_/g, '/');
   const pad = s.length % 4;
   if (pad === 2) s += '==';
   else if (pad === 3) s += '=';
-  else if (pad !== 0) throw new Error('Invalid base64url length');
   const binary = atob(s);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
   return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
 }
 
+function claimDate(value: unknown, claim: string, invalid: string[]): Date | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== 'number' || !Number.isFinite(value) || Math.abs(value) > MAX_DATE_SECONDS) {
+    invalid.push(claim);
+    return undefined;
+  }
+  const date = new Date(value * 1000);
+  if (Number.isNaN(date.getTime())) {
+    invalid.push(claim);
+    return undefined;
+  }
+  return date;
+}
+
 export function decodeJwt(token: string): JwtResult {
+  if (token.length > MAX_TOKEN_LENGTH) return { ok: false, error: 'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).' };
   const trimmed = token.trim().replace(/\s+/g, '');
   if (!trimmed) return { ok: false, error: 'توکن خالی است' };
 
@@ -32,63 +53,72 @@ export function decodeJwt(token: string): JwtResult {
   }
 
   const [headerB64, payloadB64, signature] = parts;
-
   let header: Record<string, unknown>;
   let payload: Record<string, unknown>;
 
   try {
-    const decoded = JSON.parse(base64UrlDecode(headerB64));
-    if (typeof decoded !== 'object' || decoded === null) throw new Error('not object');
-    header = decoded;
+    const decoded: unknown = JSON.parse(base64UrlDecode(headerB64));
+    if (typeof decoded !== 'object' || decoded === null || Array.isArray(decoded)) throw new Error('not object');
+    header = decoded as Record<string, unknown>;
   } catch {
     return { ok: false, error: 'Header نامعتبر است (Base64URL یا JSON معتبر نیست)' };
   }
 
   try {
-    const decoded = JSON.parse(base64UrlDecode(payloadB64));
-    if (typeof decoded !== 'object' || decoded === null) throw new Error('not object');
-    payload = decoded;
+    const decoded: unknown = JSON.parse(base64UrlDecode(payloadB64));
+    if (typeof decoded !== 'object' || decoded === null || Array.isArray(decoded)) throw new Error('not object');
+    payload = decoded as Record<string, unknown>;
   } catch {
     return { ok: false, error: 'Payload نامعتبر است (Base64URL یا JSON معتبر نیست)' };
   }
 
-  const now = Math.floor(Date.now() / 1000);
-  const exp = typeof payload.exp === 'number' ? payload.exp : undefined;
-  const iat = typeof payload.iat === 'number' ? payload.iat : undefined;
-  const nbf = typeof payload.nbf === 'number' ? payload.nbf : undefined;
+  const invalidTimestamps: string[] = [];
+  const expiresAt = claimDate(payload.exp, 'exp', invalidTimestamps);
+  const issuedAt = claimDate(payload.iat, 'iat', invalidTimestamps);
+  const notBefore = claimDate(payload.nbf, 'nbf', invalidTimestamps);
 
   return {
     ok: true,
     header,
     payload,
     signature,
-    isExpired: exp !== undefined ? exp < now : undefined,
-    expiresAt: exp ? new Date(exp * 1000) : undefined,
-    issuedAt: iat ? new Date(iat * 1000) : undefined,
-    notBefore: nbf ? new Date(nbf * 1000) : undefined
+    isExpired: expiresAt ? expiresAt.getTime() <= Date.now() : undefined,
+    expiresAt,
+    issuedAt,
+    notBefore,
+    invalidTimestamps
   };
 }
 
 export function formatTimestamp(d: Date): string {
+  if (Number.isNaN(d.getTime())) return 'Invalid date';
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
-export function getTimeRemaining(expiry: Date): string {
-  const diff = expiry.getTime() - Date.now();
-  if (diff < 0) return formatDuration(Math.abs(diff)) + ' پیش منقضی شده';
-  return formatDuration(diff) + ' تا انقضا';
-}
-
-function formatDuration(ms: number): string {
+function formatDuration(ms: number, lang: 'fa' | 'en'): string {
   const seconds = Math.floor(ms / 1000);
   const days = Math.floor(seconds / 86400);
   const hours = Math.floor((seconds % 86400) / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
   const parts: string[] = [];
-  if (days > 0) parts.push(`${days} روز`);
-  if (hours > 0) parts.push(`${hours} ساعت`);
-  if (minutes > 0) parts.push(`${minutes} دقیقه`);
-  if (parts.length === 0) parts.push(`${seconds} ثانیه`);
-  return parts.join(' و ');
+  const add = (value: number, fa: string, en: string) => {
+    if (value > 0) parts.push(lang === 'en' ? `${value} ${en}${value === 1 ? '' : 's'}` : `${value} ${fa}`);
+  };
+  add(days, 'روز', 'day');
+  add(hours, 'ساعت', 'hour');
+  add(minutes, 'دقیقه', 'minute');
+  if (parts.length === 0) add(remainingSeconds, 'ثانیه', 'second');
+  return parts.join(lang === 'en' ? ', ' : ' و ');
+}
+
+export function getTimeRemaining(expiry: Date, lang: 'fa' | 'en' = 'fa'): string {
+  const diff = expiry.getTime() - Date.now();
+  if (diff <= 0) {
+    const duration = formatDuration(Math.abs(diff), lang);
+    return lang === 'en' ? `Expired ${duration} ago` : `${duration} پیش منقضی شده`;
+  }
+  const duration = formatDuration(diff, lang);
+  return lang === 'en' ? `${duration} remaining` : `${duration} تا انقضا`;
 }
