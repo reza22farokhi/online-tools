@@ -91,7 +91,7 @@ function translatedToolText(value: string, lang: Lang): string {
     parts.push(dateResult[3] + ' days');
     return value.replace(trimmed, parts.join(', '));
   }
-  const jalaliResult = trimmed.match(/^(\\d{1,2}) (فروردین|اردیبهشت|خرداد|تیر|مرداد|شهریور|مهر|آبان|آذر|دی|بهمن|اسفند) (\\d{4})$/);
+  const jalaliResult = trimmed.match(/^(\d{1,2}) (فروردین|اردیبهشت|خرداد|تیر|مرداد|شهریور|مهر|آبان|آذر|دی|بهمن|اسفند) (\d{4})$/);
   if (jalaliResult) return value.replace(trimmed, jalaliResult[1] + ' ' + TOOL_TEXT_EN[jalaliResult[2]] + ' ' + jalaliResult[3]);
   const percentResult = trimmed.match(/^(.+) برابر است با (.+)٪ از (.+)$/);
   if (percentResult) return value.replace(trimmed, percentResult[1] + ' equals ' + percentResult[2] + '% of ' + percentResult[3]);
