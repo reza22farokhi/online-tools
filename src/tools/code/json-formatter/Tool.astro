@@ -50,6 +50,14 @@
   function refresh() {
     if (!input || !output) return;
     if (input.value.length > MAX_INPUT) input.value = input.value.slice(0, MAX_INPUT);
+    if (!input.value.trim()) {
+      hasError = false;
+      renderError();
+      output.value = '';
+      if (copyBtn) copyBtn.disabled = true;
+      if (indentWrap) indentWrap.style.display = currentMode === 'format' ? '' : 'none';
+      return;
+    }
     const indent: 2 | 4 = indentSelect?.value === '4' ? 4 : 2;
     if (indentWrap) indentWrap.style.display = currentMode === 'format' ? '' : 'none';
     const result = processJson(input.value, currentMode, indent);
