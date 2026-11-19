@@ -19,17 +19,17 @@ test('all tool routes avoid document-level horizontal overflow in Persian and En
     bodyWidth: number;
   }> = [];
 
-  for (const width of widths) {
-    await page.setViewportSize({ width, height: 844 });
+  for (const route of routes) {
+    for (const lang of ['fa', 'en']) {
+      await page.setViewportSize({ width: widths[0], height: 844 });
+      const response = await page.goto(`${route.path}?lang=${lang}`, {
+        waitUntil: 'domcontentloaded'
+      });
 
-    for (const route of routes) {
-      for (const lang of ['fa', 'en']) {
-        const response = await page.goto(`${route.path}?lang=${lang}`, {
-          waitUntil: 'domcontentloaded'
-        });
-
+      for (const width of widths) {
+        await page.setViewportSize({ width, height: 844 });
         const dimensions = await page.evaluate(() => ({
-          viewportWidth: document.documentElement.clientWidth,
+          viewportWidth: window.innerWidth,
           documentWidth: document.documentElement.scrollWidth,
           bodyWidth: document.body.scrollWidth
         }));
