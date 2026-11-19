@@ -7,10 +7,7 @@ export const meta: ToolMeta = {
     fa: 'فرمت‌بندی، کوچک‌سازی و اعتبارسنجی JSON',
     en: 'JSON Formatter / Minifier / Validator'
   },
-  description: {
-    fa: 'JSON را مرتب (Pretty-Print)، کوچک (Minify) یا اعتبارسنجی کنید. با پیام خطای دقیق و پردازش کاملاً محلی.',
-    en: 'Format (pretty-print), minify, or validate JSON. Precise error messages, all in-browser.'
-  },
+  description: { fa: "کد JSON را قالب‌بندی و خواناتر کنید، حجم آن را کوچک کنید و خطاهای نحوی را با پیام دقیق پیدا کنید؛ همه پردازش‌ها در مرورگر انجام می‌شود.", en: "Format JSON for readability, minify it for compact transfer, and validate syntax with clear error locations; all processing runs in your browser." },
   keywords: [
     'json formatter',
     'json beautifier',
