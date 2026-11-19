@@ -58,6 +58,9 @@
   let originalSize = 0;
   let objectUrl: string | null = null;
   let isProcessing = false;
+  let downloadUrl: string | null = null;
+  const MAX_IMAGE_PIXELS = 16_000_000;
+  const SUPPORTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
   function showError(msg: string) {
     if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
     if (uploadZone) uploadZone.hidden = false;
@@ -71,7 +74,7 @@
   function handleFile(file: File) {
     clearError();
     if (isProcessing) { showError('یک پردازش در حال انجام است.'); return; }
-    if (!file.type.startsWith('image/')) { showError('لطفاً یک فایل تصویری انتخاب کنید.'); return; }
+    if (!SUPPORTED_TYPES.includes(file.type)) { showError('فرمت تصویر پشتیبانی نمی‌شود. JPG، PNG یا WebP انتخاب کنید.'); return; }
     const v = validateFileSize(file.size, MAX_IMAGE_SIZE, MAX_IMAGE_SIZE_LABEL);
     if (!v.ok) { showError(v.error ?? 'خطای نامشخص'); return; }
     isProcessing = true;
@@ -80,6 +83,11 @@
     originalSize = file.size;
     const img = new Image();
     img.onload = () => {
+      if (img.naturalWidth * img.naturalHeight > MAX_IMAGE_PIXELS) {
+        URL.revokeObjectURL(objectUrl!); objectUrl = null;
+        showError('ابعاد تصویر بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).');
+        return;
+      }
       originalImage = img;
       if (previewImg) previewImg.src = objectUrl!;
       if (origSizeEl) origSizeEl.textContent = formatBytes(originalSize);
@@ -90,7 +98,7 @@
       if (newSizeEl) newSizeEl.textContent = '-';
       isProcessing = false;
     };
-    img.onerror = () => { showError('فایل تصویری معتبر نیست.'); };
+    img.onerror = () => { if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = null; showError('فایل تصویری معتبر نیست.'); };
     img.src = objectUrl;
   }
   fileInput?.addEventListener('change', (e) => {
@@ -111,19 +119,23 @@
     if (!originalImage || !qualityInput || !formatSelect) return;
     const quality = Number(qualityInput.value) / 100;
     const format = formatSelect.value;
+    processBtn.disabled = true;
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
     const canvas = document.createElement('canvas');
     canvas.width = originalImage.naturalWidth;
     canvas.height = originalImage.naturalHeight;
     const ctx = canvas.getContext('2d');
-    if (!ctx) { showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
+    if (!ctx) { processBtn.disabled = false; showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
     if (format === 'image/jpeg') {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     ctx.drawImage(originalImage, 0, 0);
     canvas.toBlob((blob) => {
-      if (!blob || !downloadBtn || !newSizeEl || !reductionWrap || !reductionEl) return;
+      processBtn.disabled = false;
+      if (!blob || !downloadBtn || !newSizeEl || !reductionWrap || !reductionEl) { showError('ساخت تصویر خروجی ناموفق بود.'); return; }
       const url = URL.createObjectURL(blob);
+      downloadUrl = url;
       downloadBtn.href = url;
       const ext = format === 'image/jpeg' ? 'jpg' : 'webp';
       downloadBtn.download = `compressed-image.${ext}`;
