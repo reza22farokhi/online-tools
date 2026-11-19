@@ -5,8 +5,8 @@
     <input type="file" id="ic-file" accept="image/jpeg, image/png, image/webp" class="sr-only" />
     <label for="ic-file" class="ic-upload-label">
       <span class="ic-icon">🗜️</span>
-      <span>برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
-      <span class="ic-hint">فرمت‌های مجاز: JPG, PNG, WebP (حداکثر ۲۰ مگابایت)</span>
+      <span data-lang-fa="برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید" data-lang-en="Click to choose an image or drag it here">برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="ic-hint" data-lang-fa="فرمت‌های مجاز: JPG, PNG, WebP (حداکثر ۲۰ مگابایت)" data-lang-en="Supported formats: JPG, PNG, WebP (max 20 MB)">فرمت‌های مجاز: JPG, PNG, WebP (حداکثر ۲۰ مگابایت)</span>
     </label>
   </div>
   <div class="ic-error" id="ic-error" hidden role="alert"></div>
@@ -14,26 +14,26 @@
     <div class="ic-preview-wrap">
       <img id="ic-preview" class="ic-preview" alt="Preview" />
       <div class="ic-stats">
-        <div>حجم اصلی: <strong id="ic-orig-size">-</strong></div>
-        <div>حجم جدید: <strong id="ic-new-size">-</strong></div>
-        <div class="ic-reduction" id="ic-reduction-wrap" hidden>کاهش حجم: <strong id="ic-reduction">-</strong></div>
+        <div><span data-lang-fa="حجم اصلی:" data-lang-en="Original size:">حجم اصلی:</span> <strong id="ic-orig-size">-</strong></div>
+        <div><span data-lang-fa="حجم جدید:" data-lang-en="New size:">حجم جدید:</span> <strong id="ic-new-size">-</strong></div>
+        <div class="ic-reduction" id="ic-reduction-wrap" hidden><span data-lang-fa="کاهش حجم:" data-lang-en="Size reduction:">کاهش حجم:</span> <strong id="ic-reduction">-</strong></div>
       </div>
     </div>
     <div class="ic-controls">
       <div class="ic-field">
-        <label for="ic-quality">کیفیت (Quality): <span id="ic-q-val">80</span>%</label>
+        <label for="ic-quality"><span data-lang-fa="کیفیت:" data-lang-en="Quality:">کیفیت (Quality):</span> <span id="ic-q-val">80</span>%</label>
         <input id="ic-quality" type="range" min="10" max="100" value="80" class="ic-range" />
       </div>
       <div class="ic-field">
-        <label for="ic-format">فرمت خروجی</label>
+        <label for="ic-format" data-lang-fa="فرمت خروجی" data-lang-en="Output format">فرمت خروجی</label>
         <select id="ic-format" class="select">
-          <option value="image/jpeg" selected>JPG (بهترین فشرده‌سازی)</option>
-          <option value="image/webp">WebP (کیفیت بالا + حجم کم)</option>
+          <option value="image/jpeg" selected>JPG (Best compression)</option>
+          <option value="image/webp">WebP (High quality, smaller size)</option>
         </select>
       </div>
       <div class="ic-actions">
-        <button type="button" class="btn btn-primary" id="ic-process">⚡ فشرده‌سازی</button>
-        <a id="ic-download" class="btn" style="display: none;">📥 دانلود تصویر فشرده</a>
+        <button type="button" class="btn btn-primary" id="ic-process">⚡ <span data-lang-fa="فشرده‌سازی" data-lang-en="Compress">فشرده‌سازی</span></button>
+        <a id="ic-download" class="btn" style="display: none;">📥 <span data-lang-fa="دانلود تصویر فشرده" data-lang-en="Download compressed image">دانلود تصویر فشرده</span></a>
       </div>
     </div>
   </div>
@@ -52,12 +52,26 @@
   const qualityInput = document.getElementById('ic-quality') as HTMLInputElement | null;
   const qValEl = document.getElementById('ic-q-val');
   const formatSelect = document.getElementById('ic-format') as HTMLSelectElement | null;
+  let lastReduction: number | null = null;
+  function renderReductionLabel() {
+    if (lastReduction === null || !reductionWrap) return;
+    const isEnglish = document.documentElement.lang === 'en';
+    const label = lastReduction > 0 ? (isEnglish ? 'Size reduction:' : 'کاهش حجم:')
+      : lastReduction < 0 ? (isEnglish ? 'Size increase:' : 'افزایش حجم:')
+      : (isEnglish ? 'No size change:' : 'بدون تغییر حجم:');
+    const labelEl = reductionWrap.querySelector('span');
+    if (labelEl) labelEl.textContent = label;
+  }
+  document.addEventListener('app:languagechange', renderReductionLabel);
   const processBtn = document.getElementById('ic-process') as HTMLButtonElement | null;
   const downloadBtn = document.getElementById('ic-download') as HTMLAnchorElement | null;
   let originalImage: HTMLImageElement | null = null;
   let originalSize = 0;
   let objectUrl: string | null = null;
   let isProcessing = false;
+  let downloadUrl: string | null = null;
+  const MAX_IMAGE_PIXELS = 16_000_000;
+  const SUPPORTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
   function showError(msg: string) {
     if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
     if (uploadZone) uploadZone.hidden = false;
@@ -68,10 +82,15 @@
     isProcessing = false;
   }
   function clearError() { if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; } }
+  function showProcessError(msg: string) {
+    if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
+    if (workspace) workspace.hidden = false;
+    if (uploadZone) uploadZone.hidden = true;
+  }
   function handleFile(file: File) {
     clearError();
     if (isProcessing) { showError('یک پردازش در حال انجام است.'); return; }
-    if (!file.type.startsWith('image/')) { showError('لطفاً یک فایل تصویری انتخاب کنید.'); return; }
+    if (!SUPPORTED_TYPES.includes(file.type)) { showError('فرمت تصویر پشتیبانی نمی‌شود. JPG، PNG یا WebP انتخاب کنید.'); return; }
     const v = validateFileSize(file.size, MAX_IMAGE_SIZE, MAX_IMAGE_SIZE_LABEL);
     if (!v.ok) { showError(v.error ?? 'خطای نامشخص'); return; }
     isProcessing = true;
@@ -80,6 +99,11 @@
     originalSize = file.size;
     const img = new Image();
     img.onload = () => {
+      if (img.naturalWidth * img.naturalHeight > MAX_IMAGE_PIXELS) {
+        URL.revokeObjectURL(objectUrl!); objectUrl = null;
+        showError('ابعاد تصویر بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).');
+        return;
+      }
       originalImage = img;
       if (previewImg) previewImg.src = objectUrl!;
       if (origSizeEl) origSizeEl.textContent = formatBytes(originalSize);
@@ -90,7 +114,7 @@
       if (newSizeEl) newSizeEl.textContent = '-';
       isProcessing = false;
     };
-    img.onerror = () => { showError('فایل تصویری معتبر نیست.'); };
+    img.onerror = () => { if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = null; showError('فایل تصویری معتبر نیست.'); };
     img.src = objectUrl;
   }
   fileInput?.addEventListener('change', (e) => {
@@ -108,29 +132,38 @@
     if (qValEl && qualityInput) qValEl.textContent = qualityInput.value;
   });
   processBtn?.addEventListener('click', () => {
-    if (!originalImage || !qualityInput || !formatSelect) return;
+    if (!originalImage || !qualityInput || !formatSelect || !processBtn) return;
     const quality = Number(qualityInput.value) / 100;
     const format = formatSelect.value;
+    clearError();
+    processBtn.disabled = true;
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    if (downloadBtn) downloadBtn.hidden = true;
     const canvas = document.createElement('canvas');
     canvas.width = originalImage.naturalWidth;
     canvas.height = originalImage.naturalHeight;
     const ctx = canvas.getContext('2d');
-    if (!ctx) { showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
+    if (!ctx) { processBtn.disabled = false; showProcessError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
     if (format === 'image/jpeg') {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     ctx.drawImage(originalImage, 0, 0);
     canvas.toBlob((blob) => {
-      if (!blob || !downloadBtn || !newSizeEl || !reductionWrap || !reductionEl) return;
+      processBtn.disabled = false;
+      if (!blob || !downloadBtn || !newSizeEl || !reductionWrap || !reductionEl) { showProcessError('ساخت تصویر خروجی ناموفق بود.'); return; }
       const url = URL.createObjectURL(blob);
+      downloadUrl = url;
       downloadBtn.href = url;
+      downloadBtn.hidden = false;
       const ext = format === 'image/jpeg' ? 'jpg' : 'webp';
       downloadBtn.download = `compressed-image.${ext}`;
       downloadBtn.style.display = 'inline-flex';
       newSizeEl.textContent = formatBytes(blob.size);
       const reduction = calculateReduction(originalSize, blob.size);
-      reductionEl.textContent = `${reduction}%`;
+      lastReduction = reduction;
+      renderReductionLabel();
+      reductionEl.textContent = `${Math.abs(reduction)}%`;
       reductionWrap.hidden = false;
     }, format, quality);
   });
@@ -153,4 +186,5 @@
   .ic-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
   .ic-range { width: 100%; accent-color: var(--color-primary); }
   .ic-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+  .ic-workspace[hidden] { display: none; }
 </style>

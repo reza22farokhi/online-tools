@@ -2,37 +2,37 @@
 ---
 <div class="uts-tool">
   <div class="uts-current">
-    <div class="uts-current-label">تایم‌استمپ فعلی (Unix):</div>
+    <div class="uts-current-label" data-lang-fa="تایم‌استمپ فعلی (Unix):" data-lang-en="Current Unix timestamp:">تایم‌استمپ فعلی (Unix):</div>
     <div class="uts-current-value" id="uts-current">—</div>
-    <button type="button" class="btn btn-sm" id="uts-copy-now">📋 کپی</button>
+    <button type="button" class="btn btn-sm" id="uts-copy-now">📋 <span data-lang-fa="کپی" data-lang-en="Copy">کپی</span></button>
   </div>
 
   <div class="uts-panel">
-    <h3>Timestamp → تاریخ</h3>
+    <h3 data-lang-fa="Timestamp → تاریخ" data-lang-en="Timestamp → Date">Timestamp → تاریخ</h3>
     <div class="uts-row">
       <input id="uts-input-ts" type="text" class="input" placeholder="1700000000" dir="ltr" />
-      <button type="button" class="btn btn-primary" id="uts-convert-ts">تبدیل</button>
+      <button type="button" class="btn btn-primary" id="uts-convert-ts"><span data-lang-fa="تبدیل" data-lang-en="Convert">تبدیل</span></button>
     </div>
     <div class="uts-error" id="uts-error-ts" hidden></div>
     <div class="uts-results" id="uts-results-ts" hidden>
-      <div class="uts-result-row"><span>میلادی:</span><code id="uts-out-greg">—</code></div>
-      <div class="uts-result-row"><span>شمسی:</span><code id="uts-out-jalali">—</code></div>
-      <div class="uts-result-row"><span>قمری:</span><code id="uts-out-hijri">—</code></div>
-      <div class="uts-result-row"><span>UTC:</span><code id="uts-out-utc">—</code></div>
-      <div class="uts-result-row"><span>ISO 8601:</span><code id="uts-out-iso">—</code></div>
+      <div class="uts-result-row"><span data-lang-fa="میلادی:" data-lang-en="Gregorian:">میلادی:</span><code id="uts-out-greg" data-date-output>—</code></div>
+      <div class="uts-result-row"><span data-lang-fa="شمسی:" data-lang-en="Jalali:">شمسی:</span><code id="uts-out-jalali" data-date-output>—</code></div>
+      <div class="uts-result-row"><span data-lang-fa="قمری:" data-lang-en="Hijri:">قمری:</span><code id="uts-out-hijri" data-date-output>—</code></div>
+      <div class="uts-result-row"><span>UTC:</span><code id="uts-out-utc" data-date-output>—</code></div>
+      <div class="uts-result-row"><span>ISO 8601:</span><code id="uts-out-iso" data-date-output>—</code></div>
     </div>
   </div>
 
   <div class="uts-panel">
-    <h3>تاریخ → Timestamp</h3>
+    <h3 data-lang-fa="تاریخ → Timestamp" data-lang-en="Date → Timestamp">تاریخ → Timestamp</h3>
     <div class="uts-row">
-      <label for="uts-date-input" class="sr-only">تاریخ میلادی</label>
+      <label for="uts-date-input" class="sr-only" data-lang-fa="تاریخ میلادی" data-lang-en="Gregorian date">تاریخ میلادی</label>
       <input id="uts-date-input" type="datetime-local" class="input" />
-      <button type="button" class="btn btn-primary" id="uts-convert-date">تبدیل</button>
+      <button type="button" class="btn btn-primary" id="uts-convert-date"><span data-lang-fa="تبدیل" data-lang-en="Convert">تبدیل</span></button>
     </div>
     <div class="uts-results" id="uts-results-date" hidden>
-      <div class="uts-result-row"><span>Timestamp (ثانیه):</span><code id="uts-out-sec">—</code></div>
-      <div class="uts-result-row"><span>Timestamp (میلی‌ثانیه):</span><code id="uts-out-ms">—</code></div>
+      <div class="uts-result-row"><span data-lang-fa="Timestamp (ثانیه):" data-lang-en="Timestamp (seconds):">Timestamp (ثانیه):</span><code id="uts-out-sec">—</code></div>
+      <div class="uts-result-row"><span data-lang-fa="Timestamp (میلی‌ثانیه):" data-lang-en="Timestamp (milliseconds):">Timestamp (میلی‌ثانیه):</span><code id="uts-out-ms">—</code></div>
     </div>
   </div>
 </div>
@@ -47,6 +47,10 @@
   const errorEl = document.getElementById('uts-error-ts');
   const resultsTs = document.getElementById('uts-results-ts');
   const resultsDate = document.getElementById('uts-results-date');
+  const jalaliMonthsEn = ['Farvardin', 'Ordibehesht', 'Khordad', 'Tir', 'Mordad', 'Shahrivar', 'Mehr', 'Aban', 'Azar', 'Dey', 'Bahman', 'Esfand'];
+  const hijriMonthsEn = ['Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani", 'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban", 'Ramadan', 'Shawwal', "Dhu al-Qadah", 'Dhu al-Hijjah'];
+
+  const t = (fa: string, en: string) => document.documentElement.lang === 'en' ? en : fa;
 
   function updateCurrent() {
     if (currentEl) currentEl.textContent = String(getCurrentTimestamp());
@@ -57,29 +61,34 @@
   document.getElementById('uts-copy-now')?.addEventListener('click', async () => {
     if (!currentEl?.textContent) return;
     const ok = await copyText(currentEl.textContent);
-    if (ok) toast('کپی شد', 'success'); else toast('کپی نشد', 'error');
+    if (ok) toast(t('کپی شد', 'Copied'), 'success'); else toast(t('کپی نشد', 'Copy failed'), 'error');
   });
 
   document.getElementById('uts-convert-ts')?.addEventListener('click', () => {
     if (!tsInput || !resultsTs) return;
     if (errorEl) errorEl.hidden = true;
+    resultsTs.hidden = true;
+    if (!tsInput.value.trim()) {
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = t('عدد نامعتبر', 'Invalid number'); }
+      return;
+    }
     const ts = Number(tsInput.value.trim());
     if (!Number.isFinite(ts)) {
-      if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'عدد نامعتبر'; }
-      resultsTs.hidden = true;
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = t('عدد نامعتبر', 'Invalid number'); }
       return;
     }
     const d = timestampToDate(ts);
-    if (!d) { if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'تایم‌استمپ نامعتبر'; } return; }
+    if (!d) { if (errorEl) { errorEl.hidden = false; errorEl.textContent = t('تایم‌استمپ نامعتبر', 'Invalid timestamp'); } return; }
 
     const g = { gy: d.getFullYear(), gm: d.getMonth() + 1, gd: d.getDate() };
     const j = toJalali(g.gy, g.gm, g.gd);
     const h = gregorianToHijri(g.gy, g.gm, g.gd);
+    const isEnglish = document.documentElement.lang === 'en';
 
     const setEl = (id: string, val: string) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     setEl('uts-out-greg', formatDateTime(d));
-    setEl('uts-out-jalali', `${j.jd} ${JALALI_MONTHS[j.jm - 1]} ${j.jy} - ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
-    setEl('uts-out-hijri', `${h.hd} ${HIJRI_MONTHS[h.hm - 1]} ${h.hy}`);
+    setEl('uts-out-jalali', `${j.jd} ${isEnglish ? jalaliMonthsEn[j.jm - 1] : JALALI_MONTHS[j.jm - 1]} ${j.jy} - ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+    setEl('uts-out-hijri', `${h.hd} ${isEnglish ? hijriMonthsEn[h.hm - 1] : HIJRI_MONTHS[h.hm - 1]} ${h.hy}`);
     setEl('uts-out-utc', d.toUTCString());
     setEl('uts-out-iso', d.toISOString());
 
@@ -88,6 +97,7 @@
 
   document.getElementById('uts-convert-date')?.addEventListener('click', () => {
     if (!dateInput || !resultsDate) return;
+    resultsDate.hidden = true;
     if (!dateInput.value) return;
     const d = new Date(dateInput.value);
     if (isNaN(d.getTime())) return;

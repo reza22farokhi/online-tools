@@ -2,68 +2,68 @@
 import { SORT_MODES } from './logic';
 ---
 <div class="ls-tool">
-  <label for="ls-input" class="sr-only">متن ورودی</label>
+  <label for="ls-input" class="sr-only"><span data-lang-fa="متن ورودی" data-lang-en="Input text">متن ورودی</span></label>
   <textarea
     id="ls-input"
     class="textarea"
-    placeholder="هر خط یک آیتم. مثال:&#10;banana&#10;apple&#10;cherry"
+    placeholder="هر خط یک آیتم. مثال:&#10;banana&#10;apple&#10;cherry" data-lang-placeholder-fa="هر خط یک آیتم. مثال:&#10;banana&#10;apple&#10;cherry" data-lang-placeholder-en="One item per line. Example:&#10;banana&#10;apple&#10;cherry"
     spellcheck="false"
     aria-describedby="ls-help"
   ></textarea>
   <p id="ls-help" class="ls-help">
-    حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.
+    <span data-lang-fa="حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی." data-lang-en="Maximum 100,000 characters. Processing stays entirely in your browser.">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</span>
   </p>
 
   <div class="ls-controls">
     <div class="ls-control-group">
-      <label for="ls-mode">نوع مرتب‌سازی:</label>
+      <label for="ls-mode"><span data-lang-fa="نوع مرتب‌سازی:" data-lang-en="Sort order:">نوع مرتب‌سازی:</span></label>
       <select id="ls-mode" class="select ls-select">
         {SORT_MODES.map((m, i) => (
-          <option value={m.value} selected={i === 0}>{m.fa}</option>
+          <option value={m.value} selected={i === 0} data-lang-fa={m.fa} data-lang-en={m.en}>{m.fa}</option>
         ))}
       </select>
     </div>
   </div>
 
   <fieldset class="ls-options">
-    <legend>گزینه‌ها:</legend>
+    <legend><span data-lang-fa="گزینه‌ها:" data-lang-en="Options:">گزینه‌ها:</span></legend>
     <label class="ls-opt">
       <input type="checkbox" id="ls-trim" checked />
-      <span>حذف فاصله ابتدا/انتهای هر خط</span>
+      <span data-lang-fa="حذف فاصله ابتدا/انتهای هر خط" data-lang-en="Trim leading and trailing spaces on each line">حذف فاصله ابتدا/انتهای هر خط</span>
     </label>
     <label class="ls-opt">
       <input type="checkbox" id="ls-remove-empty" checked />
-      <span>حذف خطوط خالی</span>
+      <span data-lang-fa="حذف خطوط خالی" data-lang-en="Remove empty lines">حذف خطوط خالی</span>
     </label>
     <label class="ls-opt">
       <input type="checkbox" id="ls-unique" />
-      <span>حذف خطوط تکراری</span>
+      <span data-lang-fa="حذف خطوط تکراری" data-lang-en="Remove duplicate lines">حذف خطوط تکراری</span>
     </label>
     <label class="ls-opt">
       <input type="checkbox" id="ls-ci" />
-      <span>مقایسه بدون حساسیت به حروف بزرگ/کوچک</span>
+      <span data-lang-fa="مقایسه بدون حساسیت به حروف بزرگ/کوچک" data-lang-en="Case-insensitive comparison">مقایسه بدون حساسیت به حروف بزرگ/کوچک</span>
     </label>
     <label class="ls-opt">
       <input type="checkbox" id="ls-numeric" />
-      <span>مرتب‌سازی عددی (برای اعداد)</span>
+      <span data-lang-fa="مرتب‌سازی عددی (برای اعداد)" data-lang-en="Numeric sorting (for numbers)">مرتب‌سازی عددی (برای اعداد)</span>
     </label>
   </fieldset>
 
   <div class="ls-actions">
     <button type="button" class="btn" id="ls-clear">
-      <span aria-hidden="true">🗑️</span> پاک کردن
+      <span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span>
     </button>
     <button type="button" class="btn btn-primary" id="ls-copy" disabled>
-      <span aria-hidden="true">📋</span> کپی خروجی
+      <span aria-hidden="true">📋</span> <span data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</span>
     </button>
   </div>
 
-  <label for="ls-output" class="ls-output-label">خروجی:</label>
+  <label for="ls-output" class="ls-output-label"><span data-lang-fa="خروجی:" data-lang-en="Output:">خروجی:</span></label>
   <textarea
     id="ls-output"
     class="textarea ls-output"
     readonly
-    placeholder="خروجی اینجا نمایش داده می‌شود..."
+    placeholder="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-fa="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-en="Output will appear here..."
   ></textarea>
 </div>
 
@@ -86,6 +86,8 @@ import { SORT_MODES } from './logic';
     caseInsensitive: document.getElementById('ls-ci') as HTMLInputElement | null,
     numeric: document.getElementById('ls-numeric') as HTMLInputElement | null
   };
+
+  const isEnglish = () => document.documentElement.lang === "en";
 
   function readOptions(): SortOptions {
     return {
@@ -122,8 +124,8 @@ import { SORT_MODES } from './logic';
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('خروجی کپی شد', 'success');
-    else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish() ? 'Output copied.' : 'خروجی کپی شد', 'success');
+    else toast(isEnglish() ? 'Copy failed.' : 'کپی نشد', 'error');
   });
 
   refresh();

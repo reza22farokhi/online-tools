@@ -3,17 +3,15 @@
 import { STANDARD_CLAIMS } from './claims';
 ---
 
-<section class="jwt-inspector" dir="rtl" lang="fa">
+<section class="jwt-inspector">
   <header class="jwt-header">
-    <h1>بازرس JWT</h1>
-    <p class="jwt-subtitle">
-      توکن و کلید واردشده فقط در مرورگر شما پردازش می‌شوند و توسط این ابزار به سرور ارسال نمی‌شوند. سرویس‌های مستقل تبلیغات و شمارنده بازدید ممکن است درخواست‌های جداگانه دریافت کنند.
-    </p>
+    <h1 data-lang-fa="بازرس JWT" data-lang-en="JWT Inspector">بازرس JWT</h1>
+    <p class="jwt-subtitle" data-lang-fa="توکن و کلید واردشده فقط در مرورگر شما پردازش می‌شوند و توسط این ابزار به سرور ارسال نمی‌شوند. سرویس‌های مستقل تبلیغات و شمارنده بازدید ممکن است درخواست‌های جداگانه دریافت کنند." data-lang-en="Your token and key are processed locally in this browser and are not sent to our servers. Independent advertising and analytics services may make separate requests.">توکن و کلید واردشده فقط در مرورگر شما پردازش می‌شوند و توسط این ابزار به سرور ارسال نمی‌شوند. سرویس‌های مستقل تبلیغات و شمارنده بازدید ممکن است درخواست‌های جداگانه دریافت کنند.</p>
   </header>
 
   <div class="jwt-grid">
     <div class="jwt-column">
-      <label for="jwt-input" class="jwt-label">توکن JWT</label>
+      <label for="jwt-input" class="jwt-label" data-lang-fa="توکن JWT" data-lang-en="JWT Token">توکن JWT</label>
       <textarea
         id="jwt-input"
         class="jwt-textarea"
@@ -24,22 +22,22 @@ import { STANDARD_CLAIMS } from './claims';
       ></textarea>
 
       <div class="jwt-row">
-        <button id="jwt-sample-hs256" class="jwt-btn jwt-btn-secondary" type="button">
+        <button id="jwt-sample-hs256" class="jwt-btn jwt-btn-secondary" type="button" data-lang-fa="نمونه HS256" data-lang-en="HS256 Sample">
           نمونه HS256
         </button>
-        <button id="jwt-sample-rs256" class="jwt-btn jwt-btn-secondary" type="button">
+        <button id="jwt-sample-rs256" class="jwt-btn jwt-btn-secondary" type="button" data-lang-fa="نمونه RS256" data-lang-en="RS256 Sample">
           نمونه RS256
         </button>
-        <button id="jwt-clear" class="jwt-btn jwt-btn-ghost" type="button">پاک‌سازی</button>
+        <button id="jwt-clear" class="jwt-btn jwt-btn-ghost" type="button" data-lang-fa="پاک‌سازی" data-lang-en="Clear">پاک‌سازی</button>
       </div>
 
       <div id="jwt-error" class="jwt-error" hidden></div>
 
       <section class="jwt-verify-section">
-        <h3>تأیید امضا (اختیاری)</h3>
-        <label for="jwt-alg" class="jwt-label">الگوریتم</label>
+        <h3 data-lang-fa="تأیید امضا (اختیاری)" data-lang-en="Verify Signature (Optional)">تأیید امضا (اختیاری)</h3>
+        <label for="jwt-alg" class="jwt-label" data-lang-fa="الگوریتم" data-lang-en="Algorithm">الگوریتم</label>
         <select id="jwt-alg" class="jwt-select">
-          <option value="">خودکار (از هدر توکن)</option>
+          <option value="" data-lang-fa="خودکار (از هدر توکن)" data-lang-en="Auto (from token header)">خودکار (از هدر توکن)</option>
           <option value="HS256">HS256 (HMAC-SHA256)</option>
           <option value="HS384">HS384</option>
           <option value="HS512">HS512</option>
@@ -52,7 +50,7 @@ import { STANDARD_CLAIMS } from './claims';
           <option value="ES512">ES512</option>
         </select>
 
-        <label for="jwt-key" class="jwt-label">
+        <label for="jwt-key" class="jwt-label" data-lang-fa="کلید مخفی یا کلید عمومی (PEM)" data-lang-en="Secret or Public Key (PEM)">
           کلید مخفی یا کلید عمومی (PEM)
         </label>
         <textarea
@@ -61,10 +59,10 @@ import { STANDARD_CLAIMS } from './claims';
           rows="3"
           spellcheck="false"
           autocomplete="off"
-          placeholder="برای HS: رشته مخفی | برای RS/ES/PS: کلید عمومی PEM"
+          placeholder="برای HS: رشته مخفی | برای RS/ES/PS: کلید عمومی PEM" data-lang-placeholder-fa="برای HS: رشته مخفی | برای RS/ES/PS: کلید عمومی PEM" data-lang-placeholder-en="For HS: secret string | For RS/ES/PS: public PEM key"
         ></textarea>
 
-        <button id="jwt-verify" class="jwt-btn jwt-btn-primary" type="button">
+        <button id="jwt-verify" class="jwt-btn jwt-btn-primary" type="button" data-lang-fa="تأیید امضا" data-lang-en="Verify Signature">
           تأیید امضا
         </button>
         <div id="jwt-verify-result" class="jwt-verify-result" hidden></div>
@@ -76,14 +74,14 @@ import { STANDARD_CLAIMS } from './claims';
         <div id="jwt-warnings"></div>
 
         <div class="jwt-section">
-          <h3>وضعیت انقضا</h3>
+          <h3 data-lang-fa="وضعیت انقضا" data-lang-en="Expiration Status">وضعیت انقضا</h3>
           <div id="jwt-exp-status" class="jwt-exp-status"></div>
         </div>
 
         <div class="jwt-section">
           <div class="jwt-section-header">
-            <h3>هدر (Header)</h3>
-            <button class="jwt-copy" data-target="jwt-header-pre" type="button">کپی</button>
+            <h3 data-lang-fa="هدر (Header)" data-lang-en="Header">هدر (Header)</h3>
+            <button class="jwt-copy" data-target="jwt-header-pre" type="button" data-lang-fa="کپی" data-lang-en="Copy">کپی</button>
           </div>
           <pre id="jwt-header-pre" class="jwt-pre"></pre>
         </div>
@@ -91,17 +89,17 @@ import { STANDARD_CLAIMS } from './claims';
         <div class="jwt-section">
           <div class="jwt-section-header">
             <h3>Payload</h3>
-            <button class="jwt-copy" data-target="jwt-payload-pre" type="button">کپی</button>
+            <button class="jwt-copy" data-target="jwt-payload-pre" type="button" data-lang-fa="کپی" data-lang-en="Copy">کپی</button>
           </div>
           <pre id="jwt-payload-pre" class="jwt-pre"></pre>
         </div>
 
         <div class="jwt-section">
-          <h3>Claims (با توضیح)</h3>
+          <h3 data-lang-fa="Claims (با توضیح)" data-lang-en="Claims (with descriptions)">Claims (با توضیح)</h3>
           <div class="jwt-table-wrapper">
             <table class="jwt-claims" id="jwt-claims-table">
               <thead>
-                <tr><th>کلید</th><th>توضیح</th><th>مقدار</th></tr>
+                <tr><th data-lang-fa="کلید" data-lang-en="Key">کلید</th><th data-lang-fa="توضیح" data-lang-en="Description">توضیح</th><th data-lang-fa="مقدار" data-lang-en="Value">مقدار</th></tr>
               </thead>
               <tbody></tbody>
             </table>
@@ -110,7 +108,7 @@ import { STANDARD_CLAIMS } from './claims';
       </section>
 
       <section id="jwt-placeholder" class="jwt-placeholder">
-        <p>توکن JWT خود را در سمت راست وارد کنید تا نتیجه اینجا نمایش داده شود.</p>
+        <p data-lang-fa="توکن JWT خود را در سمت راست وارد کنید تا نتیجه اینجا نمایش داده شود." data-lang-en="Enter a JWT on the left to see the decoded result here.">توکن JWT خود را در سمت راست وارد کنید تا نتیجه اینجا نمایش داده شود.</p>
       </section>
     </div>
   </div>
@@ -189,7 +187,7 @@ import { STANDARD_CLAIMS } from './claims';
   .jwt-table-wrapper { overflow-x: auto; }
   .jwt-claims { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   .jwt-claims th, .jwt-claims td {
-    text-align: right; padding: 0.6rem; border-bottom: 1px solid #334155;
+    text-align: start; padding: 0.6rem; border-bottom: 1px solid #334155;
   }
   .jwt-claims th { color: #94a3b8; font-weight: 600; }
   .jwt-claims td { color: #e2e8f0; }
@@ -227,6 +225,14 @@ import { STANDARD_CLAIMS } from './claims';
   const $verifyResult = document.getElementById('jwt-verify-result') as HTMLElement;
 
   let debounce: number | undefined;
+  let verifyRequestId = 0;
+
+  function resetVerification() {
+    verifyRequestId++;
+    $verifyResult.hidden = true;
+    $verifyResult.className = 'jwt-verify-result';
+    $verifyResult.textContent = '';
+  }
 
   function setError(msg: string | null) {
     if (!msg) { $error.hidden = true; $error.textContent = ''; return; }
@@ -234,8 +240,38 @@ import { STANDARD_CLAIMS } from './claims';
     $error.textContent = msg;
   }
 
+  const ERROR_MESSAGES_EN: Record<string, string> = {
+    INVALID_BASE64URL: 'The token contains invalid Base64URL data.',
+    INVALID_UTF8: 'The token content is not valid UTF-8.',
+    INVALID_JSON: 'The token content is not valid JSON.',
+    INVALID_INPUT: 'Invalid token input.',
+    EMPTY: 'The token is empty.',
+    TOO_LARGE: 'The token exceeds the 1 MB size limit.',
+    INVALID_FORMAT: 'A JWT must contain three parts: header.payload.signature.',
+    INVALID_HEADER: 'The JWT header must be a JSON object containing an alg field.',
+    INVALID_PAYLOAD: 'The JWT payload must be a JSON object.',
+    INVALID_KEY: 'The PEM key is invalid.',
+    NO_WEBCRYPTO: 'This browser does not support Web Crypto. HTTPS is required.',
+    ALG_MISMATCH: 'The selected algorithm does not match the token header.',
+    UNSIGNED: 'Unsigned tokens (alg: none) cannot be verified.',
+    NO_KEY: 'Enter a verification key.',
+    UNSUPPORTED_ALG: 'This algorithm is not supported.'
+  };
+  const WARNING_MESSAGES_EN: Record<string, string> = {
+    ALG_NONE: 'The none algorithm means the token is unsigned. Never use it in production.',
+    NO_EXP: 'This token has no exp claim and therefore does not expire.',
+    LONG_TTL: 'The token lifetime exceeds 24 hours. Consider reducing it.',
+    SENSITIVE_CLAIM: 'A sensitive password claim is present in the payload. This is unsafe.',
+    TYP_UNUSUAL: 'The token typ header is not set to JWT.'
+  };
+  function errorMessage(err: unknown, isEn: boolean, fallback: string): string {
+    if (err instanceof JwtError) return isEn ? (ERROR_MESSAGES_EN[err.code] ?? err.message) : err.message;
+    return fallback;
+  }
+
   function render() {
     const token = $input.value.trim();
+    const isEn = document.documentElement.lang === 'en';
     if (!token) {
       $result.hidden = true;
       $placeholder.hidden = false;
@@ -257,7 +293,7 @@ import { STANDARD_CLAIMS } from './claims';
       for (const w of warns) {
         const div = document.createElement('div');
         div.className = `jwt-warn-item ${w.level}`;
-        div.textContent = w.message;
+        div.textContent = isEn ? (WARNING_MESSAGES_EN[w.code] ?? w.message) : w.message;
         $warnings.appendChild(div);
       }
 
@@ -267,16 +303,16 @@ import { STANDARD_CLAIMS } from './claims';
       if (exp.status === 'valid' && exp.remainingSeconds !== undefined) {
         const min = Math.floor(exp.remainingSeconds / 60);
         $expStatus.classList.add('valid');
-        $expStatus.textContent = `معتبر — ${min} دقیقه تا انقضا باقی مانده`;
+        $expStatus.textContent = isEn ? `Valid — ${min} minutes until expiration` : `معتبر — ${min} دقیقه تا انقضا باقی مانده`;
       } else if (exp.status === 'expired') {
         $expStatus.classList.add('expired');
-        $expStatus.textContent = 'منقضی شده است';
+        $expStatus.textContent = isEn ? 'Expired' : 'منقضی شده است';
       } else if (exp.status === 'not-yet-valid') {
         $expStatus.classList.add('warn');
-        $expStatus.textContent = 'هنوز معتبر نیست (nbf در آینده)';
+        $expStatus.textContent = isEn ? 'Not valid yet (nbf is in the future)' : 'هنوز معتبر نیست (nbf در آینده)';
       } else if (exp.status === 'no-exp') {
         $expStatus.classList.add('warn');
-        $expStatus.textContent = 'بدون تاریخ انقضا';
+        $expStatus.textContent = isEn ? 'No expiration date' : 'بدون تاریخ انقضا';
       }
 
       // claims table
@@ -287,14 +323,14 @@ import { STANDARD_CLAIMS } from './claims';
         const td1 = document.createElement('td'); td1.textContent = k;
         const td2 = document.createElement('td');
         const desc = STANDARD_CLAIMS[k];
-        td2.textContent = desc ? `${desc.fa} (${desc.en})` : '—';
+        td2.textContent = desc ? (isEn ? desc.en : desc.fa) : '—';
         const td3 = document.createElement('td');
-        td3.textContent = formatClaimValue(k, v);
+        td3.textContent = formatClaimValue(k, v, isEn ? 'en' : 'fa');
         tr.append(td1, td2, td3);
         tbody.appendChild(tr);
       }
     } catch (err) {
-      const msg = err instanceof JwtError ? err.message : 'خطای نامشخص در پردازش توکن';
+      const msg = errorMessage(err, isEn, isEn ? 'Unknown token processing error' : 'خطای نامشخص در پردازش توکن');
       setError(msg);
       $result.hidden = true;
       $placeholder.hidden = false;
@@ -302,27 +338,36 @@ import { STANDARD_CLAIMS } from './claims';
   }
 
   $input.addEventListener('input', () => {
+    resetVerification();
     window.clearTimeout(debounce);
     debounce = window.setTimeout(render, 250);
   });
+  $key.addEventListener('input', resetVerification);
+  $alg.addEventListener('change', resetVerification);
 
-  // Verify
+  // Verify the exact token/key/algorithm snapshot; discard stale async results.
   document.getElementById('jwt-verify')!.addEventListener('click', async () => {
+    const token = $input.value;
+    const key = $key.value;
+    const algorithm = $alg.value || undefined;
+    const requestId = ++verifyRequestId;
     $verifyResult.hidden = false;
     $verifyResult.className = 'jwt-verify-result';
-    $verifyResult.textContent = 'در حال تأیید…';
+    $verifyResult.textContent = document.documentElement.lang === 'en' ? 'Verifying…' : 'در حال تأیید…';
     try {
-      const result = await verify($input.value, $key.value, $alg.value || undefined);
+      const result = await verify(token, key, algorithm);
+      if (requestId !== verifyRequestId || token !== $input.value || key !== $key.value || (algorithm || '') !== $alg.value) return;
       if (result.valid) {
         $verifyResult.classList.add('ok');
-        $verifyResult.textContent = `✓ امضا معتبر است (${result.algorithm})`;
+        $verifyResult.textContent = document.documentElement.lang === 'en' ? `✓ Signature valid (${result.algorithm})` : `✓ امضا معتبر است (${result.algorithm})`;
       } else {
         $verifyResult.classList.add('fail');
-        $verifyResult.textContent = `✗ امضا نامعتبر است (${result.algorithm})`;
+        $verifyResult.textContent = document.documentElement.lang === 'en' ? `✗ Invalid signature (${result.algorithm})` : `✗ امضا نامعتبر است (${result.algorithm})`;
       }
     } catch (err) {
+      if (requestId !== verifyRequestId || token !== $input.value || key !== $key.value || (algorithm || '') !== $alg.value) return;
       $verifyResult.classList.add('fail');
-      $verifyResult.textContent = err instanceof JwtError ? err.message : 'خطا در تأیید';
+      $verifyResult.textContent = errorMessage(err, document.documentElement.lang === 'en', document.documentElement.lang === 'en' ? 'Verification failed' : 'خطا در تأیید');
     }
   });
 
@@ -335,7 +380,7 @@ import { STANDARD_CLAIMS } from './claims';
       try {
         await navigator.clipboard.writeText(el.textContent ?? '');
         const old = (btn as HTMLElement).textContent;
-        (btn as HTMLElement).textContent = 'کپی شد ✓';
+        (btn as HTMLElement).textContent = document.documentElement.lang === 'en' ? 'Copied ✓' : 'کپی شد ✓';
         setTimeout(() => { (btn as HTMLElement).textContent = old; }, 1500);
       } catch { /* silent */ }
     });
@@ -346,7 +391,7 @@ import { STANDARD_CLAIMS } from './claims';
     $input.value = '';
     $key.value = '';
     $alg.value = '';
-    $verifyResult.hidden = true;
+    resetVerification();
     render();
   });
 
@@ -366,12 +411,16 @@ import { STANDARD_CLAIMS } from './claims';
 
   document.getElementById('jwt-sample-hs256')!.addEventListener('click', () => {
     $input.value = SAMPLES.hs256;
+    resetVerification();
     render();
   });
   document.getElementById('jwt-sample-rs256')!.addEventListener('click', () => {
     $input.value = SAMPLES.rs256;
+    resetVerification();
     render();
   });
+
+  document.addEventListener('app:languagechange', () => render());
 
   // initial
   render();

@@ -28,18 +28,20 @@ export function calculateAge(birth: Date, ref: Date = new Date()): AgeResult | n
     months += 12;
   }
 
-  const totalMs = ref.getTime() - birth.getTime();
-  const totalDays = Math.floor(totalMs / 86_400_000);
+  const dayMs = 86_400_000;
+  const birthDay = Date.UTC(birth.getFullYear(), birth.getMonth(), birth.getDate());
+  const refDay = Date.UTC(ref.getFullYear(), ref.getMonth(), ref.getDate());
+  const totalDays = Math.round((refDay - birthDay) / dayMs);
   const totalWeeks = Math.floor(totalDays / 7);
   const totalMonths = years * 12 + months;
-  const totalHours = Math.floor(totalMs / 3_600_000);
-  const totalMinutes = Math.floor(totalMs / 60_000);
+  const totalHours = totalDays * 24;
+  const totalMinutes = totalDays * 24 * 60;
 
-  let nextBirthday = new Date(ref.getFullYear(), birth.getMonth(), birth.getDate());
-  if (nextBirthday <= ref) {
-    nextBirthday = new Date(ref.getFullYear() + 1, birth.getMonth(), birth.getDate());
+  let nextBirthday = Date.UTC(ref.getFullYear(), birth.getMonth(), birth.getDate());
+  if (nextBirthday <= refDay) {
+    nextBirthday = Date.UTC(ref.getFullYear() + 1, birth.getMonth(), birth.getDate());
   }
-  const nextBirthdayDays = Math.floor((nextBirthday.getTime() - ref.getTime()) / 86_400_000);
+  const nextBirthdayDays = Math.round((nextBirthday - refDay) / dayMs);
 
   return {
     years, months, days,

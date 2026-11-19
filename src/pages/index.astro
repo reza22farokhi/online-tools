@@ -18,7 +18,9 @@ const base = import.meta.env.BASE_URL;
 ---
 <BaseLayout
   title="ابزارهای آنلاین حرفه‌ای | متن، کد، سئو و تصویر"
+  titleEn="Professional Online Tools | Text, Code, SEO & Images"
   description={DEFAULT_DESCRIPTION}
+  descriptionEn="Free, privacy-first online tools for text, code, SEO, images, files, colors and date conversions. Fast browser-based processing."
   jsonLd={websiteLd}
 >
   <section class="hero container">
@@ -27,12 +29,13 @@ const base = import.meta.env.BASE_URL;
       مجموعه‌ای از ابزارهای سریع، امن و رایگان که کاملاً در مرورگر شما اجرا می‌شوند.
     </p>
     <div class="search-wrap">
-      <label for="tool-search" class="sr-only">جستجوی ابزار</label>
+      <label for="tool-search" class="sr-only" data-lang-fa="جستجوی ابزار" data-lang-en="Search tools">جستجوی ابزار</label>
       <input
         id="tool-search"
         type="search"
         class="input search-input"
-        data-i18n-placeholder="search.placeholder"
+        data-lang-placeholder-fa="جستجوی ابزار..."
+        data-lang-placeholder-en="Search tools..."
         placeholder="جستجوی ابزار..."
         autocomplete="off"
       />
@@ -40,17 +43,17 @@ const base = import.meta.env.BASE_URL;
     <div class="hero-stats">
       <div class="stat-item">
         <span class="stat-num">{registry.length}</span>
-        <span class="stat-label">ابزار حرفه‌ای</span>
+        <span class="stat-label" data-i18n="tools.proCount">ابزار حرفه‌ای</span>
       </div>
       <div class="stat-divider" aria-hidden="true"></div>
       <div class="stat-item">
         <span class="stat-num">{categories.length}</span>
-        <span class="stat-label">دسته‌بندی</span>
+        <span class="stat-label" data-i18n="tools.categoryCount">دسته‌بندی</span>
       </div>
       <div class="stat-divider" aria-hidden="true"></div>
       <div class="stat-item">
-        <span class="stat-num">۱۰۰٪</span>
-        <span class="stat-label">پردازش محلی</span>
+        <span class="stat-num" data-lang-fa="۱۰۰٪" data-lang-en="100%">۱۰۰٪</span>
+        <span class="stat-label" data-i18n="tools.localProcessing">پردازش محلی</span>
       </div>
     </div>
   </section>
@@ -58,10 +61,10 @@ const base = import.meta.env.BASE_URL;
   <section class="container section" aria-labelledby="cats-title">
     <h2 id="cats-title" class="section-title" data-i18n="categories.title">دسته‌بندی‌ها</h2>
         <div class="chips">
-      <a href={base + "tools/"} class="chip active">همه</a>
+      <a href={base + "tools/"} class="chip active" data-i18n="categories.all">همه</a>
       {categories.map(c => (
         <a href={base + "categories/" + c.slug + "/"} class="chip">
-          <span aria-hidden="true">{c.icon}</span> {c.fa}
+          <span aria-hidden="true">{c.icon}</span> <span data-lang-fa={c.fa} data-lang-en={c.en}>{c.fa}</span>
         </a>
       ))}
     </div>

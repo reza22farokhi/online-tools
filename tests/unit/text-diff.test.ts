@@ -26,6 +26,15 @@ describe('Text Diff', () => {
     ]);
   });
 
+  it('rejects inputs that exceed the safe character limit', () => {
+    expect(() => diffTexts('a'.repeat(100_001), 'b'.repeat(100_001))).toThrow(/۲۰۰ هزار/);
+  });
+
+  it('rejects excessive line-matrix sizes', () => {
+    const lines = Array.from({ length: 1_001 }, (_, i) => String(i)).join('\n');
+    expect(() => diffTexts(lines, lines)).toThrow(/۱ میلیون/);
+  });
+
   it('should handle mixed changes', () => {
     const res = diffTexts('a\nb\nc', 'a\nx\nc');
     expect(res).toEqual([

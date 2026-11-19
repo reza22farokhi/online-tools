@@ -7,7 +7,9 @@ import { SITE_NAME_FA, DEFAULT_DESCRIPTION } from '../lib/seo';
 
 export interface Props {
   title: string;
+  titleEn?: string;
   description?: string;
+  descriptionEn?: string;
   lang?: 'fa' | 'en';
   canonical?: string;
   image?: string;
@@ -18,7 +20,9 @@ export interface Props {
 
 const {
   title,
+  titleEn,
   description = DEFAULT_DESCRIPTION,
+  descriptionEn,
   lang = 'fa',
   canonical,
   image = '/og-default.svg',
@@ -40,28 +44,26 @@ const dicts = getDicts();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title data-lang-fa={title} data-lang-en={titleEn ?? title}>{title}</title>
+    <meta name="description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-    
-    {/* TITAN X Ω — SEO Hreflang for i18n */}
-    <link rel="alternate" hreflang="fa" href={`${canonicalUrl}${canonicalUrl.includes('?') ? '&' : '?'}lang=fa`} />
-    <link rel="alternate" hreflang="en" href={`${canonicalUrl}${canonicalUrl.includes('?') ? '&' : '?'}lang=en`} />
-    <link rel="alternate" hreflang="x-default" href={`${canonicalUrl}${canonicalUrl.includes('?') ? '&' : '?'}lang=fa`} />
+    {/* Do not advertise an English alternate until every route has a real English document. */}
+    <link rel="alternate" hreflang="fa" href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
 
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <meta property="og:type" content={type} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={title} data-lang-fa={title} data-lang-en={titleEn ?? title} />
+    <meta property="og:description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:image" content={ogImage} />
-    <meta property="og:site_name" content={SITE_NAME_FA} />
+    <meta property="og:site_name" content={SITE_NAME_FA} data-lang-fa={SITE_NAME_FA} data-lang-en="Online Tools" />
     <meta property="og:locale" content={lang === 'fa' ? 'fa_IR' : 'en_US'} />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={title} data-lang-fa={title} data-lang-en={titleEn ?? title} />
+    <meta name="twitter:description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
@@ -74,7 +76,8 @@ const dicts = getDicts();
             t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
           document.documentElement.setAttribute('data-theme', t);
-          var l = localStorage.getItem('pot.lang');
+          var queryLang = new URLSearchParams(window.location.search).get('lang');
+          var l = queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang');
           if (l === 'fa' || l === 'en') {
             document.documentElement.setAttribute('lang', l);
             document.documentElement.setAttribute('dir', l === 'fa' ? 'rtl' : 'ltr');
@@ -110,9 +113,9 @@ const dicts = getDicts();
     <link rel="manifest" href={import.meta.env.BASE_URL + "manifest.json"} />
     <meta name="theme-color" content="#4f46e5" />
     <link rel="apple-touch-icon" href={import.meta.env.BASE_URL + "favicon.svg"} />
-    </head>
+  </head>
   <body>
-    <a href="#main" class="skip-link">پرش به محتوا</a>
+    <a href="#main" class="skip-link" data-i18n="accessibility.skip">پرش به محتوا</a>
     <Header />
     <div class="yn-bnr" id="ynpos-21471"></div>
     <main id="main">
@@ -124,24 +127,33 @@ const dicts = getDicts();
     <script type="application/json" id="i18n-data" set:html={JSON.stringify(dicts)}></script>
     <script is:inline>
       // TITAN X Ω — Self-Contained Global Error Handler
-      function showGlobalError(msg) {
-        console.error(msg);
+      function showGlobalError(messageFa, messageEn) {
+        var isEnglish = document.documentElement.lang === 'en';
+        console.error(isEnglish ? messageEn : messageFa);
         var el = document.getElementById('global-error-toast');
-        if(!el) {
+        if (!el) {
           el = document.createElement('div');
           el.id = 'global-error-toast';
-          el.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:12px 24px;border-radius:8px;z-index:9999;font-family:inherit;box-shadow:0 4px 12px rgba(0,0,0,0.15);direction:rtl;';
+          el.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:12px 24px;border-radius:8px;z-index:9999;font-family:inherit;box-shadow:0 4px 12px rgba(0,0,0,0.15);max-width:calc(100vw - 32px);';
           document.body.appendChild(el);
         }
-        el.textContent = msg;
-        setTimeout(function() { if(el) el.remove(); }, 5000);
+        el.style.direction = isEnglish ? 'ltr' : 'rtl';
+        el.style.textAlign = isEnglish ? 'left' : 'right';
+        el.textContent = isEnglish ? messageEn : messageFa;
+        setTimeout(function() { if (el) el.remove(); }, 5000);
       }
 
-      window.addEventListener('error', function(event) {
-        showGlobalError('یک خطای غیرمنتظره رخ داد. لطفاً صفحه را رفرش کنید.');
+      window.addEventListener('error', function() {
+        showGlobalError(
+          'یک خطای غیرمنتظره رخ داد. لطفاً صفحه را رفرش کنید.',
+          'An unexpected error occurred. Please refresh the page.'
+        );
       });
-      window.addEventListener('unhandledrejection', function(event) {
-        showGlobalError('در اجرای بخشی از صفحه خطایی رخ داد. لطفاً دوباره تلاش کنید.');
+      window.addEventListener('unhandledrejection', function() {
+        showGlobalError(
+          'در اجرای بخشی از صفحه خطایی رخ داد. لطفاً دوباره تلاش کنید.',
+          'A page operation failed. Please try again.'
+        );
       });
     </script>
 
@@ -155,7 +167,7 @@ const dicts = getDicts();
         if (e.persisted) populateHomeSections();
       });
     </script>
-  
+
     <script is:inline>
       (function() {
         try {
@@ -176,16 +188,15 @@ const dicts = getDicts();
       })();
     </script>
     <!-- data-tool-slug-tracker -->
-  
 
     <script>
-    if ('serviceWorker' in navigator && window.isSecureContext) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js', { updateViaCache: 'none' })
-          .then((reg) => console.log('[PWA] SW registered:', reg.scope))
-          .catch((err) => console.warn('[PWA] SW failed:', err));
-      });
-    }
-  </script>
-</body>
+      if ('serviceWorker' in navigator && window.isSecureContext) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js', { updateViaCache: 'none' })
+            .then((reg) => console.log('[PWA] SW registered:', reg.scope))
+            .catch((err) => console.warn('[PWA] SW failed:', err));
+        });
+      }
+    </script>
+  </body>
 </html>

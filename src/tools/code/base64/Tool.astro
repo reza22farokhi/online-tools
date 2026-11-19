@@ -1,21 +1,21 @@
 ---
 ---
 <div class="b64-tool">
-  <div class="b64-modes" role="group" aria-label="عملیات">
-    <button type="button" class="btn b64-mode active" data-mode="encode" aria-pressed="true">Encode (به Base64)</button>
-    <button type="button" class="btn b64-mode" data-mode="decode" aria-pressed="false">Decode (از Base64)</button>
+  <div class="b64-modes" role="group" aria-label="Base64 mode">
+    <button type="button" class="btn b64-mode active" data-mode="encode" aria-pressed="true"><span data-lang-fa="Encode (به Base64)" data-lang-en="Encode to Base64">Encode (به Base64)</span></button>
+    <button type="button" class="btn b64-mode" data-mode="decode" aria-pressed="false"><span data-lang-fa="Decode (از Base64)" data-lang-en="Decode from Base64">Decode (از Base64)</span></button>
   </div>
-  <label for="b64-input" class="sr-only">ورودی</label>
-  <textarea id="b64-input" class="textarea" placeholder="متن یا Base64 را اینجا وارد کنید..." spellcheck="false" aria-describedby="b64-help"></textarea>
-  <p id="b64-help" class="b64-help">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</p>
-  <label class="b64-opt"><input type="checkbox" id="b64-urlsafe" /><span>حالت URL-safe (بدون +/ و =، مناسب URL)</span></label>
+  <label for="b64-input" class="sr-only"><span data-lang-fa="ورودی" data-lang-en="Input">ورودی</span></label>
+  <textarea id="b64-input" class="textarea" placeholder="متن یا Base64 را اینجا وارد کنید..." data-lang-placeholder-fa="متن یا Base64 را اینجا وارد کنید..." data-lang-placeholder-en="Enter text or Base64 here..." spellcheck="false" aria-describedby="b64-help"></textarea>
+  <p id="b64-help" class="b64-help" data-lang-fa="حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی." data-lang-en="Maximum 100,000 characters. Processing stays entirely in your browser.">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</p>
+  <label class="b64-opt"><input type="checkbox" id="b64-urlsafe" /><span data-lang-fa="حالت URL-safe (بدون +/ و =، مناسب URL)" data-lang-en="URL-safe mode (uses - and _; omits padding)">حالت URL-safe (بدون +/ و =، مناسب URL)</span></label>
   <div class="b64-error" id="b64-error" hidden role="alert"></div>
   <div class="b64-actions">
-    <button type="button" class="btn" id="b64-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
-    <button type="button" class="btn btn-primary" id="b64-copy" disabled><span aria-hidden="true">📋</span> کپی خروجی</button>
+    <button type="button" class="btn" id="b64-clear"><span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
+    <button type="button" class="btn btn-primary" id="b64-copy" disabled><span aria-hidden="true">📋</span> <span data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</span></button>
   </div>
-  <label for="b64-output" class="b64-output-label">خروجی:</label>
-  <textarea id="b64-output" class="textarea b64-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+  <label for="b64-output" class="b64-output-label"><span data-lang-fa="خروجی:" data-lang-en="Output:">خروجی:</span></label>
+  <textarea id="b64-output" class="textarea b64-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-fa="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-en="Output will appear here..."></textarea>
 </div>
 <script>
   import { processBase64 } from './logic';
@@ -30,18 +30,25 @@
   const copyBtn = document.getElementById('b64-copy') as HTMLButtonElement | null;
   const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.b64-mode'));
   let currentMode: Base64Mode = 'encode';
+  let currentError: string | null = null;
+  const isEnglish = () => document.documentElement.lang === 'en';
+  function renderError() {
+    if (!errorEl) return;
+    errorEl.hidden = !currentError;
+    errorEl.textContent = currentError ? (isEnglish() ? 'Unable to process this input. Check the text and selected mode.' : 'خطا: ' + currentError) : '';
+  }
   function refresh() {
     if (!input || !output) return;
     if (input.value.length > MAX_INPUT) input.value = input.value.slice(0, MAX_INPUT);
     if (input.value === '') {
-      output.value = ''; if (errorEl) errorEl.hidden = true; if (copyBtn) copyBtn.disabled = true; return;
+      output.value = ''; currentError = null; renderError(); if (copyBtn) copyBtn.disabled = true; return;
     }
     const r = processBase64(input.value, currentMode, { urlSafe: urlSafeCb?.checked ?? false });
     if (!r.ok) {
-      output.value = ''; if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'خطا: ' + (r.error || 'نامشخص'); }
+      output.value = ''; currentError = r.error || 'نامشخص'; renderError();
       if (copyBtn) copyBtn.disabled = true;
     } else {
-      output.value = r.output; if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+      output.value = r.output; currentError = null; renderError();
       if (copyBtn) copyBtn.disabled = r.output === '';
     }
   }
@@ -57,8 +64,9 @@
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('خروجی کپی شد', 'success'); else toast('کپی نشد', 'error');
+    toast(ok ? (isEnglish() ? 'Output copied.' : 'خروجی کپی شد') : (isEnglish() ? 'Copy failed.' : 'کپی نشد'), ok ? 'success' : 'error');
   });
+  document.addEventListener('app:languagechange', renderError);
   refresh();
 </script>
 <style>

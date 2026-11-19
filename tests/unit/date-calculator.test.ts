@@ -26,6 +26,17 @@ describe('addToDate', () => {
     const r = addToDate(new Date(2024, 5, 15), 1, 'years', true);
     expect(r.getFullYear()).toBe(2023);
   });
+  it('clamps month addition to the last valid day', () => {
+    expect(addToDate(new Date(2024, 0, 31), 1, 'months')).toEqual(new Date(2024, 1, 29));
+    expect(addToDate(new Date(2023, 0, 31), 1, 'months')).toEqual(new Date(2023, 1, 28));
+  });
+  it('clamps leap-day year addition', () => {
+    expect(addToDate(new Date(2024, 1, 29), 1, 'years')).toEqual(new Date(2025, 1, 28));
+  });
+  it('rejects fractional and excessive amounts', () => {
+    expect(() => addToDate(new Date(2024, 0, 1), 1.5, 'days')).toThrow();
+    expect(() => addToDate(new Date(2024, 0, 1), 100001, 'days')).toThrow();
+  });
   it('crosses month boundary', () => {
     const r = addToDate(new Date(2024, 0, 31), 1, 'days');
     expect(r.getMonth()).toBe(1);

@@ -48,7 +48,7 @@ export function generateSlug(input: string, opts: SlugOptions): string {
   }
 
   if (opts.stripDiacritics) {
-    s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    s = s.normalize('NFD').replace(/[\u0300-\u036f\u064B-\u065F\u0670\u06D6-\u06ED]/g, '');
   }
 
   if (opts.lowercase) s = s.toLowerCase();

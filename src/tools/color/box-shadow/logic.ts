@@ -23,10 +23,10 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
 }
 
-export const PRESETS: { name: string; cfg: ShadowConfig }[] = [
-  { name: 'ملایم', cfg: { offsetX: 0, offsetY: 4, blur: 8, spread: 0, color: '#000000', opacity: 10, inset: false } },
-  { name: 'معمولی', cfg: { offsetX: 0, offsetY: 4, blur: 12, spread: 0, color: '#000000', opacity: 15, inset: false } },
-  { name: 'برجسته', cfg: { offsetX: 0, offsetY: 10, blur: 25, spread: -5, color: '#000000', opacity: 25, inset: false } },
-  { name: 'داخلی', cfg: { offsetX: 0, offsetY: 2, blur: 8, spread: 0, color: '#000000', opacity: 20, inset: true } },
-  { name: 'رنگی', cfg: { offsetX: 0, offsetY: 8, blur: 20, spread: 0, color: '#6366f1', opacity: 40, inset: false } }
+export const PRESETS: { name: string; nameEn: string; cfg: ShadowConfig }[] = [
+  { name: 'ملایم', nameEn: 'Soft', cfg: { offsetX: 0, offsetY: 4, blur: 8, spread: 0, color: '#000000', opacity: 10, inset: false } },
+  { name: 'معمولی', nameEn: 'Regular', cfg: { offsetX: 0, offsetY: 4, blur: 12, spread: 0, color: '#000000', opacity: 15, inset: false } },
+  { name: 'برجسته', nameEn: 'Elevated', cfg: { offsetX: 0, offsetY: 10, blur: 25, spread: -5, color: '#000000', opacity: 25, inset: false } },
+  { name: 'داخلی', nameEn: 'Inset', cfg: { offsetX: 0, offsetY: 2, blur: 8, spread: 0, color: '#000000', opacity: 20, inset: true } },
+  { name: 'رنگی', nameEn: 'Colorful', cfg: { offsetX: 0, offsetY: 8, blur: 20, spread: 0, color: '#6366f1', opacity: 40, inset: false } }
 ];

@@ -1,26 +1,26 @@
 ---
 ---
 <div class="ue-tool">
-  <div class="ue-modes" role="group" aria-label="عملیات">
+  <div class="ue-modes" role="group" aria-label="URL encoding mode">
     <button type="button" class="btn ue-mode active" data-mode="encode" aria-pressed="true">Encode</button>
     <button type="button" class="btn ue-mode" data-mode="decode" aria-pressed="false">Decode</button>
   </div>
   <div class="ue-field">
-    <label for="ue-kind">حالت:</label>
+    <label for="ue-kind"><span data-lang-fa="حالت:" data-lang-en="Encoding type:">حالت:</span></label>
     <select id="ue-kind" class="select ue-select">
-      <option value="component" selected>encodeURIComponent (برای یک مقدار)</option>
-      <option value="full">encodeURI (برای URL کامل)</option>
+      <option value="component" selected>encodeURIComponent (single value)</option>
+      <option value="full">encodeURI (complete URL)</option>
     </select>
   </div>
-  <label for="ue-input" class="sr-only">ورودی</label>
-  <textarea id="ue-input" class="textarea" placeholder="متن یا URL را اینجا وارد کنید..." spellcheck="false"></textarea>
+  <label for="ue-input" class="sr-only"><span data-lang-fa="ورودی" data-lang-en="Input">ورودی</span></label>
+  <textarea id="ue-input" class="textarea" placeholder="متن یا URL را اینجا وارد کنید..." data-lang-placeholder-fa="متن یا URL را اینجا وارد کنید..." data-lang-placeholder-en="Enter text or a URL here..." spellcheck="false"></textarea>
   <div class="ue-error" id="ue-error" hidden role="alert"></div>
   <div class="ue-actions">
-    <button type="button" class="btn" id="ue-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
-    <button type="button" class="btn btn-primary" id="ue-copy" disabled><span aria-hidden="true">📋</span> کپی خروجی</button>
+    <button type="button" class="btn" id="ue-clear"><span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
+    <button type="button" class="btn btn-primary" id="ue-copy" disabled><span aria-hidden="true">📋</span> <span data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</span></button>
   </div>
-  <label for="ue-output" class="ue-output-label">خروجی:</label>
-  <textarea id="ue-output" class="textarea ue-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+  <label for="ue-output" class="ue-output-label"><span data-lang-fa="خروجی:" data-lang-en="Output:">خروجی:</span></label>
+  <textarea id="ue-output" class="textarea ue-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-fa="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-en="Output will appear here..."></textarea>
 </div>
 <script>
   import { processUrl } from './logic';
@@ -34,20 +34,25 @@
   const copyBtn = document.getElementById('ue-copy') as HTMLButtonElement | null;
   const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.ue-mode'));
   let currentMode: UrlMode = 'encode';
+  let hasError = false;
+  const isEnglish = () => document.documentElement.lang === 'en';
+  function renderError() {
+    if (!errorEl) return;
+    errorEl.hidden = !hasError;
+    errorEl.textContent = hasError ? (isEnglish() ? 'Could not process this URL input. Check the value and selected encoding type.' : 'متن واردشده قابل پردازش نیست؛ مقدار و نوع کدگذاری را بررسی کنید.') : '';
+  }
   function refresh() {
     if (!input || !output) return;
     if (input.value.length > 100_000) input.value = input.value.slice(0, 100_000);
     if (input.value === '') {
-      output.value = ''; if (errorEl) errorEl.hidden = true; if (copyBtn) copyBtn.disabled = true; return;
+      output.value = ''; hasError = false; renderError(); if (copyBtn) copyBtn.disabled = true; return;
     }
     const kind = (kindSelect?.value as UrlKind) || 'component';
     const r = processUrl(input.value, currentMode, kind);
     if (!r.ok) {
-      output.value = ''; if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'خطا: ' + (r.error || 'نامشخص'); }
-      if (copyBtn) copyBtn.disabled = true;
+      output.value = ''; hasError = true; renderError(); if (copyBtn) copyBtn.disabled = true;
     } else {
-      output.value = r.output; if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
-      if (copyBtn) copyBtn.disabled = r.output === '';
+      output.value = r.output; hasError = false; renderError(); if (copyBtn) copyBtn.disabled = r.output === '';
     }
   }
   input?.addEventListener('input', refresh);
@@ -62,8 +67,9 @@
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('خروجی کپی شد', 'success'); else toast('کپی نشد', 'error');
+    toast(ok ? (isEnglish() ? 'Output copied.' : 'خروجی کپی شد') : (isEnglish() ? 'Copy failed.' : 'کپی نشد'), ok ? 'success' : 'error');
   });
+  document.addEventListener('app:languagechange', renderError);
   refresh();
 </script>
 <style>

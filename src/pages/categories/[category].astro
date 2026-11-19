@@ -18,7 +18,9 @@ const tools = getToolsByCategory(category.slug);
 const canonical = new URL(`${base}categories/${category.slug}/`.replace(/^\//, ''), site).toString();
 
 const pageTitle = `${category.fa} | ابزارهای آنلاین`;
+const pageTitleEn = `${category.en} | Online Tools`;
 const pageDesc = `مجموعه‌ای از ${tools.length} ابزار حرفه‌ای در دسته ${category.fa}. کاملاً رایگان، سریع و با پردازش محلی.`;
+const pageDescEn = `Explore ${tools.length} free ${category.en.toLowerCase()} tools. Fast, browser-based and privacy-first.`;
 
 const breadcrumbLd = buildBreadcrumbJsonLd([
   { name: 'خانه', url: site },
@@ -37,12 +39,12 @@ const collectionLd = {
 
 const otherCategories = categories.filter(c => c.slug !== category.slug);
 ---
-<BaseLayout title={pageTitle} description={pageDesc} canonical={canonical} jsonLd={[breadcrumbLd, collectionLd]}>
+<BaseLayout title={pageTitle} titleEn={pageTitleEn} description={pageDesc} descriptionEn={pageDescEn} canonical={canonical} jsonLd={[breadcrumbLd, collectionLd]}>
   <div class="container page">
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
-        <li><a href={base}>خانه</a></li>
-        <li><a href={base + 'tools/'}>ابزارها</a></li>
+        <li><a href={base} data-i18n="breadcrumb.home">خانه</a></li>
+        <li><a href={base + 'tools/'} data-i18n="breadcrumb.tools">ابزارها</a></li>
         <li aria-current="page">{category.fa}</li>
       </ol>
     </nav>
@@ -50,8 +52,8 @@ const otherCategories = categories.filter(c => c.slug !== category.slug);
     <header class="cat-hero">
       <div class="cat-hero-icon" aria-hidden="true">{category.icon}</div>
       <div class="cat-hero-text">
-        <h1>{category.fa}</h1>
-        <p class="lead">{tools.length} ابزار حرفه‌ای — رایگان، سریع و با پردازش محلی.</p>
+        <h1 data-lang-fa={category.fa} data-lang-en={category.en}>{category.fa}</h1>
+        <p class="lead" data-lang-fa={`${tools.length} ابزار حرفه‌ای — رایگان، سریع و با پردازش محلی.`} data-lang-en={`${tools.length} professional tools — free, fast and browser-based.`}>{tools.length} ابزار حرفه‌ای — رایگان، سریع و با پردازش محلی.</p>
       </div>
     </header>
 
@@ -64,12 +66,12 @@ const otherCategories = categories.filter(c => c.slug !== category.slug);
     )}
 
     <section class="other-cats" aria-labelledby="other-cats-title">
-      <h2 id="other-cats-title">دسته‌های دیگر</h2>
+      <h2 id="other-cats-title" data-i18n="categories.other">دسته‌های دیگر</h2>
       <div class="other-cats-grid">
         {otherCategories.map(c => (
           <a href={base + 'categories/' + c.slug + '/'} class="other-cat-card">
             <span class="other-cat-icon" aria-hidden="true">{c.icon}</span>
-            <span class="other-cat-name">{c.fa}</span>
+            <span class="other-cat-name" data-lang-fa={c.fa} data-lang-en={c.en}>{c.fa}</span>
             <span class="other-cat-arrow" aria-hidden="true">←</span>
           </a>
         ))}

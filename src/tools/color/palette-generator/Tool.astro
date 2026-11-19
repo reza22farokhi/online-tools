@@ -4,16 +4,16 @@ import { HARMONY_TYPES } from './logic';
 <div class="pg-tool">
   <div class="pg-controls">
     <div class="pg-field">
-      <label for="pg-color">رنگ پایه:</label>
+      <label for="pg-color"><span data-lang-fa="رنگ پایه:" data-lang-en="Base color:">رنگ پایه:</span></label>
       <div class="pg-color-input">
         <input id="pg-color" type="color" value="#4f46e5" class="pg-picker" />
         <input id="pg-hex" type="text" class="input pg-hex" value="#4f46e5" dir="ltr" maxlength="7" />
       </div>
     </div>
     <div class="pg-field">
-      <label for="pg-type">نوع هارمونی:</label>
+      <label for="pg-type"><span data-lang-fa="نوع هارمونی:" data-lang-en="Color harmony:">نوع هارمونی:</span></label>
       <select id="pg-type" class="select">
-        {HARMONY_TYPES.map(h => <option value={h.value}>{h.fa} ({h.en})</option>)}
+        {HARMONY_TYPES.map(h => <option value={h.value} data-lang-fa={h.fa} data-lang-en={h.en}>{h.fa}</option>)}
       </select>
     </div>
   </div>
@@ -21,7 +21,7 @@ import { HARMONY_TYPES } from './logic';
   <div class="pg-palette" id="pg-palette" aria-live="polite"></div>
 
   <div class="pg-actions">
-    <button type="button" class="btn btn-primary" id="pg-copy-all">📋 کپی همه رنگ‌ها</button>
+    <button type="button" class="btn btn-primary" id="pg-copy-all">📋 <span data-lang-fa="کپی همه رنگ‌ها" data-lang-en="Copy all colors">کپی همه رنگ‌ها</span></button>
   </div>
 </div>
 
@@ -37,6 +37,7 @@ import { HARMONY_TYPES } from './logic';
   const copyAllBtn = document.getElementById('pg-copy-all') as HTMLButtonElement | null;
 
   let currentColors: string[] = [];
+  const isEnglish = () => document.documentElement.lang === "en";
 
   function textColorForBg(hex: string): string {
     const m = hex.replace('#', '').match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
@@ -63,7 +64,7 @@ import { HARMONY_TYPES } from './logic';
       item.appendChild(code);
       item.addEventListener('click', async () => {
         const ok = await copyText(hex);
-        if (ok) toast(`${hex.toUpperCase()} کپی شد`, 'success');
+        if (ok) toast(isEnglish() ? `${hex.toUpperCase()} copied.` : `${hex.toUpperCase()} کپی شد`, 'success');
       });
       paletteEl.appendChild(item);
     });
@@ -89,8 +90,8 @@ import { HARMONY_TYPES } from './logic';
     const text = currentColors.map(c => c.toUpperCase()).join('\n');
     if (!text) return;
     const ok = await copyText(text);
-    if (ok) toast('همه رنگ‌ها کپی شدند', 'success');
-    else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish() ? 'All colors copied.' : 'همه رنگ‌ها کپی شدند', 'success');
+    else toast(isEnglish() ? 'Copy failed.' : 'کپی نشد', 'error');
   });
 
   render();

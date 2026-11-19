@@ -1,41 +1,41 @@
 ---
 ---
 <div class="sg-tool">
-  <label for="sg-input" class="sr-only">متن ورودی</label>
-  <input id="sg-input" type="text" class="input" placeholder="مثلاً: ۱۰ نکته برای سئو بهتر" spellcheck="false" aria-describedby="sg-help" />
-  <p id="sg-help" class="sg-help">حداکثر ۵۰۰ کاراکتر. پردازش کاملاً محلی.</p>
+  <label for="sg-input" class="sr-only"><span data-lang-fa="متن ورودی" data-lang-en="Input text">متن ورودی</span></label>
+  <input id="sg-input" type="text" class="input" placeholder="مثلاً: ۱۰ نکته برای سئو بهتر" data-lang-placeholder-fa="مثلاً: ۱۰ نکته برای سئو بهتر" data-lang-placeholder-en="Example: 10 tips for better SEO" spellcheck="false" aria-describedby="sg-help" />
+  <p id="sg-help" class="sg-help"><span data-lang-fa="حداکثر ۵۰۰ کاراکتر. پردازش کاملاً محلی." data-lang-en="Maximum 500 characters. Processing stays entirely in your browser.">حداکثر ۵۰۰ کاراکتر. پردازش کاملاً محلی.</span></p>
 
   <div class="sg-controls">
     <div class="sg-field">
-      <label for="sg-sep">جداکننده:</label>
+      <label for="sg-sep"><span data-lang-fa="جداکننده:" data-lang-en="Separator:">جداکننده:</span></label>
       <select id="sg-sep" class="select sg-select">
-        <option value="-" selected>خط تیره (-)</option>
-        <option value="_">زیرخط (_)</option>
+        <option value="-" selected data-lang-fa="خط تیره (-)" data-lang-en="Hyphen (-)">خط تیره (-)</option>
+        <option value="_" data-lang-fa="زیرخط (_)" data-lang-en="Underscore (_)">زیرخط (_)</option>
       </select>
     </div>
     <div class="sg-field">
-      <label for="sg-max">حداکثر طول:</label>
+      <label for="sg-max"><span data-lang-fa="حداکثر طول:" data-lang-en="Maximum length:">حداکثر طول:</span></label>
       <input id="sg-max" type="number" class="input sg-num" value="80" min="10" max="200" />
     </div>
   </div>
 
   <fieldset class="sg-options">
-    <legend>گزینه‌ها:</legend>
-    <label class="sg-opt"><input type="checkbox" id="sg-lower" checked /><span>حروف کوچک</span></label>
-    <label class="sg-opt"><input type="checkbox" id="sg-strip" checked /><span>حذف اعراب لاتین (é → e)</span></label>
-    <label class="sg-opt"><input type="checkbox" id="sg-trans" /><span>تبدیل فارسی به لاتین (تقریبی)</span></label>
+    <legend><span data-lang-fa="گزینه‌ها:" data-lang-en="Options:">گزینه‌ها:</span></legend>
+    <label class="sg-opt"><input type="checkbox" id="sg-lower" checked /><span data-lang-fa="حروف کوچک" data-lang-en="Lowercase">حروف کوچک</span></label>
+    <label class="sg-opt"><input type="checkbox" id="sg-strip" checked /><span data-lang-fa="حذف اعراب لاتین (é → e)" data-lang-en="Strip Latin diacritics (é → e)">حذف اعراب لاتین (é → e)</span></label>
+    <label class="sg-opt"><input type="checkbox" id="sg-trans" /><span data-lang-fa="تبدیل فارسی به لاتین (تقریبی)" data-lang-en="Transliterate Persian to Latin (approximate)">تبدیل فارسی به لاتین (تقریبی)</span></label>
   </fieldset>
 
   <div class="sg-output-wrap">
     <label for="sg-output" class="sg-output-label">Slug:</label>
     <div class="sg-output-row">
-      <input id="sg-output" type="text" class="input sg-output" readonly placeholder="خروجی..." />
-      <button type="button" class="btn btn-primary" id="sg-copy" disabled>📋 کپی</button>
+      <input id="sg-output" type="text" class="input sg-output" readonly placeholder="خروجی..." data-lang-placeholder-fa="خروجی..." data-lang-placeholder-en="Generated slug..." />
+      <button type="button" class="btn btn-primary" id="sg-copy" disabled>📋 <span data-lang-fa="کپی" data-lang-en="Copy">کپی</span></button>
     </div>
   </div>
 
   <div class="sg-actions">
-    <button type="button" class="btn" id="sg-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
+    <button type="button" class="btn" id="sg-clear"><span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
   </div>
 </div>
 
@@ -55,6 +55,8 @@
     stripDiacritics: document.getElementById('sg-strip') as HTMLInputElement | null,
     transliterate: document.getElementById('sg-trans') as HTMLInputElement | null
   };
+
+  const isEnglish = () => document.documentElement.lang === "en";
 
   function readOptions(): SlugOptions {
     const maxLen = Number(maxInput?.value || 80);
@@ -83,7 +85,7 @@
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('Slug کپی شد', 'success'); else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish() ? 'Slug copied.' : 'Slug کپی شد', 'success'); else toast(isEnglish() ? 'Copy failed.' : 'کپی نشد', 'error');
   });
   refresh();
 </script>

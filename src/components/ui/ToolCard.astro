@@ -17,10 +17,10 @@ const href = `${base}tools/${tool.slug}/`;
   <a href={href} class="tool-card card" data-slug={tool.slug} data-category={tool.category}>
     <div class="tool-card-icon" aria-hidden="true">{category?.icon ?? '🔧'}</div>
     <div class="tool-card-body">
-      <h3 class="tool-card-title">{tool.name[lang]}</h3>
-      <p class="tool-card-desc">{tool.description[lang]}</p>
+      <h3 class="tool-card-title" data-lang-fa={tool.name.fa} data-lang-en={tool.name.en}>{tool.name[lang]}</h3>
+      <p class="tool-card-desc" data-lang-fa={tool.description.fa} data-lang-en={tool.description.en}>{tool.description[lang]}</p>
       {category && (
-        <span class="tool-card-tag">{category[lang]}</span>
+        <span class="tool-card-tag" data-lang-fa={category.fa} data-lang-en={category.en}>{category[lang]}</span>
       )}
     </div>
   </a>

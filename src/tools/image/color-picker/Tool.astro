@@ -9,6 +9,7 @@
       <span class="cp-hint">حداکثر ۲۰ مگابایت (پردازش محلی)</span>
     </label>
   </div>
+  <div class="cp-error" id="cp-error" role="alert" hidden></div>
 
   <div class="cp-workspace" id="cp-workspace" hidden>
     <div class="cp-canvas-wrap">
@@ -49,26 +50,58 @@
   const swatch = document.getElementById('cp-swatch');
   const hexInput = document.getElementById('cp-hex') as HTMLInputElement | null;
   const rgbInput = document.getElementById('cp-rgb') as HTMLInputElement | null;
+  const errorEl = document.getElementById('cp-error') as HTMLDivElement | null;
+  const MAX_PIXELS = 20_000_000;
 
   let ctx: CanvasRenderingContext2D | null = null;
 
+  function showError(message: string) {
+    if (errorEl) { errorEl.textContent = message; errorEl.hidden = false; }
+  }
+
   function handleFile(file: File) {
-    if (!file.type.startsWith('image/')) { alert('لطفاً یک فایل تصویری انتخاب کنید.'); return; }
-    if (file.size > MAX_SIZE) { alert('حجم فایل نباید بیشتر از ۲۰ مگابایت باشد.'); return; }
+    if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+    const supportedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/avif', 'image/bmp'];
+    if (!supportedTypes.includes(file.type)) {
+      showError('فرمت تصویر پشتیبانی نمی‌شود. PNG، JPEG، WebP، GIF، AVIF یا BMP انتخاب کنید.');
+      return;
+    }
+    if (file.size <= 0 || file.size > MAX_SIZE) {
+      showError('حجم فایل باید بیشتر از صفر و حداکثر ۲۰ مگابایت باشد.');
+      return;
+    }
 
     const objectUrl = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
-      if (!canvas) return;
+      if (!canvas) {
+        URL.revokeObjectURL(objectUrl);
+        showError('بوم تصویر در دسترس نیست.');
+        return;
+      }
+      if (img.naturalWidth * img.naturalHeight > MAX_PIXELS) {
+        URL.revokeObjectURL(objectUrl);
+        showError('ابعاد تصویر بیش از حد مجاز است (حداکثر ۲۰ مگاپیکسل).');
+        return;
+      }
+      const nextContext = canvas.getContext('2d', { willReadFrequently: true });
+      if (!nextContext) {
+        URL.revokeObjectURL(objectUrl);
+        showError('امکان پردازش تصویر در این مرورگر وجود ندارد.');
+        return;
+      }
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
-      ctx = canvas.getContext('2d', { willReadFrequently: true });
-      if (ctx) ctx.drawImage(img, 0, 0);
-      
+      ctx = nextContext;
+      ctx.drawImage(img, 0, 0);
       if (uploadZone) uploadZone.hidden = true;
       if (workspace) workspace.hidden = false;
       if (colorBox) colorBox.hidden = true;
       URL.revokeObjectURL(objectUrl);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      showError('خواندن تصویر ناموفق بود. یک فایل تصویری معتبر انتخاب کنید.');
     };
     img.src = objectUrl;
   }
@@ -93,10 +126,11 @@
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     
-    const x = Math.floor((e.clientX - rect.left) * scaleX);
-    const y = Math.floor((e.clientY - rect.top) * scaleY);
-    
-    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const x = Math.max(0, Math.min(canvas.width - 1, Math.floor((e.clientX - rect.left) * scaleX)));
+    const y = Math.max(0, Math.min(canvas.height - 1, Math.floor((e.clientY - rect.top) * scaleY)));
+    let pixel: Uint8ClampedArray;
+    try { pixel = ctx.getImageData(x, y, 1, 1).data; }
+    catch { showError('خواندن پیکسل تصویر ممکن نشد.'); return; }
     const r = pixel[0], g = pixel[1], b = pixel[2];
     
     const hex = rgbToHex(r, g, b);
@@ -107,10 +141,10 @@
   });
 
   document.getElementById('cp-copy-hex')?.addEventListener('click', async () => {
-    if (hexInput?.value) { await copyText(hexInput.value); toast('HEX کپی شد', 'success'); }
+    if (hexInput?.value) { const ok = await copyText(hexInput.value); toast(ok ? 'HEX کپی شد' : 'کپی نشد', ok ? 'success' : 'error'); }
   });
   document.getElementById('cp-copy-rgb')?.addEventListener('click', async () => {
-    if (rgbInput?.value) { await copyText(rgbInput.value); toast('RGB کپی شد', 'success'); }
+    if (rgbInput?.value) { const ok = await copyText(rgbInput.value); toast(ok ? 'RGB کپی شد' : 'کپی نشد', ok ? 'success' : 'error'); }
   });
 </script>
 
@@ -120,6 +154,7 @@
   .cp-upload-label { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-text); }
   .cp-icon { font-size: 2.5rem; }
   .cp-hint { font-size: 0.8rem; color: var(--color-text-muted); }
+  .cp-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
   .cp-workspace { display: flex; flex-direction: column; gap: var(--space-4); }
   .cp-canvas-wrap { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: repeating-conic-gradient(#f1f5f9 0% 25%, #e2e8f0 0% 50%) 50% / 20px 20px; display: flex; justify-content: center; }
   .cp-canvas { max-width: 100%; max-height: 500px; cursor: crosshair; display: block; }

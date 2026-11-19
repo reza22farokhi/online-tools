@@ -5,6 +5,7 @@
   </div>
   <button id="btn-compare" style="padding: 1rem; background: #4f46e5; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">مقایسه متن‌ها</button>
   
+  <div id="diff-error" class="diff-error" hidden role="alert"></div>
   <div id="diff-result" style="display: none; padding: 1rem; background: #f9fafb; border-radius: 8px; border: 1px solid #eaeaea; font-family: monospace; white-space: pre-wrap; overflow-x: auto; direction: ltr; text-align: left;"></div>
 </div>
 
@@ -12,16 +13,20 @@
   import { diffTexts } from './logic';
 
   document.getElementById('btn-compare')?.addEventListener('click', () => {
+    const errorEl = document.getElementById('diff-error');
+    const resultDiv = document.getElementById('diff-result')!;
+    if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+    try {
     const oldText = (document.getElementById('text-old') as HTMLTextAreaElement).value;
     const newText = (document.getElementById('text-new') as HTMLTextAreaElement).value;
     const result = diffTexts(oldText, newText);
     
-    const resultDiv = document.getElementById('diff-result')!;
     resultDiv.style.display = 'block';
     resultDiv.innerHTML = '';
 
     result.forEach(line => {
       const div = document.createElement('div');
+      div.setAttribute('data-user-content', 'true');
       div.style.padding = '4px';
       div.style.borderBottom = '1px solid #eee';
       if (line.type === 'added') {
@@ -38,5 +43,12 @@
       }
       resultDiv.appendChild(div);
     });
+    } catch (error) {
+      resultDiv.style.display = 'none';
+      if (errorEl) {
+        errorEl.hidden = false;
+        errorEl.textContent = error instanceof Error ? error.message : 'خطا در مقایسه متن‌ها';
+      }
+    }
   });
 </script>

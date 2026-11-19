@@ -7,6 +7,7 @@ import {
   JwtError,
   MAX_TOKEN_BYTES,
 } from '../../src/tools/jwt-inspector/jwt';
+import { formatClaimValue } from '../../src/tools/jwt-inspector/claims';
 
 beforeAll(() => {
   if (!globalThis.crypto) {
@@ -62,6 +63,18 @@ describe('decode()', () => {
     expect(() => decode('a.b')).toThrow(JwtError);
   });
 
+  it('rejects a non-object JSON payload', () => {
+    const header = base64UrlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const payload = base64UrlEncode('null');
+    expect(() => decode(`${header}.${payload}.c2ln`)).toThrow(JwtError);
+  });
+
+  it('rejects an array payload', () => {
+    const header = base64UrlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const payload = base64UrlEncode('[]');
+    expect(() => decode(`${header}.${payload}.c2ln`)).toThrow(JwtError);
+  });
+
   it('rejects invalid base64url', () => {
     expect(() => decode('!!!.@@@.###')).toThrow(JwtError);
   });
@@ -82,6 +95,12 @@ describe('verify()', () => {
   it('rejects wrong HS256 secret', async () => {
     const result = await verify(HS256_TOKEN, 'wrong-secret');
     expect(result.valid).toBe(false);
+  });
+
+  it('rejects an algorithm override that differs from the JWT header', async () => {
+    await expect(verify(HS256_TOKEN, HS256_SECRET, 'HS512')).rejects.toMatchObject({
+      code: 'ALG_MISMATCH',
+    });
   });
 
   it('rejects unsigned (alg: none)', async () => {
@@ -151,5 +170,12 @@ describe('analyzeSecurity()', () => {
     const now = Math.floor(Date.now() / 1000);
     const w = analyzeSecurity({ alg: 'HS256', typ: 'JWT' }, { iat: now, exp: now + 3600 });
     expect(w.filter((x) => x.level === 'danger')).toHaveLength(0);
+  });
+});
+
+describe('localized claim values', () => {
+  it('formats claim dates using the selected locale', () => {
+    const timestamp = 1672531200;
+    expect(formatClaimValue('iat', timestamp, 'en')).not.toBe(formatClaimValue('iat', timestamp, 'fa'));
   });
 });

@@ -15,12 +15,28 @@ export function escapeHtmlAttr(str: string): string {
     .replace(/>/g, '&gt;');
 }
 
+function normalizeHttpUrl(value: string, label: string): string {
+  const raw = value.trim();
+  if (!raw) return '';
+  if (/[\u0000-\u001f\u007f]/.test(raw)) throw new Error(label + ' نباید شامل نویسه‌های کنترلی باشد.');
+  const scheme = raw.match(/^([a-z][a-z0-9+.-]*):/i)?.[1].toLowerCase();
+  if (scheme && scheme !== 'http' && scheme !== 'https') throw new Error(label + ' باید از HTTP یا HTTPS استفاده کند.');
+  const candidate = /^https?:\/\//i.test(raw) ? raw : 'https://' + raw;
+  let url: URL;
+  try { url = new URL(candidate); }
+  catch { throw new Error(label + ' معتبر نیست.'); }
+  if (!['http:', 'https:'].includes(url.protocol) || !url.hostname || url.username || url.password) {
+    throw new Error(label + ' باید یک آدرس HTTP/HTTPS معتبر و بدون اطلاعات ورود باشد.');
+  }
+  return url.toString();
+}
+
 export function generateMetaTags(data: MetaData): string {
   const tags: string[] = [];
   const t = escapeHtmlAttr(data.title);
   const d = escapeHtmlAttr(data.description);
-  const u = escapeHtmlAttr(data.url);
-  const i = escapeHtmlAttr(data.image);
+  const u = escapeHtmlAttr(normalizeHttpUrl(data.url, 'آدرس سایت'));
+  const i = escapeHtmlAttr(normalizeHttpUrl(data.image, 'آدرس تصویر'));
   const a = escapeHtmlAttr(data.author);
 
   tags.push('<!-- Primary Meta Tags -->');

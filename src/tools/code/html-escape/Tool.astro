@@ -1,19 +1,19 @@
 ---
 ---
 <div class="he-tool">
-  <div class="he-modes" role="group" aria-label="عملیات">
-    <button type="button" class="btn he-mode active" data-mode="escape" aria-pressed="true">Escape (تبدیل به entity)</button>
-    <button type="button" class="btn he-mode" data-mode="unescape" aria-pressed="false">Unescape (بازگردانی)</button>
+  <div class="he-modes" role="group" aria-label="HTML escaping mode">
+    <button type="button" class="btn he-mode active" data-mode="escape" aria-pressed="true"><span data-lang-fa="Escape (تبدیل به entity)" data-lang-en="Escape HTML">Escape (تبدیل به entity)</span></button>
+    <button type="button" class="btn he-mode" data-mode="unescape" aria-pressed="false"><span data-lang-fa="Unescape (بازگردانی)" data-lang-en="Unescape HTML">Unescape (بازگردانی)</span></button>
   </div>
-  <label for="he-input" class="sr-only">ورودی</label>
-  <textarea id="he-input" class="textarea" placeholder="مثلاً: <a href=&quot;x&quot;>لینک</a>" spellcheck="false" aria-describedby="he-help"></textarea>
-  <p id="he-help" class="he-help">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</p>
+  <label for="he-input" class="sr-only"><span data-lang-fa="ورودی" data-lang-en="Input">ورودی</span></label>
+  <textarea id="he-input" class="textarea" placeholder="مثلاً: <a href=&quot;x&quot;>لینک</a>" data-lang-placeholder-fa="مثلاً: <a href=&quot;x&quot;>لینک</a>" data-lang-placeholder-en="Example: <a href=&quot;x&quot;>link</a>" spellcheck="false" aria-describedby="he-help"></textarea>
+  <p id="he-help" class="he-help" data-lang-fa="حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی." data-lang-en="Maximum 100,000 characters. Processing stays entirely in your browser.">حداکثر ۱۰۰ هزار کاراکتر. پردازش کاملاً محلی.</p>
   <div class="he-actions">
-    <button type="button" class="btn" id="he-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
-    <button type="button" class="btn btn-primary" id="he-copy" disabled><span aria-hidden="true">📋</span> کپی خروجی</button>
+    <button type="button" class="btn" id="he-clear"><span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
+    <button type="button" class="btn btn-primary" id="he-copy" disabled><span aria-hidden="true">📋</span> <span data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</span></button>
   </div>
-  <label for="he-output" class="he-output-label">خروجی:</label>
-  <textarea id="he-output" class="textarea he-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+  <label for="he-output" class="he-output-label"><span data-lang-fa="خروجی:" data-lang-en="Output:">خروجی:</span></label>
+  <textarea id="he-output" class="textarea he-output" readonly placeholder="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-fa="خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-en="Output will appear here..."></textarea>
 </div>
 <script>
   import { processHtml } from './logic';
@@ -26,6 +26,7 @@
   const copyBtn = document.getElementById('he-copy') as HTMLButtonElement | null;
   const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.he-mode'));
   let currentMode: HtmlMode = 'escape';
+  const isEnglish = () => document.documentElement.lang === 'en';
   function refresh() {
     if (!input || !output) return;
     if (input.value.length > MAX_INPUT) input.value = input.value.slice(0, MAX_INPUT);
@@ -43,7 +44,7 @@
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('خروجی کپی شد', 'success'); else toast('کپی نشد', 'error');
+    toast(ok ? (isEnglish() ? 'Output copied.' : 'خروجی کپی شد') : (isEnglish() ? 'Copy failed.' : 'کپی نشد'), ok ? 'success' : 'error');
   });
   refresh();
 </script>

@@ -15,6 +15,7 @@
       <textarea id="rb-allow" class="textarea" rows="2" placeholder="/public" dir="ltr"></textarea>
     </div>
   </div>
+  <div class="rb-error" id="rb-error" hidden role="alert"></div>
   <div class="rb-output-wrap">
     <label for="rb-output" class="rb-label">محتوای فایل robots.txt:</label>
     <textarea id="rb-output" class="textarea rb-output" readonly></textarea>
@@ -33,15 +34,26 @@
   const allowInput = document.getElementById('rb-allow') as HTMLTextAreaElement | null;
   const output = document.getElementById('rb-output') as HTMLTextAreaElement | null;
   const copyBtn = document.getElementById('rb-copy') as HTMLButtonElement | null;
+  const errorEl = document.getElementById('rb-error');
 
   function refresh() {
     if (!output) return;
-    output.value = generateRobotsTxt({
-      userAgent: '*',
-      disallow: disallowInput?.value || '',
-      allow: allowInput?.value || '',
-      sitemap: sitemapInput?.value || ''
-    });
+    try {
+      output.value = generateRobotsTxt({
+        userAgent: '*',
+        disallow: disallowInput?.value || '',
+        allow: allowInput?.value || '',
+        sitemap: sitemapInput?.value || ''
+      });
+      if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+    } catch (error) {
+      output.value = '';
+      if (errorEl) {
+        errorEl.hidden = false;
+        errorEl.textContent = error instanceof Error ? error.message : 'Invalid robots.txt input.';
+      }
+    }
+    if (copyBtn) copyBtn.disabled = output.value === '';
   }
 
   sitemapInput?.addEventListener('input', refresh);
@@ -64,5 +76,6 @@
   .rb-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
   .rb-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); margin-top: var(--space-2); }
   .rb-output { background: var(--color-surface-2); font-family: var(--font-mono); height: 180px; font-size: 0.9rem; }
+  .rb-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
   .rb-actions { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
 </style>

@@ -24,6 +24,22 @@ describe('generatePassword', () => {
     }).toThrow('At least one character set must be selected.');
   });
 
+  it('includes at least one character from every selected set', () => {
+    const pass = generatePassword(24, { upper: true, lower: true, numbers: true, symbols: true });
+    expect(pass).toMatch(/[A-Z]/);
+    expect(pass).toMatch(/[a-z]/);
+    expect(pass).toMatch(/[0-9]/);
+    expect(pass).toMatch(/[!@#$%^&*()_+~`|}{\[\]:;?><,./=-]/);
+  });
+
+  it('rejects lengths shorter than the number of selected sets', () => {
+    expect(() => generatePassword(2, { upper: true, lower: true, numbers: true, symbols: false })).toThrow(/too short/);
+  });
+
+  it('rejects out-of-range lengths', () => {
+    expect(() => generatePassword(0, { upper: true, lower: false, numbers: false, symbols: false })).toThrow(/between 1 and 256/);
+  });
+
   it('should generate different passwords on consecutive calls', () => {
     const pass1 = generatePassword(20, { upper: true, lower: true, numbers: true, symbols: true });
     const pass2 = generatePassword(20, { upper: true, lower: true, numbers: true, symbols: true });

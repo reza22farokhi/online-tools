@@ -2,11 +2,11 @@
 ---
 <div class="fc-tool">
   <div class="fc-upload-zone" id="fc-upload-zone">
-    <input type="file" id="fc-file" accept="image/*" class="sr-only" />
+    <input type="file" id="fc-file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/bmp" class="sr-only" />
     <label for="fc-file" class="fc-upload-label">
       <span class="fc-icon">🔄</span>
-      <span>برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
-      <span class="fc-hint">حداکثر ۲۰ مگابایت (پردازش محلی)</span>
+      <span data-lang-fa="برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید" data-lang-en="Click to choose an image or drag it here">برای انتخاب تصویر کلیک کنید یا آن را اینجا رها کنید</span>
+      <span class="fc-hint" data-lang-fa="حداکثر ۲۰ مگابایت (پردازش محلی)" data-lang-en="Maximum 20 MB (local processing)">حداکثر ۲۰ مگابایت (پردازش محلی)</span>
     </label>
   </div>
   <div class="fc-error" id="fc-error" hidden role="alert"></div>
@@ -17,7 +17,7 @@
     </div>
     <div class="fc-controls">
       <div class="fc-field">
-        <label for="fc-format">فرمت خروجی:</label>
+        <label for="fc-format" data-lang-fa="فرمت خروجی:" data-lang-en="Output format:">فرمت خروجی:</label>
         <select id="fc-format" class="select">
           <option value="image/jpeg" selected>JPG</option>
           <option value="image/png">PNG</option>
@@ -25,8 +25,8 @@
         </select>
       </div>
       <div class="fc-actions">
-        <button type="button" class="btn btn-primary" id="fc-process">✨ تبدیل فرمت</button>
-        <a id="fc-download" class="btn" style="display: none;">📥 دانلود تصویر</a>
+        <button type="button" class="btn btn-primary" id="fc-process">✨ <span data-lang-fa="تبدیل فرمت" data-lang-en="Convert format">تبدیل فرمت</span></button>
+        <a id="fc-download" class="btn" style="display: none;">📥 <span data-lang-fa="دانلود تصویر" data-lang-en="Download image">دانلود تصویر</span></a>
       </div>
     </div>
   </div>
@@ -45,8 +45,21 @@
   const downloadBtn = document.getElementById('fc-download') as HTMLAnchorElement | null;
   let originalImage: HTMLImageElement | null = null;
   let originalSize = 0;
+  let originalWidth = 0;
+  let originalHeight = 0;
+  function renderFileInfo() {
+    if (!fileInfo) return;
+    const isEnglish = document.documentElement.lang === 'en';
+    fileInfo.textContent = isEnglish
+      ? `Original size: ${formatBytes(originalSize)} | Dimensions: ${originalWidth}×${originalHeight}`
+      : `حجم اصلی: ${formatBytes(originalSize)} | ابعاد: ${originalWidth}×${originalHeight}`;
+  }
+  document.addEventListener('app:languagechange', renderFileInfo);
   let objectUrl: string | null = null;
   let isProcessing = false;
+  let downloadUrl: string | null = null;
+  const MAX_IMAGE_PIXELS = 16_000_000;
+  const SUPPORTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/bmp'];
   function showError(msg: string) {
     if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
     if (uploadZone) uploadZone.hidden = false;
@@ -56,10 +69,15 @@
     isProcessing = false;
   }
   function clearError() { if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; } }
+  function showProcessError(msg: string) {
+    if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
+    if (workspace) workspace.hidden = false;
+    if (uploadZone) uploadZone.hidden = true;
+  }
   function handleFile(file: File) {
     clearError();
     if (isProcessing) { showError('یک پردازش در حال انجام است.'); return; }
-    if (!file.type.startsWith('image/')) { showError('لطفاً یک فایل تصویری انتخاب کنید.'); return; }
+    if (!SUPPORTED_TYPES.includes(file.type)) { showError('فرمت تصویر پشتیبانی نمی‌شود. JPG، PNG، WebP، GIF، AVIF یا BMP انتخاب کنید.'); return; }
     const v = validateFileSize(file.size, MAX_IMAGE_SIZE, MAX_IMAGE_SIZE_LABEL);
     if (!v.ok) { showError(v.error ?? 'خطای نامشخص'); return; }
     isProcessing = true;
@@ -68,15 +86,22 @@
     originalSize = file.size;
     const img = new Image();
     img.onload = () => {
+      if (img.naturalWidth * img.naturalHeight > MAX_IMAGE_PIXELS) {
+        if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = null;
+        showError('ابعاد تصویر بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).');
+        return;
+      }
       originalImage = img;
+      originalWidth = img.naturalWidth;
+      originalHeight = img.naturalHeight;
       if (previewImg) previewImg.src = objectUrl!;
-      if (fileInfo) fileInfo.textContent = `حجم اصلی: ${formatBytes(originalSize)} | ابعاد: ${img.naturalWidth}×${img.naturalHeight}`;
+      renderFileInfo();
       if (uploadZone) uploadZone.hidden = true;
       if (workspace) workspace.hidden = false;
       if (downloadBtn) downloadBtn.style.display = 'none';
       isProcessing = false;
     };
-    img.onerror = () => { showError('فایل تصویری معتبر نیست.'); };
+    img.onerror = () => { if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = null; showError('فایل تصویری معتبر نیست.'); };
     img.src = objectUrl;
   }
   fileInput?.addEventListener('change', (e) => {
@@ -91,22 +116,29 @@
     if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
   });
   processBtn?.addEventListener('click', () => {
-    if (!originalImage || !formatSelect || !downloadBtn) return;
+    if (!originalImage || !formatSelect || !downloadBtn || !processBtn) return;
+    clearError();
     const format = formatSelect.value as ImageFormat;
+    processBtn.disabled = true;
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    downloadBtn.hidden = true;
     const canvas = document.createElement('canvas');
     canvas.width = originalImage.naturalWidth;
     canvas.height = originalImage.naturalHeight;
     const ctx = canvas.getContext('2d');
-    if (!ctx) { showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
+    if (!ctx) { processBtn.disabled = false; showProcessError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
     if (format === 'image/jpeg') {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     ctx.drawImage(originalImage, 0, 0);
     canvas.toBlob((blob) => {
-      if (!blob) return;
+      processBtn.disabled = false;
+      if (!blob) { showProcessError('ساخت تصویر خروجی ناموفق بود.'); return; }
       const url = URL.createObjectURL(blob);
+      downloadUrl = url;
       downloadBtn.href = url;
+      downloadBtn.hidden = false;
       downloadBtn.download = `converted-image.${getFileExtension(format)}`;
       downloadBtn.style.display = 'inline-flex';
     }, format, 0.95);
@@ -128,4 +160,5 @@
   .fc-field { display: flex; flex-direction: column; gap: var(--space-1); }
   .fc-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
   .fc-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+  .fc-workspace[hidden] { display: none; }
 </style>

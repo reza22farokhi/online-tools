@@ -11,7 +11,7 @@
   </div>
   <div class="di-error" id="di-error" hidden></div>
   <div class="di-results" id="di-results" hidden>
-    <div class="di-grid" id="di-grid"></div>
+    <div class="di-grid" id="di-grid" data-date-output></div>
   </div>
 </div>
 <script>
@@ -44,6 +44,7 @@
     try {
       const g = toGregorian(p.jy, p.jm, p.jd);
       const d = new Date(g.gy, g.gm - 1, g.gd);
+      const numberLocale = document.documentElement.lang === 'en' ? 'en-US' : 'fa-IR';
       const isoWeek = isoWeekNumber(d);
       const doy = dayOfYear(d);
       const remaining = daysRemainingInYear(d);
@@ -55,12 +56,11 @@
         infoItem('🌍 تاریخ میلادی', `${g.gy}-${String(g.gm).padStart(2,'0')}-${String(g.gd).padStart(2,'0')}`),
         infoItem('📆 روز هفته', WEEKDAYS_FA[d.getDay()]),
         infoItem('🏷️ نام ماه', monthName),
-        infoItem('🔢 شماره روز سال', doy.toLocaleString('fa-IR')),
+        infoItem('🔢 شماره روز سال', doy.toLocaleString(numberLocale)),
         infoItem('📊 شماره هفته ISO', isoWeek.toLocaleString('fa-IR')),
         infoItem('📈 روزهای سال', daysInYear(g.gy).toLocaleString('fa-IR')),
         infoItem('⏳ باقیمانده تا پایان سال', remaining.toLocaleString('fa-IR')),
         infoItem('✨ سال کبیسه؟', leap ? '✅ بله' : '❌ خیر'),
-        infoItem('🎯 روز باقیمانده تا تولد بعدی', '—'),
       ].join('');
 
       results.hidden = false;

@@ -10,6 +10,10 @@ describe('contrastRatio', () => {
   it('black on white is 21', () => expect(contrastRatio('#000000', '#ffffff')).toBeCloseTo(21, 0));
   it('white on black is 21', () => expect(contrastRatio('#ffffff', '#000000')).toBeCloseTo(21, 0));
   it('same colors is 1', () => expect(contrastRatio('#ff0000', '#ff0000')).toBeCloseTo(1, 1));
+  it('uses WCAG sRGB values around the AA threshold', () => {
+    expect(contrastRatio('#767676', '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio('#777777', '#ffffff')).toBeLessThan(4.5);
+  });
   it('invalid returns 0', () => expect(contrastRatio('xyz', '#fff')).toBe(0));
 });
 

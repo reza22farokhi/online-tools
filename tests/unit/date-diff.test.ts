@@ -8,6 +8,7 @@ describe('calculateDateDiff', () => {
     expect(r!.months).toBe(0);
     expect(r!.days).toBe(0);
     expect(r!.totalDays).toBe(0);
+    expect(r!.businessDays + r!.weekendDays).toBe(0);
   });
   it('one year exact', () => {
     const r = calculateDateDiff(new Date(2024, 0, 1), new Date(2025, 0, 1));
@@ -33,7 +34,7 @@ describe('calculateDateDiff', () => {
   });
   it('business days computed', () => {
     const r = calculateDateDiff(new Date(2025, 0, 4), new Date(2025, 0, 11));
-    expect(r!.businessDays + r!.weekendDays).toBe(8);
+    expect(r!.businessDays + r!.weekendDays).toBe(r!.totalDays);
   });
   it('total hours', () => {
     const r = calculateDateDiff(new Date(2025, 0, 1), new Date(2025, 0, 2));

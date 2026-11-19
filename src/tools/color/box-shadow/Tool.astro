@@ -2,53 +2,53 @@
 import { PRESETS } from './logic';
 ---
 <div class="bs-tool">
-  <div class="bs-presets" role="group" aria-label="پیش‌تنظیم‌ها">
+  <div class="bs-presets" role="group" aria-label="Presets" data-lang-aria-fa="پیش‌تنظیم‌ها" data-lang-aria-en="Presets">
     {PRESETS.map((p, i) => (
-      <button type="button" class="btn bs-preset" data-idx={String(i)}>{p.name}</button>
+      <button type="button" class="btn bs-preset" data-idx={String(i)} data-lang-fa={p.name} data-lang-en={p.nameEn}>{p.name}</button>
     ))}
   </div>
 
   <div class="bs-preview">
-    <div class="bs-box" id="bs-box">پیش‌نمایش</div>
+    <div class="bs-box" id="bs-box"><span data-lang-fa="پیش‌نمایش" data-lang-en="Preview">پیش‌نمایش</span></div>
   </div>
 
   <div class="bs-controls">
     <div class="bs-field">
-      <label for="bs-x">افقی (X): <span id="bs-x-val">0</span>px</label>
+      <label for="bs-x"><span data-lang-fa="افقی (X)" data-lang-en="Horizontal (X)">افقی (X)</span>: <span id="bs-x-val">0</span>px</label>
       <input id="bs-x" type="range" min="-50" max="50" value="0" class="bs-range" />
     </div>
     <div class="bs-field">
-      <label for="bs-y">عمودی (Y): <span id="bs-y-val">4</span>px</label>
+      <label for="bs-y"><span data-lang-fa="عمودی (Y)" data-lang-en="Vertical (Y)">عمودی (Y)</span>: <span id="bs-y-val">4</span>px</label>
       <input id="bs-y" type="range" min="-50" max="50" value="4" class="bs-range" />
     </div>
     <div class="bs-field">
-      <label for="bs-blur">محو (Blur): <span id="bs-blur-val">12</span>px</label>
+      <label for="bs-blur"><span data-lang-fa="محو (Blur)" data-lang-en="Blur">محو (Blur)</span>: <span id="bs-blur-val">12</span>px</label>
       <input id="bs-blur" type="range" min="0" max="100" value="12" class="bs-range" />
     </div>
     <div class="bs-field">
-      <label for="bs-spread">گسترش (Spread): <span id="bs-spread-val">0</span>px</label>
+      <label for="bs-spread"><span data-lang-fa="گسترش (Spread)" data-lang-en="Spread">گسترش (Spread)</span>: <span id="bs-spread-val">0</span>px</label>
       <input id="bs-spread" type="range" min="-50" max="50" value="0" class="bs-range" />
     </div>
     <div class="bs-field">
-      <label for="bs-opacity">شفافیت: <span id="bs-opacity-val">15</span>%</label>
+      <label for="bs-opacity"><span data-lang-fa="شفافیت" data-lang-en="Opacity">شفافیت</span>: <span id="bs-opacity-val">15</span>%</label>
       <input id="bs-opacity" type="range" min="0" max="100" value="15" class="bs-range" />
     </div>
     <div class="bs-row">
       <div class="bs-field">
-        <label for="bs-color">رنگ سایه</label>
+        <label for="bs-color"><span data-lang-fa="رنگ سایه" data-lang-en="Shadow color">رنگ سایه</span></label>
         <input id="bs-color" type="color" value="#000000" class="bs-color" />
       </div>
       <label class="bs-inset">
         <input type="checkbox" id="bs-inset" />
-        <span>سایه داخلی (Inset)</span>
+        <span><span data-lang-fa="سایه داخلی (Inset)" data-lang-en="Inner shadow (Inset)">سایه داخلی (Inset)</span></span>
       </label>
     </div>
   </div>
 
   <div class="bs-css-output">
-    <label class="bs-label">کد CSS:</label>
+    <label class="bs-label"><span data-lang-fa="کد CSS:" data-lang-en="CSS code:">کد CSS:</span></label>
     <pre class="bs-css" id="bs-css"></pre>
-    <button type="button" class="btn btn-primary" id="bs-copy">📋 کپی کد</button>
+    <button type="button" class="btn btn-primary" id="bs-copy">📋 <span data-lang-fa="کپی کد" data-lang-en="Copy CSS">کپی کد</span></button>
   </div>
 </div>
 
@@ -122,11 +122,13 @@ import { PRESETS } from './logic';
     });
   });
 
+  const isEnglish = () => document.documentElement.lang === 'en';
+
   copyBtn?.addEventListener('click', async () => {
     if (!cssOut?.textContent) return;
     const ok = await copyText(cssOut.textContent);
-    if (ok) toast('کد CSS کپی شد', 'success');
-    else toast('کپی نشد', 'error');
+    if (ok) toast(isEnglish() ? 'CSS copied.' : 'کد CSS کپی شد', 'success');
+    else toast(isEnglish() ? 'Copy failed.' : 'کپی نشد', 'error');
   });
 
   render();

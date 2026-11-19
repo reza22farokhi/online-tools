@@ -15,8 +15,8 @@
   <div class="age-error" id="age-error" hidden role="alert"></div>
 
   <div class="age-results" id="age-results" hidden>
-    <div class="age-main" id="age-main">—</div>
-    <div class="age-grid">
+    <div class="age-main" id="age-main" data-date-output>—</div>
+    <div class="age-grid" data-date-output>
       <div class="age-cell"><span class="age-num" id="age-years">0</span><span class="age-lbl">سال</span></div>
       <div class="age-cell"><span class="age-num" id="age-months">0</span><span class="age-lbl">ماه</span></div>
       <div class="age-cell"><span class="age-num" id="age-days">0</span><span class="age-lbl">روز</span></div>
@@ -54,6 +54,7 @@
   }
 
   function refresh() {
+    const numberLocale = document.documentElement.lang === 'en' ? 'en-US' : 'fa-IR';
     if (!birthInput || !refInput || !resultsEl) return;
     setHidden(errorEl, true);
     if (errorEl) errorEl.textContent = '';
@@ -87,17 +88,18 @@
     if (nums.years) nums.years.textContent = String(r.years);
     if (nums.months) nums.months.textContent = String(r.months);
     if (nums.days) nums.days.textContent = String(r.days);
-    if (nums.totalDays) nums.totalDays.textContent = r.totalDays.toLocaleString('fa-IR');
-    if (nums.totalWeeks) nums.totalWeeks.textContent = r.totalWeeks.toLocaleString('fa-IR');
-    if (nums.totalMonths) nums.totalMonths.textContent = r.totalMonths.toLocaleString('fa-IR');
-    if (nums.totalHours) nums.totalHours.textContent = r.totalHours.toLocaleString('fa-IR');
-    if (nums.totalMinutes) nums.totalMinutes.textContent = r.totalMinutes.toLocaleString('fa-IR');
-    if (nums.nextBd) nums.nextBd.textContent = r.nextBirthdayDays.toLocaleString('fa-IR');
+    if (nums.totalDays) nums.totalDays.textContent = r.totalDays.toLocaleString(numberLocale);
+    if (nums.totalWeeks) nums.totalWeeks.textContent = r.totalWeeks.toLocaleString(numberLocale);
+    if (nums.totalMonths) nums.totalMonths.textContent = r.totalMonths.toLocaleString(numberLocale);
+    if (nums.totalHours) nums.totalHours.textContent = r.totalHours.toLocaleString(numberLocale);
+    if (nums.totalMinutes) nums.totalMinutes.textContent = r.totalMinutes.toLocaleString(numberLocale);
+    if (nums.nextBd) nums.nextBd.textContent = r.nextBirthdayDays.toLocaleString(numberLocale);
   }
 
   birthInput?.addEventListener('change', refresh);
   birthInput?.addEventListener('input', refresh);
   refInput?.addEventListener('change', refresh);
+  document.addEventListener('app:languagechange', refresh);
   refInput?.addEventListener('input', refresh);
   refresh();
 </script>

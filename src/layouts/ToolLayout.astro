@@ -17,7 +17,9 @@ const base = import.meta.env.BASE_URL;
 const site = Astro.site?.toString() ?? 'https://example.com/';
 
 const pageTitle = `${meta.name[lang]} | ابزارهای آنلاین`;
+const pageTitleEn = `${meta.name.en} | Online Tools`;
 const pageDescription = meta.description[lang];
+const pageDescriptionEn = meta.description.en;
 const canonical = new URL(
   `${base}tools/${meta.slug}/`.replace(/^\//, ''),
   site
@@ -40,7 +42,9 @@ const related = getRelated(meta.slug);
 ---
 <BaseLayout
   title={pageTitle}
+  titleEn={pageTitleEn}
   description={pageDescription}
+  descriptionEn={pageDescriptionEn}
   lang={lang}
   canonical={canonical}
   jsonLd={[webAppLd, breadcrumbLd]}
@@ -48,15 +52,15 @@ const related = getRelated(meta.slug);
   <article class="tool-page container" data-tool-slug={meta.slug}>
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
-        <li><a href={base}>خانه</a></li>
-        <li><a href={base + 'tools/'}>ابزارها</a></li>
-        <li aria-current="page">{meta.name[lang]}</li>
+        <li><a href={base} data-i18n="breadcrumb.home">خانه</a></li>
+        <li><a href={base + 'tools/'} data-i18n="breadcrumb.tools">ابزارها</a></li>
+        <li aria-current="page"><span data-lang-fa={meta.name.fa} data-lang-en={meta.name.en}>{meta.name[lang]}</span></li>
       </ol>
     </nav>
 
     <header class="tool-header">
-      <h1>{meta.name[lang]}</h1>
-      <p class="lead">{meta.description[lang]}</p>
+      <h1 data-lang-fa={meta.name.fa} data-lang-en={meta.name.en}>{meta.name[lang]}</h1>
+      <p class="lead" data-lang-fa={meta.description.fa} data-lang-en={meta.description.en}>{meta.description[lang]}</p>
     </header>
 
     <div class="tool-body card">
@@ -66,15 +70,15 @@ const related = getRelated(meta.slug);
     <AdSlot id="pos-article-display-card-124132" />
 
     <section class="tool-privacy card" aria-labelledby="privacy-title">
-      <h2 id="privacy-title">حریم خصوصی</h2>
-      <p>محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در <a href="/privacy/">سیاست حریم خصوصی</a> آمده است.</p>
+      <h2 id="privacy-title" data-i18n="tool.privacyTitle">حریم خصوصی</h2>
+      <p><span data-lang-fa="محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در " data-lang-en="Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. Third-party advertising scripts may separately receive technical page-load information. See our ">محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای پردازش به سرورهای ما ارسال نمی‌شود. اسکریپت‌های تبلیغاتی شخص ثالث ممکن است جداگانه اطلاعات فنی مربوط به بارگذاری صفحه را دریافت کنند؛ جزئیات در </span><a href="/privacy/" data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</a><span data-lang-fa=" آمده است." data-lang-en=" for details."> آمده است.</span></p>
     </section>
 
-    <ToolFAQ toolSlug={meta.slug} toolName={meta.name[lang]} />
+    <ToolFAQ toolSlug={meta.slug} toolName={meta.name.fa} />
 
     {related.length > 0 && (
       <section class="tool-related" aria-labelledby="related-title">
-        <h2 id="related-title">ابزارهای مرتبط</h2>
+        <h2 id="related-title" data-i18n="tool.related">ابزارهای مرتبط</h2>
         <div class="tools-grid">
           {related.map(t => <ToolCard tool={t} lang={lang} />)}
         </div>
@@ -114,6 +118,7 @@ const related = getRelated(meta.slug);
   .tool-header { margin-bottom: var(--space-4); }
   .lead { font-size: 1.05rem; color: var(--color-text-muted); margin: 0; }
   .tool-body { margin-bottom: var(--space-4); }
+  .tool-translation-note { margin-bottom: var(--space-3); padding: var(--space-3); border-inline-start: 3px solid var(--color-primary); background: var(--color-surface-2); border-radius: var(--radius-sm); font-size: 0.9rem; color: var(--color-text-muted); }
   .tool-privacy { margin-bottom: var(--space-5); }
   .tool-privacy h2 { font-size: 1.1rem; }
   .tool-related { margin-top: var(--space-5); }

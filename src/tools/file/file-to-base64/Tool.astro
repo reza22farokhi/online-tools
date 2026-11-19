@@ -11,7 +11,7 @@
   </div>
   <div class="fb-error" id="fb-error" hidden role="alert"></div>
   <div class="fb-workspace" id="fb-workspace" hidden>
-    <div class="fb-info">فایل: <strong id="fb-name">-</strong></div>
+    <div class="fb-info">فایل: <strong id="fb-name" data-user-content="true">-</strong></div>
     <div class="fb-field">
       <label for="fb-output" class="fb-label">متن Base64 (Data URI):</label>
       <textarea id="fb-output" class="textarea fb-output" readonly rows="6" placeholder="در حال تبدیل..."></textarea>
@@ -73,7 +73,9 @@
     if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
   });
   copyBtn?.addEventListener('click', async () => {
-    if (outputEl?.value) { await copyText(outputEl.value); toast('Base64 کپی شد', 'success'); }
+    if (!outputEl?.value) return;
+    const ok = await copyText(outputEl.value);
+    toast(ok ? 'Base64 کپی شد' : 'کپی نشد', ok ? 'success' : 'error');
   });
 </script>
 <style>

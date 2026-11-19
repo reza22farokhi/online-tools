@@ -1,6 +1,7 @@
 ---
 ---
 <div class="mcc-tool">
+  <p class="mcc-note" data-lang-only="en" hidden>Hijri dates use a tabular calculation and may differ from local moon-sighting announcements.</p>
   <div class="mcc-tabs" role="tablist">
     <button type="button" class="btn mcc-tab active" data-source="jalali">📅 شمسی</button>
     <button type="button" class="btn mcc-tab" data-source="gregorian">🌍 میلادی</button>
@@ -32,17 +33,17 @@
   <div class="mcc-results" id="mcc-results" hidden>
     <div class="mcc-card mcc-jalali">
       <div class="mcc-label">شمسی (جلالی)</div>
-      <div class="mcc-value" id="mcc-jalali-val">—</div>
+      <div class="mcc-value" id="mcc-jalali-val" data-date-output>—</div>
       <button type="button" class="btn btn-sm" data-copy="jalali">📋 کپی</button>
     </div>
     <div class="mcc-card mcc-gregorian">
       <div class="mcc-label">میلادی (گرگوری)</div>
-      <div class="mcc-value" id="mcc-gregorian-val">—</div>
+      <div class="mcc-value" id="mcc-gregorian-val" data-date-output>—</div>
       <button type="button" class="btn btn-sm" data-copy="gregorian">📋 کپی</button>
     </div>
     <div class="mcc-card mcc-hijri">
       <div class="mcc-label">قمری (هجری)</div>
-      <div class="mcc-value" id="mcc-hijri-val">—</div>
+      <div class="mcc-value" id="mcc-hijri-val" data-date-output>—</div>
       <button type="button" class="btn btn-sm" data-copy="hijri">📋 کپی</button>
     </div>
   </div>
@@ -146,6 +147,7 @@
 
 <style>
   .mcc-tool { display: flex; flex-direction: column; gap: var(--space-3); }
+  .mcc-note { margin: 0; font-size: 0.82rem; color: var(--color-text-muted); }
   .mcc-tabs { display: flex; gap: var(--space-2); flex-wrap: wrap; }
   .mcc-tab { font-size: 0.9rem; }
   .mcc-tab.active { background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary); }

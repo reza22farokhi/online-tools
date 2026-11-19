@@ -15,11 +15,42 @@ export interface Props {
 }
 
 const { title, description, publishDate, isoDate, readTime, slug, faqs = [] } = Astro.props;
+const englishTitles: Record<string, string> = {
+  'color-palette-guide': 'A Practical Guide to Creating Professional Color Palettes',
+  'csv-to-json-guide': 'How to Convert CSV to JSON and Back',
+  'color-picker-guide': 'How to Pick Colors from Images',
+  'best-online-tools-2026': 'Best Free Online Tools: A Practical Guide',
+  'unit-converter-guide': 'A Guide to Converting Units',
+  'base64-guide': 'What Is Base64? Encoding and Decoding Explained',
+  'regex-guide': 'Regex Tutorial: A Guide to Regular Expressions',
+  'what-is-jwt-guide': 'What Is JWT? JSON Web Tokens Explained',
+  'what-is-json-guide': 'What Is JSON? A Guide for Beginners and Developers',
+  'percentage-calculation-guide': 'How to Calculate Percentages',
+  'image-compression-guide': 'Image Compression Guide',
+  'word-count-guide': 'Online Word Counting: A Guide for Writers',
+  'age-calculation-guide': 'How to Calculate Exact Age',
+  'date-conversion-guide': 'Converting Persian, Gregorian, and Hijri Dates',
+  'website-speed-optimization': 'Website Speed Optimization: A Practical Guide',
+  'jwt-security-guide': 'JWT Security: Why Decoding Is Not Verification',
+  'image-formats-comparison': 'Image Format Comparison: PNG, JPG, WebP, and AVIF',
+  'strong-password-guide': 'How to Create Strong, Secure Passwords',
+  'hashing-vs-base64': 'Hashing vs. Base64: What Is the Difference?',
+  'date-calculation-guide': 'Age and Date Difference Calculation Guide',
+  'slug-generation-guide': 'How to Create SEO-Friendly URL Slugs',
+  'seo-meta-tags-guide': 'A Guide to Meta Tags and Social Sharing Previews',
+  'image-optimization-guide': 'How to Reduce Image File Size',
+  'json-guide': 'JSON Guide: Formatting and Safe Validation',
+  'why-client-side-tools-matter': 'Why Client-Side Tools Matter for Privacy and Performance'
+};
+const titleEn = englishTitles[slug] ?? 'Online Tools Blog Article';
+const descriptionEn = 'Practical guidance from Online Tools. Full article text is currently available in Persian.';
 
 const parsedIsoDate = new Date(`${isoDate}T00:00:00Z`);
 if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(isoDate) || Number.isNaN(parsedIsoDate.getTime()) || parsedIsoDate.toISOString().slice(0, 10) !== isoDate) {
   throw new Error(`BlogLayout requires a valid ISO 8601 datePublished for slug: ${slug}`);
 }
+const publishDateEn = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' }).format(parsedIsoDate);
+const readTimeEn = readTime.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(' دقیقه', ' min read');
 const base = import.meta.env.BASE_URL;
 const site = Astro.site?.toString() ?? 'https://example.com/';
 const canonical = new URL(`${base}blog/${slug}/`.replace(/^\//, ''), site).toString();
@@ -47,28 +78,29 @@ const breadcrumbLd = buildBreadcrumbJsonLd([
 
 const jsonLdList: object[] = [articleLd, breadcrumbLd];
 ---
-<BaseLayout title={`${title} | وبلاگ`} description={description} canonical={canonical} jsonLd={jsonLdList}>
+<BaseLayout title={`${title} | وبلاگ`} titleEn={`${titleEn} | Blog`} description={description} descriptionEn={descriptionEn} canonical={canonical} jsonLd={jsonLdList}>
   <article class="blog-post container">
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
-        <li><a href={base}>خانه</a></li>
-        <li><a href={base + 'blog/'}>وبلاگ</a></li>
-        <li aria-current="page">{title}</li>
+        <li><a href={base} data-lang-fa="خانه" data-lang-en="Home">خانه</a></li>
+        <li><a href={base + 'blog/'} data-lang-fa="وبلاگ" data-lang-en="Blog">وبلاگ</a></li>
+        <li aria-current="page"><span data-lang-fa={title} data-lang-en={titleEn}>{title}</span></li>
       </ol>
     </nav>
 
     <header class="post-header">
-      <h1>{title}</h1>
+      <h1 data-lang-fa={title} data-lang-en={titleEn}>{title}</h1>
       <div class="post-meta">
-        <span>📅 {publishDate}</span>
-        <span>⏱️ {readTime} مطالعه</span>
+        <span data-lang-fa={'📅 ' + publishDate} data-lang-en={'📅 ' + publishDateEn}>📅 {publishDate}</span>
+        <span data-lang-fa={'⏱️ ' + readTime + ' مطالعه'} data-lang-en={'⏱️ ' + readTimeEn}>⏱️ {readTime} مطالعه</span>
       </div>
     </header>
 
-    <div class="post-content card">
+    <div class="post-content card" data-lang-only="fa">
       <slot />
     </div>
 
+    <p class="article-translation-note" data-lang-only="en" hidden>The full article text is currently available in Persian only. The article title and listing are translated into English.</p>
     <div id="pos-article-display-card-124132"></div>
 
     {faqs.length > 0 && <BlogFAQ faqs={faqs} />}
@@ -102,6 +134,7 @@ const jsonLdList: object[] = [articleLd, breadcrumbLd];
 </BaseLayout>
 
 <style>
+  .article-translation-note { max-width: 800px; margin: 1rem auto; padding: 1rem; border-inline-start: 3px solid var(--color-primary); background: var(--color-surface-2); color: var(--color-text-muted); border-radius: var(--radius-sm); }
   .blog-post { padding-block: var(--space-5); max-width: 800px; }
   .breadcrumb ol { list-style: none; padding: 0; margin: 0 0 var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: 0.875rem; color: var(--color-text-muted); }
   .breadcrumb ol li:not(:last-child)::after { content: '/'; margin-inline-start: var(--space-2); opacity: 0.5; }

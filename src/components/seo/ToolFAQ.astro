@@ -1,5 +1,6 @@
 ---
 import { getFaqsFor } from '../../data/tool-faqs';
+import { getToolBySlug } from '../../tools/registry';
 import { buildFaqJsonLd } from '../../lib/seo';
 
 export interface Props {
@@ -8,25 +9,55 @@ export interface Props {
 }
 
 const { toolSlug, toolName } = Astro.props;
-const faqs = getFaqsFor(toolSlug);
-const faqLd = faqs.length > 0 ? buildFaqJsonLd(faqs) : null;
+const faqsFa = getFaqsFor(toolSlug);
+const tool = getToolBySlug(toolSlug);
+const toolNameEn = tool?.name.en ?? toolName;
+const faqsEn = tool ? [
+  {
+    q: `What does ${toolNameEn} do?`,
+    a: tool.description.en
+  },
+  {
+    q: `How do I use ${toolNameEn}?`,
+    a: 'Enter or select the required input, adjust any available options, and review the result. Use the copy or download control when it is available.'
+  },
+  {
+    q: 'Is my data uploaded to a server?',
+    a: 'Content entered or selected in this tool is processed in your browser and is not sent to our servers for processing. Third-party advertising scripts may separately receive technical page-load information. See the Privacy Policy for details.'
+  }
+] : [];
+const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa) : null;
 ---
-{faqs.length > 0 && (
-  <section class="tool-faq" aria-labelledby="faq-title">
-    <h2 id="faq-title">سوالات متداول درباره {toolName}</h2>
+{faqsFa.length > 0 && (
+  <section class="tool-faq" aria-labelledby="faq-title-fa" data-lang-only="fa">
+    <h2 id="faq-title-fa">سوالات متداول درباره {toolName}</h2>
     <div class="faq-list">
-      {faqs.map(faq => (
+      {faqsFa.map(faq => (
         <details class="faq-item">
           <summary class="faq-q">{faq.q}</summary>
           <p class="faq-a">{faq.a}</p>
         </details>
       ))}
     </div>
-    {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
+    {faqLdFa && <script type="application/ld+json" set:html={JSON.stringify(faqLdFa)} />}
+  </section>
+)}
+{faqsEn.length > 0 && (
+  <section class="tool-faq" aria-labelledby="faq-title-en" data-lang-only="en" hidden>
+    <h2 id="faq-title-en">Frequently asked questions about {toolNameEn}</h2>
+    <div class="faq-list">
+      {faqsEn.map(faq => (
+        <details class="faq-item">
+          <summary class="faq-q">{faq.q}</summary>
+          <p class="faq-a">{faq.a}</p>
+        </details>
+      ))}
+    </div>
   </section>
 )}
 <style>
   .tool-faq { margin-top: var(--space-5); }
+  .faq-translation-note { color: var(--color-text-muted); font-size: 0.9rem; }
   .tool-faq h2 { font-size: 1.2rem; margin-bottom: var(--space-3); color: var(--color-text); }
   .faq-list { display: flex; flex-direction: column; gap: var(--space-2); }
   .faq-item { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); }

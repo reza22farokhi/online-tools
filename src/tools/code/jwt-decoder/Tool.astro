@@ -1,20 +1,21 @@
 ---
 ---
 <div class="jwt-tool">
-  <label for="jwt-input" class="sr-only">توکن JWT</label>
+  <label for="jwt-input" class="sr-only" data-lang-fa="توکن JWT" data-lang-en="JWT token">توکن JWT</label>
   <textarea
     id="jwt-input"
     class="textarea jwt-input"
-    placeholder="توکن JWT را اینجا جای‌گذاری کنید..."
+    placeholder="توکن JWT را اینجا جای‌گذاری کنید..." data-lang-placeholder-fa="توکن JWT را اینجا جای‌گذاری کنید..." data-lang-placeholder-en="Paste a JWT here..."
     spellcheck="false"
     rows="4"
+    maxlength="10000"
   ></textarea>
-  <p class="jwt-help">پردازش ۱۰۰٪ محلی. امضای توکن تایید نمی‌شود (برای تایید، به کلید مخفی سرور نیاز است).</p>
+  <p class="jwt-help" data-lang-fa="پردازش ۱۰۰٪ محلی. امضای توکن تایید نمی‌شود (برای تایید، به کلید مخفی سرور نیاز است)." data-lang-en="Processing stays entirely in your browser. The token signature is not verified; signature verification requires the appropriate server-side secret or public key.">پردازش ۱۰۰٪ محلی. امضای توکن تایید نمی‌شود (برای تایید، به کلید مخفی سرور نیاز است).</p>
 
   <div class="jwt-actions">
-    <button type="button" class="btn" id="jwt-clear">🗑️ پاک کردن</button>
-    <button type="button" class="btn" id="jwt-sample">📋 نمونه</button>
-    <button type="button" class="btn btn-primary" id="jwt-decode" disabled>🔓 رمزگشایی</button>
+    <button type="button" class="btn" id="jwt-clear">🗑️ <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
+    <button type="button" class="btn" id="jwt-sample">📋 <span data-lang-fa="نمونه" data-lang-en="Sample">نمونه</span></button>
+    <button type="button" class="btn btn-primary" id="jwt-decode" disabled>🔓 <span data-lang-fa="رمزگشایی" data-lang-en="Decode">رمزگشایی</span></button>
   </div>
 
   <div class="jwt-error" id="jwt-error" hidden role="alert"></div>
@@ -26,7 +27,7 @@
     <div class="jwt-section">
       <div class="jwt-section-head">
         <h2>🔵 Header</h2>
-        <button type="button" class="btn btn-sm" data-copy="header">📋 کپی</button>
+        <button type="button" class="btn btn-sm" data-copy="header">📋 <span data-lang-fa="کپی" data-lang-en="Copy">کپی</span></button>
       </div>
       <pre class="jwt-json" id="jwt-header"></pre>
     </div>
@@ -34,7 +35,7 @@
     <div class="jwt-section">
       <div class="jwt-section-head">
         <h2>🟢 Payload</h2>
-        <button type="button" class="btn btn-sm" data-copy="payload">📋 کپی</button>
+        <button type="button" class="btn btn-sm" data-copy="payload">📋 <span data-lang-fa="کپی" data-lang-en="Copy">کپی</span></button>
       </div>
       <pre class="jwt-json" id="jwt-payload"></pre>
     </div>
@@ -42,19 +43,18 @@
     <div class="jwt-section">
       <div class="jwt-section-head">
         <h2>🔴 Signature</h2>
-        <button type="button" class="btn btn-sm" data-copy="signature">📋 کپی</button>
+        <button type="button" class="btn btn-sm" data-copy="signature">📋 <span data-lang-fa="کپی" data-lang-en="Copy">کپی</span></button>
       </div>
       <pre class="jwt-json jwt-sig" id="jwt-signature"></pre>
-      <p class="jwt-sig-note">⚠️ امضا در مرورگر تایید نمی‌شود. برای تایید اصالت، آن را در سرور با کلید مخفی بررسی کنید.</p>
+      <p class="jwt-sig-note" data-lang-fa="⚠️ امضا در مرورگر تایید نمی‌شود. برای تایید اصالت، آن را در سرور با کلید مخفی بررسی کنید." data-lang-en="⚠️ The signature is not verified in this browser. Verify authenticity on a trusted server using the correct key.">⚠️ امضا در مرورگر تایید نمی‌شود. برای تایید اصالت، آن را در سرور با کلید مخفی بررسی کنید.</p>
     </div>
   </div>
 </div>
 
 <script>
-  import { decodeJwt, formatTimestamp, getTimeRemaining } from './logic';
+  import { decodeJwt, formatTimestamp, getTimeRemaining, MAX_TOKEN_LENGTH } from './logic';
   import { copyText, toast } from '../../../lib/ui';
 
-  const MAX_INPUT = 10_000;
   const SAMPLE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
   const input = document.getElementById('jwt-input') as HTMLTextAreaElement | null;
@@ -69,6 +69,17 @@
   const payloadEl = document.getElementById('jwt-payload');
   const signatureEl = document.getElementById('jwt-signature');
 
+  const isEnglish = () => document.documentElement.lang === 'en';
+  const t = (fa: string, en: string) => isEnglish() ? en : fa;
+  const jwtErrorsEn: Record<string, string> = {
+    'توکن خالی است': 'The token is empty.',
+    'ساختار JWT نامعتبر است (باید ۳ بخش داشته باشد: header.payload.signature)': 'Invalid JWT structure. A token must contain three parts: header.payload.signature.',
+    'Header نامعتبر است (Base64URL یا JSON معتبر نیست)': 'Invalid header: the Base64URL or JSON is malformed.',
+    'Payload نامعتبر است (Base64URL یا JSON معتبر نیست)': 'Invalid payload: the Base64URL or JSON is malformed.',
+    'طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).': 'Token is too long (maximum 10,000 characters).'
+  };
+  const localizeJwtError = (message: string) => isEnglish() ? (jwtErrorsEn[message] ?? message) : message;
+
   function setHidden(el: HTMLElement | null, hidden: boolean) {
     if (el) el.hidden = hidden;
   }
@@ -81,30 +92,37 @@
     setHidden(errorEl, true);
     setHidden(resultsEl, true);
 
-    let token = input.value.trim().replace(/\s+/g, '');
+    const rawToken = input.value;
+    if (rawToken.length > MAX_TOKEN_LENGTH) {
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = t('طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).', 'Token is too long (maximum 10,000 characters).'); }
+      return;
+    }
+    const token = rawToken.trim().replace(/\s+/g, '');
     if (!token) return;
-    if (token.length > MAX_INPUT) token = token.slice(0, MAX_INPUT);
 
     const result = decodeJwt(token);
 
     if (!result.ok) {
       if (errorEl) {
         errorEl.hidden = false;
-        errorEl.textContent = 'خطا: ' + (result.error || 'نامشخص');
+        errorEl.textContent = t('خطا: ', 'Error: ') + localizeJwtError(result.error || t('نامشخص', 'Unknown'));
       }
       return;
     }
 
     if (statusEl) {
-      if (result.isExpired === true) {
+      if (result.invalidTimestamps?.includes('exp')) {
+        statusEl.className = 'jwt-status jwt-status-warning';
+        statusEl.textContent = t('⚠️ مقدار exp معتبر نیست؛ امضا بررسی نشده', '⚠️ The exp claim is invalid; signature not verified');
+      } else if (result.isExpired === true) {
         statusEl.className = 'jwt-status jwt-status-danger';
-        statusEl.textContent = '❌ توکن منقضی شده است';
+        statusEl.textContent = t('❌ توکن منقضی شده است؛ امضا بررسی نشده', '❌ Token has expired; signature not verified');
       } else if (result.isExpired === false) {
         statusEl.className = 'jwt-status jwt-status-success';
-        statusEl.textContent = '✅ توکن معتبر است (منقضی نشده)';
+        statusEl.textContent = t('✅ توکن منقضی نشده است؛ امضا بررسی نشده', '✅ Token has not expired; signature not verified');
       } else {
         statusEl.className = 'jwt-status jwt-status-warning';
-        statusEl.textContent = '⚠️ تاریخ انقضا (exp) در توکن وجود ندارد';
+        statusEl.textContent = t('⚠️ تاریخ انقضا (exp) در توکن وجود ندارد؛ امضا بررسی نشده', '⚠️ Token has no expiration (exp) claim; signature not verified');
       }
     }
 
@@ -112,17 +130,20 @@
       timestampsEl.textContent = '';
       const rows: { label: string; value: string; cls?: string }[] = [];
       if (result.issuedAt) {
-        rows.push({ label: 'صادر شده (iat)', value: formatTimestamp(result.issuedAt) });
+        rows.push({ label: t('صادر شده (iat)', 'Issued at (iat)'), value: formatTimestamp(result.issuedAt) });
       }
       if (result.notBefore) {
-        rows.push({ label: 'معتبر از (nbf)', value: formatTimestamp(result.notBefore) });
+        rows.push({ label: t('معتبر از (nbf)', 'Not before (nbf)'), value: formatTimestamp(result.notBefore) });
       }
       if (result.expiresAt) {
         rows.push({
-          label: 'انقضا (exp)',
-          value: formatTimestamp(result.expiresAt) + ' — ' + getTimeRemaining(result.expiresAt),
+          label: t('انقضا (exp)', 'Expires at (exp)'),
+          value: formatTimestamp(result.expiresAt) + ' — ' + getTimeRemaining(result.expiresAt, document.documentElement.lang === 'en' ? 'en' : 'fa'),
           cls: result.isExpired ? 'ts-expired' : 'ts-active'
         });
+      }
+      if (result.invalidTimestamps && result.invalidTimestamps.length > 0) {
+        rows.push({ label: t('ادعاهای زمانی نامعتبر', 'Invalid time claims'), value: result.invalidTimestamps.join(', '), cls: 'ts-expired' });
       }
       if (rows.length > 0) {
         setHidden(timestampsEl, false);
@@ -146,7 +167,7 @@
 
     setText(headerEl, result.header ? JSON.stringify(result.header, null, 2) : '{}');
     setText(payloadEl, result.payload ? JSON.stringify(result.payload, null, 2) : '{}');
-    setText(signatureEl, result.signature || '(خالی)');
+    setText(signatureEl, result.signature || t('(خالی)', '(empty)'));
 
     setHidden(resultsEl, false);
   }
@@ -157,7 +178,10 @@
     if (decodeBtn) decodeBtn.disabled = !hasContent;
 
     const trimmed = input.value.trim();
-    if (trimmed.length > 30 && trimmed.split('.').length === 3) {
+    if (input.value.length > MAX_TOKEN_LENGTH) {
+      setHidden(resultsEl, true);
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = t('طول توکن بیش از حد مجاز است (حداکثر ۱۰٬۰۰۰ نویسه).', 'Token is too long (maximum 10,000 characters).'); }
+    } else if (trimmed.length > 30 && trimmed.split('.').length === 3) {
       decode();
     } else {
       setHidden(resultsEl, true);
@@ -166,6 +190,7 @@
   });
 
   decodeBtn?.addEventListener('click', decode);
+  document.addEventListener('app:languagechange', () => { if (input?.value.trim()) decode(); });
 
   clearBtn?.addEventListener('click', () => {
     if (input) input.value = '';
@@ -190,8 +215,8 @@
       else if (target === 'signature') text = signatureEl?.textContent || '';
       if (!text) return;
       const ok = await copyText(text);
-      if (ok) toast('کپی شد', 'success');
-      else toast('کپی نشد', 'error');
+      if (ok) toast(t('کپی شد', 'Copied'), 'success');
+      else toast(t('کپی نشد', 'Copy failed'), 'error');
     });
   });
 </script>

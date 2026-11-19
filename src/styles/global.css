@@ -223,3 +223,11 @@ button, input, textarea, select {
 .skip-link:focus {
   top: 0;
 }
+
+
+/* Hide Persian-only Yektanet creatives while the site is in English. */
+html[lang="en"] .yn-bnr,
+html[lang="en"] .yn-notification,
+html[lang="en"] .yn-footer-sticky {
+  display: none !important;
+}

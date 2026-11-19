@@ -29,6 +29,46 @@ function jalCal(jy: number, withoutLeap = false): JalCal {
   return { leap, gy, march };
 }
 
+function assertInteger(value: number, name: string): void {
+  if (!Number.isInteger(value)) throw new Error(`Invalid ${name}: ${value}`);
+}
+
+function isGregorianLeapYear(year: number): boolean {
+  return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+function assertGregorianDate(gy: number, gm: number, gd: number): void {
+  assertInteger(gy, 'Gregorian year');
+  assertInteger(gm, 'Gregorian month');
+  assertInteger(gd, 'Gregorian day');
+  if (gy < 1 || gy > 9999 || gm < 1 || gm > 12) throw new Error('Invalid Gregorian date.');
+  const monthDays = [31, isGregorianLeapYear(gy) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (gd < 1 || gd > monthDays[gm - 1]) throw new Error('Invalid Gregorian date.');
+}
+
+function assertJalaliDate(jy: number, jm: number, jd: number): void {
+  assertInteger(jy, 'Jalali year');
+  assertInteger(jm, 'Jalali month');
+  assertInteger(jd, 'Jalali day');
+  if (jm < 1 || jm > 12) throw new Error('Invalid Jalali date.');
+  const leap = jalCal(jy).leap === 0;
+  const monthDays = jm <= 6 ? 31 : jm <= 11 ? 30 : leap ? 30 : 29;
+  if (jd < 1 || jd > monthDays) throw new Error('Invalid Jalali date.');
+}
+
+function isHijriLeapYear(year: number): boolean {
+  return (11 * year + 14) % 30 < 11;
+}
+
+function assertHijriDate(hy: number, hm: number, hd: number): void {
+  assertInteger(hy, 'Hijri year');
+  assertInteger(hm, 'Hijri month');
+  assertInteger(hd, 'Hijri day');
+  if (hy < 1 || hy > 9999 || hm < 1 || hm > 12) throw new Error('Invalid Hijri date.');
+  const monthDays = hm === 12 ? (isHijriLeapYear(hy) ? 30 : 29) : hm % 2 === 1 ? 30 : 29;
+  if (hd < 1 || hd > monthDays) throw new Error('Invalid Hijri date.');
+}
+
 function g2d(gy: number, gm: number, gd: number): number {
   let d = Math.floor(((gy + Math.trunc((gm - 8) / 6) + 100100) * 1461) / 4)
     + Math.floor((153 * ((gm + 9) % 12) + 2) / 5)
@@ -78,15 +118,19 @@ function d2j(jdn: number): { jy: number; jm: number; jd: number } {
 }
 
 export function toJalali(gy: number, gm: number, gd: number): { jy: number; jm: number; jd: number } {
+  assertGregorianDate(gy, gm, gd);
   return d2j(g2d(gy, gm, gd));
 }
 
 export function toGregorian(jy: number, jm: number, jd: number): { gy: number; gm: number; gd: number } {
+  assertJalaliDate(jy, jm, jd);
   return d2g(j2d(jy, jm, jd));
 }
 
 export function gregorianToHijri(gy: number, gm: number, gd: number): { hy: number; hm: number; hd: number } {
+  assertGregorianDate(gy, gm, gd);
   const jd = g2d(gy, gm, gd);
+  if (jd < 1948440) throw new Error('Gregorian date predates the Hijri calendar.');
   let l = jd - 1948440 + 10632;
   const n = Math.floor((l - 1) / 10631);
   l = l - 10631 * n + 354;
@@ -101,6 +145,7 @@ export function gregorianToHijri(gy: number, gm: number, gd: number): { hy: numb
 }
 
 export function hijriToGregorian(hy: number, hm: number, hd: number): { gy: number; gm: number; gd: number } {
+  assertHijriDate(hy, hm, hd);
   const jd = Math.floor((11 * hy + 3) / 30) + 354 * hy + 30 * hm
     - Math.floor((hm - 1) / 2) + hd + 1948440 - 385;
   return d2g(jd);

@@ -8,7 +8,7 @@
     </div>
     <div class="dc-field">
       <label for="dc-amount">مقدار:</label>
-      <input id="dc-amount" type="number" class="input" value="30" min="0" />
+      <input id="dc-amount" type="number" class="input" value="30" min="0" max="100000" step="1" />
     </div>
     <div class="dc-field">
       <label for="dc-unit">واحد:</label>
@@ -33,10 +33,10 @@
   </div>
   <div class="dc-error" id="dc-error" hidden></div>
   <div class="dc-results" id="dc-results" hidden>
-    <div class="dc-card dc-jalali"><span class="dc-lbl">شمسی</span><span class="dc-val" id="dc-j"></span></div>
-    <div class="dc-card dc-gregorian"><span class="dc-lbl">میلادی</span><span class="dc-val" id="dc-g"></span></div>
-    <div class="dc-card dc-hijri"><span class="dc-lbl">قمری</span><span class="dc-val" id="dc-h"></span></div>
-    <div class="dc-card dc-weekday"><span class="dc-lbl">روز هفته</span><span class="dc-val" id="dc-w"></span></div>
+    <div class="dc-card dc-jalali"><span class="dc-lbl">شمسی</span><span class="dc-val" id="dc-j" data-date-output></span></div>
+    <div class="dc-card dc-gregorian"><span class="dc-lbl">میلادی</span><span class="dc-val" id="dc-g" data-date-output></span></div>
+    <div class="dc-card dc-hijri"><span class="dc-lbl">قمری</span><span class="dc-val" id="dc-h" data-date-output></span></div>
+    <div class="dc-card dc-weekday"><span class="dc-lbl">روز هفته</span><span class="dc-val" id="dc-w" data-date-output></span></div>
   </div>
 </div>
 <script>
@@ -64,8 +64,9 @@
 
     const p = parseJalali(baseIn.value);
     if (!p) { errorEl.hidden = false; errorEl.textContent = 'تاریخ پایه نامعتبر (مثل 1403/01/01)'; return; }
+    if (!amountIn.value.trim()) { errorEl.hidden = false; errorEl.textContent = 'مقدار نامعتبر'; return; }
     const amount = Number(amountIn.value);
-    if (!Number.isFinite(amount) || amount < 0) { errorEl.hidden = false; errorEl.textContent = 'مقدار نامعتبر'; return; }
+    if (!Number.isInteger(amount) || !Number.isFinite(amount) || amount < 0 || amount > 100_000) { errorEl.hidden = false; errorEl.textContent = 'مقدار نامعتبر'; return; }
 
     try {
       const g = toGregorian(p.jy, p.jm, p.jd);
@@ -96,6 +97,7 @@
   });
 
   document.getElementById('dc-calc')?.addEventListener('click', calculate);
+  document.addEventListener('app:languagechange', () => { if (!results?.hidden) calculate(); });
 </script>
 <style>
   .dc-tool { display: flex; flex-direction: column; gap: var(--space-3); }

@@ -2,7 +2,7 @@ export { toJalali, toGregorian, gregorianToHijri, JALALI_MONTHS, HIJRI_MONTHS } 
 
 export function timestampToDate(ts: number): Date | null {
   if (!Number.isFinite(ts)) return null;
-  const ms = ts > 9999999999 ? ts : ts * 1000;
+  const ms = Math.abs(ts) > 9999999999 ? ts : ts * 1000;
   const d = new Date(ms);
   if (isNaN(d.getTime())) return null;
   return d;

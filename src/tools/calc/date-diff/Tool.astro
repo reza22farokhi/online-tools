@@ -13,8 +13,8 @@
   </div>
   <div class="dd-error" id="dd-error" hidden role="alert"></div>
   <div class="dd-results" id="dd-results" hidden>
-    <div class="dd-main" id="dd-main">—</div>
-    <div class="dd-grid">
+    <div class="dd-main" id="dd-main" data-date-output>—</div>
+    <div class="dd-grid" data-date-output>
       <div class="dd-cell"><span class="dd-num" id="dd-total-days">0</span><span class="dd-lbl">کل روزها</span></div>
       <div class="dd-cell"><span class="dd-num" id="dd-total-weeks">0</span><span class="dd-lbl">کل هفته‌ها</span></div>
       <div class="dd-cell"><span class="dd-num" id="dd-total-hours">0</span><span class="dd-lbl">کل ساعت‌ها</span></div>
@@ -46,6 +46,7 @@
   }
 
   function refresh() {
+    const numberLocale = document.documentElement.lang === 'en' ? 'en-US' : 'fa-IR';
     if (!fromInput || !toInput || !resultsEl) return;
     setHidden(errorEl, true);
     if (errorEl) errorEl.textContent = '';
@@ -78,18 +79,19 @@
       parts.push(`${r.days} روز`);
       mainEl.textContent = parts.join(' و ');
     }
-    if (nums.totalDays) nums.totalDays.textContent = r.totalDays.toLocaleString('fa-IR');
-    if (nums.totalWeeks) nums.totalWeeks.textContent = r.totalWeeks.toLocaleString('fa-IR');
-    if (nums.totalHours) nums.totalHours.textContent = r.totalHours.toLocaleString('fa-IR');
-    if (nums.totalMinutes) nums.totalMinutes.textContent = r.totalMinutes.toLocaleString('fa-IR');
-    if (nums.business) nums.business.textContent = r.businessDays.toLocaleString('fa-IR');
-    if (nums.weekend) nums.weekend.textContent = r.weekendDays.toLocaleString('fa-IR');
+    if (nums.totalDays) nums.totalDays.textContent = r.totalDays.toLocaleString(numberLocale);
+    if (nums.totalWeeks) nums.totalWeeks.textContent = r.totalWeeks.toLocaleString(numberLocale);
+    if (nums.totalHours) nums.totalHours.textContent = r.totalHours.toLocaleString(numberLocale);
+    if (nums.totalMinutes) nums.totalMinutes.textContent = r.totalMinutes.toLocaleString(numberLocale);
+    if (nums.business) nums.business.textContent = r.businessDays.toLocaleString(numberLocale);
+    if (nums.weekend) nums.weekend.textContent = r.weekendDays.toLocaleString(numberLocale);
   }
 
   fromInput?.addEventListener('change', refresh);
   fromInput?.addEventListener('input', refresh);
   toInput?.addEventListener('change', refresh);
   toInput?.addEventListener('input', refresh);
+  document.addEventListener('app:languagechange', refresh);
   refresh();
 </script>
 

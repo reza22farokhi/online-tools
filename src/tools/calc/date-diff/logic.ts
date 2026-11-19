@@ -31,16 +31,19 @@ export function calculateDateDiff(from: Date, to: Date): DateDiffResult | null {
     months += 12;
   }
 
-  const totalMs = b.getTime() - a.getTime();
-  const totalDays = Math.floor(totalMs / 86_400_000);
+  const dayMs = 86_400_000;
+  const startDay = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const endDay = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+  const totalDays = Math.round((endDay - startDay) / dayMs);
   const totalWeeks = Math.floor(totalDays / 7);
-  const totalHours = Math.floor(totalMs / 3_600_000);
-  const totalMinutes = Math.floor(totalMs / 60_000);
+  const totalHours = totalDays * 24;
+  const totalMinutes = totalDays * 24 * 60;
 
   let businessDays = 0;
   let weekendDays = 0;
   const cursor = new Date(a.getFullYear(), a.getMonth(), a.getDate());
   const end = new Date(b.getFullYear(), b.getMonth(), b.getDate());
+  cursor.setDate(cursor.getDate() + 1);
   while (cursor <= end) {
     const dow = cursor.getDay();
     if (dow === 5 || dow === 6) {

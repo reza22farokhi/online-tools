@@ -1,22 +1,23 @@
 ---
-// Tool UI
+// QR Code Generator UI
 ---
 <div class="qr-tool">
   <div class="input-group">
-    <label for="qr-input">متن یا لینک خود را وارد کنید:</label>
-    <textarea id="qr-input" rows="3" placeholder="https://example.com"></textarea>
+    <label for="qr-input"><span data-lang-fa="متن یا لینک خود را وارد کنید:" data-lang-en="Enter text or a URL:">متن یا لینک خود را وارد کنید:</span></label>
+    <textarea id="qr-input" rows="3" placeholder="https://example.com" aria-label="QR code content"></textarea>
   </div>
-  
+
   <div class="options-group">
-    <label for="qr-size">اندازه تصویر (پیکسل):</label>
+    <label for="qr-size"><span data-lang-fa="اندازه تصویر (پیکسل):" data-lang-en="Image size (pixels):">اندازه تصویر (پیکسل):</span></label>
     <input type="number" id="qr-size" value="300" min="100" max="1000" step="50" />
   </div>
 
-  <button id="generate-btn" class="btn-primary">تولید کد QR</button>
+  <div id="qr-error" class="qr-error" role="alert" hidden></div>
+  <button id="generate-btn" class="btn-primary" type="button"><span data-lang-fa="تولید کد QR" data-lang-en="Generate QR code">تولید کد QR</span></button>
 
   <div id="qr-result" class="result-container hidden">
     <canvas id="qr-canvas"></canvas>
-    <a id="download-btn" class="btn-secondary" download="qrcode.png">دانلود تصویر</a>
+    <a id="download-btn" class="btn-secondary" download="qrcode.png"><span data-lang-fa="دانلود تصویر" data-lang-en="Download image">دانلود تصویر</span></a>
   </div>
 </div>
 
@@ -29,100 +30,88 @@
   const resultEl = document.getElementById('qr-result') as HTMLDivElement;
   const canvasEl = document.getElementById('qr-canvas') as HTMLCanvasElement;
   const downloadEl = document.getElementById('download-btn') as HTMLAnchorElement;
+  const errorEl = document.getElementById('qr-error') as HTMLDivElement;
+  const MAX_QR_BYTES = 2000;
+  let currentError: 'empty' | 'tooLarge' | 'generation' | null = null;
 
-  if (btnEl && canvasEl && resultEl) {
+  const isEnglish = () => document.documentElement.lang === 'en';
+  const errorMessages = {
+    fa: {
+      empty: 'لطفاً متنی برای تبدیل وارد کنید.',
+      tooLarge: 'حجم متن برای ساخت QR بیش از حد مجاز است (حداکثر ۲۰۰۰ بایت).',
+      generation: 'خطایی در تولید کد QR رخ داد. متن کوتاه‌تری وارد کنید.'
+    },
+    en: {
+      empty: 'Enter text or a URL to generate a QR code.',
+      tooLarge: 'The content is too large (maximum 2,000 bytes).',
+      generation: 'Could not generate the QR code. Try shorter content.'
+    }
+  };
+
+  function renderError() {
+    if (!currentError) {
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+      return;
+    }
+    errorEl.textContent = errorMessages[isEnglish() ? 'en' : 'fa'][currentError];
+    errorEl.hidden = false;
+  }
+
+  document.addEventListener('app:languagechange', renderError);
+
+  if (btnEl && canvasEl && resultEl && errorEl) {
     btnEl.addEventListener('click', async () => {
       const text = inputEl.value.trim();
-      const size = parseInt(sizeEl.value, 10) || 300;
+      const requestedSize = Number.parseInt(sizeEl.value, 10);
+      const size = Number.isFinite(requestedSize) ? Math.max(100, Math.min(1000, requestedSize)) : 300;
+      sizeEl.value = String(size);
+      currentError = null;
+      renderError();
+      resultEl.classList.add('hidden');
 
       if (!text) {
-        alert('لطفاً متنی برای تبدیل وارد کنید.');
+        currentError = 'empty';
+        renderError();
+        return;
+      }
+      if (new TextEncoder().encode(text).length > MAX_QR_BYTES) {
+        currentError = 'tooLarge';
+        renderError();
         return;
       }
 
+      btnEl.disabled = true;
       try {
         await QRCode.toCanvas(canvasEl, text, {
           width: size,
           margin: 2,
-          color: {
-            dark: '#000000',
-            light: '#ffffff'
-          }
+          color: { dark: '#000000', light: '#ffffff' }
         });
-        
-        // Prepare download link
         downloadEl.href = canvasEl.toDataURL('image/png');
         resultEl.classList.remove('hidden');
-      } catch (err) {
-        console.error(err);
-        alert('خطایی در تولید کد QR رخ داد.');
+      } catch {
+        currentError = 'generation';
+        renderError();
+      } finally {
+        btnEl.disabled = false;
       }
     });
   }
 </script>
 
 <style>
-  .qr-tool {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    max-width: 500px;
-    margin: 0 auto;
-  }
-  .input-group, .options-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-  label {
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-  textarea, input[type="number"] {
-    width: 100%;
-    padding: var(--space-2);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-family: inherit;
-    background: var(--color-surface-2);
-  }
-  .btn-primary {
-    background: var(--color-primary);
-    color: white;
-    padding: var(--space-2) var(--space-4);
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .btn-primary:hover {
-    opacity: 0.9;
-  }
-  .result-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-3);
-    margin-top: var(--space-4);
-  }
-  .hidden {
-    display: none !important;
-  }
-  canvas {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-  }
-  .btn-secondary {
-    background: var(--color-surface-2);
-    color: var(--color-text);
-    padding: var(--space-2) var(--space-4);
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border);
-  }
-  .btn-secondary:hover {
-    background: var(--color-border);
-  }
+  .qr-tool { display: flex; flex-direction: column; gap: var(--space-3); max-width: 500px; margin: 0 auto; }
+  .input-group, .options-group { display: flex; flex-direction: column; gap: var(--space-1); }
+  label { font-weight: 600; font-size: 0.95rem; }
+  textarea, input[type="number"] { width: 100%; padding: var(--space-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-family: inherit; background: var(--color-surface-2); }
+  .btn-primary { background: var(--color-primary); color: white; padding: var(--space-2) var(--space-4); border: none; border-radius: var(--radius-md); cursor: pointer; font-weight: bold; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:disabled { opacity: 0.65; cursor: wait; }
+  .qr-error { padding: var(--space-2) var(--space-3); background: color-mix(in srgb, var(--color-danger) 12%, transparent); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); font-size: 0.9rem; }
+  .result-container { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); margin-top: var(--space-4); }
+  .hidden { display: none !important; }
+  canvas { max-width: 100%; height: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .btn-secondary { background: var(--color-surface-2); color: var(--color-text); padding: var(--space-2) var(--space-4); text-decoration: none; border-radius: var(--radius-md); border: 1px solid var(--color-border); }
+  .btn-secondary:hover { background: var(--color-border); }
 </style>

@@ -14,6 +14,10 @@ describe('timestampToDate', () => {
     const d = timestampToDate(1700000000000);
     expect(d?.getTime()).toBe(1700000000000);
   });
+  it('recognizes negative millisecond timestamps', () => {
+    const d = timestampToDate(-1000000000000);
+    expect(d?.getTime()).toBe(-1000000000000);
+  });
   it('returns null for invalid', () => {
     expect(timestampToDate(NaN)).toBeNull();
   });

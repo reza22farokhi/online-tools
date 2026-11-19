@@ -3,30 +3,28 @@ import { ALGORITHMS } from './logic';
 ---
 <div class="hg-tool">
   <div class="hg-field">
-    <label for="hg-algo">الگوریتم:</label>
+    <label for="hg-algo"><span data-lang-fa="الگوریتم:" data-lang-en="Algorithm:">الگوریتم:</span></label>
     <select id="hg-algo" class="select hg-select">
       {ALGORITHMS.map((a) => (
         <option value={a.id} selected={a.id === 'SHA-256'}>{a.label} ({a.bits}-bit)</option>
       ))}
     </select>
   </div>
-  <label for="hg-input" class="sr-only">متن ورودی</label>
-  <textarea id="hg-input" class="textarea" placeholder="متن خود را وارد کنید..." spellcheck="false" aria-describedby="hg-help"></textarea>
-  <p id="hg-help" class="hg-help">حداکثر ۱ میلیون کاراکتر. محاسبه محلی و امن. اتصال امن (HTTPS) لازم است.</p>
+  <label for="hg-input" class="sr-only"><span data-lang-fa="متن ورودی" data-lang-en="Input text">متن ورودی</span></label>
+  <textarea id="hg-input" class="textarea" placeholder="متن خود را وارد کنید..." data-lang-placeholder-fa="متن خود را وارد کنید..." data-lang-placeholder-en="Enter text to hash..." spellcheck="false" aria-describedby="hg-help"></textarea>
+  <p id="hg-help" class="hg-help" data-lang-fa="حداکثر ۱ میلیون کاراکتر. محاسبه محلی و امن. اتصال امن (HTTPS) لازم است." data-lang-en="Maximum 1 million characters. Hashing runs locally in your browser and requires a secure HTTPS context.">حداکثر ۱ میلیون کاراکتر. محاسبه محلی و امن. اتصال امن (HTTPS) لازم است.</p>
   <div class="hg-error" id="hg-error" hidden role="alert"></div>
-  <label for="hg-output" class="hg-output-label">هش (hex):</label>
-  <textarea id="hg-output" class="textarea hg-output" readonly placeholder="خروجی hex..." aria-live="polite"></textarea>
+  <label for="hg-output" class="hg-output-label"><span data-lang-fa="هش (hex):" data-lang-en="Hash (hex):">هش (hex):</span></label>
+  <textarea id="hg-output" class="textarea hg-output" readonly placeholder="خروجی hex..." data-lang-placeholder-fa="خروجی hex..." data-lang-placeholder-en="Hex output..." aria-live="polite"></textarea>
   <div class="hg-actions">
-    <button type="button" class="btn" id="hg-clear"><span aria-hidden="true">🗑️</span> پاک کردن</button>
-    <button type="button" class="btn btn-primary" id="hg-copy" disabled><span aria-hidden="true">📋</span> کپی هش</button>
+    <button type="button" class="btn" id="hg-clear"><span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
+    <button type="button" class="btn btn-primary" id="hg-copy" disabled><span aria-hidden="true">📋</span> <span data-lang-fa="کپی هش" data-lang-en="Copy hash">کپی هش</span></button>
   </div>
 </div>
-
 <script>
   import { computeHash } from './logic';
   import type { HashAlgorithm } from './logic';
   import { copyText, toast } from '../../../lib/ui';
-
   const MAX_INPUT = 1_000_000;
   const algoSelect = document.getElementById('hg-algo') as HTMLSelectElement | null;
   const input = document.getElementById('hg-input') as HTMLTextAreaElement | null;
@@ -34,54 +32,47 @@ import { ALGORITHMS } from './logic';
   const errorEl = document.getElementById('hg-error') as HTMLDivElement | null;
   const clearBtn = document.getElementById('hg-clear') as HTMLButtonElement | null;
   const copyBtn = document.getElementById('hg-copy') as HTMLButtonElement | null;
-
   let token = 0;
-
+  let hasError = false;
+  const isEnglish = () => document.documentElement.lang === 'en';
+  function renderError() {
+    if (!errorEl) return;
+    errorEl.hidden = !hasError;
+    errorEl.textContent = hasError ? (isEnglish() ? 'Could not calculate the hash. Check your browser security context and input.' : 'محاسبه هش انجام نشد. اتصال امن و متن ورودی را بررسی کنید.') : '';
+  }
   async function compute() {
     if (!input || !output || !algoSelect) return;
     const myToken = ++token;
     if (input.value.length > MAX_INPUT) input.value = input.value.slice(0, MAX_INPUT);
     const algo = algoSelect.value as HashAlgorithm;
-
     if (input.value === '') {
-      output.value = '';
-      if (errorEl) errorEl.hidden = true;
-      if (copyBtn) copyBtn.disabled = true;
-      return;
+      output.value = ''; hasError = false; renderError(); if (copyBtn) copyBtn.disabled = true; return;
     }
-
     try {
       const hash = await computeHash(input.value, algo);
       if (myToken !== token) return;
-      output.value = hash;
-      if (errorEl) errorEl.hidden = true;
-      if (copyBtn) copyBtn.disabled = false;
-    } catch (e) {
+      output.value = hash; hasError = false; renderError(); if (copyBtn) copyBtn.disabled = false;
+    } catch {
       if (myToken !== token) return;
-      output.value = '';
-      if (errorEl) { errorEl.hidden = false; errorEl.textContent = e instanceof Error ? e.message : 'خطا'; }
-      if (copyBtn) copyBtn.disabled = true;
+      output.value = ''; hasError = true; renderError(); if (copyBtn) copyBtn.disabled = true;
     }
   }
-
   let debounceId: number | null = null;
   function debouncedCompute() {
     if (debounceId !== null) clearTimeout(debounceId);
     debounceId = window.setTimeout(compute, 200);
   }
-
   input?.addEventListener('input', debouncedCompute);
   algoSelect?.addEventListener('change', compute);
   clearBtn?.addEventListener('click', () => { if (input) input.value = ''; compute(); input?.focus(); });
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
-    if (ok) toast('هش کپی شد', 'success'); else toast('کپی نشد', 'error');
+    toast(ok ? (isEnglish() ? 'Hash copied.' : 'هش کپی شد') : (isEnglish() ? 'Copy failed.' : 'کپی نشد'), ok ? 'success' : 'error');
   });
-
+  document.addEventListener('app:languagechange', renderError);
   compute();
 </script>
-
 <style>
   .hg-tool { display: flex; flex-direction: column; gap: var(--space-3); }
   .hg-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }

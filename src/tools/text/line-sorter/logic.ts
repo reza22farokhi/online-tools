@@ -18,12 +18,12 @@ export const DEFAULT_OPTIONS: SortOptions = {
   unique: false
 };
 
-export const SORT_MODES: { value: SortMode; fa: string }[] = [
-  { value: 'asc', fa: 'صعودی (A→Z)' },
-  { value: 'desc', fa: 'نزولی (Z→A)' },
-  { value: 'length-asc', fa: 'کوتاه به بلند' },
-  { value: 'length-desc', fa: 'بلند به کوتاه' },
-  { value: 'reverse', fa: 'معکوس ترتیب اصلی' }
+export const SORT_MODES: { value: SortMode; fa: string; en: string }[] = [
+  { value: 'asc', fa: 'صعودی (A→Z)', en: 'Ascending (A→Z)' },
+  { value: 'desc', fa: 'نزولی (Z→A)', en: 'Descending (Z→A)' },
+  { value: 'length-asc', fa: 'کوتاه به بلند', en: 'Shortest to longest' },
+  { value: 'length-desc', fa: 'بلند به کوتاه', en: 'Longest to shortest' },
+  { value: 'reverse', fa: 'معکوس ترتیب اصلی', en: 'Reverse original order' }
 ];
 
 export function sortLines(input: string, opts: SortOptions): string {
