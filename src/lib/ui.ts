@@ -319,6 +319,8 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'فیلد نقل‌قول‌شده در CSV بسته نشده است.': 'A quoted CSV field was not closed.',
   'JSON باید آرایه‌ای از اشیا باشد.': 'JSON must be an array of objects.',
   'هر ردیف JSON باید یک شیء باشد.': 'Each JSON row must be an object.'
+  'متن نمونه در اینجا نمایش داده می‌شود': 'Sample text appears here',
+  'متن بزرگ (۲۴px) نمونه': 'Large text sample (24px)'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
