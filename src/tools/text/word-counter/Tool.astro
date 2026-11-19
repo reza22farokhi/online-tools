@@ -102,14 +102,10 @@
 
   copyBtn?.addEventListener('click', async () => {
     if (!lastStats) return;
-    const text =
-      `کلمات: ${lastStats.words}\n` +
-      `کاراکترها: ${lastStats.characters}\n` +
-      `بدون فاصله: ${lastStats.charactersNoSpaces}\n` +
-      `جمله‌ها: ${lastStats.sentences}\n` +
-      `خطوط: ${lastStats.lines}\n` +
-      `پاراگراف‌ها: ${lastStats.paragraphs}\n` +
-      `زمان خواندن (دقیقه): ${lastStats.readingTimeMin}`;
+    const isEnglish = document.documentElement.lang === 'en';
+    const text = isEnglish
+      ? `Words: ${lastStats.words}\nCharacters: ${lastStats.characters}\nCharacters without spaces: ${lastStats.charactersNoSpaces}\nSentences: ${lastStats.sentences}\nLines: ${lastStats.lines}\nParagraphs: ${lastStats.paragraphs}\nReading time (minutes): ${lastStats.readingTimeMin}`
+      : `کلمات: ${lastStats.words}\nکاراکترها: ${lastStats.characters}\nبدون فاصله: ${lastStats.charactersNoSpaces}\nجمله‌ها: ${lastStats.sentences}\nخطوط: ${lastStats.lines}\nپاراگراف‌ها: ${lastStats.paragraphs}\nزمان خواندن (دقیقه): ${lastStats.readingTimeMin}`;
     const ok = await copyText(text);
     if (ok) toast('آمار کپی شد', 'success');
     else toast('کپی نشد', 'error');
