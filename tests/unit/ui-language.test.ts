@@ -69,6 +69,10 @@ describe('language switching', () => {
     await new Promise<void>(resolve => queueMicrotask(resolve));
     expect(dynamic?.textContent).toBe('20% of 500 = 100');
 
+    if (dynamic) dynamic.textContent = 'WCAG AA (متن معمولی) (حداقل 4.5:1)';
+    await new Promise<void>(resolve => queueMicrotask(resolve));
+    expect(dynamic?.textContent).toBe('WCAG AA (normal text, minimum 4.5:1)');
+
     applyLang('fa', dicts);
     expect(document.getElementById('tool-text')?.textContent).toBe('پاک کردن');
     expect((document.getElementById('tool-placeholder') as HTMLInputElement).placeholder).toBe('متن خود را وارد کنید...');
