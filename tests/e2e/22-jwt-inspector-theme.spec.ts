@@ -10,7 +10,7 @@ test('JWT Inspector headings, labels, and placeholder remain visible in light an
     const label = getComputedStyle(document.querySelector('.jwt-label')!).color;
     const placeholder = getComputedStyle(document.querySelector('#jwt-placeholder')!).color;
     const clear = getComputedStyle(document.querySelector('#jwt-clear')!).color;
-    const rgb = (value: string) => value.match(/[\\d.]+/g)!.slice(0, 3).map(Number);
+    const rgb = (value: string) => { const channels = value.match(/[\d.]+/g); if (!channels || channels.length < 3) throw new Error(`Unsupported computed color: ${value}`); return channels.slice(0, 3).map(Number); };
     const luminance = (value: string) => {
       const [r, g, b] = rgb(value).map(channel => {
         const normalized = channel / 255;
@@ -38,7 +38,7 @@ test('JWT Inspector headings, labels, and placeholder remain visible in light an
     const label = getComputedStyle(document.querySelector('.jwt-label')!).color;
     const placeholder = getComputedStyle(document.querySelector('#jwt-placeholder')!).color;
     const clear = getComputedStyle(document.querySelector('#jwt-clear')!).color;
-    const rgb = (value: string) => value.match(/[\\d.]+/g)!.slice(0, 3).map(Number);
+    const rgb = (value: string) => { const channels = value.match(/[\d.]+/g); if (!channels || channels.length < 3) throw new Error(`Unsupported computed color: ${value}`); return channels.slice(0, 3).map(Number); };
     const luminance = (value: string) => {
       const [r, g, b] = rgb(value).map(channel => {
         const normalized = channel / 255;
