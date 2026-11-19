@@ -123,7 +123,7 @@ function translateToolNode(node: Node, lang: Lang): void {
   }
   if (node.nodeType === Node.ELEMENT_NODE) {
     const el = node as HTMLElement;
-    if (el.matches('script,style,textarea,input,code,pre,[contenteditable="true"]')) return;
+    if (el.matches('script,style,code,pre,[contenteditable="true"]')) return;
     for (const attr of ['placeholder', 'title', 'aria-label']) {
       const value = el.getAttribute(attr);
       if (value === null) continue;
