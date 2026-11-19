@@ -36,7 +36,7 @@ describe('Content Security Policy allowlist', () => {
   });
 
   it('does not ship inline blog scripts blocked by script-src self', () => {
-    expect(blogLayout).not.toMatch(/<script\\s+is:inline(?:\\s|>)/i);
+    expect(blogLayout).not.toMatch(/<script\s+is:inline(?:\s|>)/i);
   });
 
   it('keeps restrictive baseline directives', () => {
