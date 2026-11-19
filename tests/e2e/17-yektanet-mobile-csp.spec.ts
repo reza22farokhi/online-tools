@@ -5,7 +5,12 @@ test('publisher loader is injected only once and ad slots stay within mobile wid
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto('/?lang=fa');
 
+  await expect(page.locator('script[src="/scripts/site-bootstrap.js"]')).toHaveCount(1);
   await expect(page.locator('#yektanet-publisher-loader')).toHaveCount(1);
+  const bootstrapRequested = await page.evaluate(() =>
+    performance.getEntriesByType('resource').some((entry) => entry.name.endsWith('/scripts/site-bootstrap.js'))
+  );
+  expect(bootstrapRequested).toBe(true);
 
   // Re-evaluate the same external loader to model duplicate layout/script execution.
   await page.evaluate(() => {
