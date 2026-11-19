@@ -32,6 +32,8 @@ scripts/one-off/
 online-tools-BACKUP-*/
 
 # Test / build noise
+lighthouse-reports/
+.lighthouseci/
 coverage/
 .vitest/
 playwright-report/

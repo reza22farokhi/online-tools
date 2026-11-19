@@ -44,6 +44,59 @@ jobs:
           node scripts/verify-tools.mjs
           npm run verify:performance
 
+  lighthouse:
+    needs: test
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.1-noble
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Start local preview server
+        run: |
+          npm run preview -- --port 4321 > /tmp/astro-preview.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/astro-preview.log
+          exit 1
+
+      - name: Locate preinstalled Chromium
+        run: |
+          CHROME_PATH="$(find /ms-playwright -type f -name chrome -perm -111 | head -n 1)"
+          if [ -z "$CHROME_PATH" ]; then
+            echo "Could not locate the preinstalled Chromium executable."
+            exit 1
+          fi
+          echo "CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+
+      - name: Run mobile Lighthouse audits
+        run: npx --yes @lhci/cli@0.16.1 autorun --config=./lighthouserc.cjs
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse-mobile-reports
+          path: lighthouse-reports/
+          if-no-files-found: ignore
+          retention-days: 7
+
   e2e:
     needs: test
     runs-on: ubuntu-latest

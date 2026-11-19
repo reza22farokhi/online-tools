@@ -20,7 +20,7 @@
   "tool.privacyTitle": "Privacy",
   "tool.privacyDefault": "This tool runs entirely in your browser. No data is sent to any server.",
   "theme.toggle": "Toggle theme",
-  "lang.toggle": "Toggle language",
+  "lang.toggle": "FA, change language",
   "footer.rights": "All rights reserved.",
   "notfound.title": "Page not found",
   "notfound.desc": "The page you are looking for does not exist or has moved.",
