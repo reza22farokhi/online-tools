@@ -7,10 +7,7 @@ export const meta: ToolMeta = {
     fa: 'شمارش کلمات و کاراکترها',
     en: 'Word & Character Counter'
   },
-  description: {
-    fa: 'تعداد کلمات، کاراکترها، جمله‌ها، خطوط و پاراگراف‌های متن را به‌صورت لحظه‌ای بشمارید.',
-    en: 'Count words, characters, sentences, lines, and paragraphs in real time.'
-  },
+  description: { fa: "تعداد واژه‌ها، نویسه‌ها، جمله‌ها، خطوط و پاراگراف‌های متن را لحظه‌ای بشمارید و آمار دقیق را هنگام ویرایش یا آماده‌سازی محتوا ببینید.", en: "Count words, characters, sentences, lines, and paragraphs as you type, with live statistics to support writing, editing, and preparing content." },
   keywords: [
     'word count',
     'character count',

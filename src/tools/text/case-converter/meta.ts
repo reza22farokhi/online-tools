@@ -7,10 +7,8 @@ export const meta: ToolMeta = {
     fa: 'تبدیل حروف کوچک و بزرگ',
     en: 'Case Converter'
   },
-  description: {
-    fa: 'متن را به حروف بزرگ، کوچک، عنوان، جمله، camelCase، PascalCase، snake_case یا kebab-case تبدیل کنید.',
-    en: 'Convert text to UPPER, lower, Title, Sentence, camelCase, PascalCase, snake_case, or kebab-case.'
-  },
+  seoTitle: { fa: "تبدیل حروف کوچک و بزرگ متن | ابزارهای آنلاین", en: "Case Converter: Change Text Case | Online Tools" },
+  description: { fa: "حروف متن را به حالت بزرگ، کوچک، عنوان، جمله و قالب‌های برنامه‌نویسی مانند camelCase، snake_case و kebab-case تبدیل کنید.", en: "Convert text to uppercase, lowercase, title case, sentence case, and developer formats such as camelCase, PascalCase, snake_case, and kebab-case." },
   keywords: [
     'case converter',
     'uppercase',

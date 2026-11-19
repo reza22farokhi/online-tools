@@ -7,10 +7,9 @@ export const meta: ToolMeta = {
     fa: 'مرتب‌سازی خطوط',
     en: 'Line Sorter'
   },
-  description: {
-    fa: 'خطوط متن را به‌صورت الفبایی، عددی، بر اساس طول یا برعکس مرتب کنید. با گزینه‌های حذف خطوط تکراری و خالی.',
-    en: 'Sort lines alphabetically, numerically, by length, or reverse. With dedupe and empty-line removal.'
-  },
+  seoTitle: { fa: "مرتب‌سازی خطوط متن و حذف تکراری‌ها | ابزارهای آنلاین", en: "Text Line Sorter and Duplicate Cleaner | Online Tools" },
+
+  description: { fa: "خطوط متن را الفبایی، عددی، بر اساس طول یا به ترتیب معکوس مرتب کنید و در صورت نیاز خطوط خالی و موارد تکراری را حذف کنید و خروجی را کپی کنید.", en: "Sort text lines alphabetically, numerically, by length, or in reverse order, with options to remove blank lines and duplicates from the result." },
   keywords: [
     'sort lines',
     'line sorter',

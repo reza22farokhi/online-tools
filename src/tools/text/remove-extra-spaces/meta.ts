@@ -7,10 +7,7 @@ export const meta: ToolMeta = {
     fa: 'حذف فاصله‌های اضافی',
     en: 'Remove Extra Spaces'
   },
-  description: {
-    fa: 'فاصله‌های تکراری، فاصله ابتدا/انتهای خطوط و خطوط خالی را با یک کلیک حذف کنید.',
-    en: 'Remove duplicate spaces, trim leading/trailing whitespace, and delete empty lines.'
-  },
+  description: { fa: "فاصله‌های تکراری، فاصله ابتدا و انتهای خطوط و سطرهای خالی را از متن حذف کنید تا نوشته‌ای مرتب و آماده کپی داشته باشید، بدون تغییر واژه‌ها.", en: "Clean up repeated spaces, leading and trailing whitespace, and empty lines to make text easier to read, reuse, and paste into other applications." },
   keywords: [
     'remove spaces',
     'trim spaces',

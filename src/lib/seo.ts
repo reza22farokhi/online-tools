@@ -71,4 +71,5 @@ export function buildFaqJsonLd(faqs: { q: string; a: string }[]) {
 
 export const SITE_NAME = 'Online Tools';
 export const SITE_NAME_FA = 'ابزارهای آنلاین';
-export const DEFAULT_DESCRIPTION = 'مجموعه‌ای از ابزارهای آنلاین رایگان و حریم خصوصی‌محور برای متن، کد، سئو، تصویر و بیشتر.';
+export const DEFAULT_DESCRIPTION = 'مجموعه‌ای از ابزارهای آنلاین رایگان برای متن، کدنویسی، سئو، تصویر، فایل و تاریخ؛ با پردازش سریع در مرورگر، بدون نیاز به نصب و با تمرکز بر حریم خصوصی.';
+export const DEFAULT_DESCRIPTION_EN = 'Explore free online tools for text, code, SEO, images, files, colors, and date conversion, with fast browser-based processing and no software installation.';

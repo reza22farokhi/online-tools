@@ -7,10 +7,7 @@ export const meta: ToolMeta = {
     fa: 'پالایشگر متن فارسی',
     en: 'Persian Text Refiner'
   },
-  description: {
-    fa: 'اصلاح خودکار حروف عربی (ي، ك)، نیم‌فاصله‌ها، علائم نگارشی و تبدیل اعداد به فارسی — کاملاً در مرورگر.',
-    en: 'Automatically fix Arabic characters, half-spaces, punctuation, and convert digits to Persian — fully in-browser.'
-  },
+  description: { fa: "متن فارسی را با تبدیل حروف عربی، اصلاح نیم‌فاصله‌ها، یکدست‌سازی اعداد و تنظیم علائم نگارشی پاک‌سازی کنید تا نوشته‌ای خواناتر داشته باشید.", en: "Clean Persian text by normalizing Arabic characters, fixing half-spaces, standardizing digits, and correcting punctuation for more consistent writing." },
   keywords: [
     'persian text refiner',
     'fix persian text',

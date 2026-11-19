@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ToolCard from '../components/ui/ToolCard.astro';
 import { registry, getPopular, categories } from '../tools/registry';
-import { buildWebSiteJsonLd, SITE_NAME_FA, DEFAULT_DESCRIPTION } from '../lib/seo';
+import { buildWebSiteJsonLd, SITE_NAME_FA, DEFAULT_DESCRIPTION, DEFAULT_DESCRIPTION_EN } from '../lib/seo';
 
 const site = Astro.site?.toString() ?? 'https://example.com/';
 const popular = getPopular();
@@ -20,7 +20,7 @@ const base = import.meta.env.BASE_URL;
   title="ابزارهای آنلاین حرفه‌ای | متن، کد، سئو و تصویر"
   titleEn="Professional Online Tools | Text, Code, SEO & Images"
   description={DEFAULT_DESCRIPTION}
-  descriptionEn="Free, privacy-first online tools for text, code, SEO, images, files, colors and date conversions. Fast browser-based processing."
+  descriptionEn={DEFAULT_DESCRIPTION_EN}
   jsonLd={websiteLd}
 >
   <section class="hero container">

@@ -4,10 +4,7 @@ export const meta: ToolMeta = {
   slug: 'date-converter',
   category: 'date',
   name: { fa: 'مبدل تاریخ شمسی و میلادی', en: 'Jalali/Gregorian Date Converter' },
-  description: {
-    fa: 'تاریخ شمسی (جلالی) و میلادی را با دقت بالا و کاملاً آفلاین به یکدیگر تبدیل کنید.',
-    en: 'Convert Jalali (Persian) and Gregorian dates with high precision and fully offline.'
-  },
+  description: { fa: "تاریخ شمسی جلالی را به میلادی تبدیل کنید و برعکس؛ روز هفته و معادل هر دو تقویم را سریع ببینید، بدون ارسال تاریخ به سرور.", en: "Convert dates between the Persian Jalali and Gregorian calendars, check the weekday, and get the equivalent date instantly in your browser." },
   keywords: ['date converter', 'jalali to gregorian', 'تبدیل تاریخ', 'شمسی به میلادی', 'میلادی به شمسی', 'مبدل تاریخ'],
   addedAt: '2026-11-13',
   related: ['age', 'date-diff']
