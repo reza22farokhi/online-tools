@@ -24,6 +24,7 @@ test('service worker keeps an offline shell and bounds runtime caching', async (
 
   expect(cacheState.shellPaths).toContain('/offline/');
   expect(cacheState.shellPaths).toContain('/manifest.json');
+  expect(cacheState.shellPaths).toContain('/scripts/site-bootstrap.js');
   expect(cacheState.runtimeUrls.some((url) => new URL(url).pathname === '/tools/jwt-inspector/')).toBe(true);
   expect(cacheState.runtimeUrls.some((url) => url.includes('cache-bypass-check=1'))).toBe(false);
   expect(cacheState.runtimeUrls.some((url) => new URL(url).pathname === '/robots.txt')).toBe(false);
