@@ -47,6 +47,9 @@
   const flagCbs: Record<string, HTMLInputElement | null> = {};
   for (const f of flagIds) flagCbs[f] = document.getElementById(`rt-flag-${f}`) as HTMLInputElement | null;
 
+  const isEnglish = () => document.documentElement.lang === 'en';
+  const t = (fa: string, en: string) => isEnglish() ? en : fa;
+
   function getFlags(): string {
     return flagIds.filter(f => flagCbs[f]?.checked).join('');
   }
@@ -64,13 +67,13 @@
   function runInWorker(pattern: string, flags: string, input: string): Promise<RegexResult> {
     return new Promise((resolve) => {
       if (typeof Worker === 'undefined') {
-        resolve({ ok: false, error: 'این مرورگر اجرای ایمن Regex در Worker را پشتیبانی نمی‌کند', matches: [] });
+        resolve({ ok: false, error: t('این مرورگر اجرای ایمن Regex در Worker را پشتیبانی نمی‌کند', 'This browser does not support running regular expressions in a Worker.'), matches: [] });
         return;
       }
       try {
         worker = new Worker(new URL('./regex.worker.ts', import.meta.url), { type: 'module' });
       } catch {
-        resolve({ ok: false, error: 'امکان راه‌اندازی Worker برای اجرای ایمن Regex وجود ندارد', matches: [] });
+        resolve({ ok: false, error: t('امکان راه‌اندازی Worker برای اجرای ایمن Regex وجود ندارد', 'Could not start the Worker for safe regular-expression execution.'), matches: [] });
         return;
       }
       worker.onmessage = (e) => {
@@ -79,12 +82,12 @@
       };
       worker.onerror = () => {
         if (timeoutHandle !== null) { clearTimeout(timeoutHandle); timeoutHandle = null; }
-        resolve({ ok: false, error: 'خطا در اجرای Worker', matches: [] });
+        resolve({ ok: false, error: t('خطا در اجرای Worker', 'Worker execution failed.'), matches: [] });
       };
       worker.postMessage({ pattern, flags, input });
       timeoutHandle = window.setTimeout(() => {
         killWorker();
-        resolve({ ok: false, error: 'تایم‌اوت ۲ ثانیه — الگو ممکن است خطرناک باشد (ReDoS)', matches: [] });
+        resolve({ ok: false, error: t('تایم‌اوت ۲ ثانیه — الگو ممکن است خطرناک باشد (ReDoS)', '2-second timeout — the pattern may cause excessive backtracking (ReDoS).'), matches: [] });
       }, 2000);
     });
   }
@@ -115,7 +118,7 @@
       idx.textContent = `#${i + 1} @ ${m.index}`;
       const val = document.createElement('code');
       val.className = 'rt-match-val';
-      val.textContent = m.value === '' ? '(خالی)' : m.value;
+      val.textContent = m.value === '' ? t('(خالی)', '(empty)') : m.value;
       li.appendChild(idx); li.appendChild(val);
       if (m.groups && Object.keys(m.groups).length > 0) {
         const groups = document.createElement('div');
@@ -134,7 +137,7 @@
     if (matches.length > 50) {
       const more = document.createElement('li');
       more.className = 'rt-more';
-      more.textContent = `... و ${matches.length - 50} نتیجه دیگر`;
+      more.textContent = isEnglish() ? `... and ${matches.length - 50} more results` : `... و ${matches.length - 50} نتیجه دیگر`;
       matchesList.appendChild(more);
     }
   }
@@ -162,14 +165,16 @@
 
     if (!result.ok) {
       if (statusEl) statusEl.textContent = '';
-      if (errorEl) { errorEl.hidden = false; errorEl.textContent = result.error || 'خطا'; }
+      if (errorEl) { errorEl.hidden = false; errorEl.textContent = result.error || t('خطا', 'Error'); }
       return;
     }
 
     if (statusEl) {
       statusEl.textContent = result.matches.length === 0
-        ? 'هیچ تطابقی پیدا نشد'
-        : `${result.matches.length.toLocaleString('fa-IR')} تطابق پیدا شد`;
+        ? t('هیچ تطابقی پیدا نشد', 'No matches found')
+        : isEnglish()
+          ? `${result.matches.length.toLocaleString('en-US')} matches found`
+          : `${result.matches.length.toLocaleString('fa-IR')} تطابق پیدا شد`;
     }
 
     if (result.matches.length > 0) {
