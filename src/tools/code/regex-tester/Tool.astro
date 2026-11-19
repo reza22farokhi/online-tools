@@ -121,6 +121,7 @@
       if (m.groups && Object.keys(m.groups).length > 0) {
         const groups = document.createElement('div');
         groups.className = 'rt-match-groups';
+        groups.setAttribute('data-user-content', 'true');
         for (const [k, v] of Object.entries(m.groups)) {
           const g = document.createElement('span');
           g.className = 'rt-group';
