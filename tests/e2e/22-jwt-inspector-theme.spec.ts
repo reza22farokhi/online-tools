@@ -8,7 +8,7 @@ test('JWT Inspector headings, labels, placeholder, and Clear button remain acces
       getComputedStyle(document.querySelector(selector)!).getPropertyValue(property).trim();
 
     const rgb = (value: string) => {
-      const channels = value.match(/[\\d.]+/g);
+      const channels = value.match(/[\d.]+/g);
       if (!channels || channels.length < 3) throw new Error(`Unsupported computed color: ${value}`);
       return channels.slice(0, 3).map(Number);
     };
