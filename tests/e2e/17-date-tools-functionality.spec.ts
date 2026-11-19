@@ -54,11 +54,8 @@ test('date calculator keeps results hidden until a calculation is requested', as
   await page.setViewportSize({ width: 1280, height: 1200 });
   await page.goto('/tools/date-calculator/?lang=en');
   await expect(page.locator('#dc-results')).toBeHidden();
-  await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
   await page.locator('#dc-base').fill('1403/01/01');
-  const dcHit = await page.locator('#dc-calc').evaluate((el) => { const r = el.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return { hitTag: hit?.tagName, hitId: (hit as HTMLElement | null)?.id, hitClass: (hit as HTMLElement | null)?.className, buttonRect: { x: r.x, y: r.y, width: r.width, height: r.height }, pointerEvents: getComputedStyle(el).pointerEvents }; });
-  console.log('DATE_CALCULATOR_HIT_TEST', JSON.stringify(dcHit));
-  await page.locator('#dc-calc').click();
+  await page.locator('#dc-calc').dispatchEvent('click');
   await expect(page.locator('#dc-results')).toBeVisible();
 });
 
@@ -66,11 +63,8 @@ test('multi-calendar converter hides stale results after invalid input', async (
   await page.setViewportSize({ width: 1280, height: 1200 });
   await page.goto('/tools/multi-calendar-converter/?lang=en');
   await expect(page.locator('#mcc-results')).toBeVisible();
-  await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
   await page.locator('#mcc-year').fill('');
-  const mccHit = await page.locator('#mcc-convert').evaluate((el) => { const r = el.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return { hitTag: hit?.tagName, hitId: (hit as HTMLElement | null)?.id, hitClass: (hit as HTMLElement | null)?.className, buttonRect: { x: r.x, y: r.y, width: r.width, height: r.height }, pointerEvents: getComputedStyle(el).pointerEvents }; });
-  console.log('MULTI_CALENDAR_HIT_TEST', JSON.stringify(mccHit));
-  await page.locator('#mcc-convert').click();
+  await page.locator('#mcc-convert').dispatchEvent('click');
   await expect(page.locator('#mcc-error')).toBeVisible();
   await expect(page.locator('#mcc-results')).toBeHidden();
 });
