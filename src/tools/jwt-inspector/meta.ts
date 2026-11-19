@@ -4,9 +4,13 @@ export const jwtInspectorMeta = {
     fa: 'بازرس JWT', 
     en: 'JWT Inspector' 
   },
-  description: { 
-    fa: 'توکن JWT را بدون ارسال به سرور، در مرورگر خود دیکد و امضایش را تأیید کنید. حریم‌خصوصی ۱۰۰٪.', 
-    en: 'Decode and verify JWT signatures locally in your browser without sending tokens to a server.' 
+  title: {
+    fa: 'بازرس JWT: رمزگشایی و تأیید امضا | ابزارهای آنلاین',
+    en: 'JWT Inspector: Decode and Verify Signatures | Online Tools'
+  },
+  description: {
+    fa: 'توکن JWT را در مرورگر رمزگشایی و در صورت ارائه کلید، امضا را بررسی کنید؛ پشتیبانی الگوریتم‌های رایج و نمایش ادعاها، انقضا و هشدارهای امنیتی.',
+    en: 'Decode JWT tokens locally and verify signatures when you provide a key; inspect common algorithms, claims, expiration, and security warnings in one place.'
   },
   category: 'security',
   popular: false,
