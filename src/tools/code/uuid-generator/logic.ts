@@ -5,7 +5,7 @@ export function generateUuid(): string {
     return crypto.randomUUID();
   }
   if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') {
-    throw new Error('Secure random generation is not available in this browser.');
+    throw new Error('تولید UUID امن در این مرورگر در دسترس نیست.');
   }
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
