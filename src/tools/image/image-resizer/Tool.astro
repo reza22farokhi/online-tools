@@ -65,6 +65,11 @@
     isProcessing = false;
   }
   function clearError() { if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; } }
+  function showProcessError(msg: string) {
+    if (errorEl) { errorEl.hidden = false; errorEl.textContent = msg; }
+    if (workspace) workspace.hidden = false;
+    if (uploadZone) uploadZone.hidden = true;
+  }
   function handleFile(file: File) {
     clearError();
     if (isProcessing) { showError('یک پردازش در حال انجام است. لطفاً صبر کنید.'); return; }
@@ -121,20 +126,20 @@
     if (!originalImage || !widthInput || !heightInput) return;
     const tW = Number(widthInput.value);
     const tH = Number(heightInput.value);
-    if (!Number.isInteger(tW) || !Number.isInteger(tH) || tW <= 0 || tH <= 0 || tW > 10000 || tH > 10000) { showError('ابعاد باید عدد صحیح بین ۱ تا ۱۰٬۰۰۰ باشند.'); return; }
+    if (!Number.isInteger(tW) || !Number.isInteger(tH) || tW <= 0 || tH <= 0 || tW > 10000 || tH > 10000) { showProcessError('ابعاد باید عدد صحیح بین ۱ تا ۱۰٬۰۰۰ باشند.'); return; }
     const dims = calculateDimensions(originalWidth, originalHeight, tW, tH, maintainCb?.checked ?? true);
-    if (!dims.width || !dims.height || dims.width * dims.height > MAX_IMAGE_PIXELS) { showError('ابعاد خروجی بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).'); return; }
+    if (!dims.width || !dims.height || dims.width * dims.height > MAX_IMAGE_PIXELS) { showProcessError('ابعاد خروجی بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).'); return; }
     processBtn && (processBtn.disabled = true);
     if (downloadUrl) URL.revokeObjectURL(downloadUrl);
     const canvas = document.createElement('canvas');
     canvas.width = dims.width;
     canvas.height = dims.height;
     const ctx = canvas.getContext('2d');
-    if (!ctx) { if (processBtn) processBtn.disabled = false; showError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
+    if (!ctx) { if (processBtn) processBtn.disabled = false; showProcessError('مرورگر از Canvas پشتیبانی نمی‌کند.'); return; }
     ctx.drawImage(originalImage, 0, 0, dims.width, dims.height);
     canvas.toBlob((blob) => {
       if (processBtn) processBtn.disabled = false;
-      if (!blob || !downloadBtn) { showError('ساخت تصویر خروجی ناموفق بود.'); return; }
+      if (!blob || !downloadBtn) { showProcessError('ساخت تصویر خروجی ناموفق بود.'); return; }
       const url = URL.createObjectURL(blob);
       downloadUrl = url;
       downloadBtn.href = url;
