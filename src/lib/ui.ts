@@ -181,7 +181,17 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'X چند درصد Y است': 'What percentage of Y is X?',
   'تغییر از X به Y': 'Percentage change from X to Y',
   'درصد (X)': 'Percentage (X)', 'مقدار اولیه (X)': 'Initial value (X)',
-  'مقدار نهایی (Y)': 'Final value (Y)'
+  'مقدار نهایی (Y)': 'Final value (Y)',
+  'ژانویه': 'January', 'فوریه': 'February', 'مارس': 'March', 'آوریل': 'April',
+  'مه': 'May', 'ژوئن': 'June', 'ژوئیه': 'July', 'اوت': 'August', 'سپتامبر': 'September',
+  'اکتبر': 'October', 'نوامبر': 'November', 'دسامبر': 'December',
+  'محرم': 'Muharram', 'صفر': 'Safar', 'ربیع‌الاول': 'Rabi al-Awwal',
+  'ربیع‌الثانی': 'Rabi al-Thani', 'جمادی‌الاول': 'Jumada al-Awwal',
+  'جمادی‌الثانی': 'Jumada al-Thani', 'رجب': 'Rajab', 'شعبان': 'Shaban',
+  'رمضان': 'Ramadan', 'شوال': 'Shawwal', 'ذی‌القعده': 'Dhu al-Qidah', 'ذی‌الحجه': 'Dhu al-Hijjah',
+  'تاریخ شمسی (مثل 1403/01/01):': 'Jalali date (e.g. 1403/01/01):',
+  'تاریخ شمسی (مثل 1403/01/01)': 'Jalali date (e.g. 1403/01/01)',
+  'تاریخ نامعتبر': 'Invalid date'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
