@@ -53,9 +53,21 @@
   function refresh() {
     if (!urlInput || !titleInput || !descInput || !imageInput) return;
 
-    if (prevDomain) prevDomain.textContent = extractDomain(urlInput.value);
-    if (prevTitle) prevTitle.textContent = titleInput.value || 'عنوان لینک شما در اینجا نمایش داده می‌شود';
-    if (prevDesc) prevDesc.textContent = descInput.value || 'توضیحات لینک شما در اینجا نمایش داده می‌شود. این متن از تگ‌های Open Graph خوانده می‌شود.';
+    if (prevDomain) {
+      if (urlInput.value.trim()) prevDomain.setAttribute('data-user-content', 'true');
+      else prevDomain.removeAttribute('data-user-content');
+      prevDomain.textContent = extractDomain(urlInput.value);
+    }
+    if (prevTitle) {
+      if (titleInput.value) prevTitle.setAttribute('data-user-content', 'true');
+      else prevTitle.removeAttribute('data-user-content');
+      prevTitle.textContent = titleInput.value || 'عنوان لینک شما در اینجا نمایش داده می‌شود';
+    }
+    if (prevDesc) {
+      if (descInput.value) prevDesc.setAttribute('data-user-content', 'true');
+      else prevDesc.removeAttribute('data-user-content');
+      prevDesc.textContent = descInput.value || 'توضیحات لینک شما در اینجا نمایش داده می‌شود. این متن از تگ‌های Open Graph خوانده می‌شود.';
+    }
     
     if (prevImg) {
       const imgUrl = imageInput.value.trim();
