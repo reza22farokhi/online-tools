@@ -312,15 +312,15 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'ذی‌القعده': 'Dhu al-Qidah',
   'ذی‌الحجه': 'Dhu al-Hijjah',
   'تاریخ شمسی (مثل 1403/01/01):': 'Jalali date (e.g. 1403/01/01):',
-  'تاریخ شمسی (مثل 1403/01/01)': 'Jalali date (e.g. 1403/01/01)'
+  'تاریخ شمسی (مثل 1403/01/01)': 'Jalali date (e.g. 1403/01/01)',
   'جداکننده CSV باید دقیقاً یک نویسه معتبر باشد.': 'CSV delimiter must be exactly one valid character.',
   'پس از پایان فیلد نقل‌قول‌شده، نویسه غیرمجاز وجود دارد.': 'Unexpected character after a quoted CSV field.',
   'نقل‌قول باید در ابتدای فیلد CSV باشد.': 'A quote must appear at the beginning of a CSV field.',
   'فیلد نقل‌قول‌شده در CSV بسته نشده است.': 'A quoted CSV field was not closed.',
   'JSON باید آرایه‌ای از اشیا باشد.': 'JSON must be an array of objects.',
-  'هر ردیف JSON باید یک شیء باشد.': 'Each JSON row must be an object.'
+  'هر ردیف JSON باید یک شیء باشد.': 'Each JSON row must be an object.',
   'متن نمونه در اینجا نمایش داده می‌شود': 'Sample text appears here',
-  'متن بزرگ (۲۴px) نمونه': 'Large text sample (24px)'
+  'متن بزرگ (۲۴px) نمونه': 'Large text sample (24px)',
   'آدرس سایت نباید شامل نویسه‌های کنترلی باشد.': 'Website URL must not contain control characters.',
   'آدرس تصویر نباید شامل نویسه‌های کنترلی باشد.': 'Image URL must not contain control characters.',
   'آدرس سایت باید از HTTP یا HTTPS استفاده کند.': 'Website URL must use HTTP or HTTPS.',
@@ -333,7 +333,7 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'بارگذاری تصویر هم‌دامنه ناموفق بود.': 'Could not load the same-origin image.',
   'تصویر باید PNG/JPEG/WebP/GIF/AVIF و حداکثر ۱۰ مگابایت باشد.': 'Image must be PNG/JPEG/WebP/GIF/AVIF and no larger than 10 MB.',
   'تصویر محلی برای پیش‌نمایش بارگذاری شد.': 'Local image loaded for preview.',
-  'خواندن تصویر ناموفق بود.': 'Could not read the image.'
+  'خواندن تصویر ناموفق بود.': 'Could not read the image.',
   'فرمت تصویر پشتیبانی نمی‌شود. JPG، PNG یا WebP انتخاب کنید.': 'Unsupported image format. Choose JPG, PNG, or WebP.',
   'فرمت تصویر پشتیبانی نمی‌شود. JPG، PNG، WebP، GIF، AVIF یا BMP انتخاب کنید.': 'Unsupported image format. Choose JPG, PNG, WebP, GIF, AVIF, or BMP.',
   'ابعاد تصویر بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).': 'Image dimensions exceed the limit (maximum 16 megapixels).',
