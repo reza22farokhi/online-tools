@@ -334,6 +334,15 @@ const TOOL_TEXT_EN: Record<string, string> = {
   'تصویر باید PNG/JPEG/WebP/GIF/AVIF و حداکثر ۱۰ مگابایت باشد.': 'Image must be PNG/JPEG/WebP/GIF/AVIF and no larger than 10 MB.',
   'تصویر محلی برای پیش‌نمایش بارگذاری شد.': 'Local image loaded for preview.',
   'خواندن تصویر ناموفق بود.': 'Could not read the image.'
+  'فرمت تصویر پشتیبانی نمی‌شود. JPG، PNG یا WebP انتخاب کنید.': 'Unsupported image format. Choose JPG, PNG, or WebP.',
+  'فرمت تصویر پشتیبانی نمی‌شود. JPG، PNG، WebP، GIF، AVIF یا BMP انتخاب کنید.': 'Unsupported image format. Choose JPG, PNG, WebP, GIF, AVIF, or BMP.',
+  'ابعاد تصویر بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).': 'Image dimensions exceed the limit (maximum 16 megapixels).',
+  'ابعاد خروجی بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).': 'Output dimensions exceed the limit (maximum 16 megapixels).',
+  'ابعاد باید عدد صحیح بین ۱ تا ۱۰٬۰۰۰ باشند.': 'Dimensions must be whole numbers between 1 and 10,000.',
+  'ساخت تصویر خروجی ناموفق بود.': 'Could not create the output image.',
+  'مرورگر از Canvas پشتیبانی نمی‌کند.': 'This browser does not support Canvas.',
+  'فایل تصویری معتبر نیست.': 'Invalid image file.',
+  'لطفاً یک فایل تصویری انتخاب کنید.': 'Please choose an image file.'
 };
 const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^خطا:\s*/, 'Error: '],
