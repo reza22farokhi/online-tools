@@ -195,6 +195,28 @@ const TOOL_TEXT_PREFIX_EN: Array<[RegExp, string]> = [
   [/^(.+)٪ از (.+) = (.+)$/, '$1% of $2 = $3'],
   [/^تکراری حذف‌شده:\s*([0-9۰-۹,٬]+)$/, 'Duplicates removed: $1']
 ];
+const TOOL_DATE_WORDS_EN: Record<string, string> = {
+  'فروردین': 'Farvardin', 'اردیبهشت': 'Ordibehesht', 'خرداد': 'Khordad', 'تیر': 'Tir',
+  'مرداد': 'Mordad', 'شهریور': 'Shahrivar', 'مهر': 'Mehr', 'آبان': 'Aban', 'آذر': 'Azar',
+  'دی': 'Dey', 'بهمن': 'Bahman', 'اسفند': 'Esfand',
+  'ژانویه': 'January', 'فوریه': 'February', 'مارس': 'March', 'آوریل': 'April',
+  'مه': 'May', 'ژوئن': 'June', 'ژوئیه': 'July', 'اوت': 'August', 'سپتامبر': 'September',
+  'اکتبر': 'October', 'نوامبر': 'November', 'دسامبر': 'December',
+  'محرم': 'Muharram', 'صفر': 'Safar', 'ربیع‌الاول': 'Rabi al-Awwal',
+  'ربیع‌الثانی': 'Rabi al-Thani', 'جمادی‌الاول': 'Jumada al-Awwal',
+  'جمادی‌الثانی': 'Jumada al-Thani', 'رجب': 'Rajab', 'شعبان': 'Shaban',
+  'رمضان': 'Ramadan', 'شوال': 'Shawwal', 'ذی‌القعده': 'Dhu al-Qidah',
+  'ذی‌الحجه': 'Dhu al-Hijjah',
+  'شنبه': 'Saturday', 'یکشنبه': 'Sunday', 'دوشنبه': 'Monday', 'سه‌شنبه': 'Tuesday',
+  'چهارشنبه': 'Wednesday', 'پنجشنبه': 'Thursday', 'جمعه': 'Friday'
+};
+
+function translateToolDateText(value: string): string {
+  let result = value;
+  for (const [fa, en] of Object.entries(TOOL_DATE_WORDS_EN)) result = result.replaceAll(fa, en);
+  return result.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
+}
+
 const toolTextOriginal = new WeakMap<Text, string>();
 const toolAttributeOriginal = new WeakMap<Element, Map<string, string>>();
 let toolTranslationObserver: MutationObserver | null = null;
@@ -243,14 +265,19 @@ function translateToolNode(node: Node, lang: Lang): void {
     const parent = textNode.parentElement;
     if (!parent || parent.closest('script,style,textarea,input,code,pre,[contenteditable="true"],[data-user-content]')) return;
     const original = toolTextOriginal.get(textNode);
+    const isDateOutput = Boolean(parent.closest('[data-date-output]'));
+    const localize = (value: string) => {
+      const translated = translatedToolText(value, lang);
+      return lang === 'en' && isDateOutput ? translateToolDateText(translated) : translated;
+    };
     if (lang === 'fa') {
       if (original !== undefined && textNode.data !== original) textNode.data = original;
       return;
     }
     if (original !== undefined) {
-      textNode.data = translatedToolText(original, lang);
+      textNode.data = localize(original);
     } else {
-      const translated = translatedToolText(textNode.data, lang);
+      const translated = localize(textNode.data);
       if (translated !== textNode.data) {
         toolTextOriginal.set(textNode, textNode.data);
         textNode.data = translated;
