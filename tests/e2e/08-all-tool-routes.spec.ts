@@ -12,3 +12,11 @@ test.describe('registered tool route smoke tests', () => {
     });
   }
 });
+
+test('standalone JWT Inspector route loads with its primary heading', async ({ page }) => {
+  const response = await page.goto('/tools/jwt-inspector/', { waitUntil: 'domcontentloaded' });
+  expect(response, 'No document response for jwt-inspector').not.toBeNull();
+  expect(response!.status(), 'Unexpected HTTP status for jwt-inspector').toBe(200);
+  await expect(page.locator('main h1').first()).toBeVisible();
+  await expect(page).toHaveTitle(/JWT Inspector|بازرس JWT/);
+});
