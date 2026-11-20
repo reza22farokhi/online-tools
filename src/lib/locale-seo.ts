@@ -21,15 +21,19 @@ export function getLocaleSeoUrls(
   // Canonical URLs must always use the configured production origin, even when
   // Astro is rendered by a local preview server (localhost).
   const source = new URL(`${input.pathname}${input.search}${input.hash}`, siteUrl);
-  const fa = new URL(source);
-  const en = new URL(source);
+  const canonicalUrl = new URL(source);
+  canonicalUrl.searchParams.delete('lang');
+  const fa = new URL(canonicalUrl);
+  const en = new URL(canonicalUrl);
   fa.searchParams.set('lang', 'fa');
   en.searchParams.set('lang', 'en');
 
   return {
-    canonical: (locale === 'en' ? en : fa).toString(),
+    // The default Persian document uses the clean path listed in the sitemap.
+    // The explicit English variant remains independently canonicalized.
+    canonical: (locale === 'en' ? en : canonicalUrl).toString(),
     fa: fa.toString(),
     en: en.toString(),
-    xDefault: fa.toString()
+    xDefault: canonicalUrl.toString()
   };
 }
