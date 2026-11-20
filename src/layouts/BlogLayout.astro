@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import BlogFAQ from '../components/seo/BlogFAQ.astro';
 import { buildBreadcrumbJsonLd } from '../lib/seo';
+import { blogTranslationsEn } from '../data/blog-translations-en';
 
 export interface FaqItem { q: string; a: string; }
 export interface Props {
@@ -15,6 +16,7 @@ export interface Props {
 }
 
 const { title, description, publishDate, isoDate, readTime, slug, faqs = [] } = Astro.props;
+const translation = blogTranslationsEn[slug];
 const englishTitles: Record<string, string> = {
   'color-palette-guide': 'A Practical Guide to Creating Professional Color Palettes',
   'csv-to-json-guide': 'How to Convert CSV to JSON and Back',
@@ -47,7 +49,7 @@ const englishTitles: Record<string, string> = {
   'qr-code-guide': 'QR Codes Explained: Creation, Formats, and Uses'
 };
 const titleEn = englishTitles[slug] ?? 'Online Tools Blog Article';
-const descriptionEn = 'Practical guidance from Online Tools. Full article text is currently available in Persian.';
+const descriptionEn = translation?.description ?? 'Practical guidance from Online Tools. The full article text is currently available in Persian.';
 
 const parsedIsoDate = new Date(`${isoDate}T00:00:00Z`);
 if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(isoDate) || Number.isNaN(parsedIsoDate.getTime()) || parsedIsoDate.toISOString().slice(0, 10) !== isoDate) {
@@ -104,9 +106,13 @@ const jsonLdList: object[] = [articleLd, breadcrumbLd];
       <slot />
     </div>
 
-    <p class="article-translation-note" data-lang-only="en" hidden>The full article text is currently available in Persian only. The article title and listing are translated into English.</p>
+    {translation ? (
+      <div class="post-content card" data-lang-only="en" set:html={translation.body} />
+    ) : (
+      <p class="article-translation-note" data-lang-only="en" hidden>The full article text is currently available in Persian only. The article title and listing are translated into English.</p>
+    )}
 
-    {faqs.length > 0 && <BlogFAQ faqs={faqs} />}
+    {faqs.length > 0 && <BlogFAQ faqs={faqs} faqsEn={translation?.faqs} />}
   </article>
 
 <script>
