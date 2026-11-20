@@ -98,6 +98,8 @@ test('every generated public HTML route has complete English navigation, copy, a
 
     if (
       (response?.status() ?? 0) >= 400 ||
+      result.lang !== 'en' ||
+      result.dir !== 'ltr' ||
       /[\u0600-\u06FF]/.test(result.title) ||
       /[\u0600-\u06FF]/.test(result.description) ||
       result.text.length > 0 ||
