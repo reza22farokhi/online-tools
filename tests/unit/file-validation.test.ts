@@ -40,6 +40,15 @@ describe('validateFileSize', () => {
   it('rejects Infinity', () => {
     expect(validateFileSize(Infinity, MAX_20, LBL_20).ok).toBe(false);
   });
+
+  it.each([NaN, Infinity, -Infinity, 0, -1])(
+    'rejects invalid maximum size: %s',
+    (maxBytes) => {
+      const result = validateFileSize(1024, maxBytes, LBL_20);
+      expect(result.ok).toBe(false);
+      expect(result.error).toContain('نامعتبر');
+    }
+  );
 });
 
 describe('formatBytes', () => {
