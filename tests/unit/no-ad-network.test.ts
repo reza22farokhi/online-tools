@@ -31,4 +31,15 @@ describe('retired third-party integrations', () => {
 
     expect(connectSources).toBe("'self'");
   });
+  it('denies framing, cross-origin document isolation escapes, and unsafe script sources', () => {
+    const headers = readFileSync('public/_headers', 'utf8');
+    const policy = headers.match(/Content-Security-Policy:\\s*([^\\r\\n]+)/)?.[1] ?? '';
+    expect(policy).toContain("frame-ancestors 'none'");
+    expect(policy).toContain('upgrade-insecure-requests');
+    expect(policy).not.toMatch(/script-src[^;]*(?:unsafe-inline|unsafe-eval|\\*)/);
+    expect(headers).toContain('Cross-Origin-Opener-Policy: same-origin');
+    expect(headers).toContain('Cross-Origin-Resource-Policy: same-origin');
+    expect(headers).toContain('Origin-Agent-Cluster: ?1');
+  });
+
 });
