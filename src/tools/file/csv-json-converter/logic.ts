@@ -1,3 +1,14 @@
+export const MAX_CSV_INPUT_BYTES = 2 * 1024 * 1024;
+export const MAX_CSV_ROWS = 20_000;
+export const MAX_CSV_COLUMNS = 200;
+export const MAX_CSV_CELLS = 250_000;
+
+function assertInputSize(input: string): void {
+  if (new TextEncoder().encode(input).byteLength > MAX_CSV_INPUT_BYTES) {
+    throw new Error('حجم ورودی بیش از حد مجاز است (حداکثر ۲ مگابایت).');
+  }
+}
+
 function assertDelimiter(delimiter: string): void {
   if (typeof delimiter !== 'string' || delimiter.length !== 1 || delimiter === '"' || delimiter === '\n' || delimiter === '\r') {
     throw new Error('جداکننده CSV باید دقیقاً یک نویسه معتبر باشد.');
@@ -5,6 +16,7 @@ function assertDelimiter(delimiter: string): void {
 }
 
 export function parseCSV(input: string, delimiter = ','): string[][] {
+  assertInputSize(input);
   assertDelimiter(delimiter);
   const rows: string[][] = [];
   let row: string[] = [];
@@ -12,10 +24,27 @@ export function parseCSV(input: string, delimiter = ','): string[][] {
   let inQuotes = false;
   let afterQuote = false;
   let fieldWasQuoted = false;
+  let totalCells = 0;
+
+  const pushField = (value: string) => {
+    row.push(value);
+    totalCells++;
+    if (row.length > MAX_CSV_COLUMNS) {
+      throw new Error('تعداد ستون‌ها بیش از حد مجاز است (حداکثر ۲۰۰ ستون).');
+    }
+    if (totalCells > MAX_CSV_CELLS) {
+      throw new Error('تعداد سلول‌های ورودی بیش از حد مجاز است.');
+    }
+  };
 
   const pushRow = () => {
-    row.push(field);
-    if (row.length > 1 || row[0] !== '' || fieldWasQuoted) rows.push(row);
+    pushField(field);
+    if (row.length > 1 || row[0] !== '' || fieldWasQuoted) {
+      rows.push(row);
+      if (rows.length > MAX_CSV_ROWS) {
+        throw new Error('تعداد ردیف‌ها بیش از حد مجاز است (حداکثر ۲۰٬۰۰۰ ردیف).');
+      }
+    }
     row = [];
     field = '';
     afterQuote = false;
@@ -43,7 +72,7 @@ export function parseCSV(input: string, delimiter = ','): string[][] {
 
     if (afterQuote) {
       if (ch === delimiter) {
-        row.push(field);
+        pushField(field);
         field = '';
         afterQuote = false;
         fieldWasQuoted = false;
@@ -64,7 +93,7 @@ export function parseCSV(input: string, delimiter = ','): string[][] {
       fieldWasQuoted = true;
       i++;
     } else if (ch === delimiter) {
-      row.push(field);
+      pushField(field);
       field = '';
       fieldWasQuoted = false;
       i++;
@@ -122,15 +151,35 @@ function safeCsvCell(value: unknown, delimiter: string): string {
 }
 
 export function jsonToCsv(json: string, delimiter = ','): string {
+  assertInputSize(json);
   assertDelimiter(delimiter);
   const data: unknown = JSON.parse(json);
   if (!Array.isArray(data)) throw new Error('JSON باید آرایه‌ای از اشیا باشد.');
   if (data.length === 0) return '';
+  if (data.length > MAX_CSV_ROWS) {
+    throw new Error('تعداد ردیف‌ها بیش از حد مجاز است (حداکثر ۲۰٬۰۰۰ ردیف).');
+  }
   if (data.some(item => typeof item !== 'object' || item === null || Array.isArray(item))) {
     throw new Error('هر ردیف JSON باید یک شیء باشد.');
   }
 
-  const headers = Array.from(new Set(data.flatMap((item) => Object.keys(item as Record<string, unknown>))));
+  const headerSet = new Set<string>();
+  for (const item of data) {
+    const keys = Object.keys(item as Record<string, unknown>);
+    if (keys.length > MAX_CSV_COLUMNS) {
+      throw new Error('تعداد ستون‌ها بیش از حد مجاز است (حداکثر ۲۰۰ ستون).');
+    }
+    for (const key of keys) {
+      headerSet.add(key);
+      if (headerSet.size > MAX_CSV_COLUMNS) {
+        throw new Error('تعداد ستون‌ها بیش از حد مجاز است (حداکثر ۲۰۰ ستون).');
+      }
+    }
+  }
+  if (data.length * headerSet.size > MAX_CSV_CELLS) {
+    throw new Error('تعداد سلول‌های ورودی بیش از حد مجاز است.');
+  }
+  const headers = Array.from(headerSet);
   const header = headers.map(value => safeCsvCell(value, delimiter)).join(delimiter);
   const rows = data.map(item => {
     const record = item as Record<string, unknown>;
