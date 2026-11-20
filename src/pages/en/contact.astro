@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+---
+<BaseLayout title="Contact | Online Tools" description="Contact the Online Tools team to report bugs, share feedback, or suggest a new tool." lang="en" canonical={new URL('en/contact/',site).toString()}>
+  <div class="container page"><h1>Contact Us</h1><p>We welcome feedback, bug reports, and suggestions for new tools.</p><p><a href="https://github.com/reza22farokhi/online-tools/issues" rel="noopener">Report an issue on GitHub</a></p><p><a href="mailto:reza22farokhi@gmail.com">Send an email</a></p><p>There is currently no message-submission server. Please use GitHub Issues for technical reports.</p></div>
+</BaseLayout>
+<style>.page{padding-block:var(--space-5);max-width:850px}.page p{line-height:1.8}</style>
