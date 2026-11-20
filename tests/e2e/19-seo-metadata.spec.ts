@@ -122,6 +122,13 @@ test('language toggle keeps structured data synchronized without reloading', asy
 
   await page.locator('[data-lang-toggle]').click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://abzar-tools.ir/tools/word-counter/');
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'https://abzar-tools.ir/tools/word-counter/');
+
+  await page.locator('[data-lang-toggle]').click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://abzar-tools.ir/tools/word-counter/?lang=en');
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'https://abzar-tools.ir/tools/word-counter/?lang=en');
   await expect(page.locator('script[type="application/ld+json"][data-jsonld-lang="fa"]')).toHaveCount(3);
   await expect(page.locator('script[type="application/json"][data-jsonld-lang="en"]')).toHaveCount(3);
   const activeSchemas = await page.locator('script[type="application/ld+json"]').allTextContents();
