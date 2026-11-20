@@ -635,7 +635,13 @@ export function setLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>
   try { localStorage.setItem(LANG_KEY, lang); } catch {}
   try {
     const url = new URL(window.location.href);
-    url.searchParams.set('lang', lang);
+    const isEnglishPath = url.pathname === '/en' || url.pathname.startsWith('/en/');
+    if (lang === 'en' && !isEnglishPath) {
+      url.pathname = '/en' + (url.pathname === '/' ? '/' : url.pathname);
+    } else if (lang === 'fa' && isEnglishPath) {
+      url.pathname = url.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+    }
+    url.searchParams.delete('lang');
     window.history.replaceState({}, '', url);
   } catch {}
   applyLang(lang, dicts);
