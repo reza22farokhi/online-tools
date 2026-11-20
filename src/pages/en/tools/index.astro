@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ToolCard from '../../../components/ui/ToolCard.astro';
+import { registry, categories } from '../../../tools/registry';
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+const canonical = new URL('en/tools/', site).toString();
+---
+<BaseLayout title="All Free Online Tools | Online Tools" description="Browse all free browser-based tools for text, code, calculations, SEO, images, colors, dates, and files." lang="en" canonical={canonical}>
+  <div class="container page">
+    <header><h1>All Online Tools</h1><p>Explore {registry.length} free tools across {categories.length} categories.</p></header>
+    {categories.map(category => <section><h2>{category.icon} {category.en}</h2><div class="tools-grid">{registry.filter(tool=>tool.category===category.slug).map(tool=><ToolCard tool={tool} lang="en" />)}</div></section>)}
+  </div>
+</BaseLayout>
+<style>.page{padding-block:var(--space-5)}.tools-grid{display:grid;grid-template-columns:1fr;gap:1rem}@media(min-width:640px){.tools-grid{grid-template-columns:repeat(2,1fr)}}@media(min-width:960px){.tools-grid{grid-template-columns:repeat(3,1fr)}}</style>
