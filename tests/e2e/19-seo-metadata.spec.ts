@@ -27,7 +27,7 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
   expect(description?.length, `${slug} ${lang} description length`).toBeLessThanOrEqual(155);
 
   const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-  expect(canonical).toBe(`https://abzar-tools.ir${route}`);
+  expect(canonical).toBe(`https://abzar-tools.ir${route}?lang=${lang}`);
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(structuredData.length, `${slug} should expose structured data`).toBeGreaterThan(0);
