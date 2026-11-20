@@ -45,8 +45,8 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
   if (faq) {
     expect(faq.mainEntity.length).toBeGreaterThan(0);
     const faqText = JSON.stringify(faq.mainEntity);
-    if (lang === 'en') expect(faqText).not.toMatch(/[\\u0600-\\u06FF]/);
-    else expect(faqText).toMatch(/[\\u0600-\\u06FF]/);
+    if (lang === 'en') expect(faqText).not.toMatch(/[\u0600-\u06FF]/);
+    else expect(faqText).toMatch(/[\u0600-\u06FF]/);
   }
 }
 
@@ -94,7 +94,7 @@ test('tool FAQ structured data matches the active language', async ({ page }) =>
     const faqText = JSON.stringify(faq.mainEntity);
     if (lang === 'en') {
       expect(faqText).toContain('What does Word Counter do?');
-      expect(faqText).not.toMatch(/[\\u0600-\\u06FF]/);
+      expect(faqText).not.toMatch(/[\u0600-\u06FF]/);
     } else {
       expect(faqText).toContain('شمارش کلمات چگونه انجام می‌شود؟');
     }
