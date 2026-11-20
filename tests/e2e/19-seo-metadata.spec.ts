@@ -118,11 +118,11 @@ test('language toggle keeps structured data synchronized without reloading', asy
   const enSchema = page.locator('script[type="application/ld+json"][data-jsonld-lang="en"]');
   const faSchema = page.locator('script[type="application/json"][data-jsonld-lang="fa"]');
   await expect(enSchema).toHaveCount(3);
-  await expect(faSchema).toHaveCount(2);
+  await expect(faSchema).toHaveCount(3);
 
   await page.locator('[data-lang-toggle]').click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
-  await expect(page.locator('script[type="application/ld+json"][data-jsonld-lang="fa"]')).toHaveCount(2);
+  await expect(page.locator('script[type="application/ld+json"][data-jsonld-lang="fa"]')).toHaveCount(3);
   await expect(page.locator('script[type="application/json"][data-jsonld-lang="en"]')).toHaveCount(3);
   const activeSchemas = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(activeSchemas.map(json => JSON.parse(json)).every(schema => schema.inLanguage === 'fa')).toBeTruthy();
