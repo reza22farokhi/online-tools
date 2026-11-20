@@ -10,7 +10,7 @@ export interface Props {
   faqs: FaqItem[];
 }
 
-const { faqs } = Astro.props;
+const { faqs, faqsEn = [] } = Astro.props;
 if (!faqs || faqs.length === 0) return null;
 ---
 <section class="blog-faq" aria-labelledby="blog-faq-title" data-lang-only="fa">
