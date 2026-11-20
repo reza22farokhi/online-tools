@@ -281,5 +281,129 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Summary</h2>
 <p>Exact age is a calendar calculation, not simply the difference between two years. Birthday timing, month lengths, leap days, and calendar conventions all matter. Use our <a href="/tools/age/">Age Calculator</a> for a quick result, and verify the required convention before using it for an official decision.</p>`
   }
+,
+  'strong-password-guide': {
+    description: 'Learn how to create and manage strong, unique passwords, use passphrases and password managers, and reduce the risk of account takeover.',
+    faqs: [
+      { q: 'How long should a strong password be?', a: 'Longer is generally better. Follow the service requirements and current security guidance; for a password used as the only factor, a long passphrase or randomly generated password is preferable to a short complex one.' },
+      { q: 'Is it safe to reuse the same password on multiple sites?', a: 'No. A breach at one service can expose a password that attackers may try elsewhere. Use a unique password for every account.' },
+      { q: 'Can I trust a password generator?', a: 'Use a reputable generator that relies on a cryptographically secure random number source. This site generates passwords in your browser; never enter an existing password into an unknown checker.' },
+      { q: 'How can I remember many strong passwords?', a: 'Use a reputable password manager with a strong master passphrase and multi-factor authentication. You only need to remember the master passphrase and recovery method.' }
+    ],
+    body: String.raw`<p>A strong password helps protect email, financial, social, and work accounts. The most important principles are length, uniqueness, and secure storage. A password that is reused or easy to guess can expose several accounts at once.</p>
+<h2>What makes a password strong?</h2>
+<ul>
+<li><strong>Length:</strong> Prefer a long password or passphrase. Longer secrets are generally harder to guess.</li>
+<li><strong>Uniqueness:</strong> Use a different password for every service.</li>
+<li><strong>Randomness:</strong> Avoid names, birthdays, keyboard patterns, quotations, and predictable substitutions.</li>
+<li><strong>Secure storage:</strong> Keep passwords in a reputable password manager rather than an unprotected note or text file.</li>
+</ul>
+<h2>Why length matters</h2>
+<p>A short password with symbols may still be predictable if it is based on a common word or pattern. A long randomly generated password or a passphrase made from unrelated words can provide much more resistance to guessing. Exact strength depends on how the secret was generated, how it is stored, and the attacker's capabilities; no fixed cracking-time estimate applies to every password.</p>
+<h2>Generate a unique password</h2>
+<p>Our <a href="/tools/password-generator/">Password Generator</a> uses browser cryptography to generate random passwords locally. Choose a length and character set that the target service supports, then save the result directly in your password manager. Do not send a password to someone else or reuse it on another website.</p>
+<h2>Use a password manager</h2>
+<p>A password manager creates and stores a unique credential for each account. Choose a reputable product, secure its vault with a strong master passphrase, enable multi-factor authentication where available, and keep recovery codes safe. Protect your devices and use the manager's official applications and browser extensions.</p>
+<h2>Common password mistakes</h2>
+<ol>
+<li>Reusing one password across multiple websites.</li>
+<li>Using personal information that others can discover.</li>
+<li>Making predictable changes such as adding a digit or exclamation mark to a familiar word.</li>
+<li>Sharing passwords through ordinary email or messages.</li>
+<li>Storing credentials in plain text or screenshots.</li>
+</ol>
+<h2>Additional protection</h2>
+<p>Enable multi-factor authentication or passkeys on important accounts. Keep recovery information current, review active sessions, and change a password promptly if a service reports a breach or you suspect compromise. Avoid routine password changes without a reason when the current password is unique and secure; change it when it may have been exposed.</p>
+<h2>Related tools</h2>
+<p>You can use our <a href="/tools/hash-generator/">Hash Generator</a> to calculate a file digest, or our <a href="/tools/uuid-generator/">UUID Generator</a> to create random identifiers. A hash or UUID is not a substitute for a password manager or a password-generation process.</p>
+<h2>Summary</h2>
+<p>Use long, unique passwords, generate them with a cryptographically secure source, and store them in a password manager. Add MFA or passkeys for important accounts. These layered practices are more effective than relying on character substitutions alone.</p>`
+  },
+  'jwt-security-guide': {
+    description: 'Understand JWT security risks, the difference between decoding and signature verification, safe claim validation, token lifetimes, and secure storage.',
+    faqs: [
+      { q: 'Does decoding a JWT mean it has been hacked?', a: 'No. A typical signed JWT uses Base64URL encoding for its header and payload, so those parts can be read. Decoding does not reveal or break the signing key and does not verify authenticity.' },
+      { q: 'Can I put sensitive information in a JWT payload?', a: 'Do not put secrets or sensitive personal data in an ordinary signed JWT. Its payload is readable by anyone who obtains the token unless a separate encryption standard is used.' },
+      { q: 'Where should a JWT signature be verified?', a: 'Verify the signature on the trusted server or resource that makes the authorization decision. Use a maintained library and an explicit algorithm allowlist, and validate relevant claims.' },
+      { q: 'Is a browser JWT decoder safe for production tokens?', a: 'Local decoding can avoid sending a token to a remote service, but production tokens are still credentials. Prefer test tokens and never paste a live bearer token into a tool unless your security policy explicitly permits it.' }
+    ],
+    body: String.raw`<p>JSON Web Tokens (JWTs) are often used to carry claims between an identity provider, an application, and an API. They are useful, but a common implementation mistake is to treat a decoded token as a trusted identity. A JWT is only trustworthy after the receiving system validates it correctly.</p>
+<h2>JWT structure</h2>
+<p>A compact signed JWT commonly contains three Base64URL-encoded segments separated by periods:</p>
+<ul>
+<li><strong>Header:</strong> identifies the token type and the signing algorithm.</li>
+<li><strong>Payload:</strong> contains claims such as a subject, issuer, audience, and expiration time.</li>
+<li><strong>Signature:</strong> allows a verifier with the appropriate key to detect unauthorized changes.</li>
+</ul>
+<h2>Decoding is not verification</h2>
+<p>Base64URL is an encoding, not encryption. Anyone who obtains a typical signed JWT can read its header and payload. Decoding only displays those values; it does not prove who issued the token or whether the claims are valid. The signature must be verified using a trusted key and a maintained JWT library.</p>
+<p>Our <a href="/tools/jwt-decoder/">JWT Decoder</a> can help inspect a token during development. It displays token content locally, but it does not establish that the token is authentic or authorized.</p>
+<h2>Validate more than the signature</h2>
+<p>After verifying the signature, validate the claims required by your application. Common checks include:</p>
+<ul>
+<li><strong>iss (issuer):</strong> confirm that the expected identity provider issued the token.</li>
+<li><strong>aud (audience):</strong> confirm that the token was intended for your API or application.</li>
+<li><strong>exp (expiration):</strong> reject expired tokens.</li>
+<li><strong>nbf (not before):</strong> reject tokens that are not yet valid, when this claim is used.</li>
+<li><strong>sub (subject):</strong> interpret the subject only within the expected issuer and application context.</li>
+</ul>
+<p>Use an explicit algorithm allowlist and follow the library's security guidance. Never accept an unsigned token merely because its header requests an algorithm such as <code>none</code>.</p>
+<h2>Five common JWT security mistakes</h2>
+<ol>
+<li><strong>Putting secrets in the payload:</strong> signed JWT payloads are readable. Do not include passwords, payment details, private keys, or sensitive medical information.</li>
+<li><strong>Skipping verification:</strong> decoding a token is not an authorization check.</li>
+<li><strong>Ignoring claims:</strong> validate issuer, audience, expiry, and any application-specific claims.</li>
+<li><strong>Using weak or exposed signing keys:</strong> generate keys securely, store them in a protected server-side secret store, and plan rotation.</li>
+<li><strong>Choosing unsafe browser storage:</strong> consider the XSS and CSRF trade-offs of cookies and web storage. Use Secure, HttpOnly, and appropriate SameSite cookie settings when cookies are part of the design, and implement CSRF protection where required.</li>
+</ol>
+<h2>Token lifetime and revocation</h2>
+<p>Keep access tokens no longer-lived than necessary. A short expiry limits the window in which a stolen token can be used, but applications also need a plan for refresh, revocation, key rotation, and logout. The right design depends on the threat model and identity provider.</p>
+<h2>Inspect tokens carefully</h2>
+<p>For development and debugging, our <a href="/tools/jwt-decoder/">JWT Decoder</a> displays the header and payload in your browser. Local processing reduces exposure to a third-party decoder, but it does not make a live production token safe to share. Use synthetic or test credentials whenever possible.</p>
+<h2>Summary</h2>
+<p>JWT security depends on verification and validation, not on hiding the payload. Verify signatures on the server, restrict accepted algorithms, validate claims, protect signing keys, and design token storage and lifetimes around your application's risks.</p>`
+  },
+  'what-is-jwt-guide': {
+    description: 'Learn what JSON Web Tokens are, how headers, payloads, and signatures work, how JWTs compare with sessions, and what developers must validate.',
+    faqs: [
+      { q: 'Is a JWT encrypted?', a: 'A typical signed JWT is encoded, not encrypted. Its header and payload can be read by anyone who has the token. JWT also supports encrypted forms, but signed tokens alone do not provide confidentiality.' },
+      { q: 'What is the difference between a JWT and a session?', a: 'A session commonly uses a server-side record referenced by a cookie. A JWT carries claims in a token. Both approaches have security and operational trade-offs; neither is automatically more secure.' },
+      { q: 'Why are JWTs used?', a: 'JWTs provide a compact, standardized way to carry claims between systems. They are commonly used in APIs and distributed applications when their validation and lifecycle are designed carefully.' },
+      { q: 'Is a JWT safe to use?', a: 'It can be used safely when signatures and claims are validated, keys are protected, tokens have appropriate lifetimes, and sensitive information is not exposed in readable payloads.' }
+    ],
+    body: String.raw`<p>JSON Web Token (JWT) is a compact format for representing claims that can be transferred between parties. It is commonly used in authentication and API authorization, but it is important to understand what a token proves—and what it does not prove.</p>
+<h2>What is a JWT?</h2>
+<p>JWT is defined by RFC 7519. A JWT can carry claims about a subject and the context in which the token should be used. A signed JWT allows a receiving system to detect changes to the token when it verifies the signature with a trusted key.</p>
+<h2>The three parts of a compact signed JWT</h2>
+<p>A common signed JWT has three segments separated by periods:</p>
+<ol>
+<li><strong>Header:</strong> describes the token type and the algorithm used to create the signature.</li>
+<li><strong>Payload:</strong> contains claims such as subject, issuer, audience, and expiration time.</li>
+<li><strong>Signature:</strong> provides integrity and issuer authenticity when correctly verified.</li>
+</ol>
+<p>The header and payload are typically Base64URL-encoded. Encoding is not encryption, so do not place secrets or sensitive personal information in a readable token payload.</p>
+<h2>Why applications use JWTs</h2>
+<ul>
+<li><strong>Interoperability:</strong> JWT is a documented format supported by many programming languages and libraries.</li>
+<li><strong>Compactness:</strong> a token can be transmitted in an HTTP header or another agreed transport.</li>
+<li><strong>Distributed systems:</strong> services can validate tokens using trusted keys without looking up a session record for every request, if the architecture is designed for that model.</li>
+</ul>
+<p>These benefits do not mean JWT is always the best choice. Key management, revocation, token size, and the need for immediate permission changes all affect the design.</p>
+<h2>JWT compared with server-side sessions</h2>
+<p>With a traditional session, the server stores session state and the browser usually holds an opaque session identifier in a cookie. With a JWT-based design, the client sends a token containing claims that a service verifies. Sessions make centralized invalidation straightforward; self-contained tokens can simplify distributed validation but require careful expiry, revocation, and key-rotation planning. Choose based on your application's threat model and operational needs.</p>
+<h2>Essential security practices</h2>
+<ol>
+<li>Never treat decoding as proof of authenticity; verify the signature.</li>
+<li>Validate issuer, audience, expiry, and other claims required by your application.</li>
+<li>Use a strict algorithm allowlist and a maintained JWT library.</li>
+<li>Keep signing keys secret, high-entropy, and protected on trusted servers.</li>
+<li>Keep tokens short-lived and design refresh and revocation deliberately.</li>
+<li>Do not store passwords or other secrets in a readable payload.</li>
+</ol>
+<h2>Inspect a JWT during development</h2>
+<p>Our <a href="/tools/jwt-decoder/">JWT Decoder</a> lets you inspect the header and payload locally in your browser. It is a debugging aid, not a signature verifier or an authorization service. Do not paste live production bearer tokens into tools unless your security policy explicitly allows it.</p>
+<h2>Summary</h2>
+<p>JWT is a standardized way to carry claims between systems. It can support distributed authentication architectures, but safe use requires signature verification, claim validation, key protection, and a deliberate token lifecycle. For a deeper security checklist, read our <a href="/blog/jwt-security-guide/">JWT security guide</a>.</p>`
+  }
 
 };
