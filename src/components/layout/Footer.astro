@@ -1,6 +1,8 @@
 ---
 import { categories } from '../../tools/registry';
 const base = import.meta.env.BASE_URL;
+const isEnglish = Astro.url.pathname === '/en' || Astro.url.pathname.startsWith('/en/');
+const localeBase = base + (isEnglish ? 'en/' : '');
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
@@ -9,21 +11,21 @@ const year = new Date().getFullYear();
       <span class="footer-cats-label" data-i18n="categories.title">دسته‌بندی‌ها</span>
       <nav aria-label="Categories" class="footer-cats">
         {categories.map(c => (
-          <a href={base + 'categories/' + c.slug + '/'}>{c.icon} <span data-lang-fa={c.fa} data-lang-en={c.en}>{c.fa}</span></a>
+          <a href={localeBase + 'categories/' + c.slug + '/'}>{c.icon} <span data-lang-fa={c.fa} data-lang-en={c.en}>{isEnglish ? c.en : c.fa}</span></a>
         ))}
       </nav>
     </div>
     <div class="footer-bottom">
       <p class="footer-copy">
-        © {year} · <span data-i18n="site.name">ابزارهای آنلاین</span> · <span data-i18n="footer.rights">تمامی حقوق محفوظ است.</span>
+        © {year} · <span data-i18n="site.name">{isEnglish ? 'Online Tools' : 'ابزارهای آنلاین'}</span> · <span data-i18n="footer.rights">{isEnglish ? 'All rights reserved.' : 'تمامی حقوق محفوظ است.'}</span>
       </p>
       <nav aria-label="Footer" class="footer-nav">
-        <a href={base} data-i18n="nav.home">خانه</a>
-        <a href={base + 'tools/'} data-i18n="nav.tools">ابزارها</a>
-        <a href={base + 'blog/'} data-i18n="nav.blog">وبلاگ</a>
-        <a href={base + 'about/'} data-i18n="nav.about">درباره ما</a>
-        <a href={base + 'contact/'} data-i18n="nav.contact">تماس با ما</a>
-        <a href={base + 'privacy/'} data-i18n="nav.privacy">حریم خصوصی</a>
+        <a href={localeBase} data-i18n="nav.home">{isEnglish ? 'Home' : 'خانه'}</a>
+        <a href={localeBase + 'tools/'} data-i18n="nav.tools">{isEnglish ? 'Tools' : 'ابزارها'}</a>
+        <a href={localeBase + 'blog/'} data-i18n="nav.blog">{isEnglish ? 'Blog' : 'وبلاگ'}</a>
+        <a href={localeBase + 'about/'} data-i18n="nav.about">{isEnglish ? 'About' : 'درباره ما'}</a>
+        <a href={localeBase + 'contact/'} data-i18n="nav.contact">{isEnglish ? 'Contact' : 'تماس با ما'}</a>
+        <a href={localeBase + 'privacy/'} data-i18n="nav.privacy">{isEnglish ? 'Privacy' : 'حریم خصوصی'}</a>
       </nav>
     </div>
   </div>
