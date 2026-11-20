@@ -53,7 +53,7 @@
         });
       };
 
-      if (document.readyState === 'loading') {
+      if (pathLang === 'en') {\n        document.querySelectorAll('a[href^="/"]').forEach(function (link) {\n          var href = link.getAttribute('href');\n          if (href && !href.startsWith('/en/') && href !== '/en/' && !href.startsWith('/#') && !href.startsWith('//')) {\n            link.setAttribute('href', '/en' + (href.startsWith('/') ? href : '/' + href));\n          }\n        });\n      }\n\n      if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', applyLanguageContent, { once: true });
       } else {
         applyLanguageContent();
