@@ -15,7 +15,7 @@ export interface Props {
 const { faqs = [], faqsEn = [], lang = 'fa' } = Astro.props;
 const selectedFaqs = lang === 'en' ? faqsEn : faqs;
 if (selectedFaqs.length === 0) return null;
-const faqJsonLd = buildFaqJsonLd(selectedFaqs);
+const faqJsonLd = { ...buildFaqJsonLd(selectedFaqs), inLanguage: lang };
 
 ---
 
