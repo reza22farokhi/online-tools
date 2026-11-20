@@ -91,6 +91,11 @@ test('every generated public HTML route has complete English navigation, copy, a
         description,
         lang: document.documentElement.lang,
         dir: document.documentElement.dir,
+        canonical: document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href ?? '',
+        ogUrl: document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.content ?? '',
+        hreflangFa: document.querySelector<HTMLLinkElement>('link[rel="alternate"][hreflang="fa"]')?.href ?? '',
+        hreflangEn: document.querySelector<HTMLLinkElement>('link[rel="alternate"][hreflang="en"]')?.href ?? '',
+        hreflangDefault: document.querySelector<HTMLLinkElement>('link[rel="alternate"][hreflang="x-default"]')?.href ?? '',
         text,
         attributes
       };
@@ -100,6 +105,11 @@ test('every generated public HTML route has complete English navigation, copy, a
       (response?.status() ?? 0) >= 400 ||
       result.lang !== 'en' ||
       result.dir !== 'ltr' ||
+      result.canonical !== new URL(route, 'https://abzar-tools.ir').toString().replace(/\/$/, '') + '/?lang=en' ||
+      result.ogUrl !== result.canonical ||
+      result.hreflangFa !== new URL(route, 'https://abzar-tools.ir').toString() ||
+      result.hreflangEn !== result.canonical ||
+      result.hreflangDefault !== new URL(route, 'https://abzar-tools.ir').toString() ||
       /[\u0600-\u06FF]/.test(result.title) ||
       /[\u0600-\u06FF]/.test(result.description) ||
       result.text.length > 0 ||
