@@ -12,6 +12,23 @@
       document.documentElement.setAttribute('lang', lang);
       document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
 
+      // Keep locale metadata updates compatible with the strict same-origin CSP.
+      // Only an explicit URL locale affects indexable metadata, not a stored UI preference.
+      if (queryLang === 'fa' || queryLang === 'en') {
+        var canonicalLink = document.querySelector('link[rel="canonical"]');
+        if (canonicalLink) {
+          var localizedUrl = new URL(canonicalLink.href, window.location.href);
+          localizedUrl.searchParams.set('lang', queryLang);
+          canonicalLink.setAttribute('href', localizedUrl.toString());
+
+          var ogUrl = document.querySelector('meta[property="og:url"]');
+          if (ogUrl) ogUrl.setAttribute('content', localizedUrl.toString());
+        }
+
+        var ogLocale = document.querySelector('meta[property="og:locale"]');
+        if (ogLocale) ogLocale.setAttribute('content', queryLang === 'fa' ? 'fa_IR' : 'en_US');
+      }
+
       // Keep essential bilingual content usable when the larger UI bundle is unavailable offline.
       var applyLanguageContent = function () {
         var suffix = 'data-lang-' + lang;
