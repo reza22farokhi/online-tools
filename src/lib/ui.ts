@@ -585,6 +585,9 @@ export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
   document.documentElement.dataset.activeLang = lang;
+  document.querySelectorAll<HTMLScriptElement>('script[data-jsonld-lang]').forEach(el => {
+    el.type = el.dataset.jsonldLang === lang ? 'application/ld+json' : 'application/json';
+  });
   // Keep dynamic accessibility labels synchronized with the active locale.
   initFavoriteButtons();
   document.querySelectorAll<HTMLElement>('[data-lang-only]').forEach(el => {

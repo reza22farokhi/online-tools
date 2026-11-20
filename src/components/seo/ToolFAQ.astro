@@ -26,7 +26,8 @@ const faqsEn = tool ? [
     a: 'Content entered or selected in this tool is processed in your browser and is not sent to our servers for processing. The site does not load third-party advertising scripts or advertising networks. Separate technical requests may still be made to deliver and secure the site. See the Privacy Policy for details.'
   }
 ] : [];
-const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa) : null;
+const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa, 'fa') : null;
+const faqLdEn = faqsEn.length > 0 ? buildFaqJsonLd(faqsEn, 'en') : null;
 ---
 {faqsFa.length > 0 && (
   <section class="tool-faq" aria-labelledby="faq-title-fa" data-lang-only="fa">
@@ -39,7 +40,7 @@ const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa) : null;
         </details>
       ))}
     </div>
-    {faqLdFa && <script type="application/ld+json" set:html={JSON.stringify(faqLdFa)} />}
+    {faqLdFa && <script type="application/ld+json" data-jsonld-lang="fa" set:html={JSON.stringify(faqLdFa)} />}
   </section>
 )}
 {faqsEn.length > 0 && (
@@ -53,6 +54,7 @@ const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa) : null;
         </details>
       ))}
     </div>
+    {faqLdEn && <script type="application/ld+json" data-jsonld-lang="en" set:html={JSON.stringify(faqLdEn)} />}
   </section>
 )}
 <style>

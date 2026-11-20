@@ -13,6 +13,7 @@ const jsonLd = {
   '@type': 'SoftwareApplication',
   name: 'بازرس JWT',
   description,
+  inLanguage: 'fa',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Any',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -21,6 +22,7 @@ const jsonLd = {
 const faqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
+  inLanguage: 'fa',
   mainEntity: [
     {
       '@type': 'Question',
@@ -48,8 +50,52 @@ const faqJsonLd = {
     },
   ],
 };
+
+const jsonLdEn = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'JWT Inspector',
+  description: descriptionEn,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  inLanguage: 'en',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+
+const faqJsonLdEn = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: 'en',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Is my token sent to a server?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Your token and key are not sent to the server by this tool. Decoding and signature verification use the Web Crypto API in your browser. Separate technical requests are required to load the page.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Which algorithms are supported?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'HS256/384/512 (HMAC), RS256/384/512 (RSA), PS256/384/512 (RSA-PSS), and ES256/384/512 (ECDSA).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the risk of alg: none?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The none algorithm means the token is unsigned. If your server accepts it, anyone may be able to create a forged token. This tool displays a critical warning.',
+      },
+    },
+  ],
+};
+
 ---
 
-<Layout title={title} titleEn={titleEn} description={description} descriptionEn={descriptionEn} jsonLd={[jsonLd, faqJsonLd]}>
+<Layout title={title} titleEn={titleEn} description={description} descriptionEn={descriptionEn} jsonLd={[jsonLd, faqJsonLd]} jsonLdEn={[jsonLdEn, faqJsonLdEn]}>
   <JwtInspector />
 </Layout>
