@@ -112,7 +112,7 @@ const jsonLdList: object[] = [articleLd, breadcrumbLd];
       <p class="article-translation-note">This article is not yet available in English.</p>
     )}
 
-    {(faqs.length > 0 || (translation?.faqs.length ?? 0) > 0) && <BlogFAQ faqs={faqs} faqsEn={translation?.faqs} />}
+    {(faqs.length > 0 || (translation?.faqs.length ?? 0) > 0) && <BlogFAQ faqs={faqs} faqsEn={translation?.faqs} lang={lang} />}
   </article>
 
 <script>
