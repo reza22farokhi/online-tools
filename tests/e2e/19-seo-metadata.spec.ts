@@ -134,3 +134,10 @@ test('language toggle keeps structured data synchronized without reloading', asy
   const activeSchemas = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(activeSchemas.map(json => JSON.parse(json)).every(schema => schema.inLanguage === 'en')).toBeTruthy();
 });
+
+
+test('offline fallback is excluded from search indexing', async ({ page }) => {
+  const response = await page.goto('/offline/');
+  expect(response?.status()).toBe(200);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+});
