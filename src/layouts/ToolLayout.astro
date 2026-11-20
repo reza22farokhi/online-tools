@@ -72,7 +72,7 @@ const related = getRelated(meta.slug);
       <p><span data-lang-fa="محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. برای جزئیات بیشتر، " data-lang-en="Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. See our ">محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. برای جزئیات بیشتر، </span><a href={lang === "en" ? "/en/privacy/" : "/privacy/"} data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</a><span data-lang-fa=" را بخوانید." data-lang-en=" for details."> را بخوانید.</span></p>
     </section>
 
-    <ToolFAQ toolSlug={meta.slug} toolName={meta.name.fa} />
+    <ToolFAQ toolSlug={meta.slug} toolName={meta.name.fa} lang={lang} />
 
     {related.length > 0 && (
       <section class="tool-related" aria-labelledby="related-title">
