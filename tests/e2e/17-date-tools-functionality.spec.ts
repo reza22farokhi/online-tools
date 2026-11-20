@@ -76,3 +76,31 @@ test('multi-calendar converter hides stale results after invalid input', async (
   await expect(page.locator('#mcc-error')).toBeVisible();
   await expect(page.locator('#mcc-results')).toBeHidden();
 });
+
+
+test('date tool sections follow a sequential heading hierarchy', async ({ page }) => {
+  for (const slug of ['date-converter', 'unix-timestamp']) {
+    await page.goto(`/tools/${slug}/?lang=en`);
+    const headings = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll(nodes =>
+      nodes.map(node => Number(node.tagName.slice(1)))
+    );
+    for (let i = 1; i < headings.length; i++) {
+      expect(headings[i] - headings[i - 1], `${slug} heading order: ${headings.join(', ')}`).toBeLessThanOrEqual(1);
+    }
+  }
+});
+
+test('multi-calendar source switcher exposes valid and synchronized tab semantics', async ({ page }) => {
+  await page.goto('/tools/multi-calendar-converter/?lang=en');
+  const tabs = page.getByRole('tab');
+  await expect(tabs).toHaveCount(3);
+  await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true');
+  await expect(tabs.nth(0)).toHaveAttribute('aria-controls', 'mcc-panel');
+  await expect(page.getByRole('tabpanel', { name: 'Date input' })).toBeVisible();
+
+  await tabs.nth(1).click();
+  await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'false');
+  await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
+  await expect(tabs.nth(1)).toHaveAttribute('aria-controls', 'mcc-panel');
+  await expect(page.getByRole('tabpanel', { name: 'Date input' })).toBeVisible();
+});
