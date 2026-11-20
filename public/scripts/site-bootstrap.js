@@ -6,8 +6,9 @@
     }
     document.documentElement.setAttribute('data-theme', theme);
 
+    var pathLang = window.location.pathname === '/en' || window.location.pathname.startsWith('/en/') ? 'en' : null;
     var queryLang = new URLSearchParams(window.location.search).get('lang');
-    var lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang');
+    var lang = pathLang || (queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang'));
     if (lang === 'fa' || lang === 'en') {
       document.documentElement.setAttribute('lang', lang);
       document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
@@ -15,6 +16,15 @@
       // Keep essential bilingual content usable when the larger UI bundle is unavailable offline.
       var applyLanguageContent = function () {
         var suffix = 'data-lang-' + lang;
+
+        if (pathLang === 'en') {
+          document.querySelectorAll('a[href^="/"]').forEach(function (link) {
+            var href = link.getAttribute('href');
+            if (href && !href.startsWith('/en/') && href !== '/en/' && !href.startsWith('/#') && !href.startsWith('//')) {
+              link.setAttribute('href', '/en' + href);
+            }
+          });
+        }
 
         document.querySelectorAll('[data-lang-only]').forEach(function (element) {
           element.hidden = element.getAttribute('data-lang-only') !== lang;
@@ -53,7 +63,7 @@
         });
       };
 
-      if (pathLang === 'en') {\n        document.querySelectorAll('a[href^="/"]').forEach(function (link) {\n          var href = link.getAttribute('href');\n          if (href && !href.startsWith('/en/') && href !== '/en/' && !href.startsWith('/#') && !href.startsWith('//')) {\n            link.setAttribute('href', '/en' + (href.startsWith('/') ? href : '/' + href));\n          }\n        });\n      }\n\n      if (document.readyState === 'loading') {
+      if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', applyLanguageContent, { once: true });
       } else {
         applyLanguageContent();
