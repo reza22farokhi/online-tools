@@ -51,6 +51,72 @@
           var value = element.getAttribute(suffix);
           if (value !== null) element.setAttribute('content', value);
         });
+
+        // Keep SEO metadata synchronized with the language actually rendered.
+        // This lives in the same-origin external bootstrap so the strict CSP
+        // (script-src 'self') does not block it.
+        var canonicalLink = document.querySelector('link[rel="canonical"]');
+        if (canonicalLink) {
+          var localizedCanonical = new URL(canonicalLink.href, window.location.origin);
+          localizedCanonical.searchParams.set('lang', lang);
+          canonicalLink.setAttribute('href', localizedCanonical.href);
+        }
+
+        var canonicalUrl = canonicalLink ? canonicalLink.href : window.location.href;
+        var ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
+
+        var ogLocale = document.querySelector('meta[property="og:locale"]');
+        if (ogLocale) ogLocale.setAttribute('content', lang === 'fa' ? 'fa_IR' : 'en_US');
+
+        var heading = document.querySelector('main h1, h1');
+        var descriptionMeta = document.querySelector('meta[name="description"]');
+        var siteNameMeta = document.querySelector('meta[property="og:site_name"]');
+        var headingText = heading ? heading.textContent.trim() : '';
+        var descriptionText = descriptionMeta ? descriptionMeta.getAttribute('content') || '' : '';
+        var siteNameText = siteNameMeta ? siteNameMeta.getAttribute('content') || '' : '';
+
+        document.querySelectorAll('script[type="application/ld+json"]').forEach(function (script) {
+          try {
+            var data = JSON.parse(script.textContent || '');
+            var breadcrumbs = Array.from(document.querySelectorAll('.breadcrumb li')).map(function (item) {
+              return item.textContent.trim();
+            });
+            var updateNode = function (node) {
+              if (Array.isArray(node)) {
+                node.forEach(updateNode);
+                return;
+              }
+              if (!node || typeof node !== 'object') return;
+              if (Object.prototype.hasOwnProperty.call(node, 'inLanguage')) node.inLanguage = lang;
+              var type = node['@type'];
+              if (type === 'WebSite') {
+                if (siteNameText) node.name = siteNameText;
+                if (descriptionText) node.description = descriptionText;
+              } else if (type === 'WebApplication') {
+                if (headingText) node.name = headingText;
+                if (descriptionText) node.description = descriptionText;
+              } else if (type === 'BlogPosting') {
+                if (headingText) node.headline = headingText;
+                if (descriptionText) node.description = descriptionText;
+                if (node.publisher && node.publisher.name === 'ابزارهای آنلاین') {
+                  node.publisher.name = 'Online Tools';
+                }
+              } else if (type === 'BreadcrumbList' && Array.isArray(node.itemListElement)) {
+                node.itemListElement.forEach(function (item, index) {
+                  if (breadcrumbs[index]) item.name = breadcrumbs[index];
+                });
+              }
+              Object.keys(node).forEach(function (key) {
+                if (key !== 'itemListElement') updateNode(node[key]);
+              });
+            };
+            updateNode(data);
+            script.textContent = JSON.stringify(data);
+          } catch (_) {
+            // Preserve malformed third-party or page JSON-LD rather than breaking the page.
+          }
+        });
       };
 
       if (document.readyState === 'loading') {
