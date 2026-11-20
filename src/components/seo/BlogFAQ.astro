@@ -9,14 +9,17 @@ export interface FaqItem {
 export interface Props {
   faqs: FaqItem[];
   faqsEn?: FaqItem[];
+  lang?: 'fa' | 'en';
 }
 
-const { faqs = [], faqsEn = [] } = Astro.props;
-const allFaqs = [...faqs, ...faqsEn];
-if (allFaqs.length === 0) return null;
+const { faqs = [], faqsEn = [], lang = 'fa' } = Astro.props;
+const selectedFaqs = lang === 'en' ? faqsEn : faqs;
+if (selectedFaqs.length === 0) return null;
+const faqJsonLd = buildFaqJsonLd(selectedFaqs);
+
 ---
 
-{faqs.length > 0 && (
+{lang === 'fa' && faqs.length > 0 && (
   <section class="blog-faq" aria-labelledby="blog-faq-title" data-lang-only="fa">
     <h2 id="blog-faq-title">سوالات متداول</h2>
     <div class="faq-list">
@@ -29,7 +32,7 @@ if (allFaqs.length === 0) return null;
     </div>
   </section>
 )}
-{faqsEn.length > 0 && (
+{lang === 'en' && faqsEn.length > 0 && (
   <section class="blog-faq" aria-labelledby="blog-faq-title-en" data-lang-only="en">
     <h2 id="blog-faq-title-en">Frequently Asked Questions</h2>
     <div class="faq-list">
@@ -42,7 +45,7 @@ if (allFaqs.length === 0) return null;
     </div>
   </section>
 )}
-<script type="application/ld+json" set:html={JSON.stringify(buildFaqJsonLd(allFaqs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
 <style>
   .blog-faq { margin-top: var(--space-5); padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
   .blog-faq h2 { font-size: 1.3rem; margin-bottom: var(--space-3); color: var(--color-primary); }
