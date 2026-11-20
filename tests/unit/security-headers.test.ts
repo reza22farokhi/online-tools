@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const headers = readFileSync('public/_headers', 'utf8');
 const baseLayout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
+const siteBootstrap = readFileSync('public/scripts/site-bootstrap.js', 'utf8');
 const toolLayout = readFileSync('src/layouts/ToolLayout.astro', 'utf8');
 const blogLayout = readFileSync('src/layouts/BlogLayout.astro', 'utf8');
 const offlinePage = readFileSync('src/pages/offline.astro', 'utf8');
@@ -37,6 +38,14 @@ describe('Content Security Policy allowlist', () => {
 
   it('does not ship inline blog scripts blocked by script-src self', () => {
     expect(blogLayout).not.toMatch(/<script\s+is:inline(?:\s|>)/i);
+  });
+
+  it('keeps locale canonical and Open Graph updates compatible with the strict script CSP', () => {
+    expect(baseLayout).not.toMatch(/<script\\s+is:inline(?!\\s+src=)/i);
+    expect(siteBootstrap).toContain("document.querySelector('link[rel=\"canonical\"]')");
+    expect(siteBootstrap).toContain("document.querySelector('meta[property=\"og:url\"]')");
+    expect(siteBootstrap).toContain("document.querySelector('meta[property=\"og:locale\"]')");
+    expect(siteBootstrap).toContain("localizedUrl.searchParams.set('lang', queryLang)");
   });
 
   it('keeps restrictive baseline directives', () => {
