@@ -63,7 +63,7 @@ const dicts = getDicts();
     <meta property="og:description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:image" content={ogImage} />
-    <meta property="og:site_name" content={SITE_NAME_FA} data-lang-fa={SITE_NAME_FA} data-lang-en="Online Tools" />
+    <meta property="og:site_name" content={lang === 'en' ? 'Online Tools' : SITE_NAME_FA} data-lang-fa={SITE_NAME_FA} data-lang-en="Online Tools" />
     <meta property="og:locale" content={lang === 'fa' ? 'fa_IR' : 'en_US'} />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -83,7 +83,7 @@ const dicts = getDicts();
     <link rel="apple-touch-icon" href={import.meta.env.BASE_URL + "favicon.svg"} />
   </head>
   <body>
-    <a href="#main" class="skip-link" data-i18n="accessibility.skip">پرش به محتوا</a>
+    <a href="#main" class="skip-link" data-i18n="accessibility.skip">{lang === 'en' ? 'Skip to content' : 'پرش به محتوا'}</a>
     <Header />
     <main id="main">
       <slot />
