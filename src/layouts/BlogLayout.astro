@@ -58,38 +58,40 @@ if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(isoDate) || Number.isNaN(parsedIsoDate.
 const publishDateEn = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' }).format(parsedIsoDate);
 const readTimeEn = readTime.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(' دقیقه', ' min read');
 const base = import.meta.env.BASE_URL;
-const site = Astro.site?.toString() ?? 'https://example.com/';
-const canonical = new URL(`${base}blog/${slug}/`.replace(/^\//, ''), site).toString();
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+const lang = Astro.url.pathname.startsWith('/en/') ? 'en' : 'fa';
+const canonical = new URL(`${lang === 'en' ? 'en/' : ''}blog/${slug}/`, site).toString();
 
 const articleLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
-  headline: title,
-  description: description,
+  headline: lang === 'en' ? titleEn : title,
+  description: lang === 'en' ? descriptionEn : description,
+  inLanguage: lang,
   datePublished: isoDate,
   author: { '@type': 'Organization', name: 'Online Tools Team' },
   publisher: {
     '@type': 'Organization',
-    name: 'ابزارهای آنلاین',
+    name: lang === 'en' ? 'Online Tools' : 'ابزارهای آنلاین',
     logo: { '@type': 'ImageObject', url: new URL(`${base}favicon.svg`.replace(/^\//, ''), site).toString() }
   },
   mainEntityOfPage: canonical
 };
 
 const breadcrumbLd = buildBreadcrumbJsonLd([
-  { name: 'خانه', url: site },
-  { name: 'وبلاگ', url: new URL(`${base}blog/`.replace(/^\//, ''), site).toString() },
-  { name: title, url: canonical }
+  { name: lang === 'en' ? 'Home' : 'خانه', url: lang === 'en' ? new URL('en/', site).toString() : site },
+  { name: lang === 'en' ? 'Blog' : 'وبلاگ', url: new URL(`${lang === 'en' ? 'en/' : ''}blog/`, site).toString() },
+  { name: lang === 'en' ? titleEn : title, url: canonical }
 ]);
 
 const jsonLdList: object[] = [articleLd, breadcrumbLd];
 ---
-<BaseLayout title={`${title} | وبلاگ`} titleEn={`${titleEn} | Blog`} description={description} descriptionEn={descriptionEn} canonical={canonical} jsonLd={jsonLdList}>
+<BaseLayout title={lang === 'en' ? `${titleEn} | Blog` : `${title} | وبلاگ`} titleEn={`${titleEn} | Blog`} description={lang === 'en' ? descriptionEn : description} descriptionEn={descriptionEn} lang={lang} canonical={canonical} jsonLd={jsonLdList}>
   <article class="blog-post container">
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
-        <li><a href={base} data-lang-fa="خانه" data-lang-en="Home">خانه</a></li>
-        <li><a href={base + 'blog/'} data-lang-fa="وبلاگ" data-lang-en="Blog">وبلاگ</a></li>
+        <li><a href={lang === 'en' ? '/en/' : base} data-lang-fa="خانه" data-lang-en="Home">{lang === 'en' ? 'Home' : 'خانه'}</a></li>
+        <li><a href={lang === 'en' ? '/en/blog/' : base + 'blog/'} data-lang-fa="وبلاگ" data-lang-en="Blog">{lang === 'en' ? 'Blog' : 'وبلاگ'}</a></li>
         <li aria-current="page"><span data-lang-fa={title} data-lang-en={titleEn}>{title}</span></li>
       </ol>
     </nav>
@@ -102,14 +104,12 @@ const jsonLdList: object[] = [articleLd, breadcrumbLd];
       </div>
     </header>
 
-    <div class="post-content card" data-lang-only="fa">
-      <slot />
-    </div>
-
-    {translation ? (
-      <div class="post-content card" data-lang-only="en" set:html={translation.body} />
+    {lang === 'fa' ? (
+      <div class="post-content card"><slot /></div>
+    ) : translation ? (
+      <div class="post-content card" set:html={translation.body} />
     ) : (
-      <p class="article-translation-note" data-lang-only="en" hidden>The full article text is currently available in Persian only. The article title and listing are translated into English.</p>
+      <p class="article-translation-note">This article is not yet available in English.</p>
     )}
 
     {(faqs.length > 0 || (translation?.faqs.length ?? 0) > 0) && <BlogFAQ faqs={faqs} faqsEn={translation?.faqs} />}
