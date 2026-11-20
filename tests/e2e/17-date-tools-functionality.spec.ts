@@ -92,15 +92,13 @@ test('date tool sections follow a sequential heading hierarchy', async ({ page }
 
 test('multi-calendar source switcher exposes valid and synchronized tab semantics', async ({ page }) => {
   await page.goto('/tools/multi-calendar-converter/?lang=en');
-  const tabs = page.getByRole('tab');
-  await expect(tabs).toHaveCount(3);
-  await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true');
-  await expect(tabs.nth(0)).toHaveAttribute('aria-controls', 'mcc-panel');
-  await expect(page.getByRole('tabpanel', { name: 'Date input' })).toBeVisible();
+  const group = page.getByRole('group', { name: 'Input calendar' });
+  const buttons = group.getByRole('button');
+  await expect(buttons).toHaveCount(3);
+  await expect(buttons.nth(0)).toHaveAttribute('aria-pressed', 'true');
+  await expect(buttons.nth(1)).toHaveAttribute('aria-pressed', 'false');
 
-  await tabs.nth(1).click();
-  await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'false');
-  await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
-  await expect(tabs.nth(1)).toHaveAttribute('aria-controls', 'mcc-panel');
-  await expect(page.getByRole('tabpanel', { name: 'Date input' })).toBeVisible();
+  await buttons.nth(1).click();
+  await expect(buttons.nth(0)).toHaveAttribute('aria-pressed', 'false');
+  await expect(buttons.nth(1)).toHaveAttribute('aria-pressed', 'true');
 });
