@@ -721,5 +721,111 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Summary</h2>
 <p>A useful slug is readable, concise, descriptive, and consistent with the site's URL policy. Choose a stable address before publishing, and use a permanent redirect if an established URL must change. Try our <a href="/tools/slug-generator/">online Slug Generator</a> to prepare a clean URL path.</p>`
   }
+,
+  'seo-meta-tags-guide': {
+    description: 'Learn how title tags, meta descriptions, canonical URLs, Open Graph, and social preview metadata help present pages clearly in search and sharing contexts.',
+    faqs: [
+      { q: 'How long should a page title be?', a: 'There is no strict character limit that guarantees how Google displays a title. Write a unique, descriptive title that communicates the page clearly and avoid unnecessary repetition.' },
+      { q: 'Does a meta description directly improve rankings?', a: 'A meta description is not a direct ranking guarantee. Search engines may use it to create a snippet, and a clear description can help users understand the page before clicking.' },
+      { q: 'What are Open Graph tags?', a: 'Open Graph metadata describes a page's title, description, image, and URL for social platforms and messaging applications that use the protocol.' },
+      { q: 'Where do meta tags belong?', a: 'Most page metadata belongs inside the HTML head element. Use one appropriate title and description per page, and keep canonical and social metadata consistent with the preferred URL.' }
+    ],
+    body: String.raw`<p>When a page appears in search results or is shared in a messaging app, people often see a title, a short description, and sometimes an image before they open it. HTML metadata helps search engines and social platforms understand how a page should be presented.</p>
+<h2>1. Write a useful title and description</h2>
+<p>The HTML title should be unique, accurate, and concise enough to communicate the page topic. Search engines may shorten or rewrite titles depending on the query and display context, so a fixed character count cannot guarantee how it will appear.</p>
+<p>A meta description should summarize the page in natural language and help a visitor decide whether it is relevant. Search engines may generate a different snippet from page content, so treat the description as guidance rather than a guaranteed search result.</p>
+<p>Use our <a href="/tools/serp-preview/">SERP Preview</a> to inspect how a title and description may look in a search-style result.</p>
+<h2>2. Add Open Graph metadata</h2>
+<p>Social platforms and messaging applications may use Open Graph properties such as <code>og:title</code>, <code>og:description</code>, <code>og:image</code>, and <code>og:url</code> to create a link preview. Provide an image with suitable dimensions, use an absolute URL, and ensure the preview matches the page users will visit.</p>
+<p>Our <a href="/tools/og-preview/">Open Graph Preview</a> helps you review the information you plan to publish.</p>
+<h2>3. Generate and add the HTML tags</h2>
+<p>After choosing the title, description, canonical URL, and social image, place the relevant metadata inside the page's <code>&lt;head&gt;</code> element. Our <a href="/tools/meta-tag-generator/">Meta Tag Generator</a> can prepare standard title, description, Open Graph, and Twitter Card markup. Review the generated output and adapt it to your site's routing and canonical URL policy.</p>
+<h2>4. Keep metadata consistent</h2>
+<ul>
+<li>Use a unique title and description for each important page.</li>
+<li>Set the canonical URL to the preferred version of the page.</li>
+<li>Keep Open Graph title, description, and URL aligned with the page content.</li>
+<li>Use descriptive image alt text where appropriate.</li>
+<li>Avoid misleading claims, keyword stuffing, and duplicate boilerplate.</li>
+</ul>
+<h2>Check the result</h2>
+<p>After publishing, inspect the rendered page source and test social previews with the relevant platform tools. Crawlers may cache metadata, so updates are not necessarily visible immediately.</p>
+<h2>Summary</h2>
+<p>Good metadata makes a page easier to understand and share. Write accurate titles and descriptions, set a canonical URL, and provide consistent Open Graph information. Use our <a href="/tools/serp-preview/">SERP Preview</a>, <a href="/tools/og-preview/">Open Graph Preview</a>, and <a href="/tools/meta-tag-generator/">Meta Tag Generator</a> as part of your publishing workflow.</p>`
+  },
+  'why-client-side-tools-matter': {
+    description: 'Explore how browser-side processing can reduce file uploads, improve responsiveness, and limit exposure of user input, along with its security and privacy boundaries.',
+    faqs: [
+      { q: 'What does client-side processing mean?', a: 'It means the browser performs the main transformation on the user's device rather than uploading the input to a server for processing.' },
+      { q: 'Does client-side processing guarantee complete privacy?', a: 'No. Local processing can keep tool inputs out of the processing server, but page requests, analytics, browser extensions, compromised devices, and third-party resources may still affect privacy. The actual network behaviour matters.' },
+      { q: 'Can browser tools work offline?', a: 'Some tools can work offline after the page and required assets have been cached, for example through a service worker. First-time loading and some browser features may still require an internet connection.' },
+      { q: 'What browser technologies enable local tools?', a: 'Common technologies include the Canvas API for image work, Web Crypto for cryptographic operations, Web Workers for background computation, and File APIs for local file access.' }
+    ],
+    body: String.raw`<p>Online tools can transform text, images, and files without requiring a user to install desktop software. But where does the processing happen? A server-based tool uploads input to a remote service, while a client-side tool performs its main operation in the browser on the user's device.</p>
+<h2>The trade-offs of server-side processing</h2>
+<p>When a tool uploads a file for processing, the file must travel over the network and be handled by remote infrastructure. That may be appropriate for large jobs or services that need server resources, but it creates additional data-transfer, storage, retention, and access-control responsibilities. Users must trust the service's handling of their inputs.</p>
+<h2>How client-side processing works</h2>
+<p>Modern browsers provide APIs that can handle many common transformations locally:</p>
+<ul>
+<li><strong>Canvas API:</strong> reads and transforms image pixels.</li>
+<li><strong>Web Crypto API:</strong> provides cryptographic primitives such as secure random values and hashing.</li>
+<li><strong>Web Workers:</strong> run computational work away from the main UI thread.</li>
+<li><strong>File and Blob APIs:</strong> allow pages to read selected files and create downloadable results.</li>
+</ul>
+<h2>Potential benefits</h2>
+<ul>
+<li><strong>Less upload time:</strong> the input does not need to be sent to a processing server.</li>
+<li><strong>Reduced server exposure:</strong> the service does not need to receive or retain the input for the local transformation.</li>
+<li><strong>Responsive interaction:</strong> work can happen directly in the browser, with Workers helping keep the interface responsive.</li>
+<li><strong>Lower infrastructure needs:</strong> static hosting can serve the application while the user's device performs the transformation.</li>
+</ul>
+<h2>Local processing is not an absolute privacy guarantee</h2>
+<p>Client-side processing does not mean that no network requests occur. The page itself must be downloaded, and the browser may request first-party assets. Browser extensions, device malware, screenshots, clipboard use, or an injected script can also affect data security. Privacy depends on the complete implementation: third-party scripts, network connections, storage behaviour, permissions, and the user's device all matter.</p>
+<p>For this reason, our tools are designed to process tool inputs locally wherever the tool supports it, while the site still makes essential requests to load pages and assets. For highly sensitive information, follow your organization's policy and verify the tool's behaviour before use.</p>
+<h2>Examples on this platform</h2>
+<ul>
+<li>The <a href="/tools/image-compressor/">Image Compressor</a> uses browser image capabilities to process selected images.</li>
+<li>The <a href="/tools/hash-generator/">Hash Generator</a> uses browser cryptographic APIs for supported hashing operations.</li>
+<li>The <a href="/tools/json-formatter/">JSON Formatter</a> formats and validates text in the browser.</li>
+</ul>
+<h2>Offline support and limitations</h2>
+<p>A service worker can cache the page and its required assets so some tools remain available after the first successful visit. Offline behaviour depends on what has been cached, browser storage limits, and the capabilities each tool requires. A page that needs a remote service or a feature unavailable in the browser cannot be assumed to work offline.</p>
+<h2>Summary</h2>
+<p>Client-side processing can reduce uploads, lower server-side exposure, and make many tools fast and inexpensive to host. It is a useful privacy-oriented design, but not a blanket guarantee. Evaluate the full page, its scripts, requests, storage, and device context before handling sensitive data.</p>`
+  },
+  'qr-code-guide': {
+    description: 'Learn how QR codes store information, common uses, how to generate a static QR code, and how to avoid QR-code phishing attacks.',
+    faqs: [
+      { q: 'What is a QR code?', a: 'A QR code is a two-dimensional barcode that stores data in a pattern of modules. A camera or scanner can decode it into text, a URL, or another supported data type.' },
+      { q: 'Do static QR codes expire?', a: 'A static QR code contains the encoded data itself and does not depend on a QR hosting service. However, a URL encoded inside it can stop working if the destination changes or disappears.' },
+      { q: 'Are QR codes safe to scan?', a: 'A QR code is only a way to encode data; it does not make the destination trustworthy. Preview the URL before opening it and be cautious of unexpected stickers, payment requests, or login pages.' },
+      { q: 'How can I create a QR code?', a: 'Enter the text or URL into a QR generator, choose the output size and format, and scan the downloaded image with a trusted device to verify it before sharing.' }
+    ],
+    body: String.raw`<p>QR codes (Quick Response codes) connect physical objects with digital information. They appear on menus, tickets, product packaging, signs, and payment instructions. A QR code is a two-dimensional barcode that can be scanned by a camera or dedicated reader.</p>
+<h2>What is a QR code?</h2>
+<p>QR codes were developed by Denso Wave in Japan in 1994. Unlike a traditional one-dimensional barcode, a QR code stores data in a two-dimensional pattern. The amount of data it can hold depends on the version, error-correction level, and character encoding.</p>
+<h2>Common uses</h2>
+<ul>
+<li><strong>Web links:</strong> Open a product page, event page, or digital menu.</li>
+<li><strong>Contact details:</strong> Share a contact card or other structured information.</li>
+<li><strong>Wi-Fi access:</strong> Encode network details so a compatible device can join a network.</li>
+<li><strong>Tickets and check-in:</strong> Represent an identifier that a venue or service can scan.</li>
+<li><strong>Product information:</strong> Link packaging to instructions, provenance, or support content.</li>
+</ul>
+<h2>Create a QR code</h2>
+<p>Use our <a href="/tools/qr-code-generator/">QR Code Generator</a> to enter text or a URL, choose the output size, and download the generated image. The code is created in your browser. Scan the saved image with a trusted device to verify that it contains the intended information before printing or distributing it.</p>
+<h2>Static and dynamic QR codes</h2>
+<p>A static QR code stores the target data directly. It does not rely on a third-party QR redirect service, but a URL inside it can still become unavailable if the website changes. A dynamic QR service usually encodes a redirect address that can be changed by the service provider; it may depend on an account, subscription, or provider availability.</p>
+<h2>QR-code phishing (quishing)</h2>
+<p>Attackers can place a malicious QR code on a poster, replace a legitimate sticker, or send a code in an email. Scanning the code may open a fake login page, payment destination, or download. The QR pattern itself does not reveal whether a destination is safe.</p>
+<ul>
+<li>Preview the full URL before opening it.</li>
+<li>Check the domain spelling and use the official app or website for sensitive transactions.</li>
+<li>Be cautious with unexpected QR codes on payment terminals, parking meters, or public signs.</li>
+<li>Never enter passwords, recovery codes, or payment details on a page merely because a QR code directed you there.</li>
+</ul>
+<h2>Summary</h2>
+<p>QR codes are a convenient way to share information, but the destination still needs to be trusted. Generate a code with our <a href="/tools/qr-code-generator/">QR Code Generator</a>, verify it after downloading, and inspect links before opening scanned destinations.</p>`
+  }
 
 };
