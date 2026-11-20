@@ -630,5 +630,96 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Summary</h2>
 <p>The Persian Solar Hijri, Gregorian, and Islamic Hijri calendars have different structures and rules. A reliable conversion must use the correct calendar algorithm and date convention. Try our <a href="/tools/multi-calendar-converter/">online calendar converter</a> and verify official dates where accuracy has legal consequences.</p>`
   }
+,
+  'website-speed-optimization': {
+    description: 'Improve website speed with image optimization, smaller CSS and JavaScript, careful lazy loading, efficient fonts, caching, and performance measurement.',
+    faqs: [
+      { q: 'Why does website speed matter?', a: 'Fast, responsive pages improve usability, especially on mobile and slower connections. Core Web Vitals measure aspects of loading, interactivity, and visual stability.' },
+      { q: 'What is a good PageSpeed Insights score?', a: 'A score of 90–100 is classified as good, 50–89 needs improvement, and below 50 is poor in Lighthouse scoring. The score is a lab metric and should be considered alongside real-user Core Web Vitals.' },
+      { q: 'How soon will optimization results appear?', a: 'Technical changes can affect lab measurements as soon as they are deployed. Search and field metrics may take longer to reflect changes because crawling and real-user data collection take time.' },
+      { q: 'Should I lazy-load every image?', a: 'No. Lazy-load off-screen images, but prioritize the main image or other important content visible immediately when the page opens.' }
+    ],
+    body: String.raw`<p>Website performance affects how quickly visitors can read, interact with, and complete tasks on a page. Improving speed is an ongoing process: identify the largest bottlenecks, make focused changes, and measure the result on both mobile and desktop.</p>
+<h2>Step 1: Optimize images</h2>
+<p>Images can contribute a large share of page weight. Resize them to appropriate display dimensions, choose a suitable format, and compress them without introducing distracting artifacts. Use our <a href="/tools/image-resizer/">Image Resizer</a>, <a href="/tools/image-compressor/">Image Compressor</a>, and <a href="/tools/format-converter/">Image Format Converter</a>.</p>
+<h2>Step 2: Reduce CSS and JavaScript work</h2>
+<ul>
+<li>Remove unused styles and scripts.</li>
+<li>Minify production assets and split code so pages load only what they need.</li>
+<li>Defer non-critical scripts and avoid long tasks on the main thread.</li>
+<li>Use a formatter or minifier where appropriate; our <a href="/tools/json-formatter/">JSON Formatter</a> also supports compact JSON output.</li>
+</ul>
+<h2>Step 3: Load content at the right time</h2>
+<p>Lazy loading can defer off-screen images and embedded resources until visitors approach them. Do not automatically lazy-load the main above-the-fold image if it is important for Largest Contentful Paint (LCP). Use loading priorities deliberately and include image dimensions to reduce layout shifts.</p>
+<h2>Step 4: Optimize fonts</h2>
+<p>Use modern font formats such as WOFF2, subset fonts when appropriate, and load only the weights and character ranges the site needs. Preload a critical font only when it is genuinely needed early; excessive preloads can compete with more important resources.</p>
+<h2>Step 5: Use caching and content delivery carefully</h2>
+<p>Cache versioned static assets for long periods and revalidate HTML when it changes. A content delivery network (CDN) can serve assets closer to visitors, but correct cache headers and cache invalidation remain important. Choose infrastructure that fits the site's audience and privacy requirements.</p>
+<h2>Step 6: Measure image and page metadata</h2>
+<p>Provide descriptive alternative text for informative images and ensure images have appropriate dimensions. Our <a href="/tools/meta-tag-generator/">Meta Tag Generator</a> can help prepare standard metadata, but metadata alone does not make a page fast.</p>
+<h2>Measure performance</h2>
+<p>Use Google PageSpeed Insights or Lighthouse to diagnose lab performance. Also monitor field Core Web Vitals, which reflect real visitors and can differ from a single lab run. The key metrics include LCP, Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).</p>
+<h2>Summary</h2>
+<p>Start with the largest assets and main-thread bottlenecks, then optimize fonts, loading priority, and caching. Measure after each change and compare both lab results and field data. Performance gains depend on the page and its visitors; no single technique guarantees a fixed percentage improvement.</p>`
+  },
+  'image-formats-comparison': {
+    description: 'Compare JPEG, PNG, WebP, and AVIF by compression, transparency, quality, browser support, and the types of images each format suits.',
+    faqs: [
+      { q: 'Which image format is best for websites?', a: 'There is no single best format for every image. WebP and AVIF are efficient modern options, JPEG remains useful for photographs, and PNG is suitable for lossless graphics and transparency.' },
+      { q: 'Is AVIF always better than WebP?', a: 'Not always. AVIF can achieve smaller files in some cases, but encoding speed, decoding cost, browser support, and image quality at a chosen size also matter.' },
+      { q: 'When should I use PNG?', a: 'Use PNG when lossless image data or transparency is important, such as for certain logos, interface assets, and screenshots. For photographs, JPEG or a modern format may be more efficient.' },
+      { q: 'Does image compression reduce quality?', a: 'Lossy compression can reduce quality; lossless compression preserves the original image data. Preview each result and choose settings appropriate to the content.' }
+    ],
+    body: String.raw`<p>Choosing an image format affects file size, visual quality, transparency, animation, and browser compatibility. The best choice depends on the content: a photograph, a logo, a screenshot, and an animated image do not necessarily need the same format.</p>
+<h2>JPEG: photographs and broad compatibility</h2>
+<p>JPEG is widely supported and commonly used for photographs. It uses lossy compression and does not support transparency. Repeatedly editing and re-saving a JPEG can introduce additional compression artifacts.</p>
+<h2>PNG: lossless graphics and transparency</h2>
+<p>PNG uses lossless compression and supports transparency. It is useful for logos, interface graphics, screenshots, and images where preserving sharp edges matters. For photographic content, PNG files may be much larger than a lossy format.</p>
+<h2>WebP: a versatile modern format</h2>
+<p>WebP supports both lossy and lossless compression, as well as transparency and animation. It is supported by modern browsers and can reduce file size compared with older formats, although the exact result depends on the image and encoding settings.</p>
+<p>Use our <a href="/tools/format-converter/">Image Format Converter</a> to convert supported files and inspect the result.</p>
+<h2>AVIF: efficient compression with trade-offs</h2>
+<p>AVIF can deliver strong compression and supports features such as transparency and high dynamic range. Encoding and decoding costs, implementation support, and delivery requirements should be considered. It is not automatically the best choice for every image or audience.</p>
+<h2>Quick comparison</h2>
+<ul>
+<li><strong>JPEG:</strong> photographic images, lossy compression, no transparency.</li>
+<li><strong>PNG:</strong> lossless graphics and transparency, often larger for photographs.</li>
+<li><strong>WebP:</strong> lossy or lossless, transparency and animation, broad modern-browser support.</li>
+<li><strong>AVIF:</strong> efficient modern compression, but test encoding cost and compatibility for your use case.</li>
+</ul>
+<h2>Optimize an image workflow</h2>
+<p>First resize the image to appropriate dimensions, then choose a format and compression level. Our <a href="/tools/image-resizer/">Image Resizer</a>, <a href="/tools/image-compressor/">Image Compressor</a>, and <a href="/tools/format-converter/">Image Format Converter</a> can help with these tasks in your browser.</p>
+<p>For more detail, read our <a href="/blog/image-compression-guide/">image compression guide</a>.</p>
+<h2>Summary</h2>
+<p>Use JPEG for many photographs, PNG for lossless graphics and transparency, and consider WebP or AVIF for efficient modern delivery. Compare the actual output, check browser support, and choose based on quality and user experience rather than a universal format ranking.</p>`
+  },
+  'slug-generation-guide': {
+    description: 'Learn what URL slugs are, how to create readable and consistent page addresses, and how to handle separators, capitalization, special characters, and redirects.',
+    faqs: [
+      { q: 'What is a URL slug?', a: 'A slug is the human-readable part of a URL that identifies a page, often appearing after a path such as /blog/.' },
+      { q: 'Should a slug be short?', a: 'A slug should be concise and descriptive. Include the words needed to explain the page and avoid unnecessary filler, but do not remove useful context just to meet a fixed word limit.' },
+      { q: 'Should I use hyphens or underscores?', a: 'Hyphens are the conventional word separator in readable URLs and are recommended for clarity.' },
+      { q: 'Can I change a slug after publishing?', a: 'Yes, but changing a public URL can break existing links. Add a permanent redirect from the old URL to the new one and update internal links and canonical references.' }
+    ],
+    body: String.raw`<p>A URL slug is the readable part of a page address that identifies a specific page. For example, in <code>example.com/blog/how-to-improve-seo</code>, the final path segment is the slug. A good slug helps visitors understand the destination and makes URLs easier to share and maintain.</p>
+<h2>Principles for a useful slug</h2>
+<ul>
+<li><strong>Be descriptive:</strong> Use words that accurately represent the page topic.</li>
+<li><strong>Keep it concise:</strong> Remove filler words when doing so does not make the meaning unclear.</li>
+<li><strong>Use lowercase consistently:</strong> Consistent casing reduces accidental URL variants on case-sensitive systems.</li>
+<li><strong>Separate words with hyphens:</strong> Hyphens are easy to read and are the conventional separator for URL words.</li>
+<li><strong>Avoid unnecessary parameters and punctuation:</strong> Keep the canonical page address stable and understandable.</li>
+</ul>
+<h2>Slugs for Persian content</h2>
+<p>URLs can contain Persian characters, but browsers and sharing platforms may percent-encode them when displayed or copied. A Latin transliteration or concise English slug may be easier to type and share, while a Persian slug can be appropriate for a Persian-first site. Choose one policy and apply it consistently; there is no universal SEO rule that requires every Persian slug to be translated into English.</p>
+<p>Our <a href="/tools/slug-generator/">Slug Generator</a> can create a URL-friendly form from text and remove unsupported characters. Review the output to ensure it still represents the page accurately.</p>
+<h2>How long should a slug be?</h2>
+<p>There is no fixed word-count limit. Prefer the shortest phrase that clearly identifies the page. Avoid repeating keywords or adding dates unless the date is an essential part of the content identity.</p>
+<p>For checking title or text length, you can use our <a href="/tools/word-counter/">Word Counter</a>.</p>
+<h2>Changing a published URL</h2>
+<p>Changing a slug can break bookmarks, backlinks, and internal links. If a URL must change, create a permanent redirect from the old address to the new one, update internal references, and ensure the canonical URL points to the preferred version. Do not create multiple redirect hops or redirect unrelated pages to the homepage.</p>
+<h2>Summary</h2>
+<p>A useful slug is readable, concise, descriptive, and consistent with the site's URL policy. Choose a stable address before publishing, and use a permanent redirect if an established URL must change. Try our <a href="/tools/slug-generator/">online Slug Generator</a> to prepare a clean URL path.</p>`
+  }
 
 };
