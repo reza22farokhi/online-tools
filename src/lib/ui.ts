@@ -838,8 +838,8 @@ export function initUI(dicts?: Record<Lang, Record<string, string>>) {
   const pathLang = window.location.pathname === '/en' || window.location.pathname.startsWith('/en/') ? 'en' : null;
   const queryLang = new URLSearchParams(window.location.search).get('lang');
   const initialLang: Lang = pathLang ?? (queryLang === 'fa' || queryLang === 'en' ? queryLang : (getStoredLang() ?? 'fa'));
-  if (queryLang === 'fa' || queryLang === 'en') {
-    try { localStorage.setItem(LANG_KEY, queryLang); } catch {}
+  if (pathLang || queryLang === 'fa' || queryLang === 'en') {
+    try { localStorage.setItem(LANG_KEY, pathLang ?? queryLang!); } catch {}
   }
   applyLang(initialLang, dicts);
   document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach(btn => {
