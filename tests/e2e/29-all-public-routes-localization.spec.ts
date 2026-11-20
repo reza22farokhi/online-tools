@@ -48,7 +48,7 @@ test('every generated public HTML route has complete English navigation, copy, a
     const result = await page.evaluate(() => {
       const persian = /[\u0600-\u06FF]/;
       const isHidden = (element: Element): boolean => {
-        if (element.closest('[hidden], [aria-hidden="true"]')) return true;
+        if (element.closest('script, style, noscript, template, [hidden], [aria-hidden="true"]')) return true;
         let current: Element | null = element;
         while (current && current !== document.body) {
           const style = window.getComputedStyle(current);
@@ -113,6 +113,6 @@ test('every generated public HTML route has complete English navigation, copy, a
 
   expect(
     failures,
-    `English localization leaks or route failures detected:\\n${JSON.stringify(failures, null, 2)}`
+    `English localization leaks or route failures detected:\n${JSON.stringify(failures, null, 2)}`
   ).toEqual([]);
 });
