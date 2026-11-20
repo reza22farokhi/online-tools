@@ -22,7 +22,7 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
       { q: 'Why does Base64 increase data size?', a: 'Every three input bytes are represented by four Base64 characters, so the encoded output is about 33% larger. This overhead is often acceptable for small payloads.' },
       { q: 'Where is Base64 used?', a: 'Common uses include email attachments, Data URIs for embedding images in HTML or CSS, and carrying binary data in JSON APIs.' }
     ],
-    body: String.raw\`<p><strong>Base64</strong> is widely used in web development and data transfer. It is also frequently confused with encryption. This guide explains what Base64 does, why it exists, and when it is appropriate to use it.</p>
+    body: String.raw`<p><strong>Base64</strong> is widely used in web development and data transfer. It is also frequently confused with encryption. This guide explains what Base64 does, why it exists, and when it is appropriate to use it.</p>
 <h2>What is Base64?</h2>
 <p>Base64 is an <strong>encoding scheme</strong> that represents binary data (bits and bytes) using a set of 64 printable characters: uppercase and lowercase English letters, digits, and the <code>+</code> and <code>/</code> symbols. Padding may be represented by <code>=</code>. Its purpose is to carry binary content through systems designed to handle text.</p>
 <h2>Base64 is not encryption</h2>
@@ -37,7 +37,7 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
 <h2>Encode or decode Base64</h2>
 <p>Use our <a href="/tools/base64/">Base64 tool</a> to encode text or decode a Base64 value. The tool runs in your browser, so the content you enter is processed locally rather than uploaded to our server.</p>
 <h2>Summary</h2>
-<p>Base64 is a practical way to represent binary data in text-based environments. It is useful for compatibility and transport, but it is not a security mechanism. Choose it for data representation—not for protecting secrets.</p>\`
+<p>Base64 is a practical way to represent binary data in text-based environments. It is useful for compatibility and transport, but it is not a security mechanism. Choose it for data representation—not for protecting secrets.</p>`
   },
   'what-is-json-guide': {
     description: 'Understand JSON, its object and array structures, syntax rules, differences from XML, common use cases, and safe validation practices.',
@@ -47,7 +47,7 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
       { q: 'Is JSON secure?', a: 'JSON is a text format; security depends on how an application handles it. Parse input as data, validate its structure, and never execute untrusted JSON as code.' },
       { q: 'How can I validate JSON?', a: 'Use a JSON validator or parse it with JSON.parse in JavaScript and handle parsing errors. Our tool reports syntax errors with useful line and column information.' }
     ],
-    body: String.raw\`<p>If you work in software development, web development, or with APIs, you have probably encountered <strong>JSON</strong>. But what exactly is JSON, and why has it become so important?</p>
+    body: String.raw`<p>If you work in software development, web development, or with APIs, you have probably encountered <strong>JSON</strong>. But what exactly is JSON, and why has it become so important?</p>
 <h2>What is JSON?</h2>
 <p>If you already work with JSON files and need help formatting or troubleshooting them, see our <a href="/blog/json-guide/">guide to JSON formatting and validation</a>.</p>
 <p>JSON (JavaScript Object Notation) is a <strong>lightweight data-interchange format</strong> designed to be easy for people to read and straightforward for machines to parse. It is not a programming language; it is a structured way to store and exchange information.</p>
@@ -112,7 +112,7 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
 <li><strong>Failing to escape special characters:</strong> Use valid escape sequences such as <code>\\n</code>, <code>\\t</code>, and <code>\\"</code> inside strings.</li>
 </ol>
 <h2>Summary</h2>
-<p>JSON is a compact, readable format for exchanging structured data. It is essential when working with APIs, web applications, and many modern software systems. Use our <a href="/tools/json-formatter/">JSON Formatter</a> to format and validate JSON locally in your browser.</p>\`
+<p>JSON is a compact, readable format for exchanging structured data. It is essential when working with APIs, web applications, and many modern software systems. Use our <a href="/tools/json-formatter/">JSON Formatter</a> to format and validate JSON locally in your browser.</p>`
   },
   'regex-guide': {
     description: 'Learn regular expression basics, character classes, quantifiers, practical validation examples, and techniques for safer pattern matching.',
@@ -122,7 +122,7 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
       { q: 'Why can regex be difficult for beginners?', a: 'Compact symbols can make patterns hard to read. Start with small expressions, test them against representative input, and add complexity gradually.' },
       { q: 'What is ReDoS?', a: 'Regular Expression Denial of Service (ReDoS) occurs when a vulnerable pattern causes excessive backtracking and consumes substantial processing time. Limit input size and avoid ambiguous, nested repetition.' }
     ],
-    body: String.raw\`<p><strong>Regular expressions (regex)</strong> are among the most powerful tools for working with text in software development. Their syntax can look intimidating at first, but a few core concepts make many text-processing tasks much easier.</p>
+    body: String.raw`<p><strong>Regular expressions (regex)</strong> are among the most powerful tools for working with text in software development. Their syntax can look intimidating at first, but a few core concepts make many text-processing tasks much easier.</p>
 <h2>What is a regular expression?</h2>
 <p>A regular expression describes a text pattern. You can use it to check whether a string matches a rule, find and extract parts of a string, or replace matching content.</p>
 <h2>Useful regex characters</h2>
@@ -159,6 +159,6 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
 <li>Prefer a parser or dedicated validation library when the format is too complex for a maintainable regex.</li>
 </ul>
 <h2>Summary</h2>
-<p>Regular expressions are a valuable skill for developers who search, validate, extract, or transform text. Learn the basic tokens and quantifiers, test patterns carefully, and keep performance and input limits in mind. Try the <a href="/tools/regex-tester/">online Regex Tester</a> to experiment with your own expressions.</p>\`
+<p>Regular expressions are a valuable skill for developers who search, validate, extract, or transform text. Learn the basic tokens and quantifiers, test patterns carefully, and keep performance and input limits in mind. Try the <a href="/tools/regex-tester/">online Regex Tester</a> to experiment with your own expressions.</p>`
   }
 };
