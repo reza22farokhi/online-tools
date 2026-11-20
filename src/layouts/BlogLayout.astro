@@ -97,7 +97,7 @@ const jsonLdList: object[] = [articleLd, breadcrumbLd];
     </nav>
 
     <header class="post-header">
-      <h1 data-lang-fa={title} data-lang-en={titleEn}>{title}</h1>
+      <h1>{lang === 'en' ? titleEn : title}</h1>
       <div class="post-meta">
         <span data-lang-fa={'📅 ' + publishDate} data-lang-en={'📅 ' + publishDateEn}>📅 {publishDate}</span>
         <span data-lang-fa={'⏱️ ' + readTime + ' مطالعه'} data-lang-en={'⏱️ ' + readTimeEn}>⏱️ {readTime} مطالعه</span>
