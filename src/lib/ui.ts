@@ -651,7 +651,7 @@ export function setLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>
 
     if (!isOfflinePath) {
       const localePath = (path: string, target: Lang) => {
-        const basePath = path.replace(/^\\/en(?=\\/|$)/, '') || '/';
+        const basePath = path.replace(/^\/en(?=\/|$)/, '') || '/';
         return target === 'en' ? (basePath === '/' ? '/en/' : '/en' + basePath) : basePath;
       };
       const faUrl = new URL(localePath(url.pathname, 'fa'), url.origin);
@@ -672,7 +672,7 @@ export function setLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>
         if (!href || href.startsWith('/#') || href.startsWith('//')) return;
         const targetPath = lang === 'en'
           ? (href.startsWith('/en/') || href === '/en/' ? href : '/en' + href)
-          : href.replace(/^\\/en(?=\\/|$)/, '') || '/';
+          : href.replace(/^\/en(?=\/|$)/, '') || '/';
         link.setAttribute('href', targetPath);
       });
     }
