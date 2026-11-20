@@ -35,3 +35,14 @@ test('file info reads local metadata and calculates the expected SHA-256 digest'
   );
   await expect(page.locator('#fi-copy-hash')).toBeEnabled();
 });
+
+test('date difference counts Thursday and Friday as Iranian weekend days', async ({ page }) => {
+  await page.goto('/tools/date-diff/?lang=en');
+  await page.locator('#dd-from').fill('2025-01-01');
+  await page.locator('#dd-to').fill('2025-01-04');
+
+  await expect(page.locator('#dd-results')).toBeVisible();
+  await expect(page.locator('#dd-total-days')).toHaveText('3');
+  await expect(page.locator('#dd-business')).toHaveText('1');
+  await expect(page.locator('#dd-weekend')).toHaveText('2');
+});
