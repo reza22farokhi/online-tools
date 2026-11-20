@@ -24,7 +24,7 @@ describe('privacy disclosures', () => {
   it('discloses infrastructure request metadata processing in both languages', () => {
     expect(privacy).toContain('Cloudflare Pages');
     expect(privacy).toContain('نشانی IP');
-    expect(privacy).toContain('Cloudflare\\'s Privacy Policy');
+    expect(privacy).toContain('Cloudflare\'s Privacy Policy');
     expect(privacy).toContain('داده‌های فنی درخواست');
   });
 
