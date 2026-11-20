@@ -84,11 +84,12 @@ describe('language switching', () => {
     expect((document.getElementById('tool-placeholder') as HTMLInputElement).placeholder).toBe('متن خود را وارد کنید...');
   });
 
-  it('persists the language and updates the URL query parameter', () => {
+  it('persists the language and updates the locale path', () => {
     setLang('en', dicts);
 
     expect(localStorage.getItem('pot.lang')).toBe('en');
-    expect(new URL(window.location.href).searchParams.get('lang')).toBe('en');
+    expect(window.location.pathname).toBe('/en/');
+    expect(new URL(window.location.href).searchParams.has('lang')).toBe(false);
   });
 
   it('prefers a valid URL language over a previously stored language', () => {
