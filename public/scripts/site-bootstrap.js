@@ -11,6 +11,15 @@
     var lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : storedLang;
     if (lang !== 'fa' && lang !== 'en') lang = 'fa';
     if (lang === 'fa' || lang === 'en') {
+      var canonicalLink = document.querySelector('link[rel="canonical"]');
+      if (canonicalLink) {
+        var localizedCanonical = new URL(canonicalLink.href, window.location.origin);
+        if (lang === 'en') localizedCanonical.searchParams.set('lang', 'en');
+        else localizedCanonical.searchParams.delete('lang');
+        canonicalLink.href = localizedCanonical.href;
+        var ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.setAttribute('content', localizedCanonical.href);
+      }
       document.documentElement.setAttribute('lang', lang);
       document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
 
