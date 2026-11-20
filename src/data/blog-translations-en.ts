@@ -168,7 +168,7 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
       { q: 'Why should I use a different password for every website?', a: 'A breach at one service can expose credentials that attackers then try on other services. Unique passwords prevent one compromised account from automatically putting your other accounts at risk.' },
       { q: 'Are password managers safe?', a: 'A reputable password manager encrypts your vault and helps create unique passwords. Protect it with a strong master passphrase and multi-factor authentication, and keep recovery options secure.' }
     ],
-    body: String.raw\`<p>Our photos, messages, financial details, and work accounts increasingly live online. That convenience also creates risk: attackers exploit reused passwords, phishing messages, compromised services, and outdated software. Online security is not a single setting; it is a set of habits that reduce the chance and impact of an account compromise.</p>
+    body: String.raw`<p>Our photos, messages, financial details, and work accounts increasingly live online. That convenience also creates risk: attackers exploit reused passwords, phishing messages, compromised services, and outdated software. Online security is not a single setting; it is a set of habits that reduce the chance and impact of an account compromise.</p>
 <h2>1. Use long, unique passwords</h2>
 <p>A password should be difficult to guess and different for every account. Avoid names, birthdays, familiar phrases, and predictable substitutions. Long, randomly generated passwords or multi-word passphrases are generally more resistant to guessing. Use a reputable password manager so you do not have to memorize every credential.</p>
 <p>You can create a random password with our <a href="/tools/password-generator/">Password Generator</a>. It runs in your browser. For more guidance, read our <a href="/blog/strong-password-guide/">guide to strong passwords</a>.</p>
@@ -183,7 +183,7 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
 <h2>Keep devices and accounts up to date</h2>
 <p>Install security updates for your operating system, browser, and applications. Remove software you no longer use, review account sessions and connected apps, and revoke access you do not recognize. Back up important files and test that you can restore them.</p>
 <h2>Summary</h2>
-<p>Build a layered defence: use unique passwords, enable MFA or passkeys, store credentials safely, verify downloads when trusted checksums are available, and treat unexpected requests with caution. No single measure guarantees safety, but these practices make common attacks much harder.</p>\`
+<p>Build a layered defence: use unique passwords, enable MFA or passkeys, store credentials safely, verify downloads when trusted checksums are available, and treat unexpected requests with caution. No single measure guarantees safety, but these practices make common attacks much harder.</p>`
   },
   'csv-to-json-guide': {
     description: 'Learn how CSV and JSON differ, convert tabular data in both directions, handle headers, quotes, delimiters, and missing values, and avoid common data-conversion mistakes.',
@@ -193,7 +193,7 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
       { q: 'Can conversion change or lose data?', a: 'It can. CSV has no built-in types or nested structure, so a converter must make choices about headers, empty cells, numbers, quoting, and nested values. Review the output before using it.' },
       { q: 'Is this converter suitable for private data?', a: 'The converter on this site is designed to process input locally in your browser. Avoid entering sensitive data into unfamiliar websites, and verify network behaviour if your workflow has strict confidentiality requirements.' }
     ],
-    body: String.raw\`<p>CSV and JSON are two common formats for storing and exchanging data. CSV is convenient for spreadsheets and flat tables, while JSON is widely used by web APIs and applications. Converting between them is straightforward for simple records, but details such as quoting, missing values, and nested objects deserve attention.</p>
+    body: String.raw`<p>CSV and JSON are two common formats for storing and exchanging data. CSV is convenient for spreadsheets and flat tables, while JSON is widely used by web APIs and applications. Converting between them is straightforward for simple records, but details such as quoting, missing values, and nested objects deserve attention.</p>
 <h2>What is CSV?</h2>
 <p>CSV means Comma-Separated Values. It is a text format in which each line usually represents a row and delimiters separate the fields. The first row often contains column names.</p>
 <pre><code>name,age,city
@@ -236,7 +236,7 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Convert data in your browser</h2>
 <p>Our <a href="/tools/csv-json-converter/">CSV/JSON Converter</a> supports conversion in both directions and common delimiters. The tool is designed for local browser processing; the data you paste is processed on your device rather than uploaded for conversion.</p>
 <h2>Summary</h2>
-<p>CSV is a practical format for flat tables, while JSON is better suited to structured application data. Before converting, check headers, quoting, delimiters, missing values, and data types. Always inspect the result and validate it against the requirements of the system that will consume it.</p>\`
+<p>CSV is a practical format for flat tables, while JSON is better suited to structured application data. Before converting, check headers, quoting, delimiters, missing values, and data types. Always inspect the result and validate it against the requirements of the system that will consume it.</p>`
   },
   'age-calculation-guide': {
     description: 'Learn how to calculate exact age in years, months, and days, account for birthdays and leap years, and understand differences between calendar systems.',
@@ -246,7 +246,7 @@ Ali,"Tehran, Iran"</code></pre>
       { q: 'Why do months and days matter?', a: 'Some eligibility rules and forms use a precise age rather than a simple difference between calendar years. The exact convention should be checked for legal, educational, or employment decisions.' },
       { q: 'Can an online age calculator handle leap years?', a: 'A calendar-aware calculator can account for month lengths and leap days. Check the selected calendar and target date before relying on the result for an official decision.' }
     ],
-    body: String.raw\`<p>“How old are you?” sounds like a simple question, but an exact answer can require more than subtracting birth years. The result depends on whether the birthday has passed, the length of each month, leap days, and the calendar system being used.</p>
+    body: String.raw`<p>“How old are you?” sounds like a simple question, but an exact answer can require more than subtracting birth years. The result depends on whether the birthday has passed, the length of each month, leap days, and the calendar system being used.</p>
 <h2>Why subtracting years is not enough</h2>
 <p>Suppose the current year is 2026 and someone was born in 1990. Subtracting the years gives 36, but if their birthday has not happened yet this year, their completed age is still 35. A precise calculation must compare the full birth date with the target date.</p>
 <ul>
@@ -279,7 +279,7 @@ Ali,"Tehran, Iran"</code></pre>
 <li>For legal, employment, or benefits decisions, verify the applicable rule with the responsible authority.</li>
 </ul>
 <h2>Summary</h2>
-<p>Exact age is a calendar calculation, not simply the difference between two years. Birthday timing, month lengths, leap days, and calendar conventions all matter. Use our <a href="/tools/age/">Age Calculator</a> for a quick result, and verify the required convention before using it for an official decision.</p>\`
+<p>Exact age is a calendar calculation, not simply the difference between two years. Birthday timing, month lengths, leap days, and calendar conventions all matter. Use our <a href="/tools/age/">Age Calculator</a> for a quick result, and verify the required convention before using it for an official decision.</p>`
   }
 
 };
