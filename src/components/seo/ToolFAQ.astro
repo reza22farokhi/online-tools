@@ -6,9 +6,10 @@ import { buildFaqJsonLd } from '../../lib/seo';
 export interface Props {
   toolSlug: string;
   toolName: string;
+  lang?: 'fa' | 'en';
 }
 
-const { toolSlug, toolName } = Astro.props;
+const { toolSlug, toolName, lang = 'fa' } = Astro.props;
 const faqsFa = getFaqsFor(toolSlug);
 const tool = getToolBySlug(toolSlug);
 const toolNameEn = tool?.name.en ?? toolName;
@@ -27,8 +28,9 @@ const faqsEn = tool ? [
   }
 ] : [];
 const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa) : null;
+const faqLdEn = faqsEn.length > 0 ? buildFaqJsonLd(faqsEn) : null;
 ---
-{faqsFa.length > 0 && (
+{lang === 'fa' && faqsFa.length > 0 && (
   <section class="tool-faq" aria-labelledby="faq-title-fa" data-lang-only="fa">
     <h2 id="faq-title-fa">سوالات متداول درباره {toolName}</h2>
     <div class="faq-list">
@@ -42,7 +44,7 @@ const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa) : null;
     {faqLdFa && <script type="application/ld+json" set:html={JSON.stringify(faqLdFa)} />}
   </section>
 )}
-{faqsEn.length > 0 && (
+{lang === 'en' && faqsEn.length > 0 && (
   <section class="tool-faq" aria-labelledby="faq-title-en" data-lang-only="en" hidden>
     <h2 id="faq-title-en">Frequently asked questions about {toolNameEn}</h2>
     <div class="faq-list">
@@ -53,6 +55,7 @@ const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa) : null;
         </details>
       ))}
     </div>
+    {faqLdEn && <script type="application/ld+json" set:html={JSON.stringify(faqLdEn)} />}
   </section>
 )}
 <style>
