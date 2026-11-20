@@ -124,9 +124,9 @@ test('translated technical blog articles render complete English bodies and FAQs
   const slugs = ['base64-guide', 'what-is-json-guide', 'regex-guide', 'online-security-guide', 'csv-to-json-guide', 'age-calculation-guide', 'strong-password-guide', 'jwt-security-guide', 'what-is-jwt-guide', 'image-compression-guide', 'word-count-guide', 'image-optimization-guide', 'percentage-calculation-guide', 'date-calculation-guide', 'date-conversion-guide', 'website-speed-optimization', 'image-formats-comparison', 'slug-generation-guide', 'seo-meta-tags-guide', 'why-client-side-tools-matter', 'qr-code-guide', 'best-online-tools-2026', 'color-palette-selection-guide', 'hashing-vs-base64', 'json-guide', 'color-palette-guide', 'color-picker-guide', 'mastering-date-and-time', 'unit-converter-guide'];
 
   for (const slug of slugs) {
-    await page.goto(`/blog/${slug}/?lang=en`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`/en/blog/${slug}/`, { waitUntil: 'domcontentloaded' });
 
-    const body = page.locator('.post-content[data-lang-only="en"]');
+    const body = page.locator('.post-content');
     await expect(body).toBeVisible();
     await expect(body.locator('p, h2, h3, li').first()).toBeVisible();
 
