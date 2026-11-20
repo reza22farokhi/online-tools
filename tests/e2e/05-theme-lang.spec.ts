@@ -32,6 +32,6 @@ test('URL-selected language still bootstraps when browser storage is blocked', a
   const page = await context.newPage();
   await page.goto('/?lang=en');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await expect(page.locator('main h1').first()).toContainText(/Online Tools|Professional Online Tools/);
+  await expect(page).toHaveTitle(/Professional Online Tools/);
   await context.close();
 });
