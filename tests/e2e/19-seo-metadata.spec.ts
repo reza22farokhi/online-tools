@@ -49,3 +49,18 @@ test('all registered tool pages and standalone JWT Inspector have valid Persian 
 test('all registered tool pages and standalone JWT Inspector have valid English SEO metadata', async ({ page }) => {
   for (const slug of toolSlugs) await assertSeoMetadata(page, slug, 'en');
 });
+
+test('URL-selected language works when browser storage is unavailable', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(Storage.prototype, 'getItem', {
+      configurable: true,
+      value: () => { throw new Error('Storage access denied'); }
+    });
+  });
+  await page.goto('/?lang=en');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  await expect(page.locator('h1')).toContainText('Professional Online Tools');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://abzar-tools.ir/?lang=en');
+  await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute('content', 'en_US');
+});
