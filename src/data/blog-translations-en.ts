@@ -515,5 +515,120 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Summary</h2>
 <p>Use formats suited to the image, compress carefully, resize to appropriate dimensions, and load off-screen images only when needed. Measure the actual page to confirm that the optimization improves user experience.</p>`
   }
+,
+  'percentage-calculation-guide': {
+    description: 'Learn the three essential percentage calculations: finding a percentage of a value, finding what percentage one value is of another, and calculating percentage change.',
+    faqs: [
+      { q: 'What is the basic percentage formula?', a: 'To find what percent one value is of another, divide the part by the whole and multiply by 100. To find a percentage of a value, multiply the value by the percentage divided by 100.' },
+      { q: 'How do I calculate a discount?', a: 'Subtract the discounted price from the original price, divide the difference by the original price, and multiply by 100 to get the discount percentage.' },
+      { q: 'How do I calculate percentage change?', a: 'Subtract the old value from the new value, divide by the old value, and multiply by 100. A positive result is an increase and a negative result is a decrease.' },
+      { q: 'Can I calculate percentages with decimals?', a: 'Yes. The same formulas work with decimal values. Keep sufficient precision during the calculation and round only the displayed result when appropriate.' }
+    ],
+    body: String.raw`<p>Percentages are used to describe proportions, discounts, growth, taxes, and many other everyday calculations. The word means “per hundred”: 25 percent represents 25 parts out of 100. Once you understand three basic formulas, most common percentage problems become easier.</p>
+<h2>What does a percentage mean?</h2>
+<p>A percentage expresses a ratio with a denominator of 100. For example, 30% means 30 out of every 100. Percentages make it easier to compare proportions, but always check what the percentage is based on.</p>
+<h2>1. Find X percent of Y</h2>
+<p><strong>Formula:</strong> (X ÷ 100) × Y</p>
+<p><strong>Example:</strong> 20% of 500 = (20 ÷ 100) × 500 = 100.</p>
+<p>This calculation is useful for finding a discount amount, a tax amount, or a portion of a total.</p>
+<h2>2. Find what percentage X is of Y</h2>
+<p><strong>Formula:</strong> (X ÷ Y) × 100, provided Y is not zero.</p>
+<p><strong>Example:</strong> 25 is what percentage of 200? (25 ÷ 200) × 100 = 12.5%.</p>
+<p>This is useful for calculating completion rates, test scores, and proportions of a total.</p>
+<h2>3. Calculate percentage increase or decrease</h2>
+<p><strong>Formula:</strong> ((new value − old value) ÷ old value) × 100, provided the old value is not zero.</p>
+<p><strong>Example:</strong> A price increases from 200 to 250. The percentage change is ((250 − 200) ÷ 200) × 100 = 25%.</p>
+<p>A positive result indicates an increase; a negative result indicates a decrease. Percentage change is measured relative to the original value.</p>
+<h2>Calculate percentages online</h2>
+<p>Use our <a href="/tools/percentage/">Percentage Calculator</a> to work with these common calculation types. The tool processes the values in your browser and displays the result immediately.</p>
+<h2>Everyday examples</h2>
+<ul>
+<li><strong>Discounts:</strong> A 30% discount on 800 means a reduction of 240, leaving a price of 560.</li>
+<li><strong>Project progress:</strong> If 15 of 50 tasks are complete, progress is 30%.</li>
+<li><strong>Budget proportions:</strong> Compare a category's spending with the total budget.</li>
+<li><strong>Growth:</strong> Compare a new measurement with its starting value using percentage change.</li>
+</ul>
+<h2>Common percentage mistakes</h2>
+<ol>
+<li><strong>Adding percentages from different bases:</strong> A 20% increase followed by a 20% decrease does not return to the original value.</li>
+<li><strong>Confusing percent with percentage points:</strong> A change from 10% to 15% is an increase of 5 percentage points, or a 50% relative increase.</li>
+<li><strong>Dividing by the wrong base:</strong> Percentage change uses the original value as its denominator.</li>
+<li><strong>Dividing by zero:</strong> A percentage ratio is undefined when its reference total is zero.</li>
+</ol>
+<h2>Summary</h2>
+<p>Remember the three formulas: percentage of a value, a part as a percentage of a whole, and percentage change. Identify the correct base before calculating, handle zero denominators, and round only when presenting the result. Try our <a href="/tools/percentage/">online Percentage Calculator</a> for quick calculations.</p>`
+  },
+  'date-calculation-guide': {
+    description: 'Learn how to calculate the interval between two dates in days, weeks, months, and years, and account for leap years and different month lengths.',
+    faqs: [
+      { q: 'Why can manual date calculations be inaccurate?', a: 'Months have different lengths and leap years add an extra day. A correct calculation must use calendar rules rather than treating every month as 30 days.' },
+      { q: 'How do I calculate the number of days between two dates?', a: 'Convert both valid dates to a common calendar-day representation and subtract them. Decide whether the calculation is exclusive or inclusive of the start and end dates.' },
+      { q: 'Can I calculate working days between dates?', a: 'A working-day calculation needs a defined weekend pattern and, if relevant, a holiday calendar. The result depends on those local rules.' },
+      { q: 'Is date difference the same as age?', a: 'Not exactly. Age is usually expressed in completed years, months, and days from a birth date, while a date-difference calculation can measure any interval.' }
+    ],
+    body: String.raw`<p>Calculating the time between two dates can be useful for project deadlines, travel plans, contracts, and personal milestones. Subtracting the year numbers is not enough: month lengths, leap years, and the chosen counting convention all affect the result.</p>
+<h2>Why date calculations need care</h2>
+<p>Calendar months do not all contain the same number of days. In the Gregorian calendar, February has 28 days in a common year and 29 in a leap year; other months have 30 or 31 days. A calculation that assumes every month contains 30 days can produce the wrong answer.</p>
+<h2>Days between two dates</h2>
+<p>To calculate an elapsed day interval, represent both valid dates on the same calendar timeline and subtract the earlier date from the later one. Clarify whether the interval excludes the starting date (the common elapsed-time convention) or counts both endpoints. This distinction matters for schedules and legal deadlines.</p>
+<h2>Years, months, and days</h2>
+<p>Expressing an interval as years, months, and days requires calendar-aware arithmetic. After counting completed years and months, the remaining days depend on the length of the relevant month. Leap days must also be handled according to the selected calendar.</p>
+<h2>Working days and business schedules</h2>
+<p>Working-day calculations need a defined weekend pattern and may require a local holiday list. A weekday-only result is not automatically the same as a business-day result in every country or organization. Confirm the applicable calendar before using it for payroll, contracts, or deadlines.</p>
+<p>Use our <a href="/tools/date-diff/">Date Difference Calculator</a> to compare two dates and inspect the interval in several units. For a person's age, use the dedicated <a href="/tools/age/">Age Calculator</a>.</p>
+<h2>Calendar systems</h2>
+<p>The Persian Solar Hijri and Gregorian calendars have different month structures and leap-year rules. If the two dates are entered in different calendars, convert them carefully to a common timeline before comparing them. Our <a href="/tools/multi-calendar-converter/">Multi-Calendar Converter</a> can help with date conversion.</p>
+<h2>Practical checklist</h2>
+<ul>
+<li>Use valid dates and specify the calendar system.</li>
+<li>Choose the correct order of start and end dates.</li>
+<li>Decide whether to count the start date, end date, or both.</li>
+<li>For working days, define weekends and holidays.</li>
+<li>Verify the applicable convention for legal or contractual deadlines.</li>
+</ul>
+<h2>Summary</h2>
+<p>Accurate date differences require calendar-aware calculations. Month lengths, leap years, inclusive counting, and local working-day rules all matter. Use the right calculator for the task and confirm the convention when the result affects an official deadline.</p>`
+  },
+  'date-conversion-guide': {
+    description: 'Understand the Persian Solar Hijri, Gregorian, and Islamic Hijri calendars, their different structures, and how to convert dates carefully.',
+    faqs: [
+      { q: 'Can a Persian date be converted to Gregorian?', a: 'Yes. A calendar conversion algorithm can map a valid Persian Solar Hijri date to its Gregorian equivalent. Verify the date range and implementation used by the tool.' },
+      { q: 'Why can Islamic Hijri dates differ by one day?', a: 'Some Islamic calendars are based on calculated rules, while others follow local moon sighting or official announcements. Dates may therefore differ by region or authority.' },
+      { q: 'Are leap years the same in Persian and Gregorian calendars?', a: 'No. The calendars use different leap-year rules and month structures, so conversion must account for the specific calendar algorithms.' },
+      { q: 'Which calendar should I use for official documents?', a: 'Use the calendar and date format requested by the issuing authority. For legal or immigration documents, verify the converted date against the official source.' }
+    ],
+    body: String.raw`<p>Dates are written differently around the world. In Iran, the Persian Solar Hijri calendar is used for many official and everyday purposes, while the Gregorian calendar is common in international systems. The Islamic Hijri calendar is also used for religious dates. Converting between them requires more than changing the year number.</p>
+<h2>The three calendar systems</h2>
+<h3>1. Persian Solar Hijri calendar</h3>
+<p>The Persian calendar is a solar calendar whose year begins around the March equinox. It has six 31-day months, five 30-day months, and a final month whose length depends on the calendar's leap-year rule. The calendar's exact conversion should be handled with a tested algorithm.</p>
+<h3>2. Gregorian calendar</h3>
+<p>The Gregorian calendar is the civil calendar used in many countries and international systems. Its year begins on January 1. A Gregorian leap year is generally divisible by four, except century years that are not divisible by 400.</p>
+<h3>3. Islamic Hijri calendar</h3>
+<p>The Islamic calendar is lunar. Its months are 29 or 30 days, and its year is roughly eleven days shorter than a solar year. Some implementations use calculated calendars; others follow local moon sighting or official announcements, so dates may differ by location.</p>
+<h2>Why conversion can be difficult</h2>
+<ul>
+<li><strong>Different year starts:</strong> The calendars begin their years at different points in the solar or lunar cycle.</li>
+<li><strong>Leap-year rules:</strong> Solar calendars do not share one universal leap-year algorithm.</li>
+<li><strong>Month lengths:</strong> The number of days in a month depends on the calendar.</li>
+<li><strong>Lunar observations:</strong> Islamic dates may vary according to the adopted authority or observation method.</li>
+</ul>
+<h2>Convert dates online</h2>
+<p>Our <a href="/tools/multi-calendar-converter/">Multi-Calendar Converter</a> displays corresponding dates across supported calendar systems in your browser. Check the selected calendar and date convention, especially when converting an Islamic date that may depend on an official local announcement.</p>
+<h2>Date conversion in software</h2>
+<p>Developers should use a maintained library or a well-tested calendar algorithm rather than hand-written year offsets. Confirm the supported date range, leap-year behaviour, timezone assumptions, and whether the implementation follows an observational or calculated Islamic calendar.</p>
+<p>For date intervals after conversion, use our <a href="/tools/date-diff/">Date Difference Calculator</a>. For a person's exact age, see the <a href="/blog/age-calculation-guide/">age calculation guide</a>.</p>
+<h2>Common use cases</h2>
+<ul>
+<li>Entering birth dates in international forms.</li>
+<li>Preparing travel, visa, or administrative documents.</li>
+<li>Comparing medical or historical records.</li>
+<li>Working with dates in software and databases.</li>
+<li>Planning around religious or public calendar events.</li>
+</ul>
+<h2>Accuracy tips</h2>
+<p>Use the full day, month, and year, not only the year. Confirm the calendar requested by the receiving form. For legal documents, immigration, or official deadlines, verify the result with the relevant authority rather than relying solely on a general-purpose converter.</p>
+<h2>Summary</h2>
+<p>The Persian Solar Hijri, Gregorian, and Islamic Hijri calendars have different structures and rules. A reliable conversion must use the correct calendar algorithm and date convention. Try our <a href="/tools/multi-calendar-converter/">online calendar converter</a> and verify official dates where accuracy has legal consequences.</p>`
+  }
 
 };
