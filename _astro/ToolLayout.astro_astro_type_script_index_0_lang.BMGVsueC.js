@@ -1,1 +1,0 @@
-import{i as e}from"./ui.B0T0KXnL.js";var t=document.querySelector(`article[data-tool-slug]`);if(t){let n=t.getAttribute(`data-tool-slug`);n&&e(n)}

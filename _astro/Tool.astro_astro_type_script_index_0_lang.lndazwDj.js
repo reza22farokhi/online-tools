@@ -1,4 +1,4 @@
-import{a as e,t}from"./ui.B0T0KXnL.js";function n(e){if(typeof e!=`string`||e.length!==1||e===`"`||e===`
+import{a as e,t}from"./ui.CDKflX9u.js";function n(e){if(typeof e!=`string`||e.length!==1||e===`"`||e===`
 `||e===`\r`)throw Error(`جداکننده CSV باید دقیقاً یک نویسه معتبر باشد.`)}function r(e,t=`,`){n(t);let r=[],i=[],a=``,o=!1,s=!1,c=!1,l=()=>{i.push(a),(i.length>1||i[0]!==``||c)&&r.push(i),i=[],a=``,s=!1,c=!1};for(let n=0;n<e.length;){let r=e[n];if(o)r===`"`?e[n+1]===`"`?(a+=`"`,n+=2):(o=!1,s=!0,n++):(a+=r,n++);else if(s){if(r===t)i.push(a),a=``,s=!1,c=!1,n++;else if(r===`
 `||r===`\r`)l(),r===`\r`&&e[n+1]===`
 `?n+=2:n++;else throw Error(`پس از پایان فیلد نقل‌قول‌شده، نویسه غیرمجاز وجود دارد.`)}else if(r===`"`){if(a!==``)throw Error(`نقل‌قول باید در ابتدای فیلد CSV باشد.`);o=!0,c=!0,n++}else r===t?(i.push(a),a=``,c=!1,n++):r===`
