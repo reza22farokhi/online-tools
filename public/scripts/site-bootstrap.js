@@ -1,13 +1,22 @@
 (function () {
   try {
-    var theme = localStorage.getItem('pot.theme');
+    // Storage can be unavailable in private browsing or hardened contexts.
+    // Keep URL-selected language functional even when localStorage throws.
+    var readStorage = function (key) {
+      try {
+        return window.localStorage.getItem(key);
+      } catch (_) {
+        return null;
+      }
+    };
+    var theme = readStorage('pot.theme');
     if (theme !== 'light' && theme !== 'dark') {
       theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     document.documentElement.setAttribute('data-theme', theme);
 
     var queryLang = new URLSearchParams(window.location.search).get('lang');
-    var lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang');
+    var lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : readStorage('pot.lang');
     if (lang === 'fa' || lang === 'en') {
       document.documentElement.setAttribute('lang', lang);
       document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
