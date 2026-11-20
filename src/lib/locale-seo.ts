@@ -8,8 +8,9 @@ export interface LocaleSeoUrls {
 }
 
 /**
- * Build stable, self-referencing locale URLs for the site's query-based
- * language variants. Existing non-locale query parameters are preserved.
+ * Build reciprocal, path-based locale URLs.
+ * Persian is the default root; English is published under /en/.
+ * Legacy ?lang= links are normalized to the corresponding path URL.
  */
 export function getLocaleSeoUrls(
   canonical: string | URL,
@@ -17,19 +18,23 @@ export function getLocaleSeoUrls(
   locale: SupportedLocale = 'fa'
 ): LocaleSeoUrls {
   const input = new URL(canonical.toString(), site);
-  const siteUrl = new URL(site);
-  // Canonical URLs must always use the configured production origin, even when
-  // Astro is rendered by a local preview server (localhost).
-  const source = new URL(`${input.pathname}${input.search}${input.hash}`, siteUrl);
-  const fa = new URL(source);
-  const en = new URL(source);
-  fa.searchParams.set('lang', 'fa');
-  en.searchParams.set('lang', 'en');
+  const origin = new URL(site);
+  const params = new URLSearchParams(input.search);
+  params.delete('lang');
+
+  let pathname = input.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+  if (!pathname.startsWith('/')) pathname = '/' + pathname;
+  if (!pathname.endsWith('/')) pathname += '/';
+
+  const suffix = params.size ? `?${params.toString()}` : '';
+  const fa = new URL(`${pathname}${suffix}`, origin).toString();
+  const enPath = pathname === '/' ? '/en/' : `/en${pathname}`;
+  const en = new URL(`${enPath}${suffix}`, origin).toString();
 
   return {
-    canonical: (locale === 'en' ? en : fa).toString(),
-    fa: fa.toString(),
-    en: en.toString(),
-    xDefault: fa.toString()
+    canonical: locale === 'en' ? en : fa,
+    fa,
+    en,
+    xDefault: fa
   };
 }
