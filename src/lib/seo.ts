@@ -17,10 +17,11 @@ export function buildWebAppJsonLd(input: {
   };
 }
 
-export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]) {
+export function buildBreadcrumbJsonLd(items: { name: string; url: string }[], lang?: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
+    ...(lang ? { inLanguage: lang } : {}),
     itemListElement: items.map((item, i) => ({
       '@type': 'ListItem',
       position: i + 1,
@@ -54,10 +55,11 @@ export function buildWebSiteJsonLd(input: {
   };
 }
 
-export function buildFaqJsonLd(faqs: { q: string; a: string }[]) {
+export function buildFaqJsonLd(faqs: { q: string; a: string }[], lang?: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
+    ...(lang ? { inLanguage: lang } : {}),
     mainEntity: faqs.map(faq => ({
       '@type': 'Question',
       name: faq.q,
