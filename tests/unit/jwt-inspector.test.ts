@@ -150,6 +150,24 @@ describe('checkExpiration()', () => {
     const info = checkExpiration({ nbf: Math.floor(Date.now() / 1000) + 3600 });
     expect(info.status).toBe('not-yet-valid');
   });
+
+  it.each([Infinity, -Infinity, NaN, 8_640_000_000_001])(
+    'returns unknown for invalid exp claim: %s',
+    (exp) => {
+      expect(checkExpiration({ exp }).status).toBe('unknown');
+    }
+  );
+
+  it.each([Infinity, -Infinity, NaN, 8_640_000_000_001])(
+    'returns unknown for invalid nbf claim: %s',
+    (nbf) => {
+      expect(checkExpiration({ nbf }).status).toBe('unknown');
+    }
+  );
+
+  it('returns unknown when the reference clock is not finite', () => {
+    expect(checkExpiration({ exp: 4_102_444_800 }, Infinity).status).toBe('unknown');
+  });
 });
 
 describe('analyzeSecurity()', () => {
