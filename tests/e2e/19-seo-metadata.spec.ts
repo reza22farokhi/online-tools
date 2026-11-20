@@ -33,6 +33,7 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical!);
   await expect(page.locator('link[rel="alternate"][hreflang="fa"]')).toHaveAttribute('href', `https://abzar-tools.ir${route}?lang=fa`);
   await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', `https://abzar-tools.ir${route}?lang=en`);
+  await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute('href', `https://abzar-tools.ir${route}`);
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(structuredData.length, `${slug} should expose structured data`).toBeGreaterThan(0);
@@ -50,4 +51,24 @@ test('all registered tool pages and standalone JWT Inspector have valid Persian 
 
 test('all registered tool pages and standalone JWT Inspector have valid English SEO metadata', async ({ page }) => {
   for (const slug of toolSlugs) await assertSeoMetadata(page, slug, 'en');
+});
+
+
+test('every sitemap entry resolves to a page with the same canonical URL', async ({ page }) => {
+  test.setTimeout(120_000);
+  const sitemapResponse = await page.request.get('/sitemap-0.xml');
+  expect(sitemapResponse.ok()).toBeTruthy();
+  const xml = await sitemapResponse.text();
+  const urls = [...xml.matchAll(/<loc>([^<]+)<\\/loc>/g)].map(match => match[1]);
+  expect(urls.length).toBeGreaterThan(0);
+
+  for (const url of urls) {
+    const parsed = new URL(url);
+    expect(parsed.origin).toBe('https://abzar-tools.ir');
+    const response = await page.request.get(parsed.pathname);
+    expect(response.status(), `Sitemap URL should resolve: ${url}`).toBe(200);
+    const html = await response.text();
+    const canonical = html.match(/<link rel="canonical" href="([^"]+)"/);
+    expect(canonical?.[1], `Canonical should match sitemap URL: ${url}`).toBe(url);
+  }
 });
