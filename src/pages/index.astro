@@ -8,11 +8,17 @@ const site = Astro.site?.toString() ?? 'https://example.com/';
 const popular = getPopular();
 const allTools = registry;
 
-const websiteLd = buildWebSiteJsonLd({
+const websiteLdFa = buildWebSiteJsonLd({
   name: SITE_NAME_FA,
   url: site,
   description: DEFAULT_DESCRIPTION,
   lang: 'fa'
+});
+const websiteLdEn = buildWebSiteJsonLd({
+  name: 'Online Tools',
+  url: site,
+  description: DEFAULT_DESCRIPTION_EN,
+  lang: 'en'
 });
 const base = import.meta.env.BASE_URL;
 ---
@@ -21,7 +27,8 @@ const base = import.meta.env.BASE_URL;
   titleEn="Professional Online Tools | Text, Code, SEO & Images"
   description={DEFAULT_DESCRIPTION}
   descriptionEn={DEFAULT_DESCRIPTION_EN}
-  jsonLd={websiteLd}
+  jsonLd={websiteLdFa}
+  jsonLdEn={websiteLdEn}
 >
   <section class="hero container">
     <h1 data-i18n="site.heroTitle">ابزارهای آنلاین حرفه‌ای</h1>
