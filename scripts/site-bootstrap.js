@@ -7,7 +7,9 @@
     document.documentElement.setAttribute('data-theme', theme);
 
     var queryLang = new URLSearchParams(window.location.search).get('lang');
-    var lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang');
+    var storedLang = localStorage.getItem('pot.lang');
+    var lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : storedLang;
+    if (lang !== 'fa' && lang !== 'en') lang = 'fa';
     if (lang === 'fa' || lang === 'en') {
       document.documentElement.setAttribute('lang', lang);
       document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
@@ -15,6 +17,10 @@
       // Keep essential bilingual content usable when the larger UI bundle is unavailable offline.
       var applyLanguageContent = function () {
         var suffix = 'data-lang-' + lang;
+
+        document.querySelectorAll('script[data-jsonld-lang]').forEach(function (element) {
+          element.setAttribute('type', element.getAttribute('data-jsonld-lang') === lang ? 'application/ld+json' : 'application/json');
+        });
 
         document.querySelectorAll('[data-lang-only]').forEach(function (element) {
           element.hidden = element.getAttribute('data-lang-only') !== lang;

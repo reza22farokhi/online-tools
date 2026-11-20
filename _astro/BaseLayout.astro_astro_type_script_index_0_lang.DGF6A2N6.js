@@ -1,1 +1,0 @@
-import{n as e,r as t}from"./ui.Ft-BZjBI.js";var n=document.getElementById(`i18n-data`),r=JSON.parse(n?.textContent||`{}`);e(r),t(),window.addEventListener(`pageshow`,function(e){e.persisted&&t()});
