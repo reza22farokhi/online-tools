@@ -160,5 +160,126 @@ export const blogTranslationsEn: Record<string, EnglishBlogTranslation> = {
 </ul>
 <h2>Summary</h2>
 <p>Regular expressions are a valuable skill for developers who search, validate, extract, or transform text. Learn the basic tokens and quantifiers, test patterns carefully, and keep performance and input limits in mind. Try the <a href="/tools/regex-tester/">online Regex Tester</a> to experiment with your own expressions.</p>`
+  },
+  'online-security-guide': {
+    description: 'Learn practical ways to protect online accounts with unique passwords, multi-factor authentication, password managers, file integrity checks, and phishing awareness.',
+    faqs: [
+      { q: 'Should I enable two-factor authentication?', a: 'Yes. Multi-factor authentication adds a second check beyond your password. Prefer an authenticator app or a passkey where supported, and keep recovery codes in a safe place.' },
+      { q: 'Why should I use a different password for every website?', a: 'A breach at one service can expose credentials that attackers then try on other services. Unique passwords prevent one compromised account from automatically putting your other accounts at risk.' },
+      { q: 'Are password managers safe?', a: 'A reputable password manager encrypts your vault and helps create unique passwords. Protect it with a strong master passphrase and multi-factor authentication, and keep recovery options secure.' }
+    ],
+    body: String.raw\`<p>Our photos, messages, financial details, and work accounts increasingly live online. That convenience also creates risk: attackers exploit reused passwords, phishing messages, compromised services, and outdated software. Online security is not a single setting; it is a set of habits that reduce the chance and impact of an account compromise.</p>
+<h2>1. Use long, unique passwords</h2>
+<p>A password should be difficult to guess and different for every account. Avoid names, birthdays, familiar phrases, and predictable substitutions. Long, randomly generated passwords or multi-word passphrases are generally more resistant to guessing. Use a reputable password manager so you do not have to memorize every credential.</p>
+<p>You can create a random password with our <a href="/tools/password-generator/">Password Generator</a>. It runs in your browser. For more guidance, read our <a href="/blog/strong-password-guide/">guide to strong passwords</a>.</p>
+<h2>2. Turn on multi-factor authentication</h2>
+<p>Multi-factor authentication (MFA) requires an additional proof of identity after your password. A passkey or hardware security key is a strong option where available. Authenticator apps are also useful. SMS codes are better than having no second factor, but they can be exposed to SIM-swap and social-engineering attacks. Save recovery codes somewhere secure.</p>
+<h2>3. Use a password manager</h2>
+<p>A password manager stores credentials in an encrypted vault and can generate a different password for each service. Choose a reputable product, protect the vault with a strong master passphrase, enable MFA, and understand how account recovery works. Never share your master password or store it in an unprotected text file.</p>
+<h2>4. Verify downloaded files</h2>
+<p>When a software publisher provides a cryptographic checksum, compare it with a hash calculated from the file you downloaded. A matching SHA-256 digest helps detect accidental corruption or a file that differs from the publisher's copy. It does not, by itself, prove that the publisher or download source is trustworthy. Use our <a href="/tools/hash-generator/">Hash Generator</a> to calculate a file hash and compare it with a value published through an independently trusted channel.</p>
+<h2>5. Recognize phishing attempts</h2>
+<p>Phishing messages imitate banks, delivery companies, colleagues, and popular services to persuade you to reveal credentials or approve a transaction. Check the sender and the complete domain before signing in. Be suspicious of unexpected urgency, attachments, QR codes, and links that ask you to enter a password or recovery code. When in doubt, open the service using a bookmark or type its known address yourself.</p>
+<h2>Keep devices and accounts up to date</h2>
+<p>Install security updates for your operating system, browser, and applications. Remove software you no longer use, review account sessions and connected apps, and revoke access you do not recognize. Back up important files and test that you can restore them.</p>
+<h2>Summary</h2>
+<p>Build a layered defence: use unique passwords, enable MFA or passkeys, store credentials safely, verify downloads when trusted checksums are available, and treat unexpected requests with caution. No single measure guarantees safety, but these practices make common attacks much harder.</p>\`
+  },
+  'csv-to-json-guide': {
+    description: 'Learn how CSV and JSON differ, convert tabular data in both directions, handle headers, quotes, delimiters, and missing values, and avoid common data-conversion mistakes.',
+    faqs: [
+      { q: 'What is the difference between CSV and JSON?', a: 'CSV represents tabular data as rows and delimited fields. JSON represents structured values such as objects and arrays, so it can model nested data more naturally.' },
+      { q: 'Why convert a CSV file to JSON?', a: 'Many web APIs and JavaScript applications exchange structured data as JSON. Converting a spreadsheet export to JSON can make its rows easier to consume in those systems.' },
+      { q: 'Can conversion change or lose data?', a: 'It can. CSV has no built-in types or nested structure, so a converter must make choices about headers, empty cells, numbers, quoting, and nested values. Review the output before using it.' },
+      { q: 'Is this converter suitable for private data?', a: 'The converter on this site is designed to process input locally in your browser. Avoid entering sensitive data into unfamiliar websites, and verify network behaviour if your workflow has strict confidentiality requirements.' }
+    ],
+    body: String.raw\`<p>CSV and JSON are two common formats for storing and exchanging data. CSV is convenient for spreadsheets and flat tables, while JSON is widely used by web APIs and applications. Converting between them is straightforward for simple records, but details such as quoting, missing values, and nested objects deserve attention.</p>
+<h2>What is CSV?</h2>
+<p>CSV means Comma-Separated Values. It is a text format in which each line usually represents a row and delimiters separate the fields. The first row often contains column names.</p>
+<pre><code>name,age,city
+Ali,30,Tehran
+Sara,25,Shiraz
+Reza,28,Mashhad</code></pre>
+<p>CSV is easy to export from spreadsheet applications, but it does not define a universal way to represent nested objects, arrays, or data types.</p>
+<h2>What is JSON?</h2>
+<p>JSON (JavaScript Object Notation) represents data using objects, arrays, strings, numbers, booleans, and null values. A table can be represented as an array of objects, with each row becoming one object.</p>
+<pre><code>[
+  {"name":"Ali","age":30,"city":"Tehran"},
+  {"name":"Sara","age":25,"city":"Shiraz"},
+  {"name":"Reza","age":28,"city":"Mashhad"}
+]</code></pre>
+<p>JSON is useful for APIs and application data because it can represent nested structures as well as flat records.</p>
+<h2>Convert CSV to JSON</h2>
+<ol>
+<li>Identify the header row and use its values as object keys.</li>
+<li>Read each subsequent row as a record.</li>
+<li>Map each field to its corresponding header.</li>
+<li>Check how empty cells and values that look like numbers or dates should be represented.</li>
+</ol>
+<p>Paste your data into our <a href="/tools/csv-json-converter/">CSV to JSON Converter</a> to create JSON in your browser.</p>
+<h2>Convert JSON to CSV</h2>
+<p>For a simple array of objects, collect the keys that should become columns, write them as the header row, and write each object's values in the same column order. Decide how to handle missing keys, null values, and nested objects before exporting. A nested value may need to be flattened or serialized into a single field.</p>
+<h2>Quoting and delimiters</h2>
+<p>A field containing a comma, quotation mark, or line break must be handled according to CSV quoting rules. For example:</p>
+<pre><code>name,city
+Ali,"Tehran, Iran"</code></pre>
+<p>Inside a quoted CSV field, a literal double quote is commonly escaped by doubling it. Not every file uses a comma: semicolons and tab characters are also common delimiters. Select the delimiter that matches the source file rather than assuming all CSV files are identical.</p>
+<h2>Missing values and data types</h2>
+<p>CSV fields are text by default. A value such as <code>00123</code> might be an identifier, not the number 123; converting it to a number would remove leading zeroes. Dates and decimal separators can also be ambiguous. Decide on a schema and validate the converted output against it.</p>
+<h2>Common uses</h2>
+<ul>
+<li><strong>Data migration:</strong> Move a spreadsheet export into an application or database.</li>
+<li><strong>API integration:</strong> Convert tabular records into JSON request data.</li>
+<li><strong>Analysis:</strong> Load spreadsheet data into JavaScript, Python, or another analysis environment.</li>
+<li><strong>Exchange:</strong> Share flat records in a format supported by the receiving system.</li>
+</ul>
+<h2>Convert data in your browser</h2>
+<p>Our <a href="/tools/csv-json-converter/">CSV/JSON Converter</a> supports conversion in both directions and common delimiters. The tool is designed for local browser processing; the data you paste is processed on your device rather than uploaded for conversion.</p>
+<h2>Summary</h2>
+<p>CSV is a practical format for flat tables, while JSON is better suited to structured application data. Before converting, check headers, quoting, delimiters, missing values, and data types. Always inspect the result and validate it against the requirements of the system that will consume it.</p>\`
+  },
+  'age-calculation-guide': {
+    description: 'Learn how to calculate exact age in years, months, and days, account for birthdays and leap years, and understand differences between calendar systems.',
+    faqs: [
+      { q: 'How do I calculate my exact age?', a: 'Compare your date of birth with the target date and account for whether the birthday has occurred yet in that year. An exact result is expressed in years, months, and days.' },
+      { q: 'Can age differ between calendar systems?', a: 'Yes. Calendar systems have different month lengths and leap-year rules. For an official purpose, use the calendar and date convention required by the relevant authority.' },
+      { q: 'Why do months and days matter?', a: 'Some eligibility rules and forms use a precise age rather than a simple difference between calendar years. The exact convention should be checked for legal, educational, or employment decisions.' },
+      { q: 'Can an online age calculator handle leap years?', a: 'A calendar-aware calculator can account for month lengths and leap days. Check the selected calendar and target date before relying on the result for an official decision.' }
+    ],
+    body: String.raw\`<p>“How old are you?” sounds like a simple question, but an exact answer can require more than subtracting birth years. The result depends on whether the birthday has passed, the length of each month, leap days, and the calendar system being used.</p>
+<h2>Why subtracting years is not enough</h2>
+<p>Suppose the current year is 2026 and someone was born in 1990. Subtracting the years gives 36, but if their birthday has not happened yet this year, their completed age is still 35. A precise calculation must compare the full birth date with the target date.</p>
+<ul>
+<li><strong>Birthday timing:</strong> The completed year count changes on the birthday, not on January 1.</li>
+<li><strong>Month lengths:</strong> Calendar months contain different numbers of days.</li>
+<li><strong>Leap years:</strong> February may contain an additional day in the Gregorian calendar.</li>
+<li><strong>Calendar choice:</strong> The Persian and Gregorian calendars use different month structures and leap-year rules.</li>
+</ul>
+<h2>How exact age is calculated</h2>
+<p>An age expressed in years, months, and days is calculated by comparing the birth date with a later target date. First determine the number of completed years. Then determine the remaining completed months, and finally count the remaining days. If borrowing is required, use the length of the relevant previous month rather than assuming every month has 30 days.</p>
+<p>Manual calculations are easy to get wrong around month ends and leap days. Our <a href="/tools/age/">Age Calculator</a> performs the calendar calculation for you.</p>
+<h2>When exact age matters</h2>
+<ul>
+<li><strong>School registration:</strong> Eligibility may depend on reaching a specific age by a defined cutoff date.</li>
+<li><strong>Sports and employment:</strong> Some competitions and applications use precise age limits.</li>
+<li><strong>Insurance and retirement:</strong> Age and service periods may be evaluated in months or days under specific rules.</li>
+<li><strong>Forms and records:</strong> Medical, travel, and administrative forms may request age in years and months.</li>
+</ul>
+<p>For legal or official eligibility, do not rely on a generic calculator alone. Confirm the authority's cutoff date, calendar, and counting convention.</p>
+<h2>Age in different calendar systems</h2>
+<p>The Gregorian calendar and the Persian Solar Hijri calendar have different month lengths and leap-year rules. As a result, converting a birth date and calculating elapsed time in another calendar can produce a different displayed date or day count. Use one clearly identified calendar consistently for formal records.</p>
+<p>If you need to compare dates across calendars, use our <a href="/tools/multi-calendar-converter/">Multi-Calendar Converter</a>.</p>
+<h2>Other date calculations</h2>
+<p>Sometimes you need the interval between two arbitrary dates rather than a person's age. Our <a href="/tools/date-diff/">Date Difference Calculator</a> is designed for that task. Check whether the result should include both endpoints and whether weekends or holidays matter for your use case.</p>
+<h2>Practical tips</h2>
+<ul>
+<li>Use the date of birth as recorded in the relevant official document.</li>
+<li>Confirm which calendar the form or authority expects.</li>
+<li>Check the target date and time zone if the calculation is time-sensitive.</li>
+<li>For legal, employment, or benefits decisions, verify the applicable rule with the responsible authority.</li>
+</ul>
+<h2>Summary</h2>
+<p>Exact age is a calendar calculation, not simply the difference between two years. Birthday timing, month lengths, leap days, and calendar conventions all matter. Use our <a href="/tools/age/">Age Calculator</a> for a quick result, and verify the required convention before using it for an official decision.</p>\`
   }
+
 };
