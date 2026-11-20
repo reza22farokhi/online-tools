@@ -6,6 +6,22 @@
     }
     document.documentElement.setAttribute('data-theme', theme);
 
+    var params = new URLSearchParams(window.location.search);
+    var requestedLang = params.get('lang');
+    if (requestedLang === 'fa' || requestedLang === 'en') {
+      var localizedUrl = new URL(window.location.href);
+      localizedUrl.searchParams.delete('lang');
+      if (requestedLang === 'en' && !localizedUrl.pathname.startsWith('/en/')) {
+        localizedUrl.pathname = '/en' + (localizedUrl.pathname === '/' ? '/' : localizedUrl.pathname);
+      } else if (requestedLang === 'fa' && localizedUrl.pathname.startsWith('/en/')) {
+        localizedUrl.pathname = localizedUrl.pathname.slice(3) || '/';
+      }
+      if (localizedUrl.href !== window.location.href) {
+        window.location.replace(localizedUrl.href);
+        return;
+      }
+    }
+
     var pathLang = window.location.pathname === '/en' || window.location.pathname.startsWith('/en/') ? 'en' : null;
     var queryLang = new URLSearchParams(window.location.search).get('lang');
     var lang = pathLang || (queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang'));
