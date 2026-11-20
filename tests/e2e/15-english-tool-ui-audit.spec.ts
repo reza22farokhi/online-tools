@@ -209,7 +209,7 @@ test('public informational pages have complete English copy and metadata', async
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 
     const result = await page.evaluate(() => {
-      const persian = /[\\u0600-\\u06FF]/;
+      const persian = /[\u0600-\u06FF]/;
       const skip = 'script,style,[hidden],[aria-hidden="true"]';
       const text: string[] = [];
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -233,7 +233,7 @@ test('public informational pages have complete English copy and metadata', async
       return { title: document.title, text, attributes };
     });
 
-    if (/[\\u0600-\\u06FF]/.test(result.title) || result.text.length || result.attributes.length) {
+    if (/[\u0600-\u06FF]/.test(result.title) || result.text.length || result.attributes.length) {
       failures.push({ route, ...result });
     }
   }
