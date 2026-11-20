@@ -1,30 +1,35 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="تماس با ما | ابزارهای آنلاین" description="راه‌های ارتباطی با تیم ابزارهای آنلاین. گزارش خطاها و پیشنهادات.">
+<BaseLayout
+  title="تماس با ما | ابزارهای آنلاین"
+  titleEn="Contact | Online Tools"
+  description="راه‌های ارتباطی با تیم ابزارهای آنلاین. گزارش خطاها و پیشنهادات."
+  descriptionEn="Contact the Online Tools team to report bugs, share feedback, or suggest a new tool."
+>
   <div class="container page">
     <header class="page-header">
-      <h1>تماس با ما</h1>
-      <p class="lead">ما همیشه خوشحال می‌شویم نظرات و پیشنهادات شما را بشنویم.</p>
+      <h1 data-lang-fa="تماس با ما" data-lang-en="Contact Us">تماس با ما</h1>
+      <p class="lead" data-lang-fa="ما همیشه خوشحال می‌شویم نظرات و پیشنهادات شما را بشنویم." data-lang-en="We welcome your feedback, bug reports, and suggestions.">ما همیشه خوشحال می‌شویم نظرات و پیشنهادات شما را بشنویم.</p>
     </header>
 
     <div class="content-card card">
-      <h2>گزارش خطا و پیشنهادات</h2>
-      <p>
-        اگر در استفاده از ابزارها به مشکلی برخوردید یا ایده‌ای برای اضافه کردن ابزار جدید دارید، می‌توانید از طریق راه‌های زیر با ما در ارتباط باشید:
+      <h2 data-lang-fa="گزارش خطا و پیشنهادات" data-lang-en="Bug Reports and Suggestions">گزارش خطا و پیشنهادات</h2>
+      <p data-lang-fa="اگر هنگام استفاده از ابزارها با مشکلی روبه‌رو شدید یا ایده‌ای برای افزودن ابزار جدید دارید، از راه‌های زیر با ما در ارتباط باشید:" data-lang-en="If you encounter a problem while using a tool or have an idea for a new one, contact us through either channel below:">
+        اگر هنگام استفاده از ابزارها با مشکلی روبه‌رو شدید یا ایده‌ای برای افزودن ابزار جدید دارید، از راه‌های زیر با ما در ارتباط باشید:
       </p>
-      
+
       <div class="contact-methods">
         <a href="https://github.com/reza22farokhi/online-tools/issues" target="_blank" rel="noopener" class="btn contact-btn">
-          <span aria-hidden="true">🐙</span> ثبت گزارش در GitHub
+          <span aria-hidden="true">🐙</span> <span data-lang-fa="ثبت گزارش در GitHub" data-lang-en="Report an issue on GitHub">ثبت گزارش در GitHub</span>
         </a>
         <a href="mailto:reza22farokhi@gmail.com" class="btn contact-btn">
-          <span aria-hidden="true">✉️</span> ارسال ایمیل
+          <span aria-hidden="true">✉️</span> <span data-lang-fa="ارسال ایمیل" data-lang-en="Send an email">ارسال ایمیل</span>
         </a>
       </div>
 
       <p class="note">
-        <em>توجه: در حال حاضر هیچ سروری برای دریافت پیام‌ها وجود ندارد. برای گزارش فنی، لطفاً از بخش Issues در GitHub استفاده کنید.</em>
+        <em data-lang-fa="توجه: در حال حاضر سروری برای دریافت پیام‌ها وجود ندارد. برای گزارش فنی، لطفاً از بخش Issues در GitHub استفاده کنید." data-lang-en="Note: We do not currently operate a message-submission server. Please use GitHub Issues for technical reports.">توجه: در حال حاضر سروری برای دریافت پیام‌ها وجود ندارد. برای گزارش فنی، لطفاً از بخش Issues در GitHub استفاده کنید.</em>
       </p>
     </div>
   </div>
