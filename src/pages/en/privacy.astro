@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+---
+<BaseLayout title="Privacy Policy | Online Tools" description="How browser-based tools process input, what local preferences are stored, and which technical requests are required." lang="en" canonical={new URL('en/privacy/',site).toString()}>
+  <article class="container page"><h1>Privacy Policy</h1>
+    <h2>1. Local tool processing</h2><p>For tools that support local processing, the text, files, or images you provide are processed in your browser and are not uploaded to our servers for that processing. This does not mean that every website request is local: page assets and infrastructure requests are still required.</p>
+    <h2>2. Browser storage</h2><p>The site may store interface preferences such as theme, language, favorites, and recently used tools in your browser's local storage. These values remain on your device unless you clear browser storage.</p>
+    <h2>3. Technical requests and hosting</h2><p>Pages and assets are delivered through the site's hosting and CDN infrastructure. Those providers may process technical request data under their own terms and privacy policies.</p>
+    <h2>4. Advertising</h2><p>The current production site is not intended to load third-party advertising scripts. If this changes, this policy should be updated before the change is deployed.</p>
+    <h2>5. Contact</h2><p>For privacy questions, use <a href="https://github.com/reza22farokhi/online-tools/issues" rel="noopener">GitHub Issues</a>.</p>
+  </article>
+</BaseLayout>
+<style>.page{padding-block:var(--space-5);max-width:850px}.page h2{margin-top:2rem}.page p{line-height:1.8}</style>
