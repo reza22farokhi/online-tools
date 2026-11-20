@@ -648,6 +648,34 @@ export function setLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>
       url.searchParams.delete('lang');
     }
     window.history.replaceState({}, '', url);
+
+    if (!isOfflinePath) {
+      const localePath = (path: string, target: Lang) => {
+        const basePath = path.replace(/^\\/en(?=\\/|$)/, '') || '/';
+        return target === 'en' ? (basePath === '/' ? '/en/' : '/en' + basePath) : basePath;
+      };
+      const faUrl = new URL(localePath(url.pathname, 'fa'), url.origin);
+      const enUrl = new URL(localePath(url.pathname, 'en'), url.origin);
+      const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+      if (canonical) canonical.href = (lang === 'en' ? enUrl : faUrl).href;
+      const faAlternate = document.querySelector<HTMLLinkElement>('link[rel="alternate"][hreflang="fa"]');
+      const enAlternate = document.querySelector<HTMLLinkElement>('link[rel="alternate"][hreflang="en"]');
+      const defaultAlternate = document.querySelector<HTMLLinkElement>('link[rel="alternate"][hreflang="x-default"]');
+      if (faAlternate) faAlternate.href = faUrl.href;
+      if (enAlternate) enAlternate.href = enUrl.href;
+      if (defaultAlternate) defaultAlternate.href = faUrl.href;
+      const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
+      if (ogUrl) ogUrl.content = (lang === 'en' ? enUrl : faUrl).href;
+
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('/#') || href.startsWith('//')) return;
+        const targetPath = lang === 'en'
+          ? (href.startsWith('/en/') || href === '/en/' ? href : '/en' + href)
+          : href.replace(/^\\/en(?=\\/|$)/, '') || '/';
+        link.setAttribute('href', targetPath);
+      });
+    }
   } catch {}
   applyLang(lang, dicts);
 }
