@@ -28,6 +28,9 @@
     var pathLang = window.location.pathname === '/en' || window.location.pathname.startsWith('/en/') ? 'en' : null;
     var queryLang = new URLSearchParams(window.location.search).get('lang');
     var lang = pathLang || (queryLang === 'fa' || queryLang === 'en' ? queryLang : readStorage('pot.lang'));
+    if (pathLang) {
+      try { window.localStorage.setItem('pot.lang', pathLang); } catch (_) {}
+    }
     if (lang === 'fa' || lang === 'en') {
       document.documentElement.setAttribute('lang', lang);
       document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
