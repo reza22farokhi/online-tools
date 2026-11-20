@@ -37,7 +37,17 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(structuredData.length, `${slug} should expose structured data`).toBeGreaterThan(0);
-  for (const json of structuredData) expect(() => JSON.parse(json)).not.toThrow();
+  const schemas = structuredData.map(json => JSON.parse(json));
+  for (const schema of schemas) {
+    expect(schema.inLanguage, `${slug} ${lang} schema language`).toBe(lang);
+  }
+  const faq = schemas.find(schema => schema['@type'] === 'FAQPage');
+  if (faq) {
+    expect(faq.mainEntity.length).toBeGreaterThan(0);
+    const faqText = JSON.stringify(faq.mainEntity);
+    if (lang === 'en') expect(faqText).not.toMatch(/[\\u0600-\\u06FF]/);
+    else expect(faqText).toMatch(/[\\u0600-\\u06FF]/);
+  }
 }
 
 test('homepage has valid Persian and English SEO metadata', async ({ page }) => {
@@ -70,5 +80,34 @@ test('every sitemap entry resolves to a page with the same canonical URL', async
     const html = await response.text();
     const canonical = html.match(/<link rel="canonical" href="([^"]+)"/);
     expect(canonical?.[1], `Canonical should match sitemap URL: ${url}`).toBe(url);
+  }
+});
+
+
+test('tool FAQ structured data matches the active language', async ({ page }) => {
+  for (const lang of ['fa', 'en'] as const) {
+    await page.goto(`/tools/word-counter/?lang=${lang}`);
+    const schemas = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const faq = schemas.map(json => JSON.parse(json)).find(schema => schema['@type'] === 'FAQPage');
+    expect(faq, `FAQPage should exist for ${lang}`).toBeTruthy();
+    expect(faq.inLanguage).toBe(lang);
+    const faqText = JSON.stringify(faq.mainEntity);
+    if (lang === 'en') {
+      expect(faqText).toContain('What does Word Counter do?');
+      expect(faqText).not.toMatch(/[\\u0600-\\u06FF]/);
+    } else {
+      expect(faqText).toContain('شمارش کلمات چگونه انجام می‌شود؟');
+    }
+  }
+});
+
+test('homepage WebSite structured data follows the selected locale', async ({ page }) => {
+  for (const lang of ['fa', 'en'] as const) {
+    await page.goto(`/?lang=${lang}`);
+    const schemas = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const website = schemas.map(json => JSON.parse(json)).find(schema => schema['@type'] === 'WebSite');
+    expect(website).toBeTruthy();
+    expect(website.inLanguage).toBe(lang);
+    expect(website.name).toBe(lang === 'fa' ? 'ابزارهای آنلاین' : 'Online Tools');
   }
 });
