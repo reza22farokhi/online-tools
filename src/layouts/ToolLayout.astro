@@ -51,7 +51,7 @@ const related = getRelated(meta.slug);
   <article class="tool-page container" data-tool-slug={meta.slug}>
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
-        <li><a href={lang === 'en' ? base + 'en/' : base} data-i18n="breadcrumb.home">خانه</a></li>
+        <li><a href={lang === 'en' ? base + 'en/' : base} data-i18n="breadcrumb.home">{lang === 'en' ? 'Home' : 'خانه'}</a></li>
         <li><a href={base + (lang === 'en' ? 'en/tools/' : 'tools/')} data-i18n="breadcrumb.tools">{lang === 'en' ? 'Tools' : 'ابزارها'}</a></li>
         <li aria-current="page"><span data-lang-fa={meta.name.fa} data-lang-en={meta.name.en}>{meta.name[lang]}</span></li>
       </ol>
@@ -68,15 +68,15 @@ const related = getRelated(meta.slug);
 
 
     <section class="tool-privacy card" aria-labelledby="privacy-title">
-      <h2 id="privacy-title" data-i18n="tool.privacyTitle">حریم خصوصی</h2>
-      <p><span data-lang-fa="محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. برای جزئیات بیشتر، " data-lang-en="Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. See our ">محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. برای جزئیات بیشتر، </span><a href={lang === "en" ? "/en/privacy/" : "/privacy/"} data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</a><span data-lang-fa=" را بخوانید." data-lang-en=" for details."> را بخوانید.</span></p>
+      <h2 id="privacy-title" data-i18n="tool.privacyTitle">{lang === 'en' ? 'Privacy' : 'حریم خصوصی'}</h2>
+      <p><span data-lang-fa="محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. برای جزئیات بیشتر، " data-lang-en="Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. See our ">{lang === 'en' ? 'Content you enter or select in this tool is processed in your browser and is not sent to our servers for processing. See our ' : 'محتوایی که در این ابزار وارد یا انتخاب می‌کنید، در مرورگر شما پردازش می‌شود و برای انجام پردازش به سرورهای ما ارسال نمی‌شود. برای جزئیات بیشتر، '}</span><a href={lang === "en" ? "/en/privacy/" : "/privacy/"} data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">{lang === 'en' ? 'Privacy Policy' : 'سیاست حریم خصوصی'}</a><span data-lang-fa=" را بخوانید." data-lang-en=" for details.">{lang === 'en' ? ' for details.' : ' را بخوانید.'}</span></p>
     </section>
 
     <ToolFAQ toolSlug={meta.slug} toolName={meta.name.fa} lang={lang} />
 
     {related.length > 0 && (
       <section class="tool-related" aria-labelledby="related-title">
-        <h2 id="related-title" data-i18n="tool.related">ابزارهای مرتبط</h2>
+        <h2 id="related-title" data-i18n="tool.related">{lang === 'en' ? 'Related tools' : 'ابزارهای مرتبط'}</h2>
         <div class="tools-grid">
           {related.map(t => <ToolCard tool={t} lang={lang} />)}
         </div>
