@@ -110,7 +110,11 @@
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => {\n        const selected = t === tab;\n        t.classList.toggle('active', selected);\n        t.setAttribute('aria-pressed', String(selected));\n      });
+      tabs.forEach(t => {
+        const selected = t === tab;
+        t.classList.toggle('active', selected);
+        t.setAttribute('aria-pressed', String(selected));
+      });
       source = (tab.dataset.source as typeof source) || 'jalali';
       populateMonths();
     });
