@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseCSV, csvToJson, jsonToCsv, MAX_CSV_INPUT_BYTES, MAX_CSV_ROWS, MAX_CSV_COLUMNS } from '../../src/tools/file/csv-json-converter/logic';
+import { parseCSV, csvToJson, jsonToCsv, MAX_CSV_INPUT_BYTES, MAX_CSV_ROWS, MAX_CSV_COLUMNS, MAX_CSV_CELLS } from '../../src/tools/file/csv-json-converter/logic';
 
 describe('parseCSV', () => {
   it('simple', () => expect(parseCSV('a,b\n1,2')).toEqual([['a','b'],['1','2']]));
@@ -20,6 +20,11 @@ describe('parseCSV', () => {
   });
   it('rejects excessive column counts', () => {
     expect(() => parseCSV(Array(MAX_CSV_COLUMNS + 1).fill('x').join(','))).toThrow(/ستون‌ها/);
+  });
+  it('rejects excessive total cell counts', () => {
+    const row = Array(MAX_CSV_COLUMNS).fill('x').join(',');
+    const csv = Array(Math.floor(MAX_CSV_CELLS / MAX_CSV_COLUMNS) + 1).fill(row).join('\n');
+    expect(() => parseCSV(csv)).toThrow(/سلول‌ها/);
   });
 });
 
