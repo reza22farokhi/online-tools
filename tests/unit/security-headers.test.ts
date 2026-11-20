@@ -41,7 +41,7 @@ describe('Content Security Policy allowlist', () => {
   });
 
   it('keeps locale canonical and Open Graph updates compatible with the strict script CSP', () => {
-    expect(baseLayout).not.toMatch(/<script\\s+is:inline(?!\\s+src=)/i);
+    expect(baseLayout).not.toMatch(/<script\s+is:inline(?!\s+src=)/i);
     expect(siteBootstrap).toContain("document.querySelector('link[rel=\"canonical\"]')");
     expect(siteBootstrap).toContain("document.querySelector('meta[property=\"og:url\"]')");
     expect(siteBootstrap).toContain("document.querySelector('meta[property=\"og:locale\"]')");
