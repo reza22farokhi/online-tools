@@ -45,7 +45,7 @@ const otherCategories = categories.filter(c => c.slug !== category.slug);
       <ol>
         <li><a href={base} data-i18n="breadcrumb.home">خانه</a></li>
         <li><a href={base + 'tools/'} data-i18n="breadcrumb.tools">ابزارها</a></li>
-        <li aria-current="page">{category.fa}</li>
+        <li aria-current="page"><span data-lang-fa={category.fa} data-lang-en={category.en}>{category.fa}</span></li>
       </ol>
     </nav>
 
