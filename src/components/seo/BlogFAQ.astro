@@ -8,6 +8,7 @@ export interface FaqItem {
 
 export interface Props {
   faqs: FaqItem[];
+  faqsEn?: FaqItem[];
 }
 
 const { faqs, faqsEn = [] } = Astro.props;
@@ -24,8 +25,23 @@ if (!faqs || faqs.length === 0) return null;
     ))}
   </div>
 </section>
-<p class="faq-translation-note" data-lang-only="en" hidden>Article FAQs are currently available in Persian only.</p>
+{faqsEn.length > 0 ? (
+  <section class="blog-faq" aria-labelledby="blog-faq-title-en" data-lang-only="en">
+    <h2 id="blog-faq-title-en">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      {faqsEn.map(faq => (
+        <details class="faq-item">
+          <summary class="faq-q">{faq.q}</summary>
+          <p class="faq-a">{faq.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+) : (
+  <p class="faq-translation-note" data-lang-only="en" hidden>Article FAQs are currently available in Persian only.</p>
+)}
 <script type="application/ld+json" set:html={JSON.stringify(buildFaqJsonLd(faqs))} />
+{faqsEn.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(buildFaqJsonLd(faqsEn))} />}
 <style>
   .faq-translation-note { color: var(--color-text-muted); font-size: 0.9rem; }
   .blog-faq { margin-top: var(--space-5); padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
