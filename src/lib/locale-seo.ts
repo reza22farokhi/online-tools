@@ -25,14 +25,13 @@ export function getLocaleSeoUrls(
   canonicalUrl.searchParams.delete('lang');
   const fa = new URL(canonicalUrl);
   const en = new URL(canonicalUrl);
-  fa.searchParams.set('lang', 'fa');
   en.searchParams.set('lang', 'en');
 
   return {
     // The default Persian document uses the clean path listed in the sitemap.
     // The explicit English variant remains independently canonicalized.
     canonical: (locale === 'en' ? en : canonicalUrl).toString(),
-    fa: fa.toString(),
+    fa: canonicalUrl.toString(),
     en: en.toString(),
     xDefault: canonicalUrl.toString()
   };
