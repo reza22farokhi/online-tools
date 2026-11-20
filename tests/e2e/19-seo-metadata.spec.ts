@@ -18,6 +18,8 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
   const route = lang === 'en' ? `/en${baseRoute}` : baseRoute;
   await page.goto(route);
   await expect(page.locator('html')).toHaveAttribute('lang', lang);
+  await expect(page.locator('html')).toHaveAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+  await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute('content', lang === 'fa' ? 'fa_IR' : 'en_US');
   await expect(page.locator('h1')).toHaveCount(1);
 
   const title = await page.title();
@@ -34,7 +36,10 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(structuredData.length, `${slug} should expose structured data`).toBeGreaterThan(0);
-  for (const json of structuredData) expect(() => JSON.parse(json)).not.toThrow();
+  for (const json of structuredData) {
+    expect(() => JSON.parse(json)).not.toThrow();
+    if (lang === 'en') expect(json).toContain('en');
+  }
 }
 
 test('homepage has valid Persian and English SEO metadata', async ({ page }) => {
@@ -48,4 +53,23 @@ test('all registered tool pages and standalone JWT Inspector have valid Persian 
 
 test('all registered tool pages and standalone JWT Inspector have valid English SEO metadata', async ({ page }) => {
   for (const slug of toolSlugs) await assertSeoMetadata(page, slug, 'en');
+});
+
+test('English informational and category routes are statically localized', async ({ page }) => {
+  const routes = ['/en/tools/', '/en/blog/', '/en/about/', '/en/privacy/', '/en/contact/', '/en/categories/text/', '/en/blog/base64-guide/'];
+  for (const route of routes) {
+    const response = await page.goto(route);
+    expect(response?.status(), route).toBe(200);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+    expect(canonical).toBe(`https://abzar-tools.ir${route}`);
+    await expect(page.locator('link[rel="alternate"][hreflang="fa"]')).toHaveAttribute('href', `https://abzar-tools.ir${route.replace('/en', '')}`);
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', `https://abzar-tools.ir${route}`);
+  }
+});
+
+test('legacy language query links redirect to static locale routes', async ({ page }) => {
+  await page.goto('/?lang=en');
+  await expect(page).toHaveURL(/\/en\/$/);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 });
