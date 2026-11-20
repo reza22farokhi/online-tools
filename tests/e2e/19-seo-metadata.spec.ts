@@ -28,10 +28,13 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
 
   const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
   expect(canonical).toBe(`https://abzar-tools.ir${route}?lang=${lang}`);
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical!);
+  await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute('content', lang === 'fa' ? 'fa_IR' : 'en_US');
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(structuredData.length, `${slug} should expose structured data`).toBeGreaterThan(0);
-  for (const json of structuredData) expect(() => JSON.parse(json)).not.toThrow();
+  const parsed = structuredData.map(json => JSON.parse(json));
+  expect(parsed.some((item: { inLanguage?: string }) => item.inLanguage === lang), `${slug} JSON-LD language`).toBe(true);
 }
 
 test('homepage has valid Persian and English SEO metadata', async ({ page }) => {
