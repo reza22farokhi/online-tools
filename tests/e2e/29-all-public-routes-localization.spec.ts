@@ -46,7 +46,7 @@ test('every generated public HTML route has complete English navigation, copy, a
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
 
     const result = await page.evaluate(() => {
-      const persian = /[\\u0600-\\u06FF]/;
+      const persian = /[\u0600-\u06FF]/;
       const isHidden = (element: Element): boolean => {
         if (element.closest('[hidden], [aria-hidden="true"]')) return true;
         let current: Element | null = element;
@@ -98,8 +98,8 @@ test('every generated public HTML route has complete English navigation, copy, a
 
     if (
       (response?.status() ?? 0) >= 400 ||
-      /[\\u0600-\\u06FF]/.test(result.title) ||
-      /[\\u0600-\\u06FF]/.test(result.description) ||
+      /[\u0600-\u06FF]/.test(result.title) ||
+      /[\u0600-\u06FF]/.test(result.description) ||
       result.text.length > 0 ||
       result.attributes.length > 0
     ) {
