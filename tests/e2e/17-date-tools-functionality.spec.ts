@@ -76,3 +76,29 @@ test('multi-calendar converter hides stale results after invalid input', async (
   await expect(page.locator('#mcc-error')).toBeVisible();
   await expect(page.locator('#mcc-results')).toBeHidden();
 });
+
+
+test('date tool sections follow a sequential heading hierarchy', async ({ page }) => {
+  for (const slug of ['date-converter', 'unix-timestamp']) {
+    await page.goto(`/tools/${slug}/?lang=en`);
+    const headings = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll(nodes =>
+      nodes.map(node => Number(node.tagName.slice(1)))
+    );
+    for (let i = 1; i < headings.length; i++) {
+      expect(headings[i] - headings[i - 1], `${slug} heading order: ${headings.join(', ')}`).toBeLessThanOrEqual(1);
+    }
+  }
+});
+
+test('multi-calendar source switcher exposes valid and synchronized tab semantics', async ({ page }) => {
+  await page.goto('/tools/multi-calendar-converter/?lang=en');
+  const group = page.getByRole('group', { name: 'Input calendar' });
+  const buttons = group.getByRole('button');
+  await expect(buttons).toHaveCount(3);
+  await expect(buttons.nth(0)).toHaveAttribute('aria-pressed', 'true');
+  await expect(buttons.nth(1)).toHaveAttribute('aria-pressed', 'false');
+
+  await buttons.nth(1).click();
+  await expect(buttons.nth(0)).toHaveAttribute('aria-pressed', 'false');
+  await expect(buttons.nth(1)).toHaveAttribute('aria-pressed', 'true');
+});
