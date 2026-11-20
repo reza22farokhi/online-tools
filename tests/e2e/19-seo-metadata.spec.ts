@@ -14,8 +14,9 @@ const toolSlugs = [
 ];
 
 async function assertSeoMetadata(page: import('@playwright/test').Page, slug: string, lang: 'fa' | 'en') {
-  const route = slug === 'home' ? '/' : `/tools/${slug}/`;
-  await page.goto(`${route}?lang=${lang}`);
+  const baseRoute = slug === 'home' ? '/' : `/tools/${slug}/`;
+  const route = lang === 'en' ? `/en${baseRoute}` : baseRoute;
+  await page.goto(route);
   await expect(page.locator('html')).toHaveAttribute('lang', lang);
   await expect(page.locator('h1')).toHaveCount(1);
 
@@ -27,7 +28,9 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
   expect(description?.length, `${slug} ${lang} description length`).toBeLessThanOrEqual(155);
 
   const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-  expect(canonical).toBe(`https://abzar-tools.ir${route}?lang=${lang}`);
+  expect(canonical).toBe(`https://abzar-tools.ir${route}`);
+  await expect(page.locator('link[rel="alternate"][hreflang="fa"]')).toHaveAttribute('href', `https://abzar-tools.ir${baseRoute}`);
+  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', `https://abzar-tools.ir/en${baseRoute}`);
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(structuredData.length, `${slug} should expose structured data`).toBeGreaterThan(0);
