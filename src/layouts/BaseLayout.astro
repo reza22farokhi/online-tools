@@ -95,7 +95,7 @@ const dicts = getDicts();
     </script>
 
     {jsonLdList.map(obj => (
-      <script type="application/ld+json" data-jsonld-lang="fa" set:html={JSON.stringify(obj)}></script>
+      <script type="application/ld+json" data-jsonld-lang={jsonLdEn ? 'fa' : undefined} set:html={JSON.stringify(obj)}></script>
     ))}
     {jsonLdEnList.map(obj => (
       <script type="application/ld+json" data-jsonld-lang="en" set:html={JSON.stringify(obj)}></script>
