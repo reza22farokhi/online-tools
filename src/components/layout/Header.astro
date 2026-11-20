@@ -1,17 +1,19 @@
 ---
 const base = import.meta.env.BASE_URL;
+const isEnglish = Astro.url.pathname === '/en' || Astro.url.pathname.startsWith('/en/');
+const localeBase = base + (isEnglish ? 'en/' : '');
 ---
 <header class="site-header">
   <div class="container header-inner">
-    <a href={base} class="brand" aria-label="Online Tools">
+    <a href={localeBase} class="brand" aria-label="Online Tools">
       <span class="brand-icon" aria-hidden="true">🧰</span>
-      <span class="brand-name" data-i18n="site.name">ابزارهای آنلاین</span>
+      <span class="brand-name" data-i18n="site.name">{isEnglish ? 'Online Tools' : 'ابزارهای آنلاین'}</span>
     </a>
 
     <nav aria-label="Main" class="main-nav">
-      <a href={base} data-i18n="nav.home">خانه</a>
-      <a href={base + 'tools/'} data-i18n="nav.tools">ابزارها</a>
-      <a href={base + 'blog/'} data-i18n="nav.blog">وبلاگ</a>
+      <a href={localeBase} data-i18n="nav.home">{isEnglish ? 'Home' : 'خانه'}</a>
+      <a href={localeBase + 'tools/'} data-i18n="nav.tools">{isEnglish ? 'Tools' : 'ابزارها'}</a>
+      <a href={localeBase + 'blog/'} data-i18n="nav.blog">{isEnglish ? 'Blog' : 'وبلاگ'}</a>
     </nav>
 
     <div class="header-actions">
