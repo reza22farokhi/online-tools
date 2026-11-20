@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolCard from '../../components/ui/ToolCard.astro';
+import { registry, categories, getPopular } from '../../tools/registry';
+import { buildWebSiteJsonLd, DEFAULT_DESCRIPTION_EN } from '../../lib/seo';
+
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+const canonical = new URL('en/', site).toString();
+const websiteLd = buildWebSiteJsonLd({
+  name: 'Online Tools',
+  url: canonical,
+  description: DEFAULT_DESCRIPTION_EN,
+  lang: 'en'
+});
+---
+<BaseLayout
+  title="Professional Online Tools | Text, Code, SEO & Images"
+  description={DEFAULT_DESCRIPTION_EN}
+  lang="en"
+  canonical={canonical}
+  jsonLd={websiteLd}
+>
+  <section class="hero container">
+    <h1>Professional Online Tools</h1>
+    <p class="hero-sub">A collection of fast, secure, and free tools that run directly in your browser.</p>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">{registry.length}</span><span>Professional tools</span></div>
+      <div class="stat-item"><span class="stat-num">{categories.length}</span><span>Categories</span></div>
+      <div class="stat-item"><span class="stat-num">100%</span><span>Local processing where supported</span></div>
+    </div>
+  </section>
+  <section class="container section">
+    <h2>Categories</h2>
+    <div class="chips">
+      <a href="/en/tools/" class="chip">All tools</a>
+      {categories.map(category => <a href={`/en/categories/${category.slug}/`} class="chip"><span aria-hidden="true">{category.icon}</span> {category.en}</a>)}
+    </div>
+  </section>
+  <section class="container section">
+    <h2>Popular tools</h2>
+    <div class="tools-grid">{getPopular().map(tool => <ToolCard tool={tool} lang="en" />)}</div>
+  </section>
+  <section class="container section" id="all-tools">
+    <h2>All tools</h2>
+    <div class="tools-grid" id="all-tools-grid">{registry.map(tool => <ToolCard tool={tool} lang="en" />)}</div>
+  </section>
+  <script>
+    import { initUI } from '../../lib/ui';
+    import { getDicts } from '../../lib/i18n';
+    initUI(getDicts());
+  </script>
+</BaseLayout>
+<style>
+.hero,.section{margin-block:2rem;text-align:center}.hero{padding-block:2rem}.hero-sub{max-width:650px;margin:1rem auto;color:var(--color-text-muted)}
+.hero-stats,.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}.stat-item{display:flex;flex-direction:column;min-width:100px}.stat-num{font-size:1.5rem;font-weight:800;color:var(--color-primary)}
+.chip{padding:.6rem 1rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text);text-decoration:none}
+.tools-grid{display:grid;grid-template-columns:1fr;gap:1rem;text-align:start}@media(min-width:640px){.tools-grid{grid-template-columns:repeat(2,1fr)}}@media(min-width:960px){.tools-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
