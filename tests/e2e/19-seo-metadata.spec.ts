@@ -59,7 +59,7 @@ test('every sitemap entry resolves to a page with the same canonical URL', async
   const sitemapResponse = await page.request.get('/sitemap-0.xml');
   expect(sitemapResponse.ok()).toBeTruthy();
   const xml = await sitemapResponse.text();
-  const urls = [...xml.matchAll(/<loc>([^<]+)<\\/loc>/g)].map(match => match[1]);
+  const urls = [...xml.matchAll(new RegExp('<loc>([^<]+)</loc>', 'g'))].map(match => match[1]);
   expect(urls.length).toBeGreaterThan(0);
 
   for (const url of urls) {
