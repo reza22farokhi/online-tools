@@ -47,7 +47,7 @@ export function calculateDateDiff(from: Date, to: Date): DateDiffResult | null {
   const firstDay = new Date(a.getFullYear(), a.getMonth(), a.getDate() + 1).getDay();
   for (let i = 0; i < remainingDays; i++) {
     const dayOfWeek = (firstDay + i) % 7;
-    if (dayOfWeek !== 5 && dayOfWeek !== 6) businessDays++;
+    if (dayOfWeek !== 4 && dayOfWeek !== 5) businessDays++;
   }
   const weekendDays = totalDays - businessDays;
 
