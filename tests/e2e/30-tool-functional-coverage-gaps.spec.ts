@@ -14,7 +14,7 @@ test('unit converter calculates length and temperature conversions in English', 
   await page.locator('#uc-from').selectOption('c');
   await page.locator('#uc-to').selectOption('f');
   await expect(page.locator('#uc-result')).toHaveValue('32');
-  await expect(page.locator('#uc-from option')).toContainText('Celsius');
+  await expect(page.locator('#uc-from option[value="c"]')).toHaveText('Celsius (°C)');
 });
 
 test('file info reads local metadata and calculates the expected SHA-256 digest', async ({ page }) => {
