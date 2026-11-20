@@ -1,12 +1,17 @@
 ---
 import { blogTranslationsEn } from '../../../data/blog-translations-en';
-const blogPages = import.meta.glob('../../blog/*.astro', { eager: true }) as Record<string, { default: any }>;
-const pages = Object.entries(blogPages).filter(([path]) => !path.endsWith('/index.astro') && blogTranslationsEn[path.split('/').pop()!.replace('.astro', '')]);
+
 export function getStaticPaths() {
-  return pages.map(([path, module]) => ({
-    params: { slug: path.split('/').pop()!.replace(/\.astro$/, '') },
-    props: { Page: module.default }
-  }));
+  const blogPages = import.meta.glob('../../blog/*.astro', { eager: true }) as Record<string, { default: any }>;
+  return Object.entries(blogPages)
+    .filter(([path]) => {
+      const slug = path.split('/').pop()!.replace('.astro', '');
+      return slug !== 'index' && Boolean(blogTranslationsEn[slug]);
+    })
+    .map(([path, module]) => ({
+      params: { slug: path.split('/').pop()!.replace('.astro', '') },
+      props: { Page: module.default }
+    }));
 }
 const { Page } = Astro.props;
 ---
