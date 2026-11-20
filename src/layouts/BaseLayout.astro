@@ -72,22 +72,6 @@ const dicts = getDicts();
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
 
     <script is:inline src="/scripts/site-bootstrap.js"></script>
-    <script is:inline>
-      (() => {
-        const params = new URLSearchParams(window.location.search);
-        const requested = params.get('lang');
-        if (requested !== 'fa' && requested !== 'en') return;
-        const url = new URL(window.location.href);
-        url.searchParams.delete('lang');
-        if (requested === 'en' && !url.pathname.startsWith('/en/')) {
-          url.pathname = '/en' + (url.pathname === '/' ? '/' : url.pathname);
-        } else if (requested === 'fa' && url.pathname.startsWith('/en/')) {
-          url.pathname = url.pathname.slice(3) || '/';
-        }
-        window.location.replace(url.href);
-      })();
-    </script>
-
     {jsonLdList.map(obj => (
       <script type="application/ld+json" set:html={JSON.stringify(obj)}></script>
     ))}
