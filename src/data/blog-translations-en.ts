@@ -446,7 +446,7 @@ Ali,"Tehran, Iran"</code></pre>
 <li>Lazy-loading the main above-the-fold image that should be prioritized; reserve lazy loading for off-screen images.</li>
 </ol>
 <h2>Process images locally</h2>
-<p>The image tools on this site are designed to process selected files in your browser rather than upload them for conversion. For highly sensitive workflows, verify the page's network behaviour and your organization's security requirements before processing confidential material.</p>
+<p>The image tools on this site are designed to process selected files in your browser rather than upload them for conversion. For highly sensitive workflows, verify the page\'s network behaviour and your organization's security requirements before processing confidential material.</p>
 <h2>Summary</h2>
 <p>Optimize images by choosing appropriate dimensions, selecting a format suited to the content, and balancing compression with visual quality. Test the result at its real display size and measure the effect on the page rather than relying on a fixed percentage target.</p>`
   },
@@ -495,7 +495,7 @@ Ali,"Tehran, Iran"</code></pre>
       { q: 'How do I choose image dimensions?', a: 'Use dimensions appropriate to the rendered size and provide responsive variants for different viewport and pixel-density needs. Avoid downloading a much larger image than the layout requires.' },
       { q: 'Does image optimization improve Core Web Vitals?', a: 'It can help when images are responsible for excessive transfer or delayed rendering. The effect should be measured using field and lab data; image optimization alone does not guarantee passing Core Web Vitals.' }
     ],
-    body: String.raw`<p>Images often make up a significant portion of a web page's downloaded bytes. Serving unnecessarily large or inefficient files can delay rendering and consume mobile data. A good image strategy combines the right format, dimensions, compression, and loading priority.</p>
+    body: String.raw`<p>Images often make up a significant portion of a web page\'s downloaded bytes. Serving unnecessarily large or inefficient files can delay rendering and consume mobile data. A good image strategy combines the right format, dimensions, compression, and loading priority.</p>
 <h2>Choose a format for the content</h2>
 <ul>
 <li><strong>JPEG:</strong> A widely supported choice for photographs where transparency is not needed.</li>
@@ -654,7 +654,7 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Step 4: Optimize fonts</h2>
 <p>Use modern font formats such as WOFF2, subset fonts when appropriate, and load only the weights and character ranges the site needs. Preload a critical font only when it is genuinely needed early; excessive preloads can compete with more important resources.</p>
 <h2>Step 5: Use caching and content delivery carefully</h2>
-<p>Cache versioned static assets for long periods and revalidate HTML when it changes. A content delivery network (CDN) can serve assets closer to visitors, but correct cache headers and cache invalidation remain important. Choose infrastructure that fits the site's audience and privacy requirements.</p>
+<p>Cache versioned static assets for long periods and revalidate HTML when it changes. A content delivery network (CDN) can serve assets closer to visitors, but correct cache headers and cache invalidation remain important. Choose infrastructure that fits the site\'s audience and privacy requirements.</p>
 <h2>Step 6: Measure image and page metadata</h2>
 <p>Provide descriptive alternative text for informative images and ensure images have appropriate dimensions. Our <a href="/tools/meta-tag-generator/">Meta Tag Generator</a> can help prepare standard metadata, but metadata alone does not make a page fast.</p>
 <h2>Measure performance</h2>
@@ -719,7 +719,7 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Changing a published URL</h2>
 <p>Changing a slug can break bookmarks, backlinks, and internal links. If a URL must change, create a permanent redirect from the old address to the new one, update internal references, and ensure the canonical URL points to the preferred version. Do not create multiple redirect hops or redirect unrelated pages to the homepage.</p>
 <h2>Summary</h2>
-<p>A useful slug is readable, concise, descriptive, and consistent with the site's URL policy. Choose a stable address before publishing, and use a permanent redirect if an established URL must change. Try our <a href="/tools/slug-generator/">online Slug Generator</a> to prepare a clean URL path.</p>`
+<p>A useful slug is readable, concise, descriptive, and consistent with the site\'s URL policy. Choose a stable address before publishing, and use a permanent redirect if an established URL must change. Try our <a href="/tools/slug-generator/">online Slug Generator</a> to prepare a clean URL path.</p>`
   }
 ,
   'seo-meta-tags-guide': {
@@ -727,7 +727,7 @@ Ali,"Tehran, Iran"</code></pre>
     faqs: [
       { q: 'How long should a page title be?', a: 'There is no strict character limit that guarantees how Google displays a title. Write a unique, descriptive title that communicates the page clearly and avoid unnecessary repetition.' },
       { q: 'Does a meta description directly improve rankings?', a: 'A meta description is not a direct ranking guarantee. Search engines may use it to create a snippet, and a clear description can help users understand the page before clicking.' },
-      { q: 'What are Open Graph tags?', a: 'Open Graph metadata describes a page's title, description, image, and URL for social platforms and messaging applications that use the protocol.' },
+      { q: 'What are Open Graph tags?', a: 'Open Graph metadata describes a page\'s title, description, image, and URL for social platforms and messaging applications that use the protocol.' },
       { q: 'Where do meta tags belong?', a: 'Most page metadata belongs inside the HTML head element. Use one appropriate title and description per page, and keep canonical and social metadata consistent with the preferred URL.' }
     ],
     body: String.raw`<p>When a page appears in search results or is shared in a messaging app, people often see a title, a short description, and sometimes an image before they open it. HTML metadata helps search engines and social platforms understand how a page should be presented.</p>
@@ -739,7 +739,7 @@ Ali,"Tehran, Iran"</code></pre>
 <p>Social platforms and messaging applications may use Open Graph properties such as <code>og:title</code>, <code>og:description</code>, <code>og:image</code>, and <code>og:url</code> to create a link preview. Provide an image with suitable dimensions, use an absolute URL, and ensure the preview matches the page users will visit.</p>
 <p>Our <a href="/tools/og-preview/">Open Graph Preview</a> helps you review the information you plan to publish.</p>
 <h2>3. Generate and add the HTML tags</h2>
-<p>After choosing the title, description, canonical URL, and social image, place the relevant metadata inside the page's <code>&lt;head&gt;</code> element. Our <a href="/tools/meta-tag-generator/">Meta Tag Generator</a> can prepare standard title, description, Open Graph, and Twitter Card markup. Review the generated output and adapt it to your site's routing and canonical URL policy.</p>
+<p>After choosing the title, description, canonical URL, and social image, place the relevant metadata inside the page\'s <code>&lt;head&gt;</code> element. Our <a href="/tools/meta-tag-generator/">Meta Tag Generator</a> can prepare standard title, description, Open Graph, and Twitter Card markup. Review the generated output and adapt it to your site\'s routing and canonical URL policy.</p>
 <h2>4. Keep metadata consistent</h2>
 <ul>
 <li>Use a unique title and description for each important page.</li>
@@ -756,12 +756,12 @@ Ali,"Tehran, Iran"</code></pre>
   'why-client-side-tools-matter': {
     description: 'Explore how browser-side processing can reduce file uploads, improve responsiveness, and limit exposure of user input, along with its security and privacy boundaries.',
     faqs: [
-      { q: 'What does client-side processing mean?', a: 'It means the browser performs the main transformation on the user's device rather than uploading the input to a server for processing.' },
+      { q: 'What does client-side processing mean?', a: 'It means the browser performs the main transformation on the user\'s device rather than uploading the input to a server for processing.' },
       { q: 'Does client-side processing guarantee complete privacy?', a: 'No. Local processing can keep tool inputs out of the processing server, but page requests, analytics, browser extensions, compromised devices, and third-party resources may still affect privacy. The actual network behaviour matters.' },
       { q: 'Can browser tools work offline?', a: 'Some tools can work offline after the page and required assets have been cached, for example through a service worker. First-time loading and some browser features may still require an internet connection.' },
       { q: 'What browser technologies enable local tools?', a: 'Common technologies include the Canvas API for image work, Web Crypto for cryptographic operations, Web Workers for background computation, and File APIs for local file access.' }
     ],
-    body: String.raw`<p>Online tools can transform text, images, and files without requiring a user to install desktop software. But where does the processing happen? A server-based tool uploads input to a remote service, while a client-side tool performs its main operation in the browser on the user's device.</p>
+    body: String.raw`<p>Online tools can transform text, images, and files without requiring a user to install desktop software. But where does the processing happen? A server-based tool uploads input to a remote service, while a client-side tool performs its main operation in the browser on the user\'s device.</p>
 <h2>The trade-offs of server-side processing</h2>
 <p>When a tool uploads a file for processing, the file must travel over the network and be handled by remote infrastructure. That may be appropriate for large jobs or services that need server resources, but it creates additional data-transfer, storage, retention, and access-control responsibilities. Users must trust the service's handling of their inputs.</p>
 <h2>How client-side processing works</h2>
@@ -777,10 +777,10 @@ Ali,"Tehran, Iran"</code></pre>
 <li><strong>Less upload time:</strong> the input does not need to be sent to a processing server.</li>
 <li><strong>Reduced server exposure:</strong> the service does not need to receive or retain the input for the local transformation.</li>
 <li><strong>Responsive interaction:</strong> work can happen directly in the browser, with Workers helping keep the interface responsive.</li>
-<li><strong>Lower infrastructure needs:</strong> static hosting can serve the application while the user's device performs the transformation.</li>
+<li><strong>Lower infrastructure needs:</strong> static hosting can serve the application while the user\'s device performs the transformation.</li>
 </ul>
 <h2>Local processing is not an absolute privacy guarantee</h2>
-<p>Client-side processing does not mean that no network requests occur. The page itself must be downloaded, and the browser may request first-party assets. Browser extensions, device malware, screenshots, clipboard use, or an injected script can also affect data security. Privacy depends on the complete implementation: third-party scripts, network connections, storage behaviour, permissions, and the user's device all matter.</p>
+<p>Client-side processing does not mean that no network requests occur. The page itself must be downloaded, and the browser may request first-party assets. Browser extensions, device malware, screenshots, clipboard use, or an injected script can also affect data security. Privacy depends on the complete implementation: third-party scripts, network connections, storage behaviour, permissions, and the user\'s device all matter.</p>
 <p>For this reason, our tools are designed to process tool inputs locally wherever the tool supports it, while the site still makes essential requests to load pages and assets. For highly sensitive information, follow your organization's policy and verify the tool's behaviour before use.</p>
 <h2>Examples on this platform</h2>
 <ul>
@@ -866,7 +866,7 @@ Ali,"Tehran, Iran"</code></pre>
       { q: 'Should a professional website use bright colors?', a: 'It depends on the brand, audience, and product. A restrained palette may suit some services, while brighter accents can help highlight actions. Test the palette in the actual interface.' },
       { q: 'Why is color contrast important?', a: 'Sufficient contrast makes text and controls easier to perceive. WCAG 2.2 AA generally requires a contrast ratio of at least 4.5:1 for normal text and 3:1 for large text, with separate criteria for non-text UI components.' }
     ],
-    body: String.raw`<p>Color is part of a website's visual language. A consistent palette helps establish hierarchy, distinguish actions, and create a recognizable identity. Good color selection is not only about appearance: text contrast, interaction states, and accessibility must also be considered.</p>
+    body: String.raw`<p>Color is part of a website\'s visual language. A consistent palette helps establish hierarchy, distinguish actions, and create a recognizable identity. Good color selection is not only about appearance: text contrast, interaction states, and accessibility must also be considered.</p>
 <h2>Consider the role of each color</h2>
 <p>Start by assigning roles rather than choosing many unrelated swatches. A palette may include a primary brand color, a secondary color, an accent for important actions, and neutral colors for backgrounds, borders, and text. Check that each role remains clear in both light and dark themes.</p>
 <h2>Use the 60-30-10 rule as a starting point</h2>
@@ -933,7 +933,7 @@ Ali,"Tehran, Iran"</code></pre>
       { q: 'Why should JSON be formatted?', a: 'Pretty-printing adds indentation and line breaks so nested objects and arrays are easier to inspect. Minification removes unnecessary whitespace to reduce the size of the serialized text.' },
       { q: 'What are common JSON syntax errors?', a: 'Common errors include trailing commas, single-quoted strings, unquoted object keys, comments, and missing quotation marks or brackets.' },
       { q: 'Can JSON contain comments?', a: 'No. Standard JSON does not support comments. Some configuration formats extend JSON, but those files are not strict JSON.' },
-      { q: 'Is it safe to paste sensitive JSON into an online formatter?', a: 'Only if you understand the site's processing and privacy practices. Prefer tools that process input locally and avoid pasting secrets into services you do not trust.' }
+      { q: 'Is it safe to paste sensitive JSON into an online formatter?', a: 'Only if you understand the site\'s processing and privacy practices. Prefer tools that process input locally and avoid pasting secrets into services you do not trust.' }
     ],
     body: String.raw`<p>JSON (JavaScript Object Notation) is widely used to exchange data between web applications and services. Raw JSON is often minified into one long line, which can be difficult to inspect. Formatting makes the structure easier to read, while validation checks whether the text follows JSON syntax.</p>
 <h2>Why pretty-print JSON?</h2>
@@ -962,7 +962,7 @@ Ali,"Tehran, Iran"</code></pre>
       { q: 'What is a color palette?', a: 'A color palette is a selected group of colors used together in a design system, brand, or project. It often includes primary, secondary, accent, and neutral colors.' },
       { q: 'How many colors should a palette contain?', a: 'There is no universal number. A small set of clearly defined roles is often easier to use consistently, but complex products may need additional semantic colors and shades.' },
       { q: 'What is color harmony?', a: 'Color harmony describes relationships between hues, such as complementary, analogous, triadic, and monochromatic schemes. These relationships can help create a coordinated starting palette.' },
-      { q: 'How do I choose a palette for a brand?', a: 'Consider the brand's purpose, audience, context, and accessibility requirements. Test colors in real interface components rather than choosing from swatches alone.' }
+      { q: 'How do I choose a palette for a brand?', a: 'Consider the brand\'s purpose, audience, context, and accessibility requirements. Test colors in real interface components rather than choosing from swatches alone.' }
     ],
     body: String.raw`<p>A color palette is a coordinated set of colors used across a website, brand, or design project. A thoughtful palette creates visual consistency, helps users recognize important actions, and supports a clear visual hierarchy. Choosing colors is both a creative and practical task.</p>
 <h2>Why a palette matters</h2>
@@ -998,7 +998,7 @@ Ali,"Tehran, Iran"</code></pre>
 <li>Choosing low-contrast text and background combinations.</li>
 <li>Communicating status with color alone.</li>
 <li>Ignoring dark mode, focus states, and disabled states.</li>
-<li>Copying another brand's palette without considering your own audience and use case.</li>
+<li>Copying another brand\'s palette without considering your own audience and use case.</li>
 </ol>
 <h2>Summary</h2>
 <p>A professional palette has clear roles, consistent relationships, and sufficient contrast. Explore harmony schemes with our <a href="/tools/palette-generator/">Palette Generator</a>, then test readability with the <a href="/tools/contrast-checker/">Contrast Checker</a>.</p>`
@@ -1039,9 +1039,9 @@ Ali,"Tehran, Iran"</code></pre>
     description: 'Understand Unix timestamps, UTC, time zones, daylight saving time, and Persian calendar conversion in modern web applications.',
     faqs: [
       { q: 'What is a Unix timestamp?', a: 'A Unix timestamp represents elapsed time from the Unix epoch, 1970-01-01T00:00:00Z. Modern systems may express it in seconds, milliseconds, or another precision.' },
-      { q: 'Why should applications use UTC?', a: 'UTC provides a common reference for storing and comparing instants. Applications can convert an instant to the user's time zone when displaying it.' },
+      { q: 'Why should applications use UTC?', a: 'UTC provides a common reference for storing and comparing instants. Applications can convert an instant to the user\'s time zone when displaying it.' },
       { q: 'Why are time zones difficult?', a: 'Time-zone offsets and daylight-saving rules can change over time and differ by location. A fixed offset is not a substitute for a named time zone when applying local civil-time rules.' },
-      { q: 'How can I work with Persian dates in JavaScript?', a: 'Use a maintained calendar library or the browser's Intl APIs where appropriate, and test leap years and supported date ranges. The built-in Date object stores instants but does not itself provide all calendar operations.' }
+      { q: 'How can I work with Persian dates in JavaScript?', a: 'Use a maintained calendar library or the browser\'s Intl APIs where appropriate, and test leap years and supported date ranges. The built-in Date object stores instants but does not itself provide all calendar operations.' }
     ],
     body: String.raw`<p>Date and time handling is a frequent source of bugs in software. A value that looks simple to a person may depend on an instant, a time zone, a calendar system, and daylight-saving rules. Understanding these concepts helps developers store and display dates consistently.</p>
 <h2>1. Unix timestamps</h2>
@@ -1054,7 +1054,7 @@ Ali,"Tehran, Iran"</code></pre>
 <p>Some regions advance or move clocks back during parts of the year. This means a local wall-clock time may be ambiguous or may not exist on a transition day. Use a maintained time-zone database through standard runtime APIs rather than manually adding or subtracting one hour.</p>
 <p>In JavaScript, <code>Intl.DateTimeFormat</code> can format an instant for a specified time zone. Be careful when parsing local date-time strings, because they do not always include enough information to identify an instant.</p>
 <h2>4. Persian calendar dates</h2>
-<p>The Persian Solar Hijri calendar has different month lengths and leap-year rules from the Gregorian calendar. JavaScript's Date object represents time instants and does not, by itself, implement every calendar conversion or arithmetic operation. Use a tested calendar library or the browser's supported Intl calendar features, and verify the date range and leap-year behaviour.</p>
+<p>The Persian Solar Hijri calendar has different month lengths and leap-year rules from the Gregorian calendar. JavaScript's Date object represents time instants and does not, by itself, implement every calendar conversion or arithmetic operation. Use a tested calendar library or the browser\'s supported Intl calendar features, and verify the date range and leap-year behaviour.</p>
 <p>Our <a href="/tools/multi-calendar-converter/">Multi-Calendar Converter</a> helps compare supported calendar dates. You can also use the <a href="/tools/date-diff/">Date Difference Calculator</a> and <a href="/tools/date-info/">Date Info</a> tool for related tasks.</p>
 <h2>Practical development rules</h2>
 <ul>
