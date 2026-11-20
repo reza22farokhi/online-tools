@@ -11,7 +11,8 @@
 
     var params = new URLSearchParams(window.location.search);
     var requestedLang = params.get('lang');
-    if ((requestedLang === 'fa' || requestedLang === 'en') && !window.location.pathname.startsWith('/offline/')) {
+    if ((requestedLang === 'fa' || requestedLang === 'en') && !window.location.pathname.startsWith('/offline/') && !document.querySelector('meta[name="app-offline-fallback"]')) {
+      try { window.localStorage.setItem('pot.lang', requestedLang); } catch (_) {}
       var localizedUrl = new URL(window.location.href);
       localizedUrl.searchParams.delete('lang');
       if (requestedLang === 'en' && !localizedUrl.pathname.startsWith('/en/')) {
