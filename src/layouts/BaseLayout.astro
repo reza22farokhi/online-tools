@@ -17,6 +17,7 @@ export interface Props {
   type?: 'website' | 'article';
   noindex?: boolean;
   englishAlternate?: boolean;
+  offlineFallback?: boolean;
   jsonLd?: object | object[];
 }
 
@@ -31,6 +32,7 @@ const {
   type = 'website',
   noindex = false,
   englishAlternate = true,
+  offlineFallback = false,
   jsonLd
 } = Astro.props;
 
@@ -49,6 +51,7 @@ const dicts = getDicts();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    {offlineFallback && <meta name="app-offline-fallback" content="true" />}
     <title data-lang-fa={title} data-lang-en={titleEn ?? title}>{title}</title>
     <meta name="description" content={description} data-lang-fa={description} data-lang-en={descriptionEn ?? description} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
