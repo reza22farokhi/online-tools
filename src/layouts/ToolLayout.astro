@@ -24,7 +24,7 @@ const canonical = new URL(
   site
 ).toString();
 
-const toolsUrl = new URL(`${base}tools/`.replace(/^\\//, ''), site).toString();
+const toolsUrl = new URL(`${base}tools/`.replace(/^\//, ''), site).toString();
 const webAppLdFa = buildWebAppJsonLd({
   name: meta.name.fa,
   description: meta.description.fa,
