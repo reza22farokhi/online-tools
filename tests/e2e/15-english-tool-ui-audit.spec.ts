@@ -42,14 +42,14 @@ test('every registered tool has English UI and loads without first-party runtime
     failedRequests = [];
     httpErrors = [];
 
-    const response = await page.goto(`/tools/${slug}/?lang=en`);
+    const response = await page.goto(`/en/tools/${slug}/`);
     if (response && response.status() >= 400) httpErrors.push(`${response.status()} route response`);
 
     await expect(page.locator('article[data-tool-slug]')).toHaveAttribute('data-tool-slug', slug);
     await expect(page.locator('article h1').first()).toBeVisible();
     await expect(page.locator('.tool-faq[data-lang-only="en"]')).toBeVisible();
     await expect(page.locator('.tool-faq[data-lang-only="en"]')).toContainText('Frequently asked questions');
-    await expect(page.locator('.tool-faq[data-lang-only="fa"]')).toBeHidden();
+    await expect(page.locator('.tool-faq[data-lang-only="fa"]')).toHaveCount(0);
     await expect(page.locator('.faq-translation-note, .tool-translation-note')).toHaveCount(0);
 
     const result = await page.evaluate(() => {
