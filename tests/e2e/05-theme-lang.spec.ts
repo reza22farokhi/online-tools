@@ -19,4 +19,5 @@ test('language toggle switches fa/en', async ({ page }) => {
   const next = await html.getAttribute('lang');
   expect(next).not.toBe(initial);
   expect(['fa', 'en']).toContain(next);
+  await expect(page).toHaveURL(/\/en\/$/);
 });
