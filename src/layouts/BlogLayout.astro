@@ -86,7 +86,7 @@ const breadcrumbLd = buildBreadcrumbJsonLd([
 
 const jsonLdList: object[] = [articleLd, breadcrumbLd];
 ---
-<BaseLayout title={lang === 'en' ? `${titleEn} | Blog` : `${title} | وبلاگ`} titleEn={`${titleEn} | Blog`} description={lang === 'en' ? descriptionEn : description} descriptionEn={descriptionEn} lang={lang} canonical={canonical} jsonLd={jsonLdList}>
+<BaseLayout title={lang === 'en' ? `${titleEn} | Blog` : `${title} | وبلاگ`} titleEn={`${titleEn} | Blog`} description={lang === 'en' ? descriptionEn : description} descriptionEn={descriptionEn} lang={lang} canonical={canonical} englishAlternate={Boolean(translation)} jsonLd={jsonLdList}>
   <article class="blog-post container">
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
