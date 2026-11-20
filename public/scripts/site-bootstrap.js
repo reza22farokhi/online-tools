@@ -1,13 +1,16 @@
 (function () {
   try {
-    var theme = localStorage.getItem('pot.theme');
+    var readStorage = function (key) {
+      try { return window.localStorage.getItem(key); } catch (_) { return null; }
+    };
+    var theme = readStorage('pot.theme');
     if (theme !== 'light' && theme !== 'dark') {
       theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     document.documentElement.setAttribute('data-theme', theme);
 
     var queryLang = new URLSearchParams(window.location.search).get('lang');
-    var storedLang = localStorage.getItem('pot.lang');
+    var storedLang = readStorage('pot.lang');
     var lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : storedLang;
     if (lang !== 'fa' && lang !== 'en') lang = 'fa';
     if (lang === 'fa' || lang === 'en') {

@@ -20,3 +20,18 @@ test('language toggle switches fa/en', async ({ page }) => {
   expect(next).not.toBe(initial);
   expect(['fa', 'en']).toContain(next);
 });
+
+test('URL-selected language still bootstraps when browser storage is blocked', async ({ browser }) => {
+  const context = await browser.newContext();
+  await context.addInitScript(() => {
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      get() { throw new DOMException('Storage is unavailable', 'SecurityError'); }
+    });
+  });
+  const page = await context.newPage();
+  await page.goto('/?lang=en');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page).toHaveTitle(/Professional Online Tools/);
+  await context.close();
+});
