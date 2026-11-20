@@ -24,18 +24,30 @@ const canonical = new URL(
   site
 ).toString();
 
-const webAppLd = buildWebAppJsonLd({
-  name: meta.name[lang],
-  description: pageDescription,
+const toolsUrl = new URL(`${base}tools/`.replace(/^\\//, ''), site).toString();
+const webAppLdFa = buildWebAppJsonLd({
+  name: meta.name.fa,
+  description: meta.description.fa,
   url: canonical,
-  lang
+  lang: 'fa'
+});
+const webAppLdEn = buildWebAppJsonLd({
+  name: meta.name.en,
+  description: meta.description.en,
+  url: canonical,
+  lang: 'en'
 });
 
-const breadcrumbLd = buildBreadcrumbJsonLd([
+const breadcrumbLdFa = buildBreadcrumbJsonLd([
   { name: 'خانه', url: site },
-  { name: 'ابزارها', url: new URL(`${base}tools/`.replace(/^\//, ''), site).toString() },
-  { name: meta.name[lang], url: canonical }
-]);
+  { name: 'ابزارها', url: toolsUrl },
+  { name: meta.name.fa, url: canonical }
+], 'fa');
+const breadcrumbLdEn = buildBreadcrumbJsonLd([
+  { name: 'Home', url: site },
+  { name: 'Tools', url: toolsUrl },
+  { name: meta.name.en, url: canonical }
+], 'en');
 
 const related = getRelated(meta.slug);
 ---
