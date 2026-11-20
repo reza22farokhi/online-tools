@@ -45,7 +45,7 @@ const faqLdEn = faqsEn.length > 0 ? buildFaqJsonLd(faqsEn) : null;
   </section>
 )}
 {lang === 'en' && faqsEn.length > 0 && (
-  <section class="tool-faq" aria-labelledby="faq-title-en" data-lang-only="en" hidden>
+  <section class="tool-faq" aria-labelledby="faq-title-en" data-lang-only="en">
     <h2 id="faq-title-en">Frequently asked questions about {toolNameEn}</h2>
     <div class="faq-list">
       {faqsEn.map(faq => (
