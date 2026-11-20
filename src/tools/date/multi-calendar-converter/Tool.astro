@@ -2,10 +2,10 @@
 ---
 <div class="mcc-tool">
   <p class="mcc-note" data-lang-only="en" hidden>Hijri dates use a tabular calculation and may differ from local moon-sighting announcements.</p>
-  <div class="mcc-tabs" role="tablist">
-    <button type="button" class="btn mcc-tab active" data-source="jalali">📅 شمسی</button>
-    <button type="button" class="btn mcc-tab" data-source="gregorian">🌍 میلادی</button>
-    <button type="button" class="btn mcc-tab" data-source="hijri">🌙 قمری</button>
+  <div class="mcc-tabs" role="group" aria-label="Input calendar">
+    <button type="button" class="btn mcc-tab active" data-source="jalali" aria-pressed="true">📅 شمسی</button>
+    <button type="button" class="btn mcc-tab" data-source="gregorian" aria-pressed="false">🌍 میلادی</button>
+    <button type="button" class="btn mcc-tab" data-source="hijri" aria-pressed="false">🌙 قمری</button>
   </div>
 
   <div class="mcc-input-area">
@@ -110,7 +110,7 @@
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.toggle('active', t === tab));
+      tabs.forEach(t => {\n        const selected = t === tab;\n        t.classList.toggle('active', selected);\n        t.setAttribute('aria-pressed', String(selected));\n      });
       source = (tab.dataset.source as typeof source) || 'jalali';
       populateMonths();
     });
