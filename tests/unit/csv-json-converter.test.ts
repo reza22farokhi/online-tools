@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseCSV, csvToJson, jsonToCsv } from '../../src/tools/file/csv-json-converter/logic';
+import { parseCSV, csvToJson, jsonToCsv, MAX_CSV_INPUT_BYTES, MAX_CSV_ROWS, MAX_CSV_COLUMNS } from '../../src/tools/file/csv-json-converter/logic';
 
 describe('parseCSV', () => {
   it('simple', () => expect(parseCSV('a,b\n1,2')).toEqual([['a','b'],['1','2']]));
@@ -12,6 +12,15 @@ describe('parseCSV', () => {
   it('rejects quotes in the middle of unquoted fields', () => expect(() => parseCSV('ab"c,d')).toThrow(/ابتدای فیلد/));
   it('rejects text after a closing quote', () => expect(() => parseCSV('"a"x,b')).toThrow(/نویسه غیرمجاز/));
   it('rejects multi-character delimiters', () => expect(() => parseCSV('a||b','||')).toThrow(/جداکننده/));
+  it('rejects input larger than the 2 MB processing limit', () => {
+    expect(() => parseCSV('x'.repeat(MAX_CSV_INPUT_BYTES + 1))).toThrow(/۲ مگابایت/);
+  });
+  it('rejects excessive row counts', () => {
+    expect(() => parseCSV(Array(MAX_CSV_ROWS + 1).fill('x').join('\n'))).toThrow(/ردیف‌ها/);
+  });
+  it('rejects excessive column counts', () => {
+    expect(() => parseCSV(Array(MAX_CSV_COLUMNS + 1).fill('x').join(','))).toThrow(/ستون‌ها/);
+  });
 });
 
 describe('csvToJson', () => {
@@ -37,4 +46,15 @@ describe('jsonToCsv', () => {
   it('rejects primitive array rows', () => expect(() => jsonToCsv('[1,2]',',')).toThrow(/هر ردیف/));
   it('serializes nested values as JSON', () => expect(jsonToCsv('[{"a":{"x":1}}]',',')).toContain('{""x"":1}'));
   it('neutralizes spreadsheet formula strings', () => expect(jsonToCsv('[{"value":"=HYPERLINK(\\"https://bad.example\\",\\"click\\")"}]',',')).toContain("'=HYPERLINK"));
+  it('rejects JSON input larger than the 2 MB processing limit', () => {
+    expect(() => jsonToCsv('x'.repeat(MAX_CSV_INPUT_BYTES + 1), ',')).toThrow(/۲ مگابایت/);
+  });
+  it('rejects excessive JSON row counts', () => {
+    const json = JSON.stringify(Array(MAX_CSV_ROWS + 1).fill({ value: 'x' }));
+    expect(() => jsonToCsv(json, ',')).toThrow(/ردیف‌ها/);
+  });
+  it('rejects excessive JSON column counts', () => {
+    const row = Object.fromEntries(Array(MAX_CSV_COLUMNS + 1).fill(0).map((_, i) => ['column_' + i, 'x']));
+    expect(() => jsonToCsv(JSON.stringify([row]), ',')).toThrow(/ستون‌ها/);
+  });
 });
