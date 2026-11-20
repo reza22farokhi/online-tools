@@ -1,6 +1,9 @@
 (function () {
   try {
-    var theme = localStorage.getItem('pot.theme');
+    var readStorage = function (key) {
+      try { return window.localStorage.getItem(key); } catch (_) { return null; }
+    };
+    var theme = readStorage('pot.theme');
     if (theme !== 'light' && theme !== 'dark') {
       theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
@@ -8,7 +11,7 @@
 
     var params = new URLSearchParams(window.location.search);
     var requestedLang = params.get('lang');
-    if (requestedLang === 'fa' || requestedLang === 'en') {
+    if ((requestedLang === 'fa' || requestedLang === 'en') && !window.location.pathname.startsWith('/offline/')) {
       var localizedUrl = new URL(window.location.href);
       localizedUrl.searchParams.delete('lang');
       if (requestedLang === 'en' && !localizedUrl.pathname.startsWith('/en/')) {
@@ -24,7 +27,7 @@
 
     var pathLang = window.location.pathname === '/en' || window.location.pathname.startsWith('/en/') ? 'en' : null;
     var queryLang = new URLSearchParams(window.location.search).get('lang');
-    var lang = pathLang || (queryLang === 'fa' || queryLang === 'en' ? queryLang : localStorage.getItem('pot.lang'));
+    var lang = pathLang || (queryLang === 'fa' || queryLang === 'en' ? queryLang : readStorage('pot.lang'));
     if (lang === 'fa' || lang === 'en') {
       document.documentElement.setAttribute('lang', lang);
       document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
