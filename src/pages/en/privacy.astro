@@ -3,12 +3,36 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
 ---
 <BaseLayout title="Privacy Policy | Online Tools" description="How browser-based tools process input, what local preferences are stored, and which technical requests are required." lang="en" canonical={new URL('en/privacy/',site).toString()}>
-  <article class="container page"><h1>Privacy Policy</h1>
-    <h2>1. Local tool processing</h2><p>For tools that support local processing, the text, files, or images you provide are processed in your browser and are not uploaded to our servers for that processing. This does not mean that every website request is local: page assets and infrastructure requests are still required.</p>
-    <h2>2. Browser storage</h2><p>The site may store interface preferences such as theme, language, favorites, and recently used tools in your browser's local storage. These values remain on your device unless you clear browser storage.</p>
-    <h2>3. Technical requests and hosting</h2><p>Pages and assets are delivered through the site's hosting and CDN infrastructure. Those providers may process technical request data under their own terms and privacy policies.</p>
-    <h2>4. Advertising</h2><p>The current production site is not intended to load third-party advertising scripts. If this changes, this policy should be updated before the change is deployed.</p>
-    <h2>5. Contact</h2><p>For privacy questions, use <a href="https://github.com/reza22farokhi/online-tools/issues" rel="noopener">GitHub Issues</a>.</p>
+  <article class="container page">
+    <header><h1>Privacy Policy</h1><p class="lead">A clear explanation of how information is processed by the site and its tools.</p></header>
+    <h2>1. Local tool processing</h2>
+    <p>For tools that support local processing, text, files, or images you enter or select are processed in your browser and are not sent to our servers for that processing. This statement applies to tool input only; separate technical requests are required to load and operate the website.</p>
+    <h2>2. Browser storage</h2>
+    <p>We use browser local storage only for interface preferences:</p>
+    <ul>
+      <li>Selected theme (dark/light): <code>pot.theme</code></li>
+      <li>Selected language (Persian/English): <code>pot.lang</code></li>
+      <li>Favorite tools: <code>pot.favorites</code></li>
+      <li>Six recently used tools: <code>pot.recent</code></li>
+    </ul>
+    <p>These values are stored on your device and are not accessible to us.</p>
+    <h2>3. Website technical requests</h2>
+    <p>Your browser makes technical requests to this domain and its infrastructure providers to load pages and operate site features. These requests are separate from sending tool input for processing. The production site does not currently load third-party advertising scripts or advertising networks.</p>
+    <h2>4. Hosting infrastructure and technical data</h2>
+    <p>The site is hosted and delivered through Cloudflare Pages. The infrastructure provider may process technical request data such as IP address, browser and device information, request time, and requested path for content delivery, abuse prevention, and security. This is separate from tool input. We do not use this information for advertising targeting. The provider's handling and retention of technical data are governed by its own policies; see <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Cloudflare's Privacy Policy</a>.</p>
+    <h2>5. Information we do not collect</h2>
+    <ul>
+      <li>Tool input is not stored on our servers for local-processing tools.</li>
+      <li>No third-party analytics or visitor-counter service is used.</li>
+      <li>We do not request an email address or identity information to use the tools.</li>
+    </ul>
+    <h2>6. Changes</h2>
+    <p>Changes will be published on this page. Last updated: November 19, 2026.</p>
   </article>
 </BaseLayout>
-<style>.page{padding-block:var(--space-5);max-width:850px}.page h2{margin-top:2rem}.page p{line-height:1.8}</style>
+<style>
+  .page{padding-block:var(--space-5);max-width:850px}
+  .page h2{margin-top:2rem}
+  .page p,.page li{line-height:1.8}
+  .lead{color:var(--color-text-muted)}
+</style>
