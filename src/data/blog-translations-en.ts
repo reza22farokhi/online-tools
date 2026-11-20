@@ -955,5 +955,179 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Summary</h2>
 <p>Formatting improves readability; validation checks syntax; schema validation checks whether the data meets application requirements. Use our <a href="/tools/json-formatter/">JSON Formatter</a> for local formatting and validation, and read our <a href="/blog/what-is-json-guide/">introduction to JSON</a> for the underlying data format.</p>`
   }
+,
+  'color-palette-guide': {
+    description: 'Learn the fundamentals of professional color palettes, color harmony, design roles, contrast, and practical ways to generate coordinated colors.',
+    faqs: [
+      { q: 'What is a color palette?', a: 'A color palette is a selected group of colors used together in a design system, brand, or project. It often includes primary, secondary, accent, and neutral colors.' },
+      { q: 'How many colors should a palette contain?', a: 'There is no universal number. A small set of clearly defined roles is often easier to use consistently, but complex products may need additional semantic colors and shades.' },
+      { q: 'What is color harmony?', a: 'Color harmony describes relationships between hues, such as complementary, analogous, triadic, and monochromatic schemes. These relationships can help create a coordinated starting palette.' },
+      { q: 'How do I choose a palette for a brand?', a: 'Consider the brand's purpose, audience, context, and accessibility requirements. Test colors in real interface components rather than choosing from swatches alone.' }
+    ],
+    body: String.raw`<p>A color palette is a coordinated set of colors used across a website, brand, or design project. A thoughtful palette creates visual consistency, helps users recognize important actions, and supports a clear visual hierarchy. Choosing colors is both a creative and practical task.</p>
+<h2>Why a palette matters</h2>
+<ul>
+<li><strong>Brand identity:</strong> Repeated color choices help create a recognizable visual language.</li>
+<li><strong>Visual hierarchy:</strong> Color can distinguish primary actions, secondary information, and backgrounds.</li>
+<li><strong>Readability:</strong> Appropriate foreground and background combinations make content easier to read.</li>
+<li><strong>Consistency:</strong> Defined color roles help teams build coherent pages and components.</li>
+</ul>
+<h2>Build a palette with clear roles</h2>
+<p>A practical interface palette may include a primary brand color, a secondary color, an accent color, and neutrals for text, borders, and surfaces. Larger systems may also define semantic colors for success, warning, error, and information. Define how each color is used instead of applying colors arbitrarily.</p>
+<h2>Color harmony schemes</h2>
+<ul>
+<li><strong>Complementary:</strong> hues opposite each other on the color wheel can create strong contrast.</li>
+<li><strong>Analogous:</strong> neighbouring hues often create a more unified appearance.</li>
+<li><strong>Triadic:</strong> three hues spaced around the wheel can provide variety and balance.</li>
+<li><strong>Monochromatic:</strong> variations of one hue create a restrained, consistent palette.</li>
+</ul>
+<p>Use our <a href="/tools/palette-generator/">Palette Generator</a> to explore these relationships and create coordinated color sets.</p>
+<h2>Color associations and context</h2>
+<p>Colors can suggest different moods or meanings, but associations vary by culture, audience, and context. Blue may be used to communicate calm or trust in some settings; red may signal urgency or energy. These are design conventions, not universal psychological rules. Test the palette with the people who will use the product.</p>
+<h2>Check contrast and accessibility</h2>
+<p>A visually attractive palette still needs readable text and controls. WCAG contrast criteria help assess whether foreground and background combinations are distinguishable. Use our <a href="/tools/contrast-checker/">Contrast Checker</a> to test a pair of colors, and consider colour-vision differences when choosing charts and status indicators.</p>
+<h2>Useful companion tools</h2>
+<ul>
+<li><a href="/tools/color-picker/">Color Picker:</a> sample a color from an image.</li>
+<li><a href="/tools/gradient-generator/">Gradient Generator:</a> create smooth color transitions.</li>
+<li><a href="/tools/box-shadow/">Box Shadow Generator:</a> create depth and separation for interface elements.</li>
+</ul>
+<h2>Common palette mistakes</h2>
+<ol>
+<li>Using many unrelated colors without defining their roles.</li>
+<li>Choosing low-contrast text and background combinations.</li>
+<li>Communicating status with color alone.</li>
+<li>Ignoring dark mode, focus states, and disabled states.</li>
+<li>Copying another brand's palette without considering your own audience and use case.</li>
+</ol>
+<h2>Summary</h2>
+<p>A professional palette has clear roles, consistent relationships, and sufficient contrast. Explore harmony schemes with our <a href="/tools/palette-generator/">Palette Generator</a>, then test readability with the <a href="/tools/contrast-checker/">Contrast Checker</a>.</p>`
+  },
+  'color-picker-guide': {
+    description: 'Learn how to sample exact pixel colors from images and understand HEX, RGB, and HSL color values for web and graphic design.',
+    faqs: [
+      { q: 'Why sample a color from an image?', a: 'Sampling helps designers and developers reuse a color from a photograph, logo, illustration, or reference image in a design project.' },
+      { q: 'What is the difference between HEX and RGB?', a: 'HEX represents red, green, and blue channel values using hexadecimal notation. RGB represents the same channels as decimal values, usually from 0 to 255.' },
+      { q: 'Is the sampled color always identical on every screen?', a: 'The sampled value represents the pixel data in the image, but displays, color profiles, brightness, and ambient lighting can make the visible result differ.' },
+      { q: 'Can I use a sampled color as an accessible text color?', a: 'Not without checking contrast. Test the sampled foreground against its intended background and verify the relevant WCAG contrast requirement.' }
+    ],
+    body: String.raw`<p>Sampling a color from an image is useful when you want a design to match a photograph, logo, illustration, or visual reference. A color picker reads a pixel value and presents it in a format that can be reused in CSS or a graphics application.</p>
+<h2>Common uses</h2>
+<ul>
+<li><strong>Web design:</strong> match a website accent to a brand image or photograph.</li>
+<li><strong>Graphic design:</strong> reuse a color from an existing poster or illustration.</li>
+<li><strong>Photography:</strong> inspect dominant or specific colors in an image.</li>
+<li><strong>Product design:</strong> build a coordinated palette from a visual reference.</li>
+</ul>
+<h2>Understand color formats</h2>
+<h3>HEX</h3>
+<p>HEX notation represents red, green, and blue channel values using hexadecimal digits. For example, <code>#FF5733</code> is a vivid orange-red.</p>
+<h3>RGB</h3>
+<p>RGB expresses the red, green, and blue channels as decimal values, commonly from 0 to 255. The same example is <code>rgb(255, 87, 51)</code>.</p>
+<h3>HSL</h3>
+<p>HSL describes a color using hue, saturation, and lightness. It can be convenient when you want to adjust brightness or saturation while keeping a similar hue.</p>
+<h2>Pick a color from an image</h2>
+<p>Open our <a href="/tools/color-picker/">Color Picker</a>, select an image, and click the point you want to sample. The tool displays the pixel color in supported formats so you can copy the value into your project. The image is processed in your browser.</p>
+<h2>Check contrast before using the color</h2>
+<p>A sampled color may look good in an image but still be difficult to read as text on a particular background. Test the foreground and background with our <a href="/tools/contrast-checker/">Contrast Checker</a>. For a coordinated set of colors, continue with our <a href="/blog/color-palette-guide/">color palette guide</a>.</p>
+<h2>Understand display differences</h2>
+<p>The sampled value comes from the image's pixel data, but two screens may display it differently because of display calibration, color profiles, brightness, and ambient lighting. Printed colors can differ further because print workflows use different color models and output characteristics.</p>
+<h2>Summary</h2>
+<p>A color picker helps extract reusable values from images. Use HEX, RGB, or HSL according to your workflow, and always check contrast and display context before using the color in a user interface.</p>`
+  },
+  'mastering-date-and-time': {
+    description: 'Understand Unix timestamps, UTC, time zones, daylight saving time, and Persian calendar conversion in modern web applications.',
+    faqs: [
+      { q: 'What is a Unix timestamp?', a: 'A Unix timestamp represents elapsed time from the Unix epoch, 1970-01-01T00:00:00Z. Modern systems may express it in seconds, milliseconds, or another precision.' },
+      { q: 'Why should applications use UTC?', a: 'UTC provides a common reference for storing and comparing instants. Applications can convert an instant to the user's time zone when displaying it.' },
+      { q: 'Why are time zones difficult?', a: 'Time-zone offsets and daylight-saving rules can change over time and differ by location. A fixed offset is not a substitute for a named time zone when applying local civil-time rules.' },
+      { q: 'How can I work with Persian dates in JavaScript?', a: 'Use a maintained calendar library or the browser's Intl APIs where appropriate, and test leap years and supported date ranges. The built-in Date object stores instants but does not itself provide all calendar operations.' }
+    ],
+    body: String.raw`<p>Date and time handling is a frequent source of bugs in software. A value that looks simple to a person may depend on an instant, a time zone, a calendar system, and daylight-saving rules. Understanding these concepts helps developers store and display dates consistently.</p>
+<h2>1. Unix timestamps</h2>
+<p>A Unix timestamp measures time relative to the Unix epoch: 1970-01-01 at 00:00:00 UTC. It is commonly represented in seconds or milliseconds. Check the unit before converting a value; interpreting milliseconds as seconds produces a date far outside the intended range.</p>
+<p>Use our <a href="/tools/unix-timestamp/">Unix Timestamp Converter</a> to convert supported timestamps and date-time values.</p>
+<h2>2. UTC and time zones</h2>
+<p>UTC is a common reference for representing instants. A time zone describes the local civil-time rules for a region, including its offset from UTC and any daylight-saving changes. Tehran, for example, has used different offset rules at different times in history, so a hard-coded offset should not be assumed to describe every date.</p>
+<p>For applications, store unambiguous instants in a standard form such as an ISO 8601 timestamp with an explicit offset or UTC marker. Convert to a named time zone when displaying local time to a user.</p>
+<h2>3. Daylight-saving time</h2>
+<p>Some regions advance or move clocks back during parts of the year. This means a local wall-clock time may be ambiguous or may not exist on a transition day. Use a maintained time-zone database through standard runtime APIs rather than manually adding or subtracting one hour.</p>
+<p>In JavaScript, <code>Intl.DateTimeFormat</code> can format an instant for a specified time zone. Be careful when parsing local date-time strings, because they do not always include enough information to identify an instant.</p>
+<h2>4. Persian calendar dates</h2>
+<p>The Persian Solar Hijri calendar has different month lengths and leap-year rules from the Gregorian calendar. JavaScript's Date object represents time instants and does not, by itself, implement every calendar conversion or arithmetic operation. Use a tested calendar library or the browser's supported Intl calendar features, and verify the date range and leap-year behaviour.</p>
+<p>Our <a href="/tools/multi-calendar-converter/">Multi-Calendar Converter</a> helps compare supported calendar dates. You can also use the <a href="/tools/date-diff/">Date Difference Calculator</a> and <a href="/tools/date-info/">Date Info</a> tool for related tasks.</p>
+<h2>Practical development rules</h2>
+<ul>
+<li>Know whether a timestamp is in seconds or milliseconds.</li>
+<li>Store instants with an explicit UTC or offset convention.</li>
+<li>Use named time zones for local civil-time rules.</li>
+<li>Do not assume every day has exactly 24 hours in every time zone.</li>
+<li>Test leap days, month boundaries, and daylight-saving transitions.</li>
+<li>Keep calendar conversion separate from time-zone conversion.</li>
+</ul>
+<h2>Summary</h2>
+<p>Reliable date handling requires distinguishing timestamps, UTC instants, local time zones, and calendar dates. Use standard APIs and maintained libraries, test boundary cases, and make the intended calendar and time zone explicit throughout your application.</p>`
+  },
+  'unit-converter-guide': {
+    description: 'Learn how to convert length, mass, temperature, volume, and area accurately, understand metric and customary units, and avoid rounding errors.',
+    faqs: [
+      { q: 'What is unit conversion?', a: 'Unit conversion expresses the same quantity using a different unit, such as metres instead of feet or kilograms instead of pounds.' },
+      { q: 'Why are metric and customary units different?', a: 'They developed from different measurement systems. The International System of Units (SI) uses standardized metric units, while US customary and Imperial units include historically defined measures that are not all identical.' },
+      { q: 'What is the most accurate way to convert units?', a: 'Use the exact or officially defined conversion factor where available, keep sufficient precision during intermediate calculations, and round only the final displayed result.' },
+      { q: 'Why is temperature conversion different?', a: 'Celsius and Fahrenheit scales have different zero points, so conversion requires both a scale factor and an offset rather than multiplication alone.' }
+    ],
+    body: String.raw`<p>Unit conversion expresses a measurement in a different unit without changing the underlying quantity. It is used in engineering, cooking, travel, science, construction, and everyday shopping. The correct conversion factor and the distinction between exact and rounded values matter.</p>
+<h2>Length conversions</h2>
+<ul>
+<li>1 kilometre = 1,000 metres.</li>
+<li>1 metre = 100 centimetres = 1,000 millimetres.</li>
+<li>1 inch = exactly 2.54 centimetres.</li>
+<li>1 foot = 12 inches = 0.3048 metres.</li>
+<li>1 international mile = 1,609.344 metres.</li>
+</ul>
+<h2>Mass and weight units</h2>
+<ul>
+<li>1 kilogram = 1,000 grams.</li>
+<li>1 international avoirdupois pound = 0.45359237 kilograms.</li>
+<li>1 international avoirdupois ounce = 28.349523125 grams.</li>
+<li>1 metric tonne = 1,000 kilograms.</li>
+</ul>
+<p>In everyday speech, people often say “weight” when they mean mass. In scientific and engineering contexts, distinguish mass from force and use the correct unit.</p>
+<h2>Temperature conversions</h2>
+<p>Temperature scales have different zero points, so conversion requires an offset:</p>
+<ul>
+<li><strong>Celsius to Fahrenheit:</strong> F = C × 9/5 + 32.</li>
+<li><strong>Fahrenheit to Celsius:</strong> C = (F − 32) × 5/9.</li>
+<li><strong>Celsius to Kelvin:</strong> K = C + 273.15.</li>
+</ul>
+<p>For example, 0°C equals 32°F, not 0°F.</p>
+<h2>Volume conversions</h2>
+<ul>
+<li>1 litre = 1,000 millilitres.</li>
+<li>1 cubic metre = 1,000 litres.</li>
+<li>1 US liquid gallon is approximately 3.785411784 litres.</li>
+<li>1 US customary cup is approximately 236.588 millilitres.</li>
+</ul>
+<p>Be careful with US customary and Imperial volume units: a US gallon is not the same as an Imperial gallon. In cooking, volume-to-mass conversion also depends on the ingredient's density.</p>
+<h2>Convert units online</h2>
+<p>Our <a href="/tools/unit-converter/">Unit Converter</a> supports common measurement categories, including length, mass, temperature, volume, and area. Select the category and units, enter the value, and review the result.</p>
+<h2>Common conversion mistakes</h2>
+<ol>
+<li>Confusing kilograms with pounds or US gallons with Imperial gallons.</li>
+<li>Using a multiplication-only formula for temperature scales with different zero points.</li>
+<li>Rounding conversion factors too early and accumulating error.</li>
+<li>Ignoring whether a value represents mass, force, volume, or another physical quantity.</li>
+<li>Assuming a calendar year is always exactly 365 days.</li>
+</ol>
+<h2>Tips for accurate conversions</h2>
+<ul>
+<li>Use officially defined conversion factors when available.</li>
+<li>Keep full precision during intermediate calculations.</li>
+<li>Round only the final result to the precision appropriate for the task.</li>
+<li>For safety-critical engineering or scientific work, verify calculations with an authoritative reference or specialist software.</li>
+</ul>
+<h2>Summary</h2>
+<p>Unit conversion is straightforward when you use the correct factor and understand the measurement system. Pay particular attention to temperature offsets, US versus Imperial units, and rounding. Try our <a href="/tools/unit-converter/">online Unit Converter</a> for common conversions.</p>`
+  }
 
 };
