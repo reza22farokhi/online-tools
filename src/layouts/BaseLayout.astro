@@ -75,18 +75,16 @@ const dicts = getDicts();
     <script is:inline>
       (() => {
         const params = new URLSearchParams(window.location.search);
-        const requested = params.get("lang");
-        if (requested !== "fa" && requested !== "en") return;
-        const updateUrl = (selector, value) => {
-          const element = document.querySelector(selector);
-          if (element) element.setAttribute("href", value);
-        };
-        const canonicalLink = document.querySelector('link[rel="canonical"]');
-        const localized = new URL(canonicalLink?.href || window.location.href);
-        localized.searchParams.set("lang", requested);
-        updateUrl('link[rel="canonical"]', localized.href);
-        const ogUrl = document.querySelector('meta[property="og:url"]');
-        if (ogUrl) ogUrl.setAttribute("content", localized.href);
+        const requested = params.get('lang');
+        if (requested !== 'fa' && requested !== 'en') return;
+        const url = new URL(window.location.href);
+        url.searchParams.delete('lang');
+        if (requested === 'en' && !url.pathname.startsWith('/en/')) {
+          url.pathname = '/en' + (url.pathname === '/' ? '/' : url.pathname);
+        } else if (requested === 'fa' && url.pathname.startsWith('/en/')) {
+          url.pathname = url.pathname.slice(3) || '/';
+        }
+        window.location.replace(url.href);
       })();
     </script>
 
