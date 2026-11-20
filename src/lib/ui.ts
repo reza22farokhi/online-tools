@@ -581,7 +581,19 @@ export function getStoredLang(): Lang | null {
   } catch { return null; }
 }
 
+function updateLocaleCanonical(lang: Lang): void {
+  const canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!canonicalLink) return;
+  const localized = new URL(canonicalLink.href, window.location.origin);
+  if (lang === 'en') localized.searchParams.set('lang', 'en');
+  else localized.searchParams.delete('lang');
+  canonicalLink.href = localized.href;
+  const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
+  if (ogUrl) ogUrl.content = localized.href;
+}
+
 export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>) {
+  updateLocaleCanonical(lang);
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
   document.documentElement.dataset.activeLang = lang;
