@@ -32,7 +32,7 @@ const {
   jsonLd
 } = Astro.props;
 
-const site = Astro.site?.toString() ?? 'https://example.com/';
+const site = import.meta.env.SITE ?? Astro.site?.toString() ?? 'https://abzar-tools.ir/';
 const canonicalSource = canonical ?? new URL(Astro.url.pathname, site).toString();
 const localeUrls = getLocaleSeoUrls(canonicalSource, site, lang);
 const canonicalUrl = localeUrls.canonical;
@@ -81,7 +81,8 @@ const dicts = getDicts();
           const element = document.querySelector(selector);
           if (element) element.setAttribute("href", value);
         };
-        const localized = new URL(window.location.href);
+        const canonicalLink = document.querySelector('link[rel="canonical"]');
+        const localized = new URL(canonicalLink?.href || window.location.href);
         localized.searchParams.set("lang", requested);
         updateUrl('link[rel="canonical"]', localized.href);
         const ogUrl = document.querySelector('meta[property="og:url"]');
