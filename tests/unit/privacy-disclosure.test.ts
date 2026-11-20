@@ -21,4 +21,11 @@ describe('privacy disclosures', () => {
     expect(toolLayout).toContain('برای انجام پردازش به سرورهای ما ارسال نمی‌شود');
     expect(toolLayout).not.toContain('تبلیغاتی شخص ثالث');
   });
+  it('discloses infrastructure request metadata processing in both languages', () => {
+    expect(privacy).toContain('Cloudflare Pages');
+    expect(privacy).toContain('نشانی IP');
+    expect(privacy).toContain('Cloudflare\\'s Privacy Policy');
+    expect(privacy).toContain('داده‌های فنی درخواست');
+  });
+
 });
