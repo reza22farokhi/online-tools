@@ -18,8 +18,8 @@
       var applyLanguageContent = function () {
         var suffix = 'data-lang-' + lang;
 
-        document.querySelectorAll('script[type="application/ld+json"][data-jsonld-lang]').forEach(function (element) {
-          if (element.getAttribute('data-jsonld-lang') !== lang) element.remove();
+        document.querySelectorAll('script[data-jsonld-lang]').forEach(function (element) {
+          element.setAttribute('type', element.getAttribute('data-jsonld-lang') === lang ? 'application/ld+json' : 'application/json');
         });
 
         document.querySelectorAll('[data-lang-only]').forEach(function (element) {
