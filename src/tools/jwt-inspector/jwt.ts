@@ -233,9 +233,22 @@ export function checkExpiration(
   payload: JwtPayload,
   nowMs: number = Date.now()
 ): ExpInfo {
+  const maxTimestampSeconds = 8_640_000_000_000;
+  const isValidTimestamp = (value: unknown): value is number =>
+    typeof value === 'number' &&
+    Number.isFinite(value) &&
+    Math.abs(value) <= maxTimestampSeconds;
+
+  if (!Number.isFinite(nowMs)) return { status: 'unknown' };
+
+  const rawExp = payload.exp;
+  const rawNbf = payload.nbf;
+  if (rawExp !== undefined && !isValidTimestamp(rawExp)) return { status: 'unknown' };
+  if (rawNbf !== undefined && !isValidTimestamp(rawNbf)) return { status: 'unknown' };
+
   const now = Math.floor(nowMs / 1000);
-  const exp = typeof payload.exp === 'number' ? payload.exp : undefined;
-  const nbf = typeof payload.nbf === 'number' ? payload.nbf : undefined;
+  const exp = isValidTimestamp(rawExp) ? rawExp : undefined;
+  const nbf = isValidTimestamp(rawNbf) ? rawNbf : undefined;
 
   if (nbf !== undefined && now < nbf) {
     return { status: 'not-yet-valid', exp, nbf };
