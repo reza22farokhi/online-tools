@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+---
+<BaseLayout title="About and Principles | Online Tools" description="Our mission, technical principles, privacy practices, and commitments." lang="en" canonical={new URL('en/about/',site).toString()}>
+  <article class="container page"><h1>About Online Tools</h1>
+    <h2>Our mission</h2><p>We provide free, practical tools for text, development, calculations, images, SEO, dates, and files, without requiring an account or payment.</p>
+    <h2>Privacy-first processing</h2><p>Tools designed for local processing handle user-provided content in the browser rather than uploading it to our servers. Some tools may require browser capabilities; check each tool's description.</p>
+    <h2>Transparency</h2><p>We aim to keep the service accessible, fast, and transparent. The site currently does not load third-party advertising scripts.</p>
+    <h2>Contact</h2><p>Report issues through <a href="https://github.com/reza22farokhi/online-tools/issues" rel="noopener">GitHub Issues</a>.</p>
+  </article>
+</BaseLayout>
+<style>.page{padding-block:var(--space-5);max-width:850px}.page h2{margin-top:2rem}.page p{line-height:1.8}</style>
