@@ -198,3 +198,45 @@ test('file information tool rejects empty files without exposing stale results',
   await expect(page.locator('#fi-workspace')).toBeHidden();
   await expect(page.locator('#fi-copy-hash')).toBeDisabled();
 });
+
+
+test('public informational pages have complete English copy and metadata', async ({ page }) => {
+  const routes = ['/about/', '/contact/', '/privacy/', '/blog/'];
+  const failures: Array<{ route: string; title: string; text: string[]; attributes: string[] }> = [];
+
+  for (const route of routes) {
+    await page.goto(`${route}?lang=en`);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+
+    const result = await page.evaluate(() => {
+      const persian = /[\u0600-\u06FF]/;
+      const skip = 'script,style,[hidden],[aria-hidden="true"]';
+      const text: string[] = [];
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      let node: Node | null;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        const value = node.textContent?.trim() ?? '';
+        if (value && parent && !parent.closest(skip) && persian.test(value)) {
+          text.push(value.slice(0, 120));
+        }
+      }
+
+      const attributes: string[] = [];
+      document.querySelectorAll<HTMLElement>('[placeholder],[aria-label],[title],[alt],[value]').forEach(el => {
+        if (el.closest(skip)) return;
+        for (const name of ['placeholder', 'aria-label', 'title', 'alt', 'value']) {
+          const value = el.getAttribute(name);
+          if (value && persian.test(value)) attributes.push(`${name}: ${value.slice(0, 120)}`);
+        }
+      });
+      return { title: document.title, text, attributes };
+    });
+
+    if (/[\u0600-\u06FF]/.test(result.title) || result.text.length || result.attributes.length) {
+      failures.push({ route, ...result });
+    }
+  }
+
+  expect(failures, `Persian content leaked into English informational pages:\\n${JSON.stringify(failures, null, 2)}`).toEqual([]);
+});
