@@ -124,14 +124,14 @@ test('translated technical blog articles render complete English bodies and FAQs
   const slugs = ['base64-guide', 'what-is-json-guide', 'regex-guide'];
 
   for (const slug of slugs) {
-    await page.goto(\`/blog/\${slug}/?lang=en\`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`/blog/${slug}/?lang=en`, { waitUntil: 'domcontentloaded' });
 
     const body = page.locator('.post-content[data-lang-only="en"]');
     await expect(body).toBeVisible();
     await expect(body.locator('p, h2, h3, li').first()).toBeVisible();
 
     const visibleText = await body.innerText();
-    expect(visibleText.trim().length, \`\${slug} should contain translated article content\`).toBeGreaterThan(500);
+    expect(visibleText.trim().length, `${slug} should contain translated article content`).toBeGreaterThan(500);
     expect(visibleText).not.toMatch(/[\u0600-\u06FF]/);
 
     const faq = page.locator('.blog-faq[data-lang-only="en"]');
