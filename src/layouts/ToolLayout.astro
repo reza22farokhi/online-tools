@@ -32,7 +32,7 @@ const webAppLd = buildWebAppJsonLd({
 });
 
 const breadcrumbLd = buildBreadcrumbJsonLd([
-  { name: 'خانه', url: site },
+  { name: lang === 'en' ? 'Home' : 'خانه', url: lang === 'en' ? new URL('en/', site).toString() : site },
   { name: 'ابزارها', url: new URL(`${base}tools/`.replace(/^\//, ''), site).toString() },
   { name: meta.name[lang], url: canonical }
 ]);
