@@ -16,6 +16,10 @@
       var applyLanguageContent = function () {
         var suffix = 'data-lang-' + lang;
 
+        document.querySelectorAll('[data-lang-only]').forEach(function (element) {
+          element.hidden = element.getAttribute('data-lang-only') !== lang;
+        });
+
         document.querySelectorAll('body [data-lang-fa][data-lang-en]').forEach(function (element) {
           if (element.children.length !== 0) return;
           var value = element.getAttribute(suffix);
