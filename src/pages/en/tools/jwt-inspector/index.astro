@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import JwtInspector from '../../../../tools/jwt-inspector/JwtInspector.astro';
+import { jwtInspectorMeta } from '../../../../tools/jwt-inspector/meta';
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+const canonical = new URL('en/tools/jwt-inspector/', site).toString();
+const title = jwtInspectorMeta.title.en;
+const description = jwtInspectorMeta.description.en;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: title,
+  description,
+  inLanguage: 'en',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+<BaseLayout title={title} description={description} lang="en" canonical={canonical} jsonLd={jsonLd}>
+  <article class="container page">
+    <nav aria-label="Breadcrumb"><a href="/en/">Home</a> / <a href="/en/tools/">Tools</a> / JWT Inspector</nav>
+    <h1>{title}</h1>
+    <p>{description}</p>
+    <JwtInspector />
+  </article>
+</BaseLayout>
+<style>.page{padding-block:var(--space-5)}nav{margin-bottom:1.5rem;color:var(--color-text-muted)}h1{margin-bottom:1rem}</style>
