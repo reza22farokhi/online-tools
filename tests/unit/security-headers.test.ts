@@ -35,8 +35,10 @@ describe('Content Security Policy allowlist', () => {
     expect(headers).not.toMatch(/^\s*Strict-Transport-Security:.*includeSubDomains/m);
   });
 
-  it('does not ship inline blog scripts blocked by script-src self', () => {
-    expect(blogLayout).not.toMatch(/<script\s+is:inline(?:\s|>)/i);
+  it('does not ship executable inline scripts blocked by script-src self', () => {
+    const executableInline = /<script\s+is:inline(?![^>]*\bsrc=)(?:\s|>)/i;
+    expect(baseLayout).not.toMatch(executableInline);
+    expect(blogLayout).not.toMatch(executableInline);
   });
 
   it('keeps restrictive baseline directives', () => {
