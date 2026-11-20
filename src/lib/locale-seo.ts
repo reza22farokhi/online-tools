@@ -8,8 +8,8 @@ export interface LocaleSeoUrls {
 }
 
 /**
- * Build stable, self-referencing locale URLs for the site's query-based
- * language variants. Existing non-locale query parameters are preserved.
+ * Build canonical and hreflang URLs for the site's query-based language variants.
+ * Persian uses the clean canonical URL; English uses the explicit ?lang=en URL.
  */
 export function getLocaleSeoUrls(
   canonical: string | URL,
@@ -23,16 +23,14 @@ export function getLocaleSeoUrls(
   const source = new URL(`${input.pathname}${input.search}${input.hash}`, siteUrl);
   const canonicalUrl = new URL(source);
   canonicalUrl.searchParams.delete('lang');
-  const fa = new URL(canonicalUrl);
   const en = new URL(canonicalUrl);
-  fa.searchParams.set('lang', 'fa');
   en.searchParams.set('lang', 'en');
 
   return {
     // The default Persian document uses the clean path listed in the sitemap.
     // The explicit English variant remains independently canonicalized.
     canonical: (locale === 'en' ? en : canonicalUrl).toString(),
-    fa: fa.toString(),
+    fa: canonicalUrl.toString(),
     en: en.toString(),
     xDefault: canonicalUrl.toString()
   };
