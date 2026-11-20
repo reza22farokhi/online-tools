@@ -796,8 +796,9 @@ export function populateHomeSections(): void {
 
 export function initUI(dicts?: Record<Lang, Record<string, string>>) {
   setupFavoriteDelegation();
+  const pathLang = window.location.pathname === '/en' || window.location.pathname.startsWith('/en/') ? 'en' : null;
   const queryLang = new URLSearchParams(window.location.search).get('lang');
-  const initialLang: Lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : (getStoredLang() ?? 'fa');
+  const initialLang: Lang = pathLang ?? (queryLang === 'fa' || queryLang === 'en' ? queryLang : (getStoredLang() ?? 'fa'));
   if (queryLang === 'fa' || queryLang === 'en') {
     try { localStorage.setItem(LANG_KEY, queryLang); } catch {}
   }
