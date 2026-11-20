@@ -405,5 +405,115 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Summary</h2>
 <p>JWT is a standardized way to carry claims between systems. It can support distributed authentication architectures, but safe use requires signature verification, claim validation, key protection, and a deliberate token lifecycle. For a deeper security checklist, read our <a href="/blog/jwt-security-guide/">JWT security guide</a>.</p>`
   }
+,
+  'image-compression-guide': {
+    description: 'Learn how lossy and lossless image compression work, compare common image formats, resize images, and reduce file sizes for faster pages.',
+    faqs: [
+      { q: 'Why compress images for a website?', a: 'Images can account for a large share of page weight. Reducing their dimensions and file size can improve loading performance and reduce data transfer, especially on mobile connections.' },
+      { q: 'What is the difference between lossy and lossless compression?', a: 'Lossless compression preserves the original image data. Lossy compression discards some information to achieve smaller files, so quality depends on the format and settings.' },
+      { q: 'Which image format should I use on the web?', a: 'WebP and AVIF can provide efficient compression in modern browsers. JPEG remains useful for photographs and PNG for lossless graphics or transparency. Choose based on image content, quality, transparency, and browser support.' },
+      { q: 'Does compression always reduce visible quality?', a: 'Lossless compression does not reduce image quality. Lossy compression can introduce artifacts; preview the result at its intended display size and adjust the quality setting.' }
+    ],
+    body: String.raw`<p>Large images can slow down a website, consume mobile data, and delay the point at which a page becomes useful. Image optimization combines appropriate dimensions, efficient formats, and compression settings that balance file size with visual quality.</p>
+<h2>Why image compression matters</h2>
+<p>Reducing image bytes can lower page weight and the amount of data visitors must download. The benefit depends on how many images a page uses, their dimensions, the delivery method, and the visitor's connection. Compression is one part of performance work; it does not replace good caching, responsive images, or efficient page code.</p>
+<h2>Lossy and lossless compression</h2>
+<ul>
+<li><strong>Lossless:</strong> Preserves the original image information and can reconstruct the source exactly. It is useful for graphics and workflows where pixel-perfect preservation matters.</li>
+<li><strong>Lossy:</strong> Discards some image information to achieve a smaller file. The amount of visible degradation depends on the image, format, and quality setting.</li>
+</ul>
+<p>There is no universal quality percentage that works for every image. Compare the compressed preview with the original, especially around text, edges, gradients, and fine details.</p>
+<h2>Choose the right format</h2>
+<ul>
+<li><strong>JPEG:</strong> Common for photographs and does not support transparency.</li>
+<li><strong>PNG:</strong> Useful for lossless graphics, sharp edges, and transparency, but can be large for photographs.</li>
+<li><strong>WebP:</strong> Supports lossy and lossless compression as well as transparency in modern browsers.</li>
+<li><strong>AVIF:</strong> Can offer efficient compression and advanced image features; verify support and encoding requirements for your audience.</li>
+</ul>
+<p>For a deeper comparison, see our <a href="/blog/image-formats-comparison/">image format comparison</a>.</p>
+<h2>Step 1: Resize to the display dimensions</h2>
+<p>If an image is several thousand pixels wide but appears in a much smaller content area, serving the full-size file may waste bandwidth. Resize the source to dimensions appropriate for the layout and consider responsive variants for different screens. Use our <a href="/tools/image-resizer/">Image Resizer</a> to change dimensions while preserving the aspect ratio.</p>
+<h2>Step 2: Compress and inspect the result</h2>
+<p>Choose lossy compression for photographs when a small visual change is acceptable, or lossless compression when exact preservation is important. Preview the output at the size visitors will see. Our <a href="/tools/image-compressor/">Image Compressor</a> lets you adjust compression and inspect the result before saving it.</p>
+<h2>Step 3: Convert when it helps</h2>
+<p>Converting a JPEG or PNG to WebP or AVIF may reduce file size, but the result depends on the source image and chosen settings. Keep a suitable fallback if your delivery requirements include older clients. Our <a href="/tools/format-converter/">Image Format Converter</a> can help convert supported image files in your browser.</p>
+<h2>Common optimization mistakes</h2>
+<ol>
+<li>Compressing so aggressively that visible artifacts appear.</li>
+<li>Using a very large source image for a small display area.</li>
+<li>Using PNG for every photograph even when a photographic format is more efficient.</li>
+<li>Ignoring transparency, animation, or browser support when choosing a format.</li>
+<li>Lazy-loading the main above-the-fold image that should be prioritized; reserve lazy loading for off-screen images.</li>
+</ol>
+<h2>Process images locally</h2>
+<p>The image tools on this site are designed to process selected files in your browser rather than upload them for conversion. For highly sensitive workflows, verify the page's network behaviour and your organization's security requirements before processing confidential material.</p>
+<h2>Summary</h2>
+<p>Optimize images by choosing appropriate dimensions, selecting a format suited to the content, and balancing compression with visual quality. Test the result at its real display size and measure the effect on the page rather than relying on a fixed percentage target.</p>`
+  },
+  'word-count-guide': {
+    description: 'Understand word, character, sentence, and paragraph counts, learn how language affects tokenization, and use word counts without treating length as an SEO shortcut.',
+    faqs: [
+      { q: 'Does word count directly determine search rankings?', a: 'No. Search engines do not use a universal minimum word count as a ranking rule. Content should be as comprehensive as the topic and reader need, without adding filler.' },
+      { q: 'How many words should a blog post contain?', a: 'There is no universal ideal length. Cover the question clearly, include useful evidence and examples, and remove material that does not help the reader.' },
+      { q: 'Is word counting different in Persian and English?', a: 'Yes. Languages use different spacing and word-joining conventions. Persian half-spaces and compound forms can affect how a simple whitespace-based counter divides text.' },
+      { q: 'What is the difference between word count and character count?', a: 'A word count estimates text units separated by the chosen tokenization rules. A character count measures letters, digits, punctuation, and sometimes spaces, depending on the tool.' }
+    ],
+    body: String.raw`<p>Writers, students, editors, and content teams often need to measure text. Word count can help meet an assignment limit, estimate reading time, or compare drafts. Character, sentence, and paragraph counts answer different questions, so it is useful to know what each metric measures.</p>
+<h2>Why count words?</h2>
+<ul>
+<li><strong>Academic work:</strong> Essays, abstracts, and submissions may have a specified word limit.</li>
+<li><strong>Editorial planning:</strong> A word count helps estimate scope and reading time.</li>
+<li><strong>Platform limits:</strong> Social networks and publishing forms may limit characters rather than words.</li>
+<li><strong>Translation:</strong> Word counts are often used to estimate the size of a translation project.</li>
+</ul>
+<h2>Word count is not an SEO formula</h2>
+<p>There is no fixed word count that guarantees a high search ranking. A useful page answers the visitor's question accurately and completely. Some topics need a short answer; others require detailed explanations, examples, and references. Avoid padding an article to reach an arbitrary target.</p>
+<h2>Word count, character count, and other metrics</h2>
+<ul>
+<li><strong>Words:</strong> Text units identified by the counter's tokenization rules.</li>
+<li><strong>Characters:</strong> Letters, digits, punctuation, and possibly spaces.</li>
+<li><strong>Sentences:</strong> Segments identified using punctuation and language-specific rules.</li>
+<li><strong>Paragraphs:</strong> Blocks separated by line breaks or blank lines.</li>
+<li><strong>Reading time:</strong> An estimate based on an assumed reading speed, not a guarantee for every reader.</li>
+</ul>
+<p>Our <a href="/tools/word-counter/">Online Word Counter</a> calculates these metrics as you type or paste text. Processing is performed in your browser.</p>
+<h2>Persian and English word counting</h2>
+<p>English words are commonly separated by spaces, but even English text includes punctuation, contractions, hyphenated words, and abbreviations that different counters may treat differently. Persian introduces additional considerations, including the zero-width non-joiner (half-space) in words such as compound verbs and plurals. A simple whitespace counter may treat a joined form differently from a linguistic tokenizer.</p>
+<p>For consistent results, use the same counting method throughout a project and check the rules specified by the institution or publisher receiving the text.</p>
+<h2>Estimate reading time</h2>
+<p>Reading-time tools divide a text length by an assumed average reading speed. The estimate varies with language, topic difficulty, formatting, and reader familiarity. Treat it as a helpful indication rather than an exact measurement.</p>
+<h2>Use word counts in a content workflow</h2>
+<p>Count the draft, check the relevant submission or platform limit, and then edit for clarity. For SEO work, focus on matching search intent, useful structure, accurate information, and readable headings. Our <a href="/tools/meta-tag-generator/">Meta Tag Generator</a> and <a href="/tools/slug-generator/">Slug Generator</a> can help with other publishing tasks.</p>
+<h2>Summary</h2>
+<p>Word and character counts are practical editorial measurements, but they do not replace quality or clarity. Understand the counter's rules—especially for multilingual text—and use length targets only when they serve a real reader or submission requirement.</p>`
+  },
+  'image-optimization-guide': {
+    description: 'Improve website image performance with modern formats, responsive dimensions, compression, lazy loading, and better delivery practices.',
+    faqs: [
+      { q: 'Which image format is best for a website?', a: 'It depends on the image. JPEG, PNG, WebP, and AVIF each have useful cases. Consider transparency, animation, visual quality, compression, and browser support.' },
+      { q: 'Should every image use lazy loading?', a: 'No. Lazy-load images that are below the initial viewport, but do not lazy-load the main image that is immediately visible and important to page rendering.' },
+      { q: 'How do I choose image dimensions?', a: 'Use dimensions appropriate to the rendered size and provide responsive variants for different viewport and pixel-density needs. Avoid downloading a much larger image than the layout requires.' },
+      { q: 'Does image optimization improve Core Web Vitals?', a: 'It can help when images are responsible for excessive transfer or delayed rendering. The effect should be measured using field and lab data; image optimization alone does not guarantee passing Core Web Vitals.' }
+    ],
+    body: String.raw`<p>Images often make up a significant portion of a web page's downloaded bytes. Serving unnecessarily large or inefficient files can delay rendering and consume mobile data. A good image strategy combines the right format, dimensions, compression, and loading priority.</p>
+<h2>Choose a format for the content</h2>
+<ul>
+<li><strong>JPEG:</strong> A widely supported choice for photographs where transparency is not needed.</li>
+<li><strong>PNG:</strong> Useful for lossless graphics, sharp edges, and transparent images.</li>
+<li><strong>WebP:</strong> Supports lossy and lossless compression and transparency in modern browsers.</li>
+<li><strong>AVIF:</strong> Often offers efficient compression, but encoding cost and compatibility requirements should be considered.</li>
+</ul>
+<p>Use our <a href="/tools/format-converter/">Image Format Converter</a> to convert supported files and compare the output before publishing.</p>
+<h2>Compress without damaging the image</h2>
+<p>Lossy compression can reduce file size substantially, but aggressive settings may create visible artifacts. Lossless compression preserves the original data but may provide a smaller reduction. Test representative images and choose settings based on the visual result, not a universal quality percentage. Our <a href="/tools/image-compressor/">Image Compressor</a> helps compare the result.</p>
+<h2>Serve appropriate dimensions</h2>
+<p>Do not deliver a 4,000-pixel-wide image when the layout only needs a much smaller version. Resize images to suit their display area and consider responsive sources so phones do not download desktop-sized assets. Our <a href="/tools/image-resizer/">Image Resizer</a> can change dimensions while keeping the aspect ratio.</p>
+<h2>Load images at the right time</h2>
+<p>Use lazy loading for images that are below the initial viewport. The primary image visible when the page opens may need eager loading or a fetch priority hint instead, depending on the layout. Always include meaningful alternative text for informative images and dimensions to reduce layout shifts.</p>
+<h2>Measure the result</h2>
+<p>Check page weight, loading behaviour, and Core Web Vitals before and after changes. Pay particular attention to the Largest Contentful Paint (LCP) element, which may be a hero image. Lab tests help diagnose changes, while field data shows how real visitors experience the site.</p>
+<h2>Summary</h2>
+<p>Use formats suited to the image, compress carefully, resize to appropriate dimensions, and load off-screen images only when needed. Measure the actual page to confirm that the optimization improves user experience.</p>`
+  }
 
 };
