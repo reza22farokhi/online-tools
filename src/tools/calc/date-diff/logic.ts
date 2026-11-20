@@ -39,20 +39,17 @@ export function calculateDateDiff(from: Date, to: Date): DateDiffResult | null {
   const totalHours = totalDays * 24;
   const totalMinutes = totalDays * 24 * 60;
 
-  let businessDays = 0;
-  let weekendDays = 0;
-  const cursor = new Date(a.getFullYear(), a.getMonth(), a.getDate());
-  const end = new Date(b.getFullYear(), b.getMonth(), b.getDate());
-  cursor.setDate(cursor.getDate() + 1);
-  while (cursor <= end) {
-    const dow = cursor.getDay();
-    if (dow === 5 || dow === 6) {
-      weekendDays++;
-    } else {
-      businessDays++;
-    }
-    cursor.setDate(cursor.getDate() + 1);
+  // Count full weeks arithmetically, then inspect at most six remaining days.
+  // The interval is (a, b], matching the previous implementation's semantics.
+  const fullWeeks = Math.floor(totalDays / 7);
+  const remainingDays = totalDays % 7;
+  let businessDays = fullWeeks * 5;
+  const firstDay = new Date(a.getFullYear(), a.getMonth(), a.getDate() + 1).getDay();
+  for (let i = 0; i < remainingDays; i++) {
+    const dayOfWeek = (firstDay + i) % 7;
+    if (dayOfWeek !== 5 && dayOfWeek !== 6) businessDays++;
   }
+  const weekendDays = totalDays - businessDays;
 
   return {
     years, months, days, totalDays, totalWeeks, totalHours, totalMinutes,
