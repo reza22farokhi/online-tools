@@ -14,6 +14,7 @@
   --color-primary-fg: #ffffff;
   --color-accent: #f59e0b;
   --color-success: #10b981;
+  --color-success-text: #047857;
   --color-danger: #ef4444;
   --color-warning: #f59e0b;
 
@@ -53,6 +54,7 @@
   --color-primary-hover: #a5b4fc;
   --color-primary-fg: #0b1220;
   --color-accent: #fbbf24;
+  --color-success-text: #34d399;
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
 }

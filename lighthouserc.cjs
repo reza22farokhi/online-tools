@@ -1,12 +1,38 @@
+const fs = require('node:fs');
+const path = require('node:path');
+
+const origin = 'http://127.0.0.1:4321';
+const toolsDirectory = path.join(__dirname, 'dist', 'tools');
+
+if (!fs.existsSync(toolsDirectory)) {
+  throw new Error('Lighthouse route discovery failed: dist/tools does not exist. Build the site before running LHCI.');
+}
+
+const toolRoutes = fs.readdirSync(toolsDirectory, { withFileTypes: true })
+  .filter(entry => entry.isDirectory())
+  .map(entry => entry.name)
+  .filter(slug => fs.existsSync(path.join(toolsDirectory, slug, 'index.html')))
+  .sort();
+
+if (toolRoutes.length < 43) {
+  throw new Error(`Expected at least 43 built tool routes, found ${toolRoutes.length}. Check the Astro build output.`);
+}
+
+if (!toolRoutes.includes('jwt-inspector')) {
+  throw new Error('The standalone JWT Inspector route is missing from the built site.');
+}
+
+const urls = [
+  `${origin}/?lang=fa`,
+  ...toolRoutes.map(slug => `${origin}/tools/${slug}/?lang=fa`)
+];
+
 module.exports = {
   ci: {
     collect: {
-      url: [
-        'http://127.0.0.1:4321/?lang=fa',
-        'http://127.0.0.1:4321/tools/word-counter/?lang=fa',
-        'http://127.0.0.1:4321/tools/jwt-inspector/?lang=fa',
-        'http://127.0.0.1:4321/tools/file-info/?lang=fa'
-      ],
+      // Discover every built tool page, including standalone routes, instead
+      // of maintaining a fragile hand-written sample of URLs.
+      url: urls,
       numberOfRuns: 1,
       settings: {
         throttlingMethod: 'simulate',

@@ -120,7 +120,7 @@
   .uts-tool { display: flex; flex-direction: column; gap: var(--space-4); }
   .uts-current { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: color-mix(in srgb, var(--color-primary) 10%, transparent); border: 1px solid var(--color-primary); border-radius: var(--radius-md); flex-wrap: wrap; }
   .uts-current-label { font-weight: 600; color: var(--color-text-muted); font-size: 0.9rem; }
-  .uts-current-value { flex: 1; font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); font-variant-numeric: tabular-nums; }
+  .uts-current-value { flex: 1 1 10ch; min-width: 10ch; font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800; color: var(--color-primary); font-variant-numeric: tabular-nums; }
   .uts-panel { padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-2); display: flex; flex-direction: column; gap: var(--space-2); }
   .uts-panel h3 { margin: 0 0 var(--space-1); font-size: 1rem; color: var(--color-text); }
   .uts-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
@@ -132,4 +132,9 @@
   .uts-result-row span { font-size: 0.85rem; color: var(--color-text-muted); }
   .uts-result-row code { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-text); word-break: break-all; text-align: left; }
   .btn-sm { padding: 4px 10px; font-size: 0.8rem; min-height: 30px; }
+  @media (max-width: 480px) {
+    .uts-current { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+    .uts-current-label { grid-column: 1 / -1; }
+    .uts-current-value { min-width: 10ch; }
+  }
 </style>

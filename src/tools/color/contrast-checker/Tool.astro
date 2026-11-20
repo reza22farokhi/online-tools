@@ -69,7 +69,7 @@
     ratioEl.textContent = result.ratio.toFixed(2) + ':1';
 
     let color = 'var(--color-danger)';
-    if (result.aaNormal) color = 'var(--color-success)';
+    if (result.aaNormal) color = 'var(--color-success-text)';
     else if (result.aaLarge) color = 'var(--color-warning)';
     ratioEl.style.color = color;
 
@@ -125,7 +125,7 @@
   .cc-checks { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
   @media (min-width: 640px) { .cc-checks { grid-template-columns: 1fr 1fr; } }
   .cc-check { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; }
-  .cc-pass { background: color-mix(in srgb, var(--color-success) 12%, transparent); color: var(--color-success); border: 1px solid var(--color-success); }
+  .cc-pass { background: color-mix(in srgb, var(--color-success) 12%, transparent); color: var(--color-success-text); border: 1px solid var(--color-success); }
   .cc-fail { background: color-mix(in srgb, var(--color-danger) 12%, transparent); color: var(--color-danger); border: 1px solid var(--color-danger); }
   .cc-icon { font-weight: 800; font-size: 1.1rem; }
 </style>
