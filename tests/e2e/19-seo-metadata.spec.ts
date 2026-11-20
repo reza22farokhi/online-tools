@@ -36,10 +36,11 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(structuredData.length, `${slug} should expose structured data`).toBeGreaterThan(0);
-  for (const json of structuredData) {
-    expect(() => JSON.parse(json)).not.toThrow();
-    if (lang === 'en') expect(json).toContain('en');
-  }
+  const parsedStructuredData = structuredData.map(json => JSON.parse(json) as { inLanguage?: string });
+  expect(
+    parsedStructuredData.some(item => item.inLanguage === lang),
+    `${slug} should expose a locale-matched structured-data entity`
+  ).toBe(true);
 }
 
 test('homepage has valid Persian and English SEO metadata', async ({ page }) => {
@@ -71,5 +72,25 @@ test('English informational and category routes are statically localized', async
 test('legacy language query links redirect to static locale routes', async ({ page }) => {
   await page.goto('/?lang=en');
   await expect(page).toHaveURL(/\/en\/$/);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+});
+
+
+test('English static HTML contains localized metadata before JavaScript runs', async ({ page }) => {
+  const response = await page.request.get('/en/tools/word-counter/');
+  expect(response.status()).toBe(200);
+  const html = await response.text();
+  expect(html).toContain('<html lang="en" dir="ltr">');
+  expect(html).toContain('href="https://abzar-tools.ir/en/tools/word-counter/"');
+  expect(html).toContain('hreflang="en"');
+  expect(html).toContain('content="en_US"');
+  expect(html).toContain('Frequently asked questions');
+  expect(html).not.toContain('سوالات متداول');
+  expect(html).toContain('href="/en/"');
+});
+
+test('legacy language query URLs redirect to crawlable locale paths', async ({ page }) => {
+  await page.goto('/tools/word-counter/?lang=en');
+  await expect(page).toHaveURL(/\/en\/tools\/word-counter\/$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 });
