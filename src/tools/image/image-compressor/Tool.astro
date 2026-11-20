@@ -101,6 +101,7 @@
     img.onload = () => {
       if (img.naturalWidth * img.naturalHeight > MAX_IMAGE_PIXELS) {
         URL.revokeObjectURL(objectUrl!); objectUrl = null;
+        isProcessing = false;
         showError('ابعاد تصویر بیش از حد مجاز است (حداکثر ۱۶ مگاپیکسل).');
         return;
       }
@@ -114,7 +115,7 @@
       if (newSizeEl) newSizeEl.textContent = '-';
       isProcessing = false;
     };
-    img.onerror = () => { if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = null; showError('فایل تصویری معتبر نیست.'); };
+    img.onerror = () => { if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = null; isProcessing = false; showError('فایل تصویری معتبر نیست.'); };
     img.src = objectUrl;
   }
   fileInput?.addEventListener('change', (e) => {
