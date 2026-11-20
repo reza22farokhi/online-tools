@@ -8,8 +8,8 @@ export function validateFileSize(
   maxBytes: number,
   maxLabel: string
 ): FileSizeValidation {
-  if (!Number.isFinite(size) || size < 0) {
-    return { ok: false, error: 'اندازه فایل نامعتبر است.' };
+  if (!Number.isFinite(size) || size < 0 || !Number.isFinite(maxBytes) || maxBytes <= 0) {
+    return { ok: false, error: 'اندازه فایل یا محدودیت حجم نامعتبر است.' };
   }
   if (size === 0) {
     return { ok: false, error: 'فایل خالی است و قابل پردازش نیست.' };
