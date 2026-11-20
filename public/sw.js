@@ -1,5 +1,5 @@
-const SHELL_CACHE_NAME = 'online-tools-v3-shell';
-const RUNTIME_CACHE_NAME = 'online-tools-v3-runtime';
+const SHELL_CACHE_NAME = 'online-tools-v4-shell';
+const RUNTIME_CACHE_NAME = 'online-tools-v4-runtime';
 const PRECACHE_URLS = ['/', '/offline/', '/manifest.json', '/scripts/site-bootstrap.js'];
 const MAX_RUNTIME_ENTRIES = 100;
 
