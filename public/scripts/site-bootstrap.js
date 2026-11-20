@@ -90,6 +90,9 @@
               if (!node || typeof node !== 'object') return;
               if (Object.prototype.hasOwnProperty.call(node, 'inLanguage')) node.inLanguage = lang;
               var type = node['@type'];
+              if (type === 'WebSite' || type === 'WebApplication' || type === 'BlogPosting') {
+                node.inLanguage = lang;
+              }
               if (type === 'WebSite') {
                 if (siteNameText) node.name = siteNameText;
                 if (descriptionText) node.description = descriptionText;
