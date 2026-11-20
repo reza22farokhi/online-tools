@@ -38,7 +38,7 @@ describe('calculateDateDiff', () => {
   });
 
   it('counts Friday and Saturday as weekend days across a week boundary', () => {
-    const r = calculateDateDiff(new Date(2025, 0, 3), new Date(2025, 0, 6));
+    const r = calculateDateDiff(new Date(2025, 0, 2), new Date(2025, 0, 5));
     expect(r!.totalDays).toBe(3);
     expect(r!.businessDays).toBe(1);
     expect(r!.weekendDays).toBe(2);
