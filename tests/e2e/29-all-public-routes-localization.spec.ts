@@ -121,7 +121,7 @@ test('every generated public HTML route has complete English navigation, copy, a
 
 
 test('translated technical blog articles render complete English bodies and FAQs', async ({ page }) => {
-  const slugs = ['base64-guide', 'what-is-json-guide', 'regex-guide', 'online-security-guide', 'csv-to-json-guide', 'age-calculation-guide', 'strong-password-guide', 'jwt-security-guide', 'what-is-jwt-guide', 'image-compression-guide', 'word-count-guide', 'image-optimization-guide', 'percentage-calculation-guide', 'date-calculation-guide', 'date-conversion-guide', 'website-speed-optimization', 'image-formats-comparison', 'slug-generation-guide', 'seo-meta-tags-guide', 'why-client-side-tools-matter', 'qr-code-guide', 'best-online-tools-2026', 'color-palette-selection-guide', 'hashing-vs-base64', 'json-guide'];
+  const slugs = ['base64-guide', 'what-is-json-guide', 'regex-guide', 'online-security-guide', 'csv-to-json-guide', 'age-calculation-guide', 'strong-password-guide', 'jwt-security-guide', 'what-is-jwt-guide', 'image-compression-guide', 'word-count-guide', 'image-optimization-guide', 'percentage-calculation-guide', 'date-calculation-guide', 'date-conversion-guide', 'website-speed-optimization', 'image-formats-comparison', 'slug-generation-guide', 'seo-meta-tags-guide', 'why-client-side-tools-matter', 'qr-code-guide', 'best-online-tools-2026', 'color-palette-selection-guide', 'hashing-vs-base64', 'json-guide', 'color-palette-guide', 'color-picker-guide', 'mastering-date-and-time', 'unit-converter-guide'];
 
   for (const slug of slugs) {
     await page.goto(`/blog/${slug}/?lang=en`, { waitUntil: 'domcontentloaded' });
