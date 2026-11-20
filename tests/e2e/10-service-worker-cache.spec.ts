@@ -11,8 +11,8 @@ test('service worker keeps an offline shell and bounds runtime caching', async (
   await page.goto('/?cache-bypass-check=1');
 
   const cacheState = await page.evaluate(async () => {
-    const shell = await caches.open('online-tools-v3-shell');
-    const runtime = await caches.open('online-tools-v3-runtime');
+    const shell = await caches.open('online-tools-v4-shell');
+    const runtime = await caches.open('online-tools-v4-runtime');
     const shellKeys = await shell.keys();
     const runtimeKeys = await runtime.keys();
 
@@ -69,7 +69,7 @@ test('offline fallback handles language and private query parameters without cac
   await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute('href', '/');
 
   const runtimeUrls = await page.evaluate(async () => {
-    const cache = await caches.open('online-tools-v3-runtime');
+    const cache = await caches.open('online-tools-v4-runtime');
     return (await cache.keys()).map(request => request.url);
   });
 
