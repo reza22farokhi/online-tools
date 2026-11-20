@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ToolCard from '../../../components/ui/ToolCard.astro';
+import { categories, getToolsByCategory } from '../../../tools/registry';
+import { buildBreadcrumbJsonLd } from '../../../lib/seo';
+
+export function getStaticPaths() {
+  return categories.map(category => ({ params: { category: category.slug }, props: { category } }));
+}
+const { category } = Astro.props;
+const tools = getToolsByCategory(category.slug);
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+const canonical = new URL(`en/categories/${category.slug}/`, site).toString();
+const title = `${category.en} Tools | Online Tools`;
+const description = `Explore ${tools.length} free ${category.en.toLowerCase()} tools. Fast, browser-based and privacy-first.`;
+const jsonLd = [
+  buildBreadcrumbJsonLd([{name:'Home',url:new URL('en/',site).toString()},{name:'Tools',url:new URL('en/tools/',site).toString()},{name:category.en,url:canonical}]),
+  {'@context':'https://schema.org','@type':'CollectionPage',name:title,description,url:canonical,inLanguage:'en'}
+];
+---
+<BaseLayout title={title} description={description} lang="en" canonical={canonical} jsonLd={jsonLd}>
+  <div class="container page">
+    <nav aria-label="Breadcrumb" class="breadcrumb"><ol><li><a href="/en/">Home</a></li><li><a href="/en/tools/">Tools</a></li><li aria-current="page">{category.en}</li></ol></nav>
+    <header class="cat-hero"><div class="cat-hero-icon" aria-hidden="true">{category.icon}</div><div><h1>{category.en} Tools</h1><p class="lead">{tools.length} free, fast, browser-based tools.</p></div></header>
+    <div class="tools-grid">{tools.map(tool => <ToolCard tool={tool} lang="en" />)}</div>
+    <section class="other-cats"><h2>Other categories</h2><div class="other-cats-grid">{categories.filter(item=>item.slug!==category.slug).map(item=><a href={`/en/categories/${item.slug}/`} class="other-cat-card"><span>{item.icon}</span><span>{item.en}</span></a>)}</div></section>
+  </div>
+</BaseLayout>
+<style>
+.page{padding-block:var(--space-5)}.breadcrumb ol{list-style:none;padding:0;display:flex;gap:.5rem;flex-wrap:wrap}.cat-hero{display:flex;align-items:center;gap:1rem;margin-block:2rem}.cat-hero-icon{font-size:2rem}.lead{color:var(--color-text-muted)}
+.tools-grid,.other-cats-grid{display:grid;grid-template-columns:1fr;gap:1rem}@media(min-width:640px){.tools-grid,.other-cats-grid{grid-template-columns:repeat(2,1fr)}}@media(min-width:960px){.tools-grid,.other-cats-grid{grid-template-columns:repeat(3,1fr)}}
+.other-cats{margin-block:3rem}
+</style>
