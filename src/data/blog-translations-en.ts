@@ -827,5 +827,133 @@ Ali,"Tehran, Iran"</code></pre>
 <h2>Summary</h2>
 <p>QR codes are a convenient way to share information, but the destination still needs to be trusted. Generate a code with our <a href="/tools/qr-code-generator/">QR Code Generator</a>, verify it after downloading, and inspect links before opening scanned destinations.</p>`
   }
+,
+  'best-online-tools-2026': {
+    description: 'Explore useful browser-based tools for text, code, images, SEO, dates, calculations, and files, plus practical criteria for choosing a trustworthy online utility.',
+    faqs: [
+      { q: 'Why use online tools?', a: 'Browser-based tools are convenient because they usually need no installation and can work across devices. Check their privacy, accuracy, accessibility, and limitations before using them for sensitive or important tasks.' },
+      { q: 'How can I identify a trustworthy online tool?', a: 'Look for clear privacy information, transparent processing behaviour, secure connections, understandable results, and a tool that does not request unnecessary permissions or account details.' },
+      { q: 'Are all online tools free?', a: 'No. Some are free, some have usage limits, and others require payment or registration. Check the terms and avoid tools that hide important costs or collect unnecessary information.' }
+    ],
+    body: String.raw`<p>Browser-based tools can make everyday work faster, from cleaning a block of text to converting an image or checking a data format. The right tool should do the task accurately, explain its limitations, and handle your input in a way that matches your privacy requirements.</p>
+<h2>1. Text tools</h2>
+<p>Text utilities help writers, students, and developers prepare content. A <a href="/tools/word-counter/">Word Counter</a> measures words and characters, a <a href="/tools/case-converter/">Case Converter</a> changes letter case, a <a href="/tools/slug-generator/">Slug Generator</a> prepares readable URL paths, and a <a href="/tools/remove-extra-spaces/">Whitespace Cleaner</a> removes unnecessary spacing.</p>
+<h2>2. Developer tools</h2>
+<p>Developers often need to inspect and transform structured data. A <a href="/tools/json-formatter/">JSON Formatter</a> formats and validates JSON, a <a href="/tools/jwt-decoder/">JWT Decoder</a> displays token contents for debugging, a <a href="/tools/regex-tester/">Regex Tester</a> tests patterns, and <a href="/tools/base64/">Base64 tools</a> encode or decode text. A <a href="/tools/hash-generator/">Hash Generator</a> calculates file or text digests; remember that a fast general-purpose hash is not a password-storage algorithm.</p>
+<h2>3. Image tools</h2>
+<p>Image utilities can resize, compress, and convert files. Use the <a href="/tools/image-resizer/">Image Resizer</a> to change dimensions, the <a href="/tools/image-compressor/">Image Compressor</a> to reduce file size, the <a href="/tools/format-converter/">Format Converter</a> to change image formats, and the <a href="/tools/color-picker/">Color Picker</a> to sample a pixel from an image.</p>
+<h2>4. SEO tools</h2>
+<p>SEO utilities help prepare and inspect page metadata. The <a href="/tools/serp-preview/">SERP Preview</a> reviews a search-style snippet, the <a href="/tools/meta-tag-generator/">Meta Tag Generator</a> prepares metadata, the <a href="/tools/og-preview/">Open Graph Preview</a> checks social sharing details, and the <a href="/tools/robots-txt-generator/">robots.txt Generator</a> creates crawler rules.</p>
+<h2>5. Calculators and converters</h2>
+<p>Use the <a href="/tools/percentage/">Percentage Calculator</a> for proportions and percentage changes, the <a href="/tools/age/">Age Calculator</a> for calendar-aware age calculations, the <a href="/tools/date-diff/">Date Difference Calculator</a> for date intervals, and the <a href="/tools/unit-converter/">Unit Converter</a> for supported measurement conversions.</p>
+<h2>6. Date and file utilities</h2>
+<p>The <a href="/tools/multi-calendar-converter/">Multi-Calendar Converter</a> compares supported calendar dates, the <a href="/tools/unix-timestamp/">Unix Timestamp Converter</a> converts timestamps, <a href="/tools/file-info/">File Info</a> inspects local file metadata, and the <a href="/tools/csv-json-converter/">CSV/JSON Converter</a> converts tabular data.</p>
+<h2>How to choose a tool</h2>
+<ol>
+<li><strong>Privacy:</strong> Understand whether your input is processed locally or sent to a service.</li>
+<li><strong>Accuracy:</strong> Check examples, edge cases, and whether the tool explains rounding or format limitations.</li>
+<li><strong>Security:</strong> Use a secure connection and avoid granting unnecessary permissions.</li>
+<li><strong>Usability:</strong> Prefer clear labels, accessible controls, and layouts that work on mobile.</li>
+<li><strong>Cost and terms:</strong> Confirm whether the tool is free, limited, or requires registration.</li>
+</ol>
+<h2>Summary</h2>
+<p>Online tools are useful when they solve a specific task clearly and reliably. Choose based on accuracy, privacy, accessibility, and transparent terms—not just appearance or a claim that a service is free. Review the limitations before using any tool for sensitive or high-impact work.</p>`
+  },
+  'color-palette-selection-guide': {
+    description: 'Learn practical color-selection principles for web interfaces, including visual hierarchy, balanced palettes, contrast, accessibility, and dark-mode considerations.',
+    faqs: [
+      { q: 'What is the 60-30-10 color rule?', a: 'It is a design guideline that allocates roughly 60% of a composition to a dominant color, 30% to a secondary color, and 10% to an accent. It is a starting point, not a strict accessibility or usability requirement.' },
+      { q: 'Should a professional website use bright colors?', a: 'It depends on the brand, audience, and product. A restrained palette may suit some services, while brighter accents can help highlight actions. Test the palette in the actual interface.' },
+      { q: 'Why is color contrast important?', a: 'Sufficient contrast makes text and controls easier to perceive. WCAG 2.2 AA generally requires a contrast ratio of at least 4.5:1 for normal text and 3:1 for large text, with separate criteria for non-text UI components.' }
+    ],
+    body: String.raw`<p>Color is part of a website's visual language. A consistent palette helps establish hierarchy, distinguish actions, and create a recognizable identity. Good color selection is not only about appearance: text contrast, interaction states, and accessibility must also be considered.</p>
+<h2>Consider the role of each color</h2>
+<p>Start by assigning roles rather than choosing many unrelated swatches. A palette may include a primary brand color, a secondary color, an accent for important actions, and neutral colors for backgrounds, borders, and text. Check that each role remains clear in both light and dark themes.</p>
+<h2>Use the 60-30-10 rule as a starting point</h2>
+<p>The 60-30-10 guideline suggests using a dominant color for most of the visual area, a secondary color for supporting sections, and a smaller accent for emphasis. It is a flexible composition technique, not a universal formula. Complex applications may need additional semantic colors for success, warning, error, and information states.</p>
+<h2>Think about color associations carefully</h2>
+<p>People may associate colors with different meanings, but those associations vary by culture, context, and experience. Do not rely on color alone to communicate status or meaning. Pair colors with labels, icons, or other cues.</p>
+<h2>Build a harmonious palette</h2>
+<p>Color-wheel relationships can help generate a starting palette:</p>
+<ul>
+<li><strong>Complementary:</strong> colors opposite one another on the color wheel.</li>
+<li><strong>Analogous:</strong> neighboring hues that often create a more blended appearance.</li>
+<li><strong>Triadic:</strong> three hues spaced around the wheel.</li>
+<li><strong>Monochromatic:</strong> variations of one hue using different lightness and saturation.</li>
+</ul>
+<p>Use our <a href="/tools/palette-generator/">Palette Generator</a> to explore color relationships. If you already have a reference image or brand mark, use the <a href="/tools/color-picker/">Color Picker</a> to sample a color value.</p>
+<h2>Contrast and accessibility</h2>
+<p>Text must remain readable against its background. WCAG 2.2 AA generally specifies a contrast ratio of at least 4.5:1 for normal text and 3:1 for large text. User-interface components and graphical objects have separate non-text contrast requirements. Check actual foreground and background combinations with our <a href="/tools/contrast-checker/">Contrast Checker</a>.</p>
+<p>Do not communicate errors, success, or selection using color alone. Add visible text, icons, patterns, or other signals so the information remains understandable to more users.</p>
+<h2>Test the palette in context</h2>
+<ul>
+<li>Check buttons, links, form fields, disabled states, and focus indicators.</li>
+<li>Review the palette on mobile and desktop screens.</li>
+<li>Test both light and dark themes.</li>
+<li>Check charts and status colors for distinguishability.</li>
+<li>Ask users to test the interface where possible.</li>
+</ul>
+<h2>Summary</h2>
+<p>A strong interface palette balances brand identity, hierarchy, and accessibility. Use color harmony as a starting point, verify contrast against WCAG requirements, and test the actual components in both themes. Explore palettes with our <a href="/tools/palette-generator/">Palette Generator</a> and check readability with the <a href="/tools/contrast-checker/">Contrast Checker</a>.</p>`
+  },
+  'hashing-vs-base64': {
+    description: 'Understand the difference between reversible Base64 encoding, one-way cryptographic hashing, and random identifiers such as UUIDs—and learn when each is appropriate.',
+    faqs: [
+      { q: 'Is Base64 a type of encryption?', a: 'No. Base64 is an encoding scheme. Anyone can decode it, so it does not provide confidentiality.' },
+      { q: 'Can a hash be reversed?', a: 'A cryptographic hash is designed to be one-way, but weak or predictable inputs can sometimes be guessed and checked. A hash is not encryption and does not have a decryption key.' },
+      { q: 'Can I store passwords using SHA-256?', a: 'Do not store passwords as a plain SHA-256 digest. Use a dedicated password-hashing function such as Argon2id, scrypt, or bcrypt with unique salts and appropriate parameters.' },
+      { q: 'What is the difference between a hash and a UUID?', a: 'A hash is computed from input data and produces a digest. A UUID is an identifier generated according to a defined format and is not necessarily derived from the data it identifies.' }
+    ],
+    body: String.raw`<p>Base64 and cryptographic hashing are often mentioned together in software development, but they solve different problems. Base64 changes how data is represented. A cryptographic hash produces a fixed-size digest. Neither should be confused with encryption.</p>
+<h2>Base64: reversible encoding</h2>
+<p>Base64 represents binary data using a set of printable characters. It is useful when binary content must be carried through a text-oriented format such as JSON or email. Because the transformation is reversible, anyone with the encoded value can decode it. Base64 provides no confidentiality or access control.</p>
+<p>Use our <a href="/tools/base64/">Base64 Encoder and Decoder</a> to encode or decode supported text and data.</p>
+<h2>Hashing: a one-way digest</h2>
+<p>A cryptographic hash function maps input data to a fixed-size digest. A secure hash function is designed to make it computationally infeasible to recover the original input or find a different input with the same digest. Hashes are commonly used to detect file changes and as building blocks in digital signatures and other security systems.</p>
+<p>Our <a href="/tools/hash-generator/">Hash Generator</a> can calculate supported digests such as SHA-256. Comparing a digest with a trusted value can help detect whether a downloaded file differs from the expected file.</p>
+<h2>Important: password storage needs a password-hashing function</h2>
+<p>A fast general-purpose hash such as SHA-256 is not appropriate for storing passwords by itself. Password storage should use a dedicated, deliberately slow password-hashing scheme such as Argon2id, scrypt, or bcrypt, with a unique salt and parameters suited to the system. Do not treat a plain SHA-256 digest as a secure password verifier.</p>
+<h2>Encryption is different again</h2>
+<p>Encryption is designed to be reversible by someone who has the appropriate key. It provides confidentiality when implemented with a suitable authenticated encryption scheme and sound key management. Encoding, hashing, and encryption have different goals and should not be substituted for one another.</p>
+<h2>What about UUIDs?</h2>
+<p>A UUID is a standardized identifier, often used to label records or resources. A random UUID is generated independently of the content it identifies; it is not a digest or an encryption result. Use our <a href="/tools/uuid-generator/">UUID Generator</a> when you need a random identifier.</p>
+<h2>Quick comparison</h2>
+<ul>
+<li><strong>Base64:</strong> reversible representation for data transport.</li>
+<li><strong>Hash:</strong> one-way digest for integrity and cryptographic building blocks.</li>
+<li><strong>Encryption:</strong> reversible transformation that protects confidentiality with keys.</li>
+<li><strong>UUID:</strong> identifier for distinguishing entities.</li>
+</ul>
+<h2>Summary</h2>
+<p>Use Base64 for text-safe representation, cryptographic hashes for integrity-related tasks, authenticated encryption for confidentiality, dedicated password-hashing functions for passwords, and UUIDs for identifiers. Choosing the right primitive matters for both correctness and security.</p>`
+  },
+  'json-guide': {
+    description: 'Learn how to format, validate, and troubleshoot JSON, identify common syntax errors, and handle untrusted structured data safely.',
+    faqs: [
+      { q: 'Why should JSON be formatted?', a: 'Pretty-printing adds indentation and line breaks so nested objects and arrays are easier to inspect. Minification removes unnecessary whitespace to reduce the size of the serialized text.' },
+      { q: 'What are common JSON syntax errors?', a: 'Common errors include trailing commas, single-quoted strings, unquoted object keys, comments, and missing quotation marks or brackets.' },
+      { q: 'Can JSON contain comments?', a: 'No. Standard JSON does not support comments. Some configuration formats extend JSON, but those files are not strict JSON.' },
+      { q: 'Is it safe to paste sensitive JSON into an online formatter?', a: 'Only if you understand the site's processing and privacy practices. Prefer tools that process input locally and avoid pasting secrets into services you do not trust.' }
+    ],
+    body: String.raw`<p>JSON (JavaScript Object Notation) is widely used to exchange data between web applications and services. Raw JSON is often minified into one long line, which can be difficult to inspect. Formatting makes the structure easier to read, while validation checks whether the text follows JSON syntax.</p>
+<h2>Why pretty-print JSON?</h2>
+<p>Pretty-printing adds indentation and line breaks to reveal nested objects and arrays. It makes keys and values easier to locate and helps developers compare API responses or configuration files. Minification does the opposite: it removes unnecessary whitespace to make the serialized text smaller.</p>
+<p>Use our <a href="/tools/json-formatter/">JSON Formatter</a> to format, minify, and validate JSON in your browser.</p>
+<h2>Common JSON syntax errors</h2>
+<ul>
+<li><strong>Trailing commas:</strong> A comma after the last item in an object or array is not valid JSON.</li>
+<li><strong>Single quotes:</strong> JSON strings and object keys must use double quotation marks.</li>
+<li><strong>Unquoted keys:</strong> Object property names must be strings in double quotes.</li>
+<li><strong>Comments:</strong> Standard JSON does not allow <code>//</code> or block comments.</li>
+<li><strong>Missing delimiters:</strong> Every opening brace, bracket, and quotation mark must have a matching close.</li>
+</ul>
+<h2>Validate before using the data</h2>
+<p>Before sending JSON to an API or storing it, parse it and validate its structure against the application's expected schema. Syntax validity alone does not prove that the values are correct or safe for your application.</p>
+<h2>Handle untrusted JSON as data</h2>
+<p>Use a standard JSON parser and validate the fields you expect. Do not evaluate or execute untrusted JSON as JavaScript. Escape data appropriately when displaying it in HTML, and avoid placing secrets in public configuration files or examples.</p>
+<blockquote><p><strong>Privacy reminder:</strong> Avoid pasting API keys, passwords, customer records, or other confidential values into unknown websites. Prefer a trusted local-processing tool and review its network behaviour when the data is sensitive.</p></blockquote>
+<h2>Summary</h2>
+<p>Formatting improves readability; validation checks syntax; schema validation checks whether the data meets application requirements. Use our <a href="/tools/json-formatter/">JSON Formatter</a> for local formatting and validation, and read our <a href="/blog/what-is-json-guide/">introduction to JSON</a> for the underlying data format.</p>`
+  }
 
 };
