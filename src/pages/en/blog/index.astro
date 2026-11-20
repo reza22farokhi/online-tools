@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { blogTranslationsEn } from '../../../data/blog-translations-en';
+const site = Astro.site?.toString() ?? 'https://abzar-tools.ir/';
+const canonical = new URL('en/blog/', site).toString();
+const titleFor = (slug: string) => slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+---
+<BaseLayout title="Blog | Online Tools" description="Practical English guides to web security, privacy, SEO, image processing, and browser-based tools." lang="en" canonical={canonical}>
+  <div class="container page">
+    <header><h1>Online Tools Blog</h1><p>Practical guides, explanations, and tutorials.</p></header>
+    <div class="post-list">
+      {Object.entries(blogTranslationsEn).map(([slug, translation]) => <a class="post-card card" href={`/en/blog/${slug}/`}><h2>{titleFor(slug)}</h2><p>{translation.description}</p><span>Read article →</span></a>)}
+    </div>
+  </div>
+</BaseLayout>
+<style>.page{padding-block:var(--space-5)}.post-list{display:grid;grid-template-columns:1fr;gap:1rem}@media(min-width:700px){.post-list{grid-template-columns:repeat(2,1fr)}}.post-card{display:block;padding:1.25rem;text-decoration:none;color:inherit}.post-card p{color:var(--color-text-muted)}</style>
