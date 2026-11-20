@@ -106,9 +106,13 @@ const jsonLdList: object[] = [articleLd, breadcrumbLd];
       <slot />
     </div>
 
-    <p class="article-translation-note" data-lang-only="en" hidden>The full article text is currently available in Persian only. The article title and listing are translated into English.</p>
+    {translation ? (
+      <div class="post-content card" data-lang-only="en" set:html={translation.body} />
+    ) : (
+      <p class="article-translation-note" data-lang-only="en" hidden>The full article text is currently available in Persian only. The article title and listing are translated into English.</p>
+    )}
 
-    {faqs.length > 0 && <BlogFAQ faqs={faqs} />}
+    {faqs.length > 0 && <BlogFAQ faqs={faqs} faqsEn={translation?.faqs} />}
   </article>
 
 <script>
