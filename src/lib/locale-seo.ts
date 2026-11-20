@@ -16,7 +16,11 @@ export function getLocaleSeoUrls(
   site: string | URL,
   locale: SupportedLocale = 'fa'
 ): LocaleSeoUrls {
-  const source = new URL(canonical.toString(), site);
+  const input = new URL(canonical.toString(), site);
+  const siteUrl = new URL(site);
+  // Canonical URLs must always use the configured production origin, even when
+  // Astro is rendered by a local preview server (localhost).
+  const source = new URL(`${input.pathname}${input.search}${input.hash}`, siteUrl);
   const fa = new URL(source);
   const en = new URL(source);
   fa.searchParams.set('lang', 'fa');
