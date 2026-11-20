@@ -10,7 +10,7 @@ export interface Props {
 const { tool, lang = 'fa' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const category = getCategoryMeta(tool.category);
-const href = `${base}tools/${tool.slug}/`;
+const href = `${base}${lang === 'en' ? 'en/' : ''}tools/${tool.slug}/`;
 ---
 
 <div class="tool-card-wrap">
