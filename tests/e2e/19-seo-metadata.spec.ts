@@ -27,7 +27,7 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
   expect(description?.length, `${slug} ${lang} description length`).toBeLessThanOrEqual(155);
 
   const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-  expect(canonical).toBe(`https://abzar-tools.ir${route}?lang=${lang}`);
+  expect(canonical).toBe(`https://abzar-tools.ir${route}${lang === 'en' ? '?lang=en' : ''}`);
 
   await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute('content', lang === 'fa' ? 'fa_IR' : 'en_US');
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical!);
