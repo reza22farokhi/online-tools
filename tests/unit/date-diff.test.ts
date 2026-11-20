@@ -36,6 +36,20 @@ describe('calculateDateDiff', () => {
     const r = calculateDateDiff(new Date(2025, 0, 4), new Date(2025, 0, 11));
     expect(r!.businessDays + r!.weekendDays).toBe(r!.totalDays);
   });
+
+  it('counts Friday and Saturday as weekend days across a week boundary', () => {
+    const r = calculateDateDiff(new Date(2025, 0, 3), new Date(2025, 0, 6));
+    expect(r!.totalDays).toBe(3);
+    expect(r!.businessDays).toBe(1);
+    expect(r!.weekendDays).toBe(2);
+  });
+  it('handles century-scale ranges without changing day totals', () => {
+    const r = calculateDateDiff(new Date(1900, 0, 1), new Date(2000, 0, 1));
+    expect(r!.totalDays).toBe(36524);
+    expect(r!.businessDays + r!.weekendDays).toBe(36524);
+    expect(r!.businessDays).toBeGreaterThan(0);
+    expect(r!.weekendDays).toBeGreaterThan(0);
+  });
   it('total hours', () => {
     const r = calculateDateDiff(new Date(2025, 0, 1), new Date(2025, 0, 2));
     expect(r!.totalHours).toBe(24);
