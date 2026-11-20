@@ -27,8 +27,8 @@ const faqsEn = tool ? [
     a: 'Content entered or selected in this tool is processed in your browser and is not sent to our servers for processing. No third-party advertising scripts are currently loaded by the site. See the Privacy Policy for details.'
   }
 ] : [];
-const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa) : null;
-const faqLdEn = faqsEn.length > 0 ? buildFaqJsonLd(faqsEn) : null;
+const faqLdFa = faqsFa.length > 0 ? { ...buildFaqJsonLd(faqsFa), inLanguage: 'fa' } : null;
+const faqLdEn = faqsEn.length > 0 ? { ...buildFaqJsonLd(faqsEn), inLanguage: 'en' } : null;
 ---
 {lang === 'fa' && faqsFa.length > 0 && (
   <section class="tool-faq" aria-labelledby="faq-title-fa" data-lang-only="fa">
