@@ -20,7 +20,7 @@ const pageTitleEn = meta.seoTitle?.en ?? `${meta.name.en} | Online Tools`;
 const pageDescription = meta.description[lang];
 const pageDescriptionEn = meta.description.en;
 const canonical = new URL(
-  `${base}tools/${meta.slug}/`.replace(/^\//, ''),
+  `${lang === 'en' ? 'en/' : ''}tools/${meta.slug}/`,
   site
 ).toString();
 
@@ -33,14 +33,14 @@ const webAppLd = buildWebAppJsonLd({
 
 const breadcrumbLd = buildBreadcrumbJsonLd([
   { name: lang === 'en' ? 'Home' : 'خانه', url: lang === 'en' ? new URL('en/', site).toString() : site },
-  { name: 'ابزارها', url: new URL(`${base}tools/`.replace(/^\//, ''), site).toString() },
+  { name: lang === 'en' ? 'Tools' : 'ابزارها', url: new URL(`${lang === 'en' ? 'en/' : ''}tools/`, site).toString() },
   { name: meta.name[lang], url: canonical }
 ]);
 
 const related = getRelated(meta.slug);
 ---
 <BaseLayout
-  title={pageTitle}
+  title={lang === 'en' ? pageTitleEn : pageTitle}
   titleEn={pageTitleEn}
   description={pageDescription}
   descriptionEn={pageDescriptionEn}
@@ -52,7 +52,7 @@ const related = getRelated(meta.slug);
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <ol>
         <li><a href={lang === 'en' ? base + 'en/' : base} data-i18n="breadcrumb.home">خانه</a></li>
-        <li><a href={base + (lang === 'en' ? 'en/tools/' : 'tools/')} data-i18n="breadcrumb.tools">ابزارها</a></li>
+        <li><a href={base + (lang === 'en' ? 'en/tools/' : 'tools/')} data-i18n="breadcrumb.tools">{lang === 'en' ? 'Tools' : 'ابزارها'}</a></li>
         <li aria-current="page"><span data-lang-fa={meta.name.fa} data-lang-en={meta.name.en}>{meta.name[lang]}</span></li>
       </ol>
     </nav>
