@@ -1,5 +1,6 @@
 ---
 import { getFaqsFor } from '../../data/tool-faqs';
+import type { ToolFaqItem } from '../../data/faqs/types';
 import { getToolBySlug } from '../../tools/registry';
 import { buildFaqJsonLd } from '../../lib/seo';
 
@@ -9,19 +10,29 @@ export interface Props {
 }
 
 const { toolSlug, toolName } = Astro.props;
-const faqsFa = getFaqsFor(toolSlug);
+const allFaqs = getFaqsFor(toolSlug);
+
+function hasPersianFaqContent(faq: ToolFaqItem): faq is ToolFaqItem & { q: string; a: string } {
+  return typeof faq.q === 'string' && faq.q.trim().length > 0
+    && typeof faq.a === 'string' && faq.a.trim().length > 0;
+}
+
+function hasEnglishFaqContent(faq: ToolFaqItem): faq is ToolFaqItem & { qEn: string; aEn: string } {
+  return typeof faq.qEn === 'string' && faq.qEn.trim().length > 0
+    && typeof faq.aEn === 'string' && faq.aEn.trim().length > 0;
+}
+
+const faqsFa = allFaqs.filter(hasPersianFaqContent);
+const faqsEn = allFaqs.filter(hasEnglishFaqContent).map(faq => ({ q: faq.qEn, a: faq.aEn }));
 const tool = getToolBySlug(toolSlug);
 const toolNameEn = tool?.name.en ?? toolName;
-const hasCompleteEnglishFaqs = faqsFa.length > 0 && faqsFa.every(faq => faq.qEn?.trim() && faq.aEn?.trim());
-const faqsEn = hasCompleteEnglishFaqs
-  ? faqsFa.map(faq => ({ q: faq.qEn!, a: faq.aEn! }))
-  : tool ? [
-      { q: `What does ${toolNameEn} do?`, a: tool.description.en },
-      { q: `How do I use ${toolNameEn}?`, a: 'Enter or select the required input, adjust any available options, and review the result. Use the copy or download control when it is available.' },
-      { q: 'Is my data uploaded to a server?', a: 'Content entered or selected in this tool is processed in your browser and is not sent to our servers for processing. Separate technical requests may still be made to deliver and secure the site. See the Privacy Policy for details.' }
-    ] : [];
+const englishFaqs = faqsEn.length > 0 ? faqsEn : tool ? [
+  { q: `What does ${toolNameEn} do?`, a: tool.description.en },
+  { q: `How do I use ${toolNameEn}?`, a: 'Enter or select the required input, adjust any available options, and review the result. Use the copy or download control when it is available.' },
+  { q: 'Is my data uploaded to a server?', a: 'Content entered or selected in this tool is processed in your browser and is not sent to our servers for processing. Separate technical requests may still be made to deliver and secure the site. See the Privacy Policy for details.' }
+] : [];
 const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa, 'fa') : null;
-const faqLdEn = faqsEn.length > 0 ? buildFaqJsonLd(faqsEn, 'en') : null;
+const faqLdEn = englishFaqs.length > 0 ? buildFaqJsonLd(englishFaqs, 'en') : null;
 ---
 {faqsFa.length > 0 && (
   <section class="tool-faq" aria-labelledby="faq-title-fa" data-lang-only="fa">
@@ -37,11 +48,11 @@ const faqLdEn = faqsEn.length > 0 ? buildFaqJsonLd(faqsEn, 'en') : null;
     {faqLdFa && <script type="application/ld+json" data-jsonld-lang="fa" set:html={JSON.stringify(faqLdFa)} />}
   </section>
 )}
-{faqsEn.length > 0 && (
+{englishFaqs.length > 0 && (
   <section class="tool-faq" aria-labelledby="faq-title-en" data-lang-only="en" hidden>
     <h2 id="faq-title-en">Frequently asked questions about {toolNameEn}</h2>
     <div class="faq-list">
-      {faqsEn.map(faq => (
+      {englishFaqs.map(faq => (
         <details class="faq-item">
           <summary class="faq-q">{faq.q}</summary>
           <p class="faq-a">{faq.a}</p>
