@@ -105,6 +105,26 @@ describe('verify()', () => {
     });
   });
 
+  it('rejects unsupported critical JOSE header parameters', async () => {
+    const token = await signHS256({ alg: 'HS256', typ: 'JWT', crit: ['exp'] }, { sub: 'x' }, 'k');
+    await expect(verify(token, 'k')).rejects.toMatchObject({ code: 'UNSUPPORTED_CRIT' });
+  });
+
+  it('rejects malformed critical header parameters', async () => {
+    const token = await signHS256({ alg: 'HS256', typ: 'JWT', crit: [] }, { sub: 'x' }, 'k');
+    await expect(verify(token, 'k')).rejects.toMatchObject({ code: 'INVALID_CRIT' });
+  });
+
+  it('rejects unencoded JWS payload mode', async () => {
+    const token = await signHS256({ alg: 'HS256', typ: 'JWT', b64: false }, { sub: 'x' }, 'k');
+    await expect(verify(token, 'k')).rejects.toMatchObject({ code: 'UNSUPPORTED_B64' });
+  });
+
+  it('rejects non-boolean b64 header values', async () => {
+    const token = await signHS256({ alg: 'HS256', typ: 'JWT', b64: 'false' }, { sub: 'x' }, 'k');
+    await expect(verify(token, 'k')).rejects.toMatchObject({ code: 'INVALID_B64' });
+  });
+
   it('rejects an algorithm override that differs from the JWT header', async () => {
     await expect(verify(HS256_TOKEN, HS256_SECRET, 'HS512')).rejects.toMatchObject({
       code: 'ALG_MISMATCH',
@@ -171,6 +191,16 @@ describe('checkExpiration()', () => {
 });
 
 describe('analyzeSecurity()', () => {
+  it('flags unsupported critical JOSE headers as danger', () => {
+    const w = analyzeSecurity({ alg: 'HS256', crit: ['exp'] }, {});
+    expect(w.some((x) => x.code === 'UNSUPPORTED_CRIT' && x.level === 'danger')).toBe(true);
+  });
+
+  it('flags unencoded JWS payload mode as danger', () => {
+    const w = analyzeSecurity({ alg: 'HS256', b64: false }, {});
+    expect(w.some((x) => x.code === 'UNSUPPORTED_B64' && x.level === 'danger')).toBe(true);
+  });
+
   it('flags alg none as danger', () => {
     const w = analyzeSecurity({ alg: 'none' }, {});
     expect(w.some((x) => x.code === 'ALG_NONE' && x.level === 'danger')).toBe(true);
