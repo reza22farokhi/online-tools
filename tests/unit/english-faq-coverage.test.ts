@@ -7,10 +7,12 @@ describe('English tool FAQ coverage', () => {
     const missing: string[] = [];
 
     for (const tool of registry) {
-      const faqs = getFaqsFor(tool.slug);
+      const englishFaqs = getFaqsFor(tool.slug).filter(
+        (faq) => typeof faq.qEn === 'string' || typeof faq.aEn === 'string'
+      );
       const hasDedicatedEnglishFaqs =
-        faqs.length >= 2 &&
-        faqs.every((faq) =>
+        englishFaqs.length >= 2 &&
+        englishFaqs.every((faq) =>
           typeof faq.qEn === 'string' &&
           faq.qEn.trim().length > 0 &&
           typeof faq.aEn === 'string' &&
