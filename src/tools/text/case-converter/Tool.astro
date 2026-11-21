@@ -107,11 +107,19 @@ import { MODES } from './logic';
   .cc-tool { display: flex; flex-direction: column; gap: var(--space-3); }
   .cc-help { margin: 0; font-size: 0.8rem; color: var(--color-text-muted); }
   .cc-modes {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-2);
   }
-  .cc-mode { font-size: 0.9rem; padding: var(--space-1) var(--space-3); }
+  .cc-mode {
+    min-width: 0;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    padding: var(--space-1) var(--space-2);
+  }
+  @media (max-width: 380px) {
+    .cc-mode { font-size: 0.8rem; }
+  }
   .cc-mode.active {
     background: var(--color-primary);
     border-color: var(--color-primary);
