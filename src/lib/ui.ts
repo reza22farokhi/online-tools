@@ -606,6 +606,20 @@ function updateLocaleCanonical(lang: Lang): void {
   });
   const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
   if (ogUrl) ogUrl.content = localized.href;
+  document.querySelectorAll<HTMLAnchorElement>('a[href]').forEach(anchor => {
+    const raw = anchor.getAttribute('href');
+    if (!raw || raw.startsWith('#') || /^(mailto:|tel:|javascript:)/i.test(raw)) return;
+    try {
+      const target = new URL(raw, window.location.origin);
+      if (target.origin !== window.location.origin) return;
+      if (lang === 'en' && !/^\/en(?:\/|$)/.test(target.pathname)) {
+        target.pathname = '/en' + (target.pathname === '/' ? '/' : target.pathname);
+      } else if (lang === 'fa' && /^\/en(?:\/|$)/.test(target.pathname)) {
+        target.pathname = target.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+      }
+      anchor.setAttribute('href', target.pathname + target.search + target.hash);
+    } catch {}
+  });
   const ogLocale = document.querySelector<HTMLMetaElement>('meta[property="og:locale"]');
   if (ogLocale) ogLocale.content = lang === 'fa' ? 'fa_IR' : 'en_US';
 }
