@@ -41,8 +41,13 @@ function transformEnglishHtml(html) {
   output = output.replace(/(<meta\b(?=[^>]*property=["']og:url["'])[^>]*content=["'])([^"']+)(["'][^>]*>)/i,
     (_match, before, href, after) => before + localizedPath(href, 'en') + after);
   output = output.replace(/(<meta\b(?=[^>]*property=["']og:locale["'])[^>]*content=["'])[^"']+(["'][^>]*>)/i, '$1en_US$2');
-  output = output.replace(/<script\b([^>]*data-jsonld-lang=["']fa["'][^>]*)\btype=["'][^"']+["']([^>]*)>/gi, '<script$1 type="application/json"$2>');
-  output = output.replace(/<script\b([^>]*data-jsonld-lang=["']en["'][^>]*)\btype=["'][^"']+["']([^>]*)>/gi, '<script$1 type="application/ld+json"$2>');
+  output = output.replace(/<script\b[^>]*\bdata-jsonld-lang=["'](fa|en)["'][^>]*>/gi, tag => {
+    const locale = tag.match(/data-jsonld-lang=["'](fa|en)["']/i)?.[1];
+    const type = locale === 'en' ? 'application/ld+json' : 'application/json';
+    return /\btype=["'][^"']+["']/i.test(tag)
+      ? tag.replace(/\btype=["'][^"']+["']/i, 'type="' + type + '"')
+      : tag.replace('<script', '<script type="' + type + '"');
+  });
   return output;
 }
 
