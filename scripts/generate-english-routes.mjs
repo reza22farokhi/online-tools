@@ -41,6 +41,14 @@ function transformEnglishHtml(html) {
   output = output.replace(/(<meta\b(?=[^>]*property=["']og:url["'])[^>]*content=["'])([^"']+)(["'][^>]*>)/i,
     (_match, before, href, after) => before + localizedPath(href, 'en') + after);
   output = output.replace(/(<meta\b(?=[^>]*property=["']og:locale["'])[^>]*content=["'])[^"']+(["'][^>]*>)/i, '$1en_US$2');
+  output = output.replace(/<meta\b[^>]*data-lang-en=["'][^"']*["'][^>]*>/gi, tag => {
+    const english = tag.match(/data-lang-en=["']([^"']*)["']/i)?.[1];
+    return english === undefined ? tag : tag.replace(/\bcontent=["'][^"']*["']/i, 'content="' + english + '"');
+  });
+  output = output.replace(/<title\b([^>]*)>([\s\S]*?)<\/title>/i, (match, attrs) => {
+    const english = attrs.match(/data-lang-en=["']([^"']*)["']/i)?.[1];
+    return english === undefined ? match : '<title' + attrs + '>' + english + '</title>';
+  });
   output = output.replace(/<script\b[^>]*\bdata-jsonld-lang=["'](fa|en)["'][^>]*>/gi, tag => {
     const locale = tag.match(/data-jsonld-lang=["'](fa|en)["']/i)?.[1];
     const type = locale === 'en' ? 'application/ld+json' : 'application/json';
