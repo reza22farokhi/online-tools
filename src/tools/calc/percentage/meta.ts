@@ -8,5 +8,5 @@ export const meta: ToolMeta = {
   keywords: ['percentage', 'percent calculator', 'percent change', 'درصد', 'محاسبه درصد', 'درصد تغییر'],
   popular: true,
   addedAt: '2026-11-11',
-  related: ['age', 'json-formatter']
+  related: ['unit-converter']
 };

@@ -19,5 +19,6 @@ export const meta: ToolMeta = {
     'تبدیل اعداد به فارسی'
   ],
   popular: false,
-  addedAt: '2026-11-14'
+  addedAt: '2026-11-14',
+  related: ['remove-extra-spaces', 'case-converter', 'word-counter']
 };

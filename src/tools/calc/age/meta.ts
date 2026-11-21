@@ -9,5 +9,5 @@ export const meta: ToolMeta = {
   keywords: ['age calculator', 'birthday', 'سن', 'محاسبه سن', 'تولد', 'سال تولد'],
   popular: true,
   addedAt: '2026-11-11',
-  related: ['percentage', 'json-formatter']
+  related: ['date-diff', 'date-converter']
 };
