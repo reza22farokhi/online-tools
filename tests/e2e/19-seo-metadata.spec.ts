@@ -93,7 +93,8 @@ test('tool FAQ structured data matches the active language', async ({ page }) =>
     expect(faq.inLanguage).toBe(lang);
     const faqText = JSON.stringify(faq.mainEntity);
     if (lang === 'en') {
-      expect(faqText).toContain('What does Word & Character Counter do?');
+      expect(faqText).toContain('How are words counted?');
+      expect(faqText).toContain('How is reading time estimated?');
       expect(faqText).not.toMatch(/[\u0600-\u06FF]/);
     } else {
       expect(faqText).toContain('شمارش کلمات چگونه انجام می‌شود؟');

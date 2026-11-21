@@ -12,20 +12,14 @@ const { toolSlug, toolName } = Astro.props;
 const faqsFa = getFaqsFor(toolSlug);
 const tool = getToolBySlug(toolSlug);
 const toolNameEn = tool?.name.en ?? toolName;
-const faqsEn = tool ? [
-  {
-    q: `What does ${toolNameEn} do?`,
-    a: tool.description.en
-  },
-  {
-    q: `How do I use ${toolNameEn}?`,
-    a: 'Enter or select the required input, adjust any available options, and review the result. Use the copy or download control when it is available.'
-  },
-  {
-    q: 'Is my data uploaded to a server?',
-    a: 'Content entered or selected in this tool is processed in your browser and is not sent to our servers for processing. The site does not load third-party advertising scripts or advertising networks. Separate technical requests may still be made to deliver and secure the site. See the Privacy Policy for details.'
-  }
-] : [];
+const hasCompleteEnglishFaqs = faqsFa.length > 0 && faqsFa.every(faq => faq.qEn?.trim() && faq.aEn?.trim());
+const faqsEn = hasCompleteEnglishFaqs
+  ? faqsFa.map(faq => ({ q: faq.qEn!, a: faq.aEn! }))
+  : tool ? [
+      { q: `What does ${toolNameEn} do?`, a: tool.description.en },
+      { q: `How do I use ${toolNameEn}?`, a: 'Enter or select the required input, adjust any available options, and review the result. Use the copy or download control when it is available.' },
+      { q: 'Is my data uploaded to a server?', a: 'Content entered or selected in this tool is processed in your browser and is not sent to our servers for processing. Separate technical requests may still be made to deliver and secure the site. See the Privacy Policy for details.' }
+    ] : [];
 const faqLdFa = faqsFa.length > 0 ? buildFaqJsonLd(faqsFa, 'fa') : null;
 const faqLdEn = faqsEn.length > 0 ? buildFaqJsonLd(faqsEn, 'en') : null;
 ---
