@@ -5,6 +5,8 @@ export interface JwtHeader {
   alg: string;
   typ?: string;
   kid?: string;
+  crit?: unknown;
+  b64?: unknown;
   [key: string]: unknown;
 }
 
@@ -96,6 +98,25 @@ export function decode(token: string): DecodedJwt {
 
 // ---------- Verification ----------
 
+function assertSupportedCriticalHeaders(header: JwtHeader): void {
+  if (header.b64 !== undefined && typeof header.b64 !== 'boolean') {
+    throw new JwtError('INVALID_B64', 'پارامتر b64 در هدر JWT باید بولی باشد');
+  }
+  if (header.b64 === false) {
+    throw new JwtError('UNSUPPORTED_B64', 'این ابزار از payload بدون کدگذاری Base64URL پشتیبانی نمی‌کند');
+  }
+  if (header.crit !== undefined) {
+    if (
+      !Array.isArray(header.crit) ||
+      header.crit.length === 0 ||
+      header.crit.some((value: unknown) => typeof value !== 'string' || value.trim().length === 0)
+    ) {
+      throw new JwtError('INVALID_CRIT', 'فهرست crit در هدر JWT نامعتبر است');
+    }
+    throw new JwtError('UNSUPPORTED_CRIT', 'هدر JWT شامل پارامتر حیاتی است که این ابزار پشتیبانی نمی‌کند؛ تأیید امضا متوقف شد');
+  }
+}
+
 interface HmacParam { hash: AlgorithmIdentifier; }
 interface RsaParam { hash: AlgorithmIdentifier; padding: 'RSASSA-PKCS1-v1_5' | 'RSA-PSS'; saltLength?: number; }
 interface EcParam { hash: AlgorithmIdentifier; namedCurve: string; }
@@ -152,6 +173,7 @@ export async function verify(
     throw new JwtError('NO_WEBCRYPTO', 'مرورگر شما از Web Crypto پشتیبانی نمی‌کند (نیاز به HTTPS)');
   }
   const decoded = decode(token);
+  assertSupportedCriticalHeaders(decoded.header);
   const alg = (algorithmOverride || decoded.header.alg).toString();
 
   if (alg !== decoded.header.alg) {
@@ -271,6 +293,21 @@ export interface SecurityWarning {
 
 export function analyzeSecurity(header: JwtHeader, payload: JwtPayload): SecurityWarning[] {
   const warnings: SecurityWarning[] = [];
+
+  if (header.crit !== undefined) {
+    warnings.push({
+      level: 'danger',
+      code: 'UNSUPPORTED_CRIT',
+      message: 'این توکن دارای پارامترهای حیاتی JOSE است که این ابزار تفسیر نمی‌کند؛ تأیید امضا متوقف می‌شود.',
+    });
+  }
+  if (header.b64 === false) {
+    warnings.push({
+      level: 'danger',
+      code: 'UNSUPPORTED_B64',
+      message: 'این توکن از payload بدون کدگذاری Base64URL استفاده می‌کند که توسط این ابزار پشتیبانی نمی‌شود.',
+    });
+  }
 
   if (header.alg === 'none') {
     warnings.push({
