@@ -185,6 +185,18 @@ export async function verify(
   if (!keyInput || keyInput.trim().length === 0) {
     throw new JwtError('NO_KEY', 'کلید تأیید را وارد کنید');
   }
+  if (
+    Object.prototype.hasOwnProperty.call(HMAC, alg) &&
+    /-----BEGIN (?:RSA )?PUBLIC KEY-----|-----BEGIN CERTIFICATE-----/i.test(keyInput)
+  ) {
+    throw new JwtError('KEY_TYPE_MISMATCH', 'کلید عمومی PEM یا گواهی نباید به‌عنوان secret در الگوریتم HMAC استفاده شود');
+  }
+  if (
+    (Object.prototype.hasOwnProperty.call(RSA, alg) || Object.prototype.hasOwnProperty.call(EC, alg)) &&
+    /-----BEGIN (?:RSA |EC )?PRIVATE KEY-----/i.test(keyInput)
+  ) {
+    throw new JwtError('PRIVATE_KEY_NOT_ALLOWED', 'برای تأیید امضا فقط کلید عمومی PEM لازم است؛ کلید خصوصی را وارد نکنید');
+  }
 
   const data = new TextEncoder().encode(
     `${decoded.raw.header}.${decoded.raw.payload}`
