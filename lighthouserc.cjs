@@ -22,16 +22,35 @@ if (!toolRoutes.includes('jwt-inspector')) {
   throw new Error('The standalone JWT Inspector route is missing from the built site.');
 }
 
+// Full Persian coverage plus representative English pages covering core,
+// file, image, code, SEO and text tools. This keeps CI duration bounded.
+const englishAuditRoutes = [
+  'age',
+  'case-converter',
+  'qr-code-generator',
+  'robots-txt-generator',
+  'serp-preview',
+  'html-escape'
+];
+
+for (const slug of englishAuditRoutes) {
+  if (!toolRoutes.includes(slug)) {
+    throw new Error(`English Lighthouse route is missing from the build: ${slug}`);
+  }
+}
+
 const urls = [
   `${origin}/?lang=fa`,
-  ...toolRoutes.map(slug => `${origin}/tools/${slug}/?lang=fa`)
+  ...toolRoutes.map(slug => `${origin}/tools/${slug}/?lang=fa`),
+  `${origin}/?lang=en`,
+  ...englishAuditRoutes.map(slug => `${origin}/tools/${slug}/?lang=en`)
 ];
 
 module.exports = {
   ci: {
     collect: {
       // Discover every built tool page, including standalone routes, instead
-      // of maintaining a fragile hand-written sample of URLs.
+      // of maintaining a fragile hand-written list of Persian URLs.
       url: urls,
       numberOfRuns: 1,
       settings: {
