@@ -313,6 +313,13 @@ export function analyzeSecurity(header: JwtHeader, payload: JwtPayload): Securit
       message: 'این توکن دارای پارامترهای حیاتی JOSE است که این ابزار تفسیر نمی‌کند؛ تأیید امضا متوقف می‌شود.',
     });
   }
+  if (header.b64 !== undefined && typeof header.b64 !== 'boolean') {
+    warnings.push({
+      level: 'danger',
+      code: 'INVALID_B64',
+      message: 'پارامتر b64 در هدر JWT باید یک مقدار بولی باشد.',
+    });
+  }
   if (header.b64 === false) {
     warnings.push({
       level: 'danger',
