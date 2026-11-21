@@ -138,6 +138,18 @@ describe('verify()', () => {
     await expect(verify(token, 'x')).rejects.toThrow(JwtError);
   });
 
+  it('rejects a PEM public key used as an HMAC secret', async () => {
+    const pem = '-----BEGIN PUBLIC KEY-----\nZmFrZQ==\n-----END PUBLIC KEY-----';
+    await expect(verify(HS256_TOKEN, pem)).rejects.toMatchObject({ code: 'KEY_TYPE_MISMATCH' });
+  });
+
+  it('rejects private PEM keys in asymmetric verification mode', async () => {
+    const header = base64UrlEncode(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+    const payload = base64UrlEncode(JSON.stringify({ sub: 'x' }));
+    const pem = '-----BEGIN PRIVATE KEY-----\nZmFrZQ==\n-----END PRIVATE KEY-----';
+    await expect(verify(`${header}.${payload}.c2ln`, pem)).rejects.toMatchObject({ code: 'PRIVATE_KEY_NOT_ALLOWED' });
+  });
+
   it('rejects empty key', async () => {
     await expect(verify(HS256_TOKEN, '')).rejects.toThrow(JwtError);
   });
