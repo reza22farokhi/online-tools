@@ -208,6 +208,11 @@ describe('analyzeSecurity()', () => {
     expect(w.some((x) => x.code === 'UNSUPPORTED_CRIT' && x.level === 'danger')).toBe(true);
   });
 
+  it('flags invalid b64 header values as danger', () => {
+    const w = analyzeSecurity({ alg: 'HS256', b64: 'false' }, {});
+    expect(w.some((x) => x.code === 'INVALID_B64' && x.level === 'danger')).toBe(true);
+  });
+
   it('flags unencoded JWS payload mode as danger', () => {
     const w = analyzeSecurity({ alg: 'HS256', b64: false }, {});
     expect(w.some((x) => x.code === 'UNSUPPORTED_B64' && x.level === 'danger')).toBe(true);
