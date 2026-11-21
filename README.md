@@ -1,24 +1,44 @@
-# 🧰 Professional Online Tools
+# ابزارهای آنلاین رایگان | Free Online Tools
 
-A blazing fast, privacy-first collection of 27+ online tools built with Astro and TypeScript.
+مجموعه‌ای از **۴۲ ابزار آنلاین رایگان** برای متن، کدنویسی، محاسبات، سئو، تصویر، رنگ، تاریخ و فایل، به‌همراه صفحه مستقل JWT Inspector.
 
-🌍 **Live Demo:** https://reza22farokhi.github.io/online-tools/
+**وب‌سایت رسمی:** https://abzar-tools.ir/
 
-## ✨ Features
-- 27+ tools in 6 categories (Text, Code, Calc, SEO, Image, File)
-- 100% client-side, no backend
-- RTL support, Dark Mode, WCAG accessible
-- Fully SEO optimized (JSON-LD, Sitemap, OG tags)
+## قابلیت‌ها
+- رابط فارسی راست‌چین و انگلیسی چپ‌چین
+- طراحی واکنش‌گرا برای موبایل و دسکتاپ
+- ابزارهای متنوع برای متن، کد، محاسبات، سئو، تصویر، رنگ، تاریخ و فایل
+- کنترل محدودیت ورودی و مصرف منابع در ابزارهای پرهزینه
+- سیاست امنیتی CSP محدود و بدون بارگذاری شبکه تبلیغاتی
+- مسیرهای زبانی و فراداده‌های SEO برای صفحات عمومی
 
-## 🛠️ Tech Stack
-- Astro 5 + Vanilla TypeScript + Custom CSS
-- Vitest (Unit Tests)
-- GitHub Actions CI/CD
+## فناوری‌ها
+- Astro، TypeScript و CSS
+- Vitest برای آزمون‌های واحد
+- Playwright برای آزمون‌های E2E و مرورگرهای مختلف
+- Lighthouse CI و کنترل بودجه حجم دارایی‌های فرانت‌اند
+- استقرار ایستا روی Cloudflare Pages
 
-## 🚀 Development
-npm install
+## توسعه محلی
+```bash
+npm ci
 npm run dev
-npm run build
+```
 
-## 📝 License
+## کنترل کیفیت
+```bash
+npm run check
+npm test
+npm run build
+node scripts/verify-tools.mjs
+npm run verify:performance
+npm run test:e2e
+```
+
+برای اجرای آزمون‌های E2E و Lighthouse به مرورگر Chromium سازگار با نسخه Playwright پروژه نیاز است.
+
+## حریم خصوصی
+ابزارها برای پردازش سمت مرورگر طراحی شده‌اند. جزئیات هر ابزار و هرگونه ارتباط شبکه‌ای احتمالی را در توضیح حریم خصوصی همان صفحه بررسی کنید. هیچ ورودی حساس یا محرمانه‌ای را در ابزارهای آنلاین وارد نکنید مگر اینکه از نحوه پردازش آن مطمئن باشید.
+
+## مجوز
 MIT
