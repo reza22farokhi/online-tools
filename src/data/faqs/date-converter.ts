@@ -1,7 +1,7 @@
 import type { ToolFaqItem } from './types';
 
 export const faqs: ToolFaqItem[] = [
-    { q: 'آیا تبدیل تاریخ در این ابزار آفلاین انجام می‌شود؟', a: 'بله، تمام محاسبات تبدیل تاریخ با استفاده از الگوریتم‌های دقیق ریاضی (بدون نیاز به سرور) مستقیماً در مرورگر شما و روی دستگاه خودتان انجام می‌شود.' },
-    { q: 'آیا این ابزار سال‌های کبیسه را در نظر می‌گیرد؟', a: 'بله، الگوریتم استفاده شده در این ابزار (الگوریتم بورکوفسکی) دقت بالایی داشته و تفاوت‌های تقویم شمسی (جلالی) و میلادی از جمله سال‌های کبیسه را به درستی محاسبه می‌کند.' },
-    { q: 'آیا می‌توانم تاریخ‌های قبل از سال ۱۳۰۰ شمسی را تبدیل کنم؟', a: 'این ابزار برای بازه‌های تاریخی رایج (مثلاً ۱۳۰۰ تا ۱۵۰۰ شمسی) بهینه‌سازی شده است. برای تاریخ‌های بسیار قدیمی‌تر ممکن است نیاز به تنظیمات خاصی باشد.' },
+    { q: 'آیا تبدیل تاریخ در این ابزار آفلاین انجام می‌شود؟', a: 'بله، تمام محاسبات تبدیل تاریخ با استفاده از الگوریتم‌های دقیق ریاضی (بدون نیاز به سرور) مستقیماً در مرورگر شما و روی دستگاه خودتان انجام می‌شود.', qEn: 'Does this date converter work offline?', aEn: 'Date conversion is calculated directly in your browser using calendar algorithms. The conversion itself does not require sending your date to a server.' },
+    { q: 'آیا این ابزار سال‌های کبیسه را در نظر می‌گیرد؟', a: 'بله، الگوریتم استفاده شده در این ابزار (الگوریتم بورکوفسکی) دقت بالایی داشته و تفاوت‌های تقویم شمسی (جلالی) و میلادی از جمله سال‌های کبیسه را به درستی محاسبه می‌کند.', qEn: 'Does the converter account for leap years?', aEn: 'Yes. The converter accounts for leap-year rules when converting between the supported Jalali and Gregorian calendar dates.' },
+    { q: 'آیا می‌توانم تاریخ‌های قبل از سال ۱۳۰۰ شمسی را تبدیل کنم؟', a: 'این ابزار برای بازه‌های تاریخی رایج (مثلاً ۱۳۰۰ تا ۱۵۰۰ شمسی) بهینه‌سازی شده است. برای تاریخ‌های بسیار قدیمی‌تر ممکن است نیاز به تنظیمات خاصی باشد.', qEn: 'Can I convert dates earlier than 1300 in the Persian calendar?', aEn: 'The converter is optimized for common modern date ranges, including approximately Persian years 1300 to 1500. Very old historical dates may require additional calendar-specific verification.' },
 ];
