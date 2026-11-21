@@ -1,5 +1,6 @@
 ---
 import { getFaqsFor } from '../../data/tool-faqs';
+import type { ToolFaqItem } from '../../data/faqs/types';
 import { getToolBySlug } from '../../tools/registry';
 import { buildFaqJsonLd } from '../../lib/seo';
 
@@ -10,7 +11,13 @@ export interface Props {
 
 const { toolSlug, toolName } = Astro.props;
 const allFaqs = getFaqsFor(toolSlug);
-const faqsFa = allFaqs.filter(faq => faq.q?.trim() && faq.a?.trim());
+
+function hasPersianFaqContent(faq: ToolFaqItem): faq is ToolFaqItem & { q: string; a: string } {
+  return typeof faq.q === 'string' && faq.q.trim().length > 0
+    && typeof faq.a === 'string' && faq.a.trim().length > 0;
+}
+
+const faqsFa = allFaqs.filter(hasPersianFaqContent);
 const tool = getToolBySlug(toolSlug);
 const toolNameEn = tool?.name.en ?? toolName;
 const hasCompleteEnglishFaqs = allFaqs.length > 0 && allFaqs.every(faq => faq.qEn?.trim() && faq.aEn?.trim());
