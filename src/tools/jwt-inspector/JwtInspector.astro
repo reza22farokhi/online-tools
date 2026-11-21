@@ -255,14 +255,20 @@ import { STANDARD_CLAIMS } from './claims';
     ALG_MISMATCH: 'The selected algorithm does not match the token header.',
     UNSIGNED: 'Unsigned tokens (alg: none) cannot be verified.',
     NO_KEY: 'Enter a verification key.',
-    UNSUPPORTED_ALG: 'This algorithm is not supported.'
+    UNSUPPORTED_ALG: 'This algorithm is not supported.',
+    INVALID_B64: 'The b64 header parameter must be a boolean.',
+    UNSUPPORTED_B64: 'Unencoded JWS payloads (b64: false) are not supported; signature verification was stopped.',
+    INVALID_CRIT: 'The crit header parameter must be a non-empty array of non-empty strings.',
+    UNSUPPORTED_CRIT: 'This token uses critical JOSE header parameters that this tool does not support. Signature verification was stopped.'
   };
   const WARNING_MESSAGES_EN: Record<string, string> = {
     ALG_NONE: 'The none algorithm means the token is unsigned. Never use it in production.',
     NO_EXP: 'This token has no exp claim; its expiration cannot be determined.',
     LONG_TTL: 'The token lifetime exceeds 24 hours. Consider reducing it.',
     SENSITIVE_CLAIM: 'A sensitive password claim is present in the payload. This is unsafe.',
-    TYP_UNUSUAL: 'The token typ header is not set to JWT.'
+    TYP_UNUSUAL: 'The token typ header is not set to JWT.',
+    UNSUPPORTED_CRIT: 'This token uses critical JOSE header parameters that this tool does not support.',
+    UNSUPPORTED_B64: 'This token uses an unencoded JWS payload, which this tool does not support.'
   };
   function errorMessage(err: unknown, isEn: boolean, fallback: string): string {
     if (err instanceof JwtError) return isEn ? (ERROR_MESSAGES_EN[err.code] ?? err.message) : err.message;
