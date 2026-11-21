@@ -128,8 +128,8 @@ test('language toggle keeps structured data synchronized without reloading', asy
 
   await page.locator('[data-lang-toggle]').click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://abzar-tools.ir/tools/word-counter/?lang=en');
-  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'https://abzar-tools.ir/tools/word-counter/?lang=en');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://abzar-tools.ir/en/tools/word-counter/');
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'https://abzar-tools.ir/en/tools/word-counter/');
   await expect(page.locator('script[type="application/json"][data-jsonld-lang="fa"]')).toHaveCount(3);
   await expect(page.locator('script[type="application/ld+json"][data-jsonld-lang="en"]')).toHaveCount(3);
   const activeSchemas = await page.locator('script[type="application/ld+json"]').allTextContents();
@@ -141,4 +141,19 @@ test('offline fallback is excluded from search indexing', async ({ page }) => {
   const response = await page.goto('/offline/');
   expect(response?.status()).toBe(200);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+});
+
+
+test('dedicated English routes expose path-based canonical and hreflang URLs', async ({ page }) => {
+  for (const route of ['/en/', '/en/tools/', '/en/tools/word-counter/', '/en/blog/', '/en/categories/text/']) {
+    const response = await page.goto(route);
+    expect(response?.status(), route).toBe(200);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://abzar-tools.ir' + route);
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', 'https://abzar-tools.ir' + route);
+    const faRoute = route.replace(/^\/en(?=\/|$)/, '') || '/';
+    await expect(page.locator('link[rel="alternate"][hreflang="fa"]')).toHaveAttribute('href', 'https://abzar-tools.ir' + faRoute);
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute('href', 'https://abzar-tools.ir' + faRoute);
+  }
 });
