@@ -9,12 +9,13 @@ export interface Props {
 }
 
 const { toolSlug, toolName } = Astro.props;
-const faqsFa = getFaqsFor(toolSlug);
+const allFaqs = getFaqsFor(toolSlug);
+const faqsFa = allFaqs.filter(faq => faq.q?.trim() && faq.a?.trim());
 const tool = getToolBySlug(toolSlug);
 const toolNameEn = tool?.name.en ?? toolName;
-const hasCompleteEnglishFaqs = faqsFa.length > 0 && faqsFa.every(faq => faq.qEn?.trim() && faq.aEn?.trim());
+const hasCompleteEnglishFaqs = allFaqs.length > 0 && allFaqs.every(faq => faq.qEn?.trim() && faq.aEn?.trim());
 const faqsEn = hasCompleteEnglishFaqs
-  ? faqsFa.map(faq => ({ q: faq.qEn!, a: faq.aEn! }))
+  ? allFaqs.map(faq => ({ q: faq.qEn!, a: faq.aEn! }))
   : tool ? [
       { q: `What does ${toolNameEn} do?`, a: tool.description.en },
       { q: `How do I use ${toolNameEn}?`, a: 'Enter or select the required input, adjust any available options, and review the result. Use the copy or download control when it is available.' },
