@@ -20,5 +20,5 @@ export const meta: ToolMeta = {
   ],
   popular: true,
   addedAt: '2026-11-11',
-  related: ['case-converter', 'word-counter']
+  related: ['base64', 'html-escape']
 };
