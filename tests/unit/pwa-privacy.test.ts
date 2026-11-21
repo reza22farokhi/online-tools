@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const manifest = JSON.parse(readFileSync('public/manifest.json', 'utf8')) as Record<string, unknown>;
@@ -6,7 +6,6 @@ const bootstrap = readFileSync('public/scripts/site-bootstrap.js', 'utf8');
 const serviceWorker = readFileSync('public/sw.js', 'utf8');
 const baseLayout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
 const privacy = readFileSync('src/pages/privacy.astro', 'utf8');
-const { existsSync } = await import('node:fs');
 
 describe('PWA privacy', () => {
   it('does not advertise a GET share target that forwards shared text in the request URL', () => {
