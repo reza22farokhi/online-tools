@@ -21,6 +21,9 @@ describe('privacy disclosures', () => {
     expect(toolLayout).toContain('برای انجام پردازش به سرورهای ما ارسال نمی‌شود');
     expect(toolLayout).not.toContain('تبلیغاتی شخص ثالث');
   });
+  it('visually distinguishes privacy links within explanatory text', () => {
+    expect(toolLayout).toContain('.tool-privacy a { text-decoration: underline;');
+  });
   it('discloses infrastructure request metadata processing in both languages', () => {
     expect(privacy).toContain('Cloudflare Pages');
     expect(privacy).toContain('نشانی IP');
