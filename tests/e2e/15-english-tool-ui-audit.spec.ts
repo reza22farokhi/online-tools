@@ -158,8 +158,8 @@ test('tool FAQ switches between English and Persian without mixing languages', a
   const persianFaq = page.locator('.tool-faq[data-lang-only="fa"]');
   await expect(englishFaq).toBeVisible();
   await expect(englishFaq).not.toContainText(/[\u0600-\u06FF]/);
-  await expect(englishFaq).toContainText('The site does not load third-party advertising scripts or advertising networks.');
-  await expect(englishFaq).not.toContainText('may separately receive technical page-load information');
+  await expect(englishFaq).toContainText('How are words counted?');
+  await expect(englishFaq).toContainText('How is reading time estimated?');
   await expect(persianFaq).toBeHidden();
 
   await page.goto('/tools/word-counter/?lang=fa');
