@@ -105,6 +105,26 @@ describe('verify()', () => {
     });
   });
 
+  it('rejects unsupported critical JOSE header parameters', async () => {
+    const token = await signHS256({ alg: 'HS256', typ: 'JWT', crit: ['exp'] }, { sub: 'x' }, 'k');
+    await expect(verify(token, 'k')).rejects.toMatchObject({ code: 'UNSUPPORTED_CRIT' });
+  });
+
+  it('rejects malformed critical header parameters', async () => {
+    const token = await signHS256({ alg: 'HS256', typ: 'JWT', crit: [] }, { sub: 'x' }, 'k');
+    await expect(verify(token, 'k')).rejects.toMatchObject({ code: 'INVALID_CRIT' });
+  });
+
+  it('rejects unencoded JWS payload mode', async () => {
+    const token = await signHS256({ alg: 'HS256', typ: 'JWT', b64: false }, { sub: 'x' }, 'k');
+    await expect(verify(token, 'k')).rejects.toMatchObject({ code: 'UNSUPPORTED_B64' });
+  });
+
+  it('rejects non-boolean b64 header values', async () => {
+    const token = await signHS256({ alg: 'HS256', typ: 'JWT', b64: 'false' }, { sub: 'x' }, 'k');
+    await expect(verify(token, 'k')).rejects.toMatchObject({ code: 'INVALID_B64' });
+  });
+
   it('rejects an algorithm override that differs from the JWT header', async () => {
     await expect(verify(HS256_TOKEN, HS256_SECRET, 'HS512')).rejects.toMatchObject({
       code: 'ALG_MISMATCH',
@@ -116,6 +136,18 @@ describe('verify()', () => {
     const payload = base64UrlEncode(JSON.stringify({ sub: 'x' }));
     const token = `${header}.${payload}.`;
     await expect(verify(token, 'x')).rejects.toThrow(JwtError);
+  });
+
+  it('rejects a PEM public key used as an HMAC secret', async () => {
+    const pem = '-----BEGIN PUBLIC KEY-----\nZmFrZQ==\n-----END PUBLIC KEY-----';
+    await expect(verify(HS256_TOKEN, pem)).rejects.toMatchObject({ code: 'KEY_TYPE_MISMATCH' });
+  });
+
+  it('rejects private PEM keys in asymmetric verification mode', async () => {
+    const header = base64UrlEncode(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+    const payload = base64UrlEncode(JSON.stringify({ sub: 'x' }));
+    const pem = '-----BEGIN PRIVATE KEY-----\nZmFrZQ==\n-----END PRIVATE KEY-----';
+    await expect(verify(`${header}.${payload}.c2ln`, pem)).rejects.toMatchObject({ code: 'PRIVATE_KEY_NOT_ALLOWED' });
   });
 
   it('rejects empty key', async () => {
@@ -171,6 +203,21 @@ describe('checkExpiration()', () => {
 });
 
 describe('analyzeSecurity()', () => {
+  it('flags unsupported critical JOSE headers as danger', () => {
+    const w = analyzeSecurity({ alg: 'HS256', crit: ['exp'] }, {});
+    expect(w.some((x) => x.code === 'UNSUPPORTED_CRIT' && x.level === 'danger')).toBe(true);
+  });
+
+  it('flags invalid b64 header values as danger', () => {
+    const w = analyzeSecurity({ alg: 'HS256', b64: 'false' }, {});
+    expect(w.some((x) => x.code === 'INVALID_B64' && x.level === 'danger')).toBe(true);
+  });
+
+  it('flags unencoded JWS payload mode as danger', () => {
+    const w = analyzeSecurity({ alg: 'HS256', b64: false }, {});
+    expect(w.some((x) => x.code === 'UNSUPPORTED_B64' && x.level === 'danger')).toBe(true);
+  });
+
   it('flags alg none as danger', () => {
     const w = analyzeSecurity({ alg: 'none' }, {});
     expect(w.some((x) => x.code === 'ALG_NONE' && x.level === 'danger')).toBe(true);
