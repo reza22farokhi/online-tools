@@ -270,7 +270,8 @@ import { STANDARD_CLAIMS } from './claims';
     SENSITIVE_CLAIM: 'A sensitive password claim is present in the payload. This is unsafe.',
     TYP_UNUSUAL: 'The token typ header is not set to JWT.',
     UNSUPPORTED_CRIT: 'This token uses critical JOSE header parameters that this tool does not support.',
-    UNSUPPORTED_B64: 'This token uses an unencoded JWS payload, which this tool does not support.'
+    UNSUPPORTED_B64: 'This token uses an unencoded JWS payload, which this tool does not support.',
+    INVALID_B64: 'The b64 header parameter must be a boolean.'
   };
   function errorMessage(err: unknown, isEn: boolean, fallback: string): string {
     if (err instanceof JwtError) return isEn ? (ERROR_MESSAGES_EN[err.code] ?? err.message) : err.message;
