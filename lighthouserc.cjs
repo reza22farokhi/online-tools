@@ -64,6 +64,7 @@ module.exports = {
         'categories:accessibility': ['error', { minScore: 0.95 }],
         'color-contrast': ['error', { minScore: 1 }],
         'label-content-name-mismatch': ['error', { minScore: 1 }],
+        'link-in-text-block': ['error', { minScore: 1 }],
         'categories:best-practices': ['warn', { minScore: 0.90 }],
         'categories:seo': ['warn', { minScore: 0.90 }],
         'largest-contentful-paint': ['warn', { maxNumericValue: 2500 }],
