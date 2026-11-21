@@ -242,3 +242,23 @@ test('public informational pages have complete English copy and metadata', async
 
   expect(failures, `Persian content leaked into English informational pages:\\n${JSON.stringify(failures, null, 2)}`).toEqual([]);
 });
+
+
+test('priority tools render dedicated English FAQ content', async ({ page }) => {
+  const cases = [
+    { slug: 'base64', question: 'Is Base64 encryption?' },
+    { slug: 'hash-generator', question: 'Which hash algorithms can I generate?' },
+    { slug: 'url-encoder', question: 'What is the difference between encodeURI and encodeURIComponent?' },
+    { slug: 'uuid-generator', question: 'What is a version 4 UUID?' },
+    { slug: 'unix-timestamp', question: 'What is a Unix timestamp?' },
+    { slug: 'file-to-base64', question: 'What is a Base64 Data URL?' },
+  ];
+
+  for (const { slug, question } of cases) {
+    await page.goto(`/tools/${slug}/?lang=en`);
+    const faq = page.locator('.tool-faq[data-lang-only="en"]');
+    await expect(faq).toBeVisible();
+    await expect(faq).toContainText(question);
+    await expect(faq).not.toContainText(/[\\u0600-\\u06FF]/);
+  }
+});
