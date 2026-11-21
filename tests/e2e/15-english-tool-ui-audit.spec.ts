@@ -259,6 +259,6 @@ test('priority tools render dedicated English FAQ content', async ({ page }) => 
     const faq = page.locator('.tool-faq[data-lang-only="en"]');
     await expect(faq).toBeVisible();
     await expect(faq).toContainText(question);
-    await expect(faq).not.toContainText(/[\\u0600-\\u06FF]/);
+    await expect(faq).not.toContainText(/[\u0600-\u06FF]/);
   }
 });
