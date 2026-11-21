@@ -24,6 +24,11 @@ describe('privacy disclosures', () => {
   it('visually distinguishes privacy links within explanatory text', () => {
     expect(toolLayout).toContain('.tool-privacy a { text-decoration: underline;');
   });
+  it('discloses local Cache Storage use and excludes tool inputs from the cache', () => {
+    expect(privacy).toContain('Cache Storage');
+    expect(privacy).toContain('پارامتر پرس‌وجو (query string)');
+    expect(privacy).toContain('text, files, images, or keys you enter into tools are not stored');
+  });
   it('discloses infrastructure request metadata processing in both languages', () => {
     expect(privacy).toContain('Cloudflare Pages');
     expect(privacy).toContain('نشانی IP');
