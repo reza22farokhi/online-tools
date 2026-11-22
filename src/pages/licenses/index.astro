@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const description = 'مجوزها و انتساب کتابخانه‌های متن‌باز استفاده‌شده در ابزارهای آنلاین، شامل کتابخانه حذف پس‌زمینه هوش مصنوعی و پیوند کد منبع و مجوز رسمی.';
+---
+<BaseLayout
+  title="مجوزهای متن‌باز و انتساب"
+  titleEn="Open-source licenses and attributions"
+  description={description}
+  descriptionEn="Open-source software notices, license details, and source links for third-party components used by Online Tools."
+>
+  <article class="container legal-page">
+    <header class="page-header">
+      <h1 data-lang-fa="مجوزهای متن‌باز و انتساب" data-lang-en="Open-source licenses and attributions">مجوزهای متن‌باز و انتساب</h1>
+      <p data-lang-fa="این صفحه مجوز اجزای نرم‌افزاری شخص ثالثی را معرفی می‌کند که در برخی ابزارها استفاده می‌شوند." data-lang-en="This page identifies third-party software components used by selected tools.">این صفحه مجوز اجزای نرم‌افزاری شخص ثالثی را معرفی می‌کند که در برخی ابزارها استفاده می‌شوند.</p>
+    </header>
+
+    <section aria-labelledby="imgly-license">
+      <h2 id="imgly-license">@imgly/background-removal — نسخه 1.7.0</h2>
+      <p data-lang-fa="ابزار «حذف پس‌زمینه عکس با هوش مصنوعی» از کتابخانه متن‌باز زیر استفاده می‌کند. این کتابخانه تحت مجوز GNU Affero General Public License نسخه ۳ (AGPL-3.0) منتشر شده است." data-lang-en="The AI Background Remover uses the following open-source library, distributed under the GNU Affero General Public License, version 3 (AGPL-3.0).">ابزار «حذف پس‌زمینه عکس با هوش مصنوعی» از کتابخانه متن‌باز زیر استفاده می‌کند. این کتابخانه تحت مجوز GNU Affero General Public License نسخه ۳ (AGPL-3.0) منتشر شده است.</p>
+      <ul>
+        <li><span data-lang-fa="ناشر و حق‌نشر:" data-lang-en="Publisher and copyright:">ناشر و حق‌نشر:</span> IMG.LY GmbH</li>
+        <li><span data-lang-fa="نسخه:" data-lang-en="Version:">نسخه:</span> 1.7.0</li>
+        <li><span data-lang-fa="مجوز:" data-lang-en="License:">مجوز:</span> <a href="https://www.gnu.org/licenses/agpl-3.0.html" rel="noopener noreferrer">GNU AGPL-3.0</a></li>
+        <li><span data-lang-fa="کد منبع رسمی:" data-lang-en="Upstream source code:">کد منبع رسمی:</span> <a href="https://github.com/imgly/background-removal-js" rel="noopener noreferrer">github.com/imgly/background-removal-js</a></li>
+        <li><span data-lang-fa="کد ابزار و یکپارچه‌سازی این سایت:" data-lang-en="This site's tool integration source:">کد ابزار و یکپارچه‌سازی این سایت:</span> <a href="https://github.com/reza22farokhi/online-tools/tree/main/src/tools/image/background-remover" rel="noopener noreferrer">GitHub source directory</a></li>
+      </ul>
+      <p data-lang-fa="کتابخانه از منبع رسمی به‌صورت پویا در مرورگر دریافت می‌شود. فایل تصویر انتخاب‌شده برای پردازش به سرور این سایت ارسال نمی‌شود؛ بااین‌حال مرورگر برای دریافت کد کتابخانه و فایل‌های مدل و WebAssembly با میزبان‌های شخص ثالث ارتباط برقرار می‌کند." data-lang-en="The library is loaded dynamically in the browser from its published distribution. The selected image is not uploaded to this website; however, the browser contacts third-party hosts to download the library, model, and WebAssembly assets.">کتابخانه از منبع رسمی به‌صورت پویا در مرورگر دریافت می‌شود. فایل تصویر انتخاب‌شده برای پردازش به سرور این سایت ارسال نمی‌شود؛ بااین‌حال مرورگر برای دریافت کد کتابخانه و فایل‌های مدل و WebAssembly با میزبان‌های شخص ثالث ارتباط برقرار می‌کند.</p>
+      <p data-lang-fa="این کتابخانه بدون تغییر در منبع اصلی استفاده می‌شود. کد منبع رسمی و متن کامل مجوز از پیوندهای بالا در دسترس است. این اطلاعیه جایگزین مشاوره حقوقی درباره نحوه اعمال مجوز در یکپارچه‌سازی یا توزیع نرم‌افزار نیست." data-lang-en="The upstream library is used without modification. Its complete source and license text are available through the links above. This notice is not legal advice about how the license applies to a particular integration or distribution.">این کتابخانه بدون تغییر در منبع اصلی استفاده می‌شود. کد منبع رسمی و متن کامل مجوز از پیوندهای بالا در دسترس است. این اطلاعیه جایگزین مشاوره حقوقی درباره نحوه اعمال مجوز در یکپارچه‌سازی یا توزیع نرم‌افزار نیست.</p>
+    </section>
+
+    <section aria-labelledby="warranty">
+      <h2 id="warranty" data-lang-fa="سلب ضمانت کتابخانه" data-lang-en="Library warranty disclaimer">سلب ضمانت کتابخانه</h2>
+      <p data-lang-fa="کتابخانه مذکور از سوی صاحبان حق، بدون هیچ‌گونه ضمانت صریح یا ضمنی، از جمله ضمانت قابلیت فروش یا تناسب برای هدفی خاص، ارائه شده است؛ جز در مواردی که قانون یا توافق جداگانه تصریح کند. برای جزئیات، متن کامل AGPL-3.0 را مطالعه کنید." data-lang-en="The upstream library is provided by its copyright holders without warranty, including implied warranties of merchantability or fitness for a particular purpose, except where required by law or separately agreed. See the full AGPL-3.0 text for details.">کتابخانه مذکور از سوی صاحبان حق، بدون هیچ‌گونه ضمانت صریح یا ضمنی، از جمله ضمانت قابلیت فروش یا تناسب برای هدفی خاص، ارائه شده است؛ جز در مواردی که قانون یا توافق جداگانه تصریح کند. برای جزئیات، متن کامل AGPL-3.0 را مطالعه کنید.</p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page { max-width: 860px; padding-block: 2rem 4rem; line-height: 1.9; }
+  .page-header { margin-bottom: 2rem; }
+  .legal-page section { margin-block: 2rem; }
+  .legal-page h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); }
+  .legal-page h2 { font-size: 1.25rem; margin-bottom: .75rem; }
+  .legal-page li { margin-block: .35rem; overflow-wrap: anywhere; }
+  .legal-page a { color: var(--color-primary); text-decoration: underline; }
+</style>
