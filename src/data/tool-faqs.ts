@@ -9,6 +9,7 @@ import { faqs as remove_duplicates } from './faqs/remove-duplicates';
 import { faqs as slug_generator } from './faqs/slug-generator';
 import { faqs as json_formatter } from './faqs/json-formatter';
 import { faqs as json_to_typescript } from './faqs/json-to-typescript';
+import { faqs as json_schema_validator } from './faqs/json-schema-validator';
 import { faqs as base64 } from './faqs/base64';
 import { faqs as html_escape } from './faqs/html-escape';
 import { faqs as url_encoder } from './faqs/url-encoder';
@@ -54,6 +55,7 @@ export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'slug-generator': slug_generator,
   'json-formatter': json_formatter,
   'json-to-typescript': json_to_typescript,
+  'json-schema-validator': json_schema_validator,
   'base64': base64,
   'html-escape': html_escape,
   'url-encoder': url_encoder,
