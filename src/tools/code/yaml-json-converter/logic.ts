@@ -9,7 +9,7 @@ function stripComment(line: string): string {
     if (escaped) { escaped = false; continue; }
     if (c === '\\' && quote === '"') { escaped = true; continue; }
     if ((c === '"' || c === "'") && (!quote || quote === c)) { quote = quote ? '' : c; continue; }
-    if (c === '#' && !quote && (i === 0 || /\\s/.test(line[i - 1]))) return line.slice(0, i).trimEnd();
+    if (c === '#' && !quote && (i === 0 || /\s/.test(line[i - 1]))) return line.slice(0, i).trimEnd();
   }
   return line.trimEnd();
 }
@@ -24,20 +24,20 @@ function scalar(raw: string, line: number): YamlJson {
   if (value === 'null' || value === '~') return null;
   if (value === 'true') return true;
   if (value === 'false') return false;
-  if (/^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/.test(value)) {
+  if (/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/.test(value)) {
     const n = Number(value); if (Number.isFinite(n)) return n;
   }
-  if (/^[\\[{]/.test(value)) {
+  if (/^[\[{]/.test(value)) {
     try { return JSON.parse(value) as YamlJson; } catch { throw new Error('ساختار درون‌خطی خط ' + line + ' باید JSON معتبر باشد.'); }
   }
-  if (/^(?:!|&|\\*|\\||>|%|---|\\.\\.\\.)/.test(value)) throw new Error('این قابلیت YAML در نسخه فعلی پشتیبانی نمی‌شود (خط ' + line + ').');
+  if (/^(?:!|&|\*|\\||>|%|---|\.\.\.)/.test(value)) throw new Error('این قابلیت YAML در نسخه فعلی پشتیبانی نمی‌شود (خط ' + line + ').');
   return value;
 }
 export function parseYaml(text: string): YamlJson {
   if (text.length > MAX_INPUT) throw new Error('ورودی باید حداکثر ۱۰۰٬۰۰۰ کاراکتر باشد.');
   const lines: Line[] = [];
-  text.replace(/^\\uFEFF/, '').split(/\\r?\\n/).forEach((raw, i) => {
-    if (/\\t/.test(raw.match(/^\\s*/)?.[0] ?? '')) throw new Error('در تورفتگی YAML از Tab استفاده نکنید (خط ' + (i + 1) + ').');
+  text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach((raw, i) => {
+    if (/\\t/.test(raw.match(/^\s*/)?.[0] ?? '')) throw new Error('در تورفتگی YAML از Tab استفاده نکنید (خط ' + (i + 1) + ').');
     const clean = stripComment(raw);
     if (!clean.trim() || clean.trim() === '---' || clean.trim() === '...') return;
     const indent = clean.length - clean.trimStart().length;
@@ -53,7 +53,7 @@ export function parseYaml(text: string): YamlJson {
       if (escaped) { escaped = false; continue; }
       if (c === '\\' && quote === '"') { escaped = true; continue; }
       if ((c === '"' || c === "'") && (!quote || quote === c)) { quote = quote ? '' : c; continue; }
-      if (c === ':' && !quote && (i === text.length - 1 || /\\s/.test(text[i + 1]))) {
+      if (c === ':' && !quote && (i === text.length - 1 || /\s/.test(text[i + 1]))) {
         const keyValue = text.slice(0, i).trim();
         const key = scalar(keyValue, line);
         if (typeof key !== 'string' && typeof key !== 'number' && typeof key !== 'boolean') throw new Error('کلید نامعتبر در خط ' + line + '.');
@@ -73,7 +73,7 @@ export function parseYaml(text: string): YamlJson {
         if (!rest) {
           if (index < lines.length && lines[index].indent > indent) out.push(block(lines[index].indent, depth + 1));
           else out.push(null);
-        } else if (/^[^:[\\]{}]+:\\s|^[^:[\\]{}]+:$/.test(rest)) {
+        } else if (/^[^:[\]{}]+:\s|^[^:[\]{}]+:$/.test(rest)) {
           const [key, value] = pair(rest, current.number);
           const obj: Record<string, YamlJson> = {};
           if (value) obj[key] = scalar(value, current.number);
@@ -117,18 +117,18 @@ export function stringifyYaml(value: YamlJson, depth = 0): string {
   if (Array.isArray(value)) {
     if (!value.length) return '[]';
     return value.map(item => {
-      if (item !== null && typeof item === 'object') return '-\\n' + stringifyYaml(item, depth + 1).split('\\n').map(line => '  ' + line).join('\\n');
+      if (item !== null && typeof item === 'object') return '-\n' + stringifyYaml(item, depth + 1).split('\n').map(line => '  ' + line).join('\n');
       return '- ' + scalarText(item);
-    }).join('\\n');
+    }).join('\n');
   }
   if (value !== null && typeof value === 'object') {
     const entries = Object.entries(value);
     if (!entries.length) return '{}';
     return entries.map(([key, item]) => {
       const prefix = keyText(key) + ':';
-      if (item !== null && typeof item === 'object') return prefix + '\\n' + stringifyYaml(item, depth + 1).split('\\n').map(line => '  ' + line).join('\\n');
+      if (item !== null && typeof item === 'object') return prefix + '\n' + stringifyYaml(item, depth + 1).split('\n').map(line => '  ' + line).join('\n');
       return prefix + ' ' + scalarText(item);
-    }).join('\\n');
+    }).join('\n');
   }
   return scalarText(value);
 }
