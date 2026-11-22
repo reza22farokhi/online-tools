@@ -92,11 +92,11 @@ export function sortCsvRows(rows: string[][], columnIndex: number, direction: 'a
 }
 
 export function rowsToCsv(headers: string[], rows: string[][], delimiter = ','): string {
-  if (delimiter.length !== 1 || delimiter === '"' || delimiter === '\\n' || delimiter === '\\r') throw new Error('جداکننده نامعتبر است.');
+  if (delimiter.length !== 1 || delimiter === '"' || delimiter === '\n' || delimiter === '\r') throw new Error('جداکننده نامعتبر است.');
   const encode = (value: string) => {
     let safe = value;
-    if (/^[\\t\\r\\n ]*[=+@]/.test(safe) || (/^[\\t\\r\\n ]*-/.test(safe) && !/^-\\d+(?:\\.\\d+)?$/.test(safe))) safe = "'" + safe;
-    return safe.includes(delimiter) || /["\\r\\n]/.test(safe) ? '"' + safe.replace(/"/g, '""') + '"' : safe;
+    if (/^[\t\r\n ]*[=+@]/.test(safe) || (/^[\t\r\n ]*-/.test(safe) && !/^-\d+(?:\.\d+)?$/.test(safe))) safe = "'" + safe;
+    return safe.includes(delimiter) || /["\r\n]/.test(safe) ? '"' + safe.replace(/"/g, '""') + '"' : safe;
   };
-  return [headers, ...rows].map(row => row.map(encode).join(delimiter)).join('\\n');
+  return [headers, ...rows].map(row => row.map(encode).join(delimiter)).join('\n');
 }
