@@ -9,6 +9,7 @@ import { meta as lineSorterMeta } from './text/line-sorter/meta';
 import { meta as removeDuplicatesMeta } from './text/remove-duplicates/meta';
 import { meta as slugGeneratorMeta } from './text/slug-generator/meta';
 import { meta as jsonFormatterMeta } from './code/json-formatter/meta';
+import { meta as jsonToTypeScriptMeta } from './code/json-to-typescript/meta';
 import { meta as base64Meta } from './code/base64/meta';
 import { meta as htmlEscapeMeta } from './code/html-escape/meta';
 import { meta as urlEncoderMeta } from './code/url-encoder/meta';
@@ -51,44 +52,26 @@ export const categories: CategoryMeta[] = [
   { slug: 'date', fa: 'تاریخ و زمان', en: 'Date & Time', icon: '📅' },
   { slug: 'file', fa: 'فایل', en: 'File', icon: '📁' }
 ];
-
 export const registry: ToolMeta[] = [
-  dateConverterMeta,
-  passwordGeneratorMeta,
-  qrCodeMeta,
+  dateConverterMeta, passwordGeneratorMeta, qrCodeMeta,
   wordCounterMeta, caseConverterMeta, removeExtraSpacesMeta, lineSorterMeta,
   removeDuplicatesMeta, slugGeneratorMeta,
-  jsonFormatterMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta, uuidGeneratorMeta,
-  hashGeneratorMeta, regexTesterMeta, jwtDecoderMeta,
+  jsonFormatterMeta, jsonToTypeScriptMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta,
+  uuidGeneratorMeta, hashGeneratorMeta, regexTesterMeta, jwtDecoderMeta,
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
   imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
   paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
-  fileInfoMeta, fileToBase64Meta,
-  multiCalendarMeta, unixTimestampMeta,
-  dateCalculatorMeta, dateInfoMeta,
-  csvJsonMeta,
-  textDiffMeta,
-  persianTextRefinerMeta
+  fileInfoMeta, fileToBase64Meta, multiCalendarMeta, unixTimestampMeta,
+  dateCalculatorMeta, dateInfoMeta, csvJsonMeta, textDiffMeta, persianTextRefinerMeta
 ];
-
-export function getToolBySlug(slug: string): ToolMeta | undefined {
-  return registry.find(t => t.slug === slug);
-}
-export function getToolsByCategory(category: ToolCategory): ToolMeta[] {
-  return registry.filter(t => t.category === category);
-}
-export function getPopular(): ToolMeta[] {
-  return registry.filter(t => t.popular);
-}
-export function getCategoryMeta(slug: ToolCategory): CategoryMeta | undefined {
-  return categories.find(c => c.slug === slug);
-}
+export function getToolBySlug(slug: string): ToolMeta | undefined { return registry.find(t => t.slug === slug); }
+export function getToolsByCategory(category: ToolCategory): ToolMeta[] { return registry.filter(t => t.category === category); }
+export function getPopular(): ToolMeta[] { return registry.filter(t => t.popular); }
+export function getCategoryMeta(slug: ToolCategory): CategoryMeta | undefined { return categories.find(c => c.slug === slug); }
 export function getRelated(slug: string): ToolMeta[] {
   const tool = getToolBySlug(slug);
   if (!tool?.related?.length) return [];
   return tool.related.map(getToolBySlug).filter((x): x is ToolMeta => Boolean(x));
 }
-export function getAllSlugs(): string[] {
-  return registry.map(t => t.slug);
-}
+export function getAllSlugs(): string[] { return registry.map(t => t.slug); }

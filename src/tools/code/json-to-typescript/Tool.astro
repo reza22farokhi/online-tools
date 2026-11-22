@@ -1,0 +1,69 @@
+---
+---
+<div class="jts-tool">
+  <label for="jts-input"><strong data-lang-fa="نمونه JSON" data-lang-en="JSON sample">نمونه JSON</strong></label>
+  <textarea id="jts-input" class="textarea jts-area" rows="10" maxlength="100000" spellcheck="false" dir="ltr" placeholder='{"user":{"id":1,"name":"Ada"},"roles":["admin","editor"]}'></textarea>
+  <div class="jts-options">
+    <label for="jts-name"><span data-lang-fa="نام نوع اصلی" data-lang-en="Root type name">نام نوع اصلی</span><input id="jts-name" class="input" value="Root" maxlength="60" dir="ltr"></label>
+    <label class="jts-check"><input id="jts-alias" type="checkbox"><span data-lang-fa="استفاده از Type Alias به‌جای Interface" data-lang-en="Use type aliases instead of interfaces">استفاده از Type Alias به‌جای Interface</span></label>
+    <label class="jts-check"><input id="jts-optional" type="checkbox"><span data-lang-fa="اختیاری‌کردن همه ویژگی‌ها" data-lang-en="Make all properties optional">اختیاری‌کردن همه ویژگی‌ها</span></label>
+  </div>
+  <div class="jts-actions">
+    <button class="btn btn-primary" id="jts-generate" type="button" data-lang-fa="تولید TypeScript" data-lang-en="Generate TypeScript">تولید TypeScript</button>
+    <button class="btn" id="jts-sample" type="button" data-lang-fa="بارگذاری نمونه" data-lang-en="Load sample">بارگذاری نمونه</button>
+    <button class="btn" id="jts-clear" type="button" data-lang-fa="پاک‌کردن" data-lang-en="Clear">پاک‌کردن</button>
+    <button class="btn" id="jts-copy" type="button" disabled data-lang-fa="کپی کد" data-lang-en="Copy code">کپی کد</button>
+  </div>
+  <p id="jts-error" class="jts-error" role="alert" hidden></p>
+  <label for="jts-output"><strong data-lang-fa="کد TypeScript تولیدشده" data-lang-en="Generated TypeScript">کد TypeScript تولیدشده</strong></label>
+  <pre class="jts-result" dir="ltr"><code id="jts-output"></code></pre>
+  <p class="jts-privacy" data-lang-fa="حریم خصوصی: تبدیل کاملاً در مرورگر انجام می‌شود و JSON شما به سرور ارسال نمی‌شود." data-lang-en="Privacy: conversion runs entirely in your browser. Your JSON is never uploaded.">حریم خصوصی: تبدیل کاملاً در مرورگر انجام می‌شود و JSON شما به سرور ارسال نمی‌شود.</p>
+</div>
+<script>
+  import { generateTypeScript } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+  const byId = (id: string) => document.getElementById(id);
+  const input = byId('jts-input') as HTMLTextAreaElement;
+  const output = byId('jts-output') as HTMLElement;
+  const error = byId('jts-error') as HTMLParagraphElement;
+  const copy = byId('jts-copy') as HTMLButtonElement;
+  const english = () => document.documentElement.lang === 'en';
+  const sample = JSON.stringify({ user: { id: 1, name: 'Ada', active: true, profile: { city: 'London', tags: ['typescript', 'web'] } }, roles: ['admin', 'editor'], lastLogin: null }, null, 2);
+  function generate() {
+    error.hidden = true;
+    try {
+      output.textContent = generateTypeScript(input.value, {
+        rootName: (byId('jts-name') as HTMLInputElement).value,
+        useTypeAliases: (byId('jts-alias') as HTMLInputElement).checked,
+        optionalProperties: (byId('jts-optional') as HTMLInputElement).checked
+      });
+      copy.disabled = !output.textContent;
+    } catch (e) {
+      output.textContent = '';
+      copy.disabled = true;
+      error.textContent = (english() ? 'Could not parse JSON: ' : 'JSON قابل پردازش نیست: ') + (e instanceof Error ? e.message : 'Unknown error');
+      error.hidden = false;
+    }
+  }
+  byId('jts-generate')?.addEventListener('click', generate);
+  byId('jts-sample')?.addEventListener('click', () => { input.value = sample; generate(); });
+  byId('jts-clear')?.addEventListener('click', () => { input.value = ''; output.textContent = ''; error.hidden = true; copy.disabled = true; input.focus(); });
+  ['jts-name','jts-alias','jts-optional'].forEach(id => byId(id)?.addEventListener('change', () => { if (input.value.trim()) generate(); }));
+  copy.addEventListener('click', async () => {
+    const ok = await copyText(output.textContent || '');
+    toast(ok ? (english() ? 'Code copied.' : 'کد کپی شد.') : (english() ? 'Copy failed.' : 'کپی انجام نشد.'), ok ? 'success' : 'error');
+  });
+  input.value = sample;
+  generate();
+</script>
+<style>
+  .jts-tool { display:flex; flex-direction:column; gap:var(--space-3); }
+  .jts-area,.jts-result { font-family:var(--font-mono); direction:ltr; text-align:left; font-size:.88rem; }
+  .jts-options { display:flex; flex-wrap:wrap; gap:var(--space-3); align-items:end; }
+  .jts-options>label:first-child { display:flex; flex-direction:column; gap:var(--space-1); min-width:180px; }
+  .jts-check { display:flex; align-items:center; gap:var(--space-2); }
+  .jts-actions { display:flex; flex-wrap:wrap; gap:var(--space-2); }
+  .jts-error { color:var(--color-danger); padding:var(--space-2); border:1px solid var(--color-danger); border-radius:var(--radius-md); overflow-wrap:anywhere; }
+  .jts-result { min-height:100px; max-height:440px; overflow:auto; padding:var(--space-3); background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-md); white-space:pre; }
+  .jts-privacy { color:var(--color-text-muted); font-size:.82rem; margin:0; }
+</style>

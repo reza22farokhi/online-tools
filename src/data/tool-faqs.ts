@@ -8,6 +8,7 @@ import { faqs as line_sorter } from './faqs/line-sorter';
 import { faqs as remove_duplicates } from './faqs/remove-duplicates';
 import { faqs as slug_generator } from './faqs/slug-generator';
 import { faqs as json_formatter } from './faqs/json-formatter';
+import { faqs as json_to_typescript } from './faqs/json-to-typescript';
 import { faqs as base64 } from './faqs/base64';
 import { faqs as html_escape } from './faqs/html-escape';
 import { faqs as url_encoder } from './faqs/url-encoder';
@@ -42,7 +43,6 @@ import { faqs as qr_code_generator } from './faqs/qr-code-generator';
 import { faqs as password_generator } from './faqs/password-generator';
 import { faqs as date_converter } from './faqs/date-converter';
 import { faqs as text_diff } from './faqs/text-diff';
-
 import { faqs as persian_text_refiner } from './faqs/persian-text-refiner';
 
 export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
@@ -53,6 +53,7 @@ export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'remove-duplicates': remove_duplicates,
   'slug-generator': slug_generator,
   'json-formatter': json_formatter,
+  'json-to-typescript': json_to_typescript,
   'base64': base64,
   'html-escape': html_escape,
   'url-encoder': url_encoder,
