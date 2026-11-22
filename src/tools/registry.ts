@@ -66,6 +66,7 @@ export const registry: ToolMeta[] = [
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
   imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
+import { meta as backgroundRemoverMeta } from './image/background-remover/meta';
   paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
   fileInfoMeta, fileToBase64Meta, multiCalendarMeta, unixTimestampMeta,
   dateCalculatorMeta, dateInfoMeta, csvJsonMeta, csvAnalyzerMeta, textDiffMeta, persianTextRefinerMeta

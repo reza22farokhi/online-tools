@@ -1,0 +1,258 @@
+---
+---
+<div class="br-tool" data-background-remover>
+  <div class="br-upload" id="br-upload">
+    <input id="br-file" type="file" accept="image/jpeg,image/png,image/webp,image/avif" class="sr-only" />
+    <label for="br-file" class="br-upload-label" id="br-dropzone" tabindex="0" role="button" aria-describedby="br-upload-hint">
+      <span class="br-upload-icon" aria-hidden="true">✂️</span>
+      <strong data-lang-fa="عکس را اینجا رها کنید یا برای انتخاب کلیک کنید" data-lang-en="Drop an image here or click to choose">عکس را اینجا رها کنید یا برای انتخاب کلیک کنید</strong>
+      <span class="br-hint" id="br-upload-hint" data-lang-fa="JPG، PNG، WebP یا AVIF · حداکثر ۱۰ مگابایت" data-lang-en="JPG, PNG, WebP, or AVIF · up to 10 MB">JPG، PNG، WebP یا AVIF · حداکثر ۱۰ مگابایت</span>
+    </label>
+  </div>
+
+  <div class="br-error" id="br-error" role="alert" aria-live="assertive" hidden></div>
+
+  <section class="br-progress" id="br-progress" aria-live="polite" hidden>
+    <div class="br-spinner" aria-hidden="true"></div>
+    <strong id="br-progress-title" data-lang-fa="در حال آماده‌سازی هوش مصنوعی…" data-lang-en="Preparing AI model…">در حال آماده‌سازی هوش مصنوعی…</strong>
+    <p id="br-progress-message" data-lang-fa="در اولین اجرا ممکن است دریافت مدل کمی زمان ببرد. تصویر شما از مرورگر خارج نمی‌شود." data-lang-en="The first run may take longer while the model downloads. Your image stays in this browser.">در اولین اجرا ممکن است دریافت مدل کمی زمان ببرد. تصویر شما از مرورگر خارج نمی‌شود.</p>
+    <div class="br-progress-track"><span id="br-progress-bar"></span></div>
+    <span class="br-progress-value" id="br-progress-value">0%</span>
+  </section>
+
+  <section class="br-result" id="br-result" hidden>
+    <div class="br-compare">
+      <div class="br-compare-stage" id="br-compare-stage">
+        <img id="br-before" class="br-image br-before" alt="Original image" />
+        <div class="br-after-clip" id="br-after-clip"><img id="br-after" class="br-image br-after" alt="Background removed image" /></div>
+        <span class="br-label br-label-before" data-lang-fa="قبل" data-lang-en="Before">قبل</span>
+        <span class="br-label br-label-after" data-lang-fa="بعد" data-lang-en="After">بعد</span>
+        <span class="br-divider" id="br-divider" aria-hidden="true"></span>
+      </div>
+      <label class="br-slider-label" for="br-slider">
+        <span data-lang-fa="مقایسه قبل و بعد" data-lang-en="Before / after comparison">مقایسه قبل و بعد</span>
+        <input id="br-slider" type="range" min="0" max="100" value="50" />
+      </label>
+    </div>
+    <div class="br-actions">
+      <button type="button" class="btn btn-primary" id="br-download" disabled>⬇️ <span data-lang-fa="دانلود تصویر شفاف PNG" data-lang-en="Download transparent PNG">دانلود تصویر شفاف PNG</span></button>
+      <button type="button" class="btn" id="br-reset"><span data-lang-fa="انتخاب عکس دیگر" data-lang-en="Choose another image">انتخاب عکس دیگر</span></button>
+    </div>
+    <p class="br-success" id="br-success" role="status" data-lang-fa="پس‌زمینه با موفقیت حذف شد. فایل خروجی PNG و دارای شفافیت است." data-lang-en="Background removed successfully. The PNG output preserves transparency.">پس‌زمینه با موفقیت حذف شد. فایل خروجی PNG و دارای شفافیت است.</p>
+  </section>
+  <p class="br-privacy" data-lang-fa="پردازش تصویر به‌صورت محلی در مرورگر انجام می‌شود. برای اجرای مدل، فایل‌های هوش مصنوعی از شبکه دریافت می‌شوند؛ اما عکس انتخابی شما به سرور این سایت ارسال نمی‌شود." data-lang-en="Image processing runs locally in your browser. AI model assets are downloaded from the network, but your selected photo is not sent to this website's servers.">پردازش تصویر به‌صورت محلی در مرورگر انجام می‌شود. برای اجرای مدل، فایل‌های هوش مصنوعی از شبکه دریافت می‌شوند؛ اما عکس انتخابی شما به سرور این سایت ارسال نمی‌شود.</p>
+</div>
+
+<script is:inline type="module">
+  const root = document.querySelector('[data-background-remover]');
+  if (root && !root.dataset.initialized) {
+    root.dataset.initialized = 'true';
+    const $ = (id) => root.querySelector('#' + id);
+    const fileInput = $('br-file');
+    const dropzone = $('br-dropzone');
+    const upload = $('br-upload');
+    const progress = $('br-progress');
+    const progressBar = $('br-progress-bar');
+    const progressValue = $('br-progress-value');
+    const progressTitle = $('br-progress-title');
+    const progressMessage = $('br-progress-message');
+    const error = $('br-error');
+    const result = $('br-result');
+    const before = $('br-before');
+    const after = $('br-after');
+    const afterClip = $('br-after-clip');
+    const divider = $('br-divider');
+    const slider = $('br-slider');
+    const download = $('br-download');
+    const reset = $('br-reset');
+    const isEn = () => document.documentElement.lang === 'en';
+    const messages = {
+      invalid: ['لطفاً یک فایل تصویری معتبر انتخاب کنید.', 'Please choose a valid image file.'],
+      size: ['حجم تصویر نباید بیشتر از ۱۰ مگابایت باشد.', 'Image size must not exceed 10 MB.'],
+      dimensions: ['ابعاد تصویر بیش از حد مجاز است (حداکثر ۲۰ مگاپیکسل).', 'Image dimensions are too large (maximum 20 megapixels).'],
+      failed: ['پردازش تصویر ناموفق بود. اتصال اینترنت و سازگاری مرورگر را بررسی و دوباره تلاش کنید.', 'Image processing failed. Check your connection and browser compatibility, then try again.'],
+      loading: ['در حال بارگذاری مدل هوش مصنوعی…', 'Loading AI model…'],
+      processing: ['در حال حذف پس‌زمینه…', 'Removing background…']
+    };
+    const msg = (key) => messages[key][isEn() ? 1 : 0];
+    let originalUrl = null;
+    let outputUrl = null;
+    let outputBlob = null;
+    let busy = false;
+
+    function revokeUrls() {
+      if (originalUrl) URL.revokeObjectURL(originalUrl);
+      if (outputUrl) URL.revokeObjectURL(outputUrl);
+      originalUrl = null;
+      outputUrl = null;
+      outputBlob = null;
+    }
+    function setProgress(value, title, message) {
+      const safe = Math.max(0, Math.min(100, Math.round(value)));
+      progressBar.style.width = safe + '%';
+      progressValue.textContent = safe + '%';
+      if (title) progressTitle.textContent = title;
+      if (message) progressMessage.textContent = message;
+    }
+    function fail(message) {
+      error.hidden = false;
+      error.textContent = message;
+      progress.hidden = true;
+      busy = false;
+      download.disabled = !outputBlob;
+    }
+    function resetView() {
+      revokeUrls();
+      error.hidden = true;
+      error.textContent = '';
+      progress.hidden = true;
+      result.hidden = true;
+      upload.hidden = false;
+      fileInput.value = '';
+      download.disabled = true;
+      busy = false;
+      setProgress(0, isEn() ? 'Preparing AI model…' : 'در حال آماده‌سازی هوش مصنوعی…', '');
+    }
+    function updateSlider() {
+      const value = Number(slider.value);
+      afterClip.style.clipPath = 'inset(0 ' + (100 - value) + '% 0 0)';
+      divider.style.left = value + '%';
+    }
+    async function processFile(file) {
+      if (busy) return;
+      error.hidden = true;
+      if (!file || !['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type)) {
+        fail(msg('invalid'));
+        return;
+      }
+      if (!file.size || file.size > 10 * 1024 * 1024) {
+        fail(msg('size'));
+        return;
+      }
+      busy = true;
+      revokeUrls();
+      originalUrl = URL.createObjectURL(file);
+      const probe = new Image();
+      probe.onload = async () => {
+        if (probe.naturalWidth * probe.naturalHeight > 20_000_000) {
+          URL.revokeObjectURL(originalUrl);
+          originalUrl = null;
+          fail(msg('dimensions'));
+          return;
+        }
+        before.src = originalUrl;
+        before.alt = isEn() ? 'Original image before background removal' : 'تصویر اصلی پیش از حذف پس‌زمینه';
+        upload.hidden = true;
+        result.hidden = true;
+        progress.hidden = false;
+        download.disabled = true;
+        setProgress(2, msg('loading'), isEn() ? 'Downloading and initializing the AI model. This may take a while on the first run.' : 'مدل هوش مصنوعی در حال دریافت و آماده‌سازی است؛ اجرای اول ممکن است کمی طول بکشد.');
+        try {
+          const { removeBackground } = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm');
+          setProgress(8, msg('processing'), isEn() ? 'The image is being processed on your device.' : 'تصویر مستقیماً روی دستگاه شما پردازش می‌شود.');
+          const blob = await removeBackground(file, {
+            model: 'isnet_fp16',
+            output: { format: 'image/png', quality: 1 },
+            progress: (key, current, total) => {
+              if (total > 0) {
+                const ratio = Math.max(0, Math.min(1, current / total));
+                setProgress(8 + ratio * 88, msg('processing'), key || (isEn() ? 'Processing locally…' : 'پردازش محلی…'));
+              }
+            }
+          });
+          if (!(blob instanceof Blob) || blob.type !== 'image/png') throw new Error('PNG output unavailable');
+          outputBlob = blob;
+          outputUrl = URL.createObjectURL(blob);
+          after.src = outputUrl;
+          after.alt = isEn() ? 'Image with transparent background' : 'تصویر با پس‌زمینه شفاف';
+          progress.hidden = true;
+          result.hidden = false;
+          download.disabled = false;
+          setProgress(100, '', '');
+          busy = false;
+          updateSlider();
+        } catch (err) {
+          console.error('[background-remover] processing failed', err);
+          fail(msg('failed'));
+        }
+      };
+      probe.onerror = () => {
+        if (originalUrl) URL.revokeObjectURL(originalUrl);
+        originalUrl = null;
+        fail(msg('invalid'));
+      };
+      probe.src = originalUrl;
+    }
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (file) processFile(file);
+    });
+    dropzone.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        fileInput.click();
+      }
+    });
+    upload.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      upload.classList.add('is-dragging');
+    });
+    upload.addEventListener('dragleave', () => upload.classList.remove('is-dragging'));
+    upload.addEventListener('drop', (event) => {
+      event.preventDefault();
+      upload.classList.remove('is-dragging');
+      const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+      if (file) processFile(file);
+    });
+    slider.addEventListener('input', updateSlider);
+    download.addEventListener('click', () => {
+      if (!outputBlob || !outputUrl) return;
+      const link = document.createElement('a');
+      link.href = outputUrl;
+      link.download = 'background-removed.png';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    });
+    reset.addEventListener('click', resetView);
+    document.addEventListener('app:languagechange', () => {
+      if (!busy) return;
+      progressTitle.textContent = msg('processing');
+    });
+    resetView();
+  }
+</script>
+
+<style>
+  .br-tool { display: grid; gap: var(--space-4); }
+  .br-upload { border: 2px dashed var(--color-border); border-radius: var(--radius-lg); padding: clamp(2rem, 7vw, 4rem) var(--space-4); background: var(--color-surface-2); transition: border-color .2s, background .2s; }
+  .br-upload.is-dragging { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface-2)); }
+  .br-upload-label { min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); text-align: center; cursor: pointer; outline-offset: 5px; }
+  .br-upload-icon { font-size: 3rem; }
+  .br-hint, .br-privacy { color: var(--color-text-muted); font-size: .9rem; }
+  .br-error { padding: var(--space-3); border: 1px solid var(--color-danger); border-radius: var(--radius-md); color: var(--color-danger); background: color-mix(in srgb, var(--color-danger) 10%, transparent); }
+  .br-progress { display: grid; justify-items: center; gap: var(--space-3); padding: var(--space-5); text-align: center; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface-2); }
+  .br-progress p { color: var(--color-text-muted); margin: 0; }
+  .br-spinner { width: 42px; height: 42px; border: 4px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: br-spin .8s linear infinite; }
+  @keyframes br-spin { to { transform: rotate(360deg); } }
+  .br-progress-track { width: min(100%, 420px); height: 9px; border-radius: 99px; background: var(--color-border); overflow: hidden; }
+  .br-progress-track span { display: block; width: 0; height: 100%; background: var(--color-primary); transition: width .2s ease; }
+  .br-progress-value { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .br-result { display: grid; gap: var(--space-3); }
+  .br-compare { display: grid; gap: var(--space-3); }
+  .br-compare-stage { position: relative; width: 100%; max-height: 620px; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: #e5e7eb; background-image: linear-gradient(45deg,#d1d5db 25%,transparent 25%),linear-gradient(-45deg,#d1d5db 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d1d5db 75%),linear-gradient(-45deg,transparent 75%,#d1d5db 75%); background-size: 20px 20px; background-position: 0 0,0 10px,10px -10px,-10px 0; }
+  .br-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .br-after-clip { position: absolute; inset: 0; clip-path: inset(0 50% 0 0); }
+  .br-after { background: transparent; }
+  .br-label { position: absolute; top: 12px; z-index: 2; padding: 5px 10px; color: #fff; background: rgb(15 23 42 / .75); border-radius: 6px; font-size: .8rem; }
+  .br-label-before { left: 12px; }
+  .br-label-after { right: 12px; }
+  .br-divider { position: absolute; top: 0; bottom: 0; left: 50%; z-index: 3; width: 2px; background: #fff; box-shadow: 0 0 0 1px rgb(15 23 42 / .25); pointer-events: none; }
+  .br-slider-label { display: grid; gap: var(--space-2); font-weight: 600; }
+  .br-slider-label input { width: 100%; accent-color: var(--color-primary); }
+  .br-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .br-success { color: var(--color-success); margin: 0; }
+  .br-privacy { margin: 0; }
+  .br-upload[hidden], .br-progress[hidden], .br-result[hidden], .br-error[hidden] { display: none; }
+  @media (prefers-reduced-motion: reduce) { .br-spinner { animation: none; } .br-progress-track span { transition: none; } }
+</style>

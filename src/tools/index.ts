@@ -59,6 +59,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'unit-converter': UnitConverterTool, 'meta-tag-generator': MetaTagTool,
   'serp-preview': SerpPreviewTool, 'robots-txt-generator': RobotsTxtTool,
   'og-preview': OgPreviewTool, 'image-resizer': ImageResizerTool,
+  'background-remover': BackgroundRemoverTool,
   'image-compressor': ImageCompressorTool, 'format-converter': FormatConverterTool,
   'qr-code-generator': QrCodeGeneratorTool, 'date-converter': DateConverterTool,
   'password-generator': PasswordGeneratorTool, 'color-picker': ColorPickerTool,

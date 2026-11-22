@@ -79,6 +79,7 @@ export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'robots-txt-generator': robots_txt_generator,
   'og-preview': og_preview,
   'image-resizer': image_resizer,
+  'background-remover': background_remover,
   'image-compressor': image_compressor,
   'format-converter': format_converter,
   'color-picker': color_picker,
