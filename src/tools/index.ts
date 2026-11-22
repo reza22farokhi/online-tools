@@ -43,6 +43,7 @@ import UnixTimestampTool from './date/unix-timestamp/Tool.astro';
 import DateCalculatorTool from './date/date-calculator/Tool.astro';
 import DateInfoTool from './date/date-info/Tool.astro';
 import CsvJsonTool from './file/csv-json-converter/Tool.astro';
+import CsvAnalyzerTool from './file/csv-analyzer/Tool.astro';
 import TextDiffTool from './text/text-diff/Tool.astro';
 import PersianTextRefinerTool from './text/persian-text-refiner/Tool.astro';
 export const toolComponents: Record<string, AstroComponentFactory> = {
@@ -65,7 +66,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'contrast-checker': ContrastCheckerTool, 'box-shadow': BoxShadowTool,
   'multi-calendar-converter': MultiCalendarTool, 'unix-timestamp': UnixTimestampTool,
   'date-calculator': DateCalculatorTool, 'date-info': DateInfoTool,
-  'csv-json-converter': CsvJsonTool, 'text-diff': TextDiffTool,
+  'csv-json-converter': CsvJsonTool, 'csv-analyzer': CsvAnalyzerTool, 'text-diff': TextDiffTool,
   'persian-text-refiner': PersianTextRefinerTool
 };
 export function getToolComponent(slug: string): AstroComponentFactory | null { return toolComponents[slug] ?? null; }
