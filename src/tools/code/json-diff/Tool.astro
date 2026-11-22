@@ -1,0 +1,82 @@
+---
+---
+<div class="jd-tool">
+  <div class="jd-grid">
+    <label for="jd-before"><strong data-lang-fa="JSON اول (مبنا)" data-lang-en="First JSON (baseline)">JSON اول (مبنا)</strong><textarea id="jd-before" class="textarea jd-area" rows="12" dir="ltr" spellcheck="false" placeholder='{"name":"Ada","age":36}'></textarea></label>
+    <label for="jd-after"><strong data-lang-fa="JSON دوم (برای مقایسه)" data-lang-en="Second JSON (to compare)">JSON دوم (برای مقایسه)</strong><textarea id="jd-after" class="textarea jd-area" rows="12" dir="ltr" spellcheck="false" placeholder='{"name":"Ada Lovelace","active":true}'></textarea></label>
+  </div>
+  <div class="jd-actions">
+    <button type="button" class="btn btn-primary" id="jd-compare" data-lang-fa="مقایسه JSON" data-lang-en="Compare JSON">مقایسه JSON</button>
+    <button type="button" class="btn" id="jd-sample" data-lang-fa="بارگذاری نمونه" data-lang-en="Load sample">بارگذاری نمونه</button>
+    <button type="button" class="btn" id="jd-clear" data-lang-fa="پاک‌کردن" data-lang-en="Clear">پاک‌کردن</button>
+    <button type="button" class="btn" id="jd-copy" data-lang-fa="کپی گزارش" data-lang-en="Copy report" disabled>کپی گزارش</button>
+  </div>
+  <section id="jd-result" class="jd-result" aria-live="polite" hidden></section>
+  <p class="jd-note" data-lang-fa="مقایسه به‌صورت محلی انجام می‌شود. ترتیب کلیدهای اشیای JSON نادیده گرفته می‌شود؛ اعضای آرایه بر اساس موقعیت مقایسه می‌شوند." data-lang-en="Comparison runs locally. Object key order is ignored; array items are compared by index.">مقایسه به‌صورت محلی انجام می‌شود. ترتیب کلیدهای اشیای JSON نادیده گرفته می‌شود؛ اعضای آرایه بر اساس موقعیت مقایسه می‌شوند.</p>
+</div>
+<script>
+  import { compareJsonTexts } from './logic';
+  const $ = (id: string) => document.getElementById(id);
+  const before = $('jd-before') as HTMLTextAreaElement;
+  const after = $('jd-after') as HTMLTextAreaElement;
+  const result = $('jd-result') as HTMLElement;
+  const copy = $('jd-copy') as HTMLButtonElement;
+  let report = '';
+  const sampleA = JSON.stringify({ name: 'Ada', age: 36, city: 'London', skills: ['math', 'logic'] }, null, 2);
+  const sampleB = JSON.stringify({ name: 'Ada Lovelace', age: 36, active: true, skills: ['math', 'computing'] }, null, 2);
+  const labels = { added: ['افزوده‌شده', 'Added'], removed: ['حذف‌شده', 'Removed'], changed: ['تغییرکرده', 'Changed'] } as const;
+  function compare() {
+    result.hidden = false; result.replaceChildren(); copy.disabled = true; report = '';
+    const en = document.documentElement.lang === 'en';
+    try {
+      const diff = compareJsonTexts(before.value, after.value);
+      const counts = { added: 0, removed: 0, changed: 0 };
+      for (const entry of diff.entries) counts[entry.kind]++;
+      const summary = document.createElement('p');
+      summary.className = 'jd-summary';
+      summary.textContent = diff.total === 0 ? (en ? 'No differences found. The JSON documents are equivalent.' : 'تفاوتی پیدا نشد؛ دو سند JSON معادل هستند.') : (en ? `Found ${diff.total} difference(s): ${counts.added} added, ${counts.removed} removed, ${counts.changed} changed.` : `${diff.total} تفاوت پیدا شد: ${counts.added} افزوده، ${counts.removed} حذف و ${counts.changed} تغییر.`);
+      result.append(summary);
+      report = summary.textContent + '\n';
+      for (const entry of diff.entries) {
+        const row = document.createElement('article'); row.className = 'jd-entry';
+        const heading = document.createElement('div'); heading.className = 'jd-entry-head';
+        const tag = document.createElement('strong'); tag.className = 'jd-' + entry.kind; tag.textContent = labels[entry.kind][en ? 1 : 0];
+        const path = document.createElement('code'); path.textContent = entry.path;
+        heading.append(tag, path); row.append(heading);
+        if (entry.kind !== 'added') { const old = document.createElement('pre'); old.textContent = (en ? 'Before: ' : 'قبل: ') + JSON.stringify(entry.before, null, 2); row.append(old); }
+        if (entry.kind !== 'removed') { const next = document.createElement('pre'); next.textContent = (en ? 'After: ' : 'بعد: ') + JSON.stringify(entry.after, null, 2); row.append(next); }
+        result.append(row);
+        report += `[${entry.kind}] ${entry.path}\n${entry.kind === 'added' ? '' : 'before: ' + JSON.stringify(entry.before)}\n${entry.kind === 'removed' ? '' : 'after: ' + JSON.stringify(entry.after)}\n\n`;
+      }
+      if (diff.truncated) { const note = document.createElement('p'); note.textContent = en ? 'Only the first 500 entries are displayed.' : 'فقط ۵۰۰ مورد اول نمایش داده شده‌اند.'; result.append(note); }
+      copy.disabled = false;
+    } catch (error) {
+      const message = document.createElement('p'); message.className = 'jd-error'; message.textContent = error instanceof Error ? error.message : 'Comparison failed'; result.append(message);
+    }
+  }
+  $('jd-compare')?.addEventListener('click', compare);
+  $('jd-sample')?.addEventListener('click', () => { before.value = sampleA; after.value = sampleB; compare(); });
+  $('jd-clear')?.addEventListener('click', () => { before.value = ''; after.value = ''; result.replaceChildren(); result.hidden = true; copy.disabled = true; report = ''; before.focus(); });
+  copy.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(report); copy.textContent = document.documentElement.lang === 'en' ? 'Copied' : 'کپی شد'; }
+    catch { copy.textContent = document.documentElement.lang === 'en' ? 'Copy failed' : 'کپی ناموفق بود'; }
+  });
+  before.value = sampleA; after.value = sampleB; compare();
+</script>
+<style>
+  .jd-tool{display:flex;flex-direction:column;gap:var(--space-3)}
+  .jd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}
+  .jd-grid label{display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+  .jd-area{font-family:var(--font-mono);font-size:.85rem;direction:ltr;text-align:left}
+  .jd-actions{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+  .jd-result{padding:var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-md);overflow-wrap:anywhere}
+  .jd-summary{font-weight:700}
+  .jd-entry{padding:.65rem 0;border-top:1px solid var(--color-border)}
+  .jd-entry-head{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center}
+  .jd-entry-head code{direction:ltr}
+  .jd-entry pre{white-space:pre-wrap;overflow-wrap:anywhere;direction:ltr;text-align:left;padding:.5rem;background:var(--color-surface);border-radius:var(--radius-sm);font-size:.8rem}
+  .jd-added{color:var(--color-success)} .jd-removed{color:var(--color-danger)} .jd-changed{color:var(--color-warning)}
+  .jd-error{color:var(--color-danger);font-weight:700}
+  .jd-note{font-size:.82rem;color:var(--color-text-muted);margin:0}
+  @media(max-width:700px){.jd-grid{grid-template-columns:1fr}}
+</style>
