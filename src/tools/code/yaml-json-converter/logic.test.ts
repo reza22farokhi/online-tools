@@ -13,7 +13,7 @@ describe('YAML and JSON conversion', () => {
   });
   it('rejects duplicate keys and tab indentation', () => {
     expect(() => parseYaml('a: 1\na: 2')).toThrow(/تکراری/);
-    expect(() => parseYaml('a:\n\\tb: 1')).toThrow(/Tab/);
+    expect(() => parseYaml('a:\n\tb: 1')).toThrow(/Tab/);
   });
   it('rejects malformed JSON and oversized content', () => {
     expect(() => jsonToYaml('{bad')).toThrow(/JSON/);
