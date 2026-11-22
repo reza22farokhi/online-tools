@@ -9,6 +9,7 @@ import LineSorterTool from './text/line-sorter/Tool.astro';
 import RemoveDuplicatesTool from './text/remove-duplicates/Tool.astro';
 import SlugGeneratorTool from './text/slug-generator/Tool.astro';
 import JsonFormatterTool from './code/json-formatter/Tool.astro';
+import JsonToTypeScriptTool from './code/json-to-typescript/Tool.astro';
 import Base64Tool from './code/base64/Tool.astro';
 import HtmlEscapeTool from './code/html-escape/Tool.astro';
 import UrlEncoderTool from './code/url-encoder/Tool.astro';
@@ -41,52 +42,27 @@ import DateInfoTool from './date/date-info/Tool.astro';
 import CsvJsonTool from './file/csv-json-converter/Tool.astro';
 import TextDiffTool from './text/text-diff/Tool.astro';
 import PersianTextRefinerTool from './text/persian-text-refiner/Tool.astro';
-
 export const toolComponents: Record<string, AstroComponentFactory> = {
-  'word-counter': WordCounterTool,
-  'case-converter': CaseConverterTool,
-  'remove-extra-spaces': RemoveExtraSpacesTool,
-  'line-sorter': LineSorterTool,
-  'remove-duplicates': RemoveDuplicatesTool,
-  'slug-generator': SlugGeneratorTool,
-  'json-formatter': JsonFormatterTool,
-  'base64': Base64Tool,
-  'html-escape': HtmlEscapeTool,
-  'url-encoder': UrlEncoderTool,
-  'uuid-generator': UuidGeneratorTool,
-  'hash-generator': HashGeneratorTool,
-  'regex-tester': RegexTesterTool,
-  'jwt-decoder': JwtDecoderTool,
-  'percentage': PercentageTool,
-  'age': AgeTool,
-  'date-diff': DateDiffTool,
-  'unit-converter': UnitConverterTool,
-  'meta-tag-generator': MetaTagTool,
-  'serp-preview': SerpPreviewTool,
-  'robots-txt-generator': RobotsTxtTool,
-  'og-preview': OgPreviewTool,
-  'image-resizer': ImageResizerTool,
-  'image-compressor': ImageCompressorTool,
-  'format-converter': FormatConverterTool,
-  'qr-code-generator': QrCodeGeneratorTool,
-  'date-converter': DateConverterTool,
-  'password-generator': PasswordGeneratorTool,
-  'color-picker': ColorPickerTool,
-  'file-info': FileInfoTool,
-  'file-to-base64': FileToBase64Tool,
-  'palette-generator': PaletteGeneratorTool,
-  'gradient-generator': GradientGeneratorTool,
-  'contrast-checker': ContrastCheckerTool,
-  'box-shadow': BoxShadowTool,
-  'multi-calendar-converter': MultiCalendarTool,
-  'unix-timestamp': UnixTimestampTool,
-  'date-calculator': DateCalculatorTool,
-  'date-info': DateInfoTool,
-  'csv-json-converter': CsvJsonTool,
-  'text-diff': TextDiffTool,
+  'word-counter': WordCounterTool, 'case-converter': CaseConverterTool,
+  'remove-extra-spaces': RemoveExtraSpacesTool, 'line-sorter': LineSorterTool,
+  'remove-duplicates': RemoveDuplicatesTool, 'slug-generator': SlugGeneratorTool,
+  'json-formatter': JsonFormatterTool, 'json-to-typescript': JsonToTypeScriptTool,
+  'base64': Base64Tool, 'html-escape': HtmlEscapeTool, 'url-encoder': UrlEncoderTool,
+  'uuid-generator': UuidGeneratorTool, 'hash-generator': HashGeneratorTool,
+  'regex-tester': RegexTesterTool, 'jwt-decoder': JwtDecoderTool,
+  'percentage': PercentageTool, 'age': AgeTool, 'date-diff': DateDiffTool,
+  'unit-converter': UnitConverterTool, 'meta-tag-generator': MetaTagTool,
+  'serp-preview': SerpPreviewTool, 'robots-txt-generator': RobotsTxtTool,
+  'og-preview': OgPreviewTool, 'image-resizer': ImageResizerTool,
+  'image-compressor': ImageCompressorTool, 'format-converter': FormatConverterTool,
+  'qr-code-generator': QrCodeGeneratorTool, 'date-converter': DateConverterTool,
+  'password-generator': PasswordGeneratorTool, 'color-picker': ColorPickerTool,
+  'file-info': FileInfoTool, 'file-to-base64': FileToBase64Tool,
+  'palette-generator': PaletteGeneratorTool, 'gradient-generator': GradientGeneratorTool,
+  'contrast-checker': ContrastCheckerTool, 'box-shadow': BoxShadowTool,
+  'multi-calendar-converter': MultiCalendarTool, 'unix-timestamp': UnixTimestampTool,
+  'date-calculator': DateCalculatorTool, 'date-info': DateInfoTool,
+  'csv-json-converter': CsvJsonTool, 'text-diff': TextDiffTool,
   'persian-text-refiner': PersianTextRefinerTool
 };
-
-export function getToolComponent(slug: string): AstroComponentFactory | null {
-  return toolComponents[slug] ?? null;
-}
+export function getToolComponent(slug: string): AstroComponentFactory | null { return toolComponents[slug] ?? null; }
