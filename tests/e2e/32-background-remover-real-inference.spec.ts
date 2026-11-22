@@ -15,7 +15,7 @@ test('background remover runs real browser inference and keeps the source image 
     if (body?.includes(tinyPng)) uploadedImageRequests.push(request.url());
   });
 
-  await page.goto('/tools/image/background-remover/?lang=en');
+  await page.goto('/tools/background-remover/?lang=en');
   await page.locator('#br-file').setInputFiles({
     name: 'synthetic-e2e.png',
     mimeType: 'image/png',
