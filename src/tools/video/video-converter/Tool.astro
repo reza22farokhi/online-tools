@@ -65,6 +65,7 @@
 </div>
 
 <script>
+  import { FFmpeg } from '@ffmpeg/ffmpeg';
   import { MAX_VIDEO_SIZE, LARGE_VIDEO_WARNING_SIZE, formatMediaBytes, isSupportedMedia, outputFilename, isMemoryError } from './logic';
 
   const root = document.querySelector('[data-video-converter]');
@@ -88,7 +89,6 @@
     let outputUrl: string | null = null;
     let ffmpeg: any = null;
     let processing = false;
-    let runtimeModule: any = null;
     let activeInput = '';
     let activeOutput = '';
 
@@ -172,19 +172,16 @@
 
     const loadEngine = async () => {
       if (ffmpeg) return ffmpeg;
-      if (!runtimeModule) {
-        const moduleUrl = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js';
-        runtimeModule = await import(/* @vite-ignore */ moduleUrl);
-      }
-      const engine = new runtimeModule.FFmpeg();
+      const engine = new FFmpeg();
       engine.on('progress', ({ progress }: { progress: number }) => {
         if (Number.isFinite(progress)) setProgress(progress * 100);
       });
       engine.on('log', ({ message: logMessage }: { message: string }) => {
-        const match = logMessage.match(/time=(\d+):(\d+):(\d+(?:\.\d+)?)/);
-        if (match && statusLabel) statusLabel.textContent = message('در حال رمزگذاری ویدیو…', 'Encoding media…');
+        if (/\bframe=|\btime=/.test(logMessage) && statusLabel) {
+          statusLabel.textContent = message('در حال رمزگذاری ویدیو…', 'Encoding media…');
+        }
       });
-      const coreBase = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
+      const coreBase = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';
       const [coreResponse, wasmResponse] = await Promise.all([
         fetch(coreBase + '/ffmpeg-core.js'),
         fetch(coreBase + '/ffmpeg-core.wasm')
@@ -226,7 +223,7 @@
       try {
         const engine = await loadEngine();
         if (statusLabel) statusLabel.textContent = message('در حال آماده‌سازی فایل…', 'Preparing media…');
-        await engine.writeFile(activeInput, await runtimeModule.fetchFile(inputFile));
+        await engine.writeFile(activeInput, new Uint8Array(await inputFile.arrayBuffer()));
         if (statusLabel) statusLabel.textContent = message('در حال تبدیل و فشرده‌سازی…', 'Converting and compressing…');
         const exitCode = await engine.exec(args);
         if (exitCode !== 0) throw new Error('FFmpeg conversion failed with exit code ' + exitCode);
