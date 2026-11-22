@@ -1,0 +1,119 @@
+---
+---
+<div class="csa-tool">
+  <div class="csa-controls">
+    <label><span data-lang-fa="جداکننده" data-lang-en="Delimiter">جداکننده</span><select id="csa-delimiter" class="input"><option value=",">Comma (,)</option><option value=";">Semicolon (;)</option><option value="\\t">Tab</option></select></label>
+    <label class="csa-check"><input id="csa-headers" type="checkbox" checked><span data-lang-fa="ردیف اول سرستون است" data-lang-en="First row contains headers">ردیف اول سرستون است</span></label>
+  </div>
+  <label for="csa-input"><strong data-lang-fa="داده CSV" data-lang-en="CSV data">داده CSV</strong></label>
+  <textarea id="csa-input" class="textarea csa-area" rows="10" dir="ltr" spellcheck="false"></textarea>
+  <div class="csa-actions">
+    <button id="csa-analyze" class="btn btn-primary" type="button" data-lang-fa="تحلیل داده" data-lang-en="Analyze data">تحلیل داده</button>
+    <button id="csa-sample" class="btn" type="button" data-lang-fa="نمونه" data-lang-en="Load sample">نمونه</button>
+    <button id="csa-clear" class="btn" type="button" data-lang-fa="پاک‌کردن" data-lang-en="Clear">پاک‌کردن</button>
+  </div>
+  <p id="csa-error" class="csa-error" role="alert" hidden></p>
+  <section id="csa-results" hidden>
+    <div id="csa-summary" class="csa-summary"></div>
+    <div class="csa-table-wrap"><table class="csa-table"><thead><tr id="csa-columns"></tr></thead><tbody id="csa-stats"></tbody></table></div>
+    <div class="csa-filter">
+      <label><span data-lang-fa="ستون" data-lang-en="Column">ستون</span><select id="csa-column" class="input"></select></label>
+      <label><span data-lang-fa="شامل عبارت" data-lang-en="Contains">شامل عبارت</span><input id="csa-query" class="input" type="search" maxlength="500"></label>
+      <label><span data-lang-fa="مرتب‌سازی" data-lang-en="Sort">مرتب‌سازی</span><select id="csa-sort" class="input"><option value="none">—</option><option value="asc">A → Z / 0 → 9</option><option value="desc">Z → A / 9 → 0</option></select></label>
+      <button id="csa-export" class="btn" type="button" data-lang-fa="دریافت CSV" data-lang-en="Export CSV">دریافت CSV</button>
+    </div>
+    <p id="csa-visible" class="csa-muted" aria-live="polite"></p>
+    <div class="csa-table-wrap"><table class="csa-table"><thead id="csa-preview-head"></thead><tbody id="csa-preview"></tbody></table></div>
+  </section>
+  <p class="csa-note" data-lang-fa="پردازش کاملاً محلی است. برای جلوگیری از مصرف بیش از حد حافظه، محدودیت‌های CSV موجود در مبدل سایت اعمال می‌شوند." data-lang-en="Processing is entirely local. The existing CSV parser limits are applied to keep memory usage bounded.">پردازش کاملاً محلی است.</p>
+</div>
+<script>
+  import { analyzeCsv, filterCsvRows, rowsToCsv, sortCsvRows } from './logic';
+  const $ = (id: string) => document.getElementById(id);
+  const input = $('csa-input') as HTMLTextAreaElement;
+  const delimiter = $('csa-delimiter') as HTMLSelectElement;
+  const headers = $('csa-headers') as HTMLInputElement;
+  const results = $('csa-results') as HTMLElement;
+  const error = $('csa-error') as HTMLElement;
+  const column = $('csa-column') as HTMLSelectElement;
+  const query = $('csa-query') as HTMLInputElement;
+  const sort = $('csa-sort') as HTMLSelectElement;
+  const sample = 'name,age,city\\nAda,36,London\\nGrace,40,New York\\nAda,36,London\\n,28,Paris';
+  let analysis: ReturnType<typeof analyzeCsv> | null = null;
+  let current: string[][] = [];
+  let activeDelimiter = ',';
+  const en = () => document.documentElement.lang === 'en';
+  const words = (fa: string, english: string) => en() ? english : fa;
+  function cell(tag: string, value: string, parent: HTMLElement) { const el = document.createElement(tag); el.textContent = value; parent.append(el); return el; }
+  function renderRows(rows: string[][]) {
+    current = rows;
+    const head = $('csa-preview-head') as HTMLElement; const body = $('csa-preview') as HTMLElement;
+    head.replaceChildren(); body.replaceChildren();
+    const hr = document.createElement('tr'); analysis?.headers.forEach(h => cell('th', h, hr)); head.append(hr);
+    rows.slice(0, 100).forEach(row => { const tr = document.createElement('tr'); row.forEach(v => cell('td', v, tr)); body.append(tr); });
+    $('csa-visible')!.textContent = words('نمایش ', 'Showing ') + rows.length + words(' ردیف؛ حداکثر ۱۰۰ ردیف پیش‌نمایش می‌شود.', ' rows; preview is limited to 100 rows.');
+  }
+  function refresh() {
+    if (!analysis) return;
+    let rows = filterCsvRows(analysis.rows, Number(column.value), query.value);
+    if (sort.value !== 'none') rows = sortCsvRows(rows, Number(column.value), sort.value as 'asc' | 'desc');
+    renderRows(rows);
+  }
+  function run() {
+    error.hidden = true; results.hidden = true; analysis = null;
+    try {
+      activeDelimiter = delimiter.value === '\\t' ? '\\t' : delimiter.value;
+      analysis = analyzeCsv(input.value, activeDelimiter, headers.checked);
+      const a = analysis;
+      const summary = $('csa-summary')!; summary.replaceChildren();
+      const stats = [
+        [words('ردیف‌ها','Rows'), String(a.rowCount)],
+        [words('ستون‌ها','Columns'), String(a.columnCount)],
+        [words('سلول خالی','Empty cells'), String(a.emptyCells)],
+        [words('ردیف تکراری','Duplicate rows'), String(a.duplicateRows)]
+      ];
+      stats.forEach(([label, value]) => { const box = document.createElement('div'); cell('strong', value, box); cell('span', label, box); summary.append(box); });
+      const columnsRow = $('csa-columns')!; const statsBody = $('csa-stats')!;
+      columnsRow.replaceChildren(); statsBody.replaceChildren();
+      ['Column','Non-empty','Empty','Unique','Numeric summary'].forEach((v,i)=>cell('th',words(['ستون','غیرخالی','خالی','یکتا','آمار عددی'][i],v),columnsRow));
+      a.columns.forEach(col => {
+        const tr = document.createElement('tr');
+        [col.name,String(col.nonEmpty),String(col.empty),String(col.unique),col.numeric ? `min ${col.min} · max ${col.max} · mean ${col.mean!.toFixed(2)} · median ${col.median}` : words('—','—')].forEach(v=>cell('td',v,tr));
+        statsBody.append(tr);
+      });
+      column.replaceChildren(); a.headers.forEach((h,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=h;column.append(o);});
+      query.value=''; sort.value='none'; results.hidden=false; refresh();
+    } catch (e) {
+      error.textContent = e instanceof Error ? e.message : words('تحلیل ناموفق بود.','Analysis failed.');
+      error.hidden = false;
+    }
+  }
+  $('csa-analyze')?.addEventListener('click', run);
+  $('csa-sample')?.addEventListener('click', () => { input.value=sample; run(); });
+  $('csa-clear')?.addEventListener('click', () => { input.value=''; analysis=null; results.hidden=true; error.hidden=true; });
+  column.addEventListener('change',refresh); query.addEventListener('input',refresh); sort.addEventListener('change',refresh);
+  $('csa-export')?.addEventListener('click', () => {
+    if (!analysis) return;
+    const csv=rowsToCsv(analysis.headers,current,activeDelimiter);
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob); const link=document.createElement('a');
+    link.href=url; link.download='csv-analysis-export.csv'; link.click(); URL.revokeObjectURL(url);
+  });
+  input.value=sample; run();
+</script>
+<style>
+  .csa-tool{display:flex;flex-direction:column;gap:var(--space-3)}
+  .csa-controls,.csa-filter{display:flex;flex-wrap:wrap;align-items:end;gap:var(--space-3)}
+  .csa-controls label,.csa-filter label{display:flex;flex-direction:column;gap:var(--space-1);min-width:9rem}
+  .csa-check{flex-direction:row!important;align-items:center;padding:.6rem 0}
+  .csa-area{font-family:var(--font-mono);font-size:.85rem;direction:ltr;text-align:left}
+  .csa-actions{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+  .csa-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-2)}
+  .csa-summary div{display:flex;flex-direction:column;gap:.25rem;padding:.8rem;border:1px solid var(--color-border);border-radius:var(--radius-md)}
+  .csa-summary strong{font-size:1.25rem}.csa-summary span,.csa-muted,.csa-note{font-size:.82rem;color:var(--color-text)}
+  .csa-table-wrap{overflow:auto;max-width:100%}.csa-table{width:100%;border-collapse:collapse;font-size:.85rem}
+  .csa-table th,.csa-table td{padding:.55rem;border-bottom:1px solid var(--color-border);text-align:start;white-space:nowrap}
+  .csa-table td{direction:auto}.csa-error{color:var(--color-text);font-weight:600}
+  .csa-note{margin:0}
+  @media(max-width:640px){.csa-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
