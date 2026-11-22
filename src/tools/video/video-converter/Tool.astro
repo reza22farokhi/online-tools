@@ -215,13 +215,15 @@
       activeOutput = 'converted.' + format;
       const quality = qualitySelect.value;
       const crf = quality === 'high' ? '23' : quality === 'low' ? '34' : '28';
+      let activeEngine: any = null;
       const args = format === 'mp3'
         ? ['-i', activeInput, '-vn', '-c:a', 'libmp3lame', '-q:a', quality === 'high' ? '2' : quality === 'low' ? '7' : '4', activeOutput]
         : format === 'webm'
-          ? ['-i', activeInput, '-c:v', 'libvpx-vp9', '-crf', quality === 'high' ? '28' : quality === 'low' ? '42' : '34', '-b:v', '0', '-c:a', 'libopus', activeOutput]
-          : ['-i', activeInput, '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crf, '-c:a', 'aac', '-movflags', '+faststart', activeOutput];
+          ? ['-i', activeInput, '-threads', '1', '-c:v', 'libvpx-vp9', '-crf', quality === 'high' ? '28' : quality === 'low' ? '42' : '34', '-b:v', '0', '-c:a', 'libopus', activeOutput]
+          : ['-i', activeInput, '-threads', '1', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crf, '-c:a', 'aac', '-movflags', '+faststart', activeOutput];
       try {
         const engine = await loadEngine();
+        activeEngine = engine;
         if (statusLabel) statusLabel.textContent = message('در حال آماده‌سازی فایل…', 'Preparing media…');
         await engine.writeFile(activeInput, new Uint8Array(await inputFile.arrayBuffer()));
         if (statusLabel) statusLabel.textContent = message('در حال تبدیل و فشرده‌سازی…', 'Converting and compressing…');
@@ -253,6 +255,7 @@
       } finally {
         try { if (ffmpeg && activeInput) await ffmpeg.deleteFile(activeInput); } catch {}
         try { if (ffmpeg && activeOutput) await ffmpeg.deleteFile(activeOutput); } catch {}
+        if (activeEngine) { activeEngine.terminate(); ffmpeg = null; }
         processing = false;
         if (processButton) processButton.disabled = false;
       }
