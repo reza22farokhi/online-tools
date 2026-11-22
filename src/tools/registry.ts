@@ -30,6 +30,7 @@ import { meta as serpPreviewMeta } from './seo/serp-preview/meta';
 import { meta as robotsTxtMeta } from './seo/robots-txt-generator/meta';
 import { meta as ogPreviewMeta } from './seo/og-preview/meta';
 import { meta as imageResizerMeta } from './image/image-resizer/meta';
+import { meta as backgroundRemoverMeta } from './image/background-remover/meta';
 import { meta as imageCompressorMeta } from './image/image-compressor/meta';
 import { meta as formatConverterMeta } from './image/format-converter/meta';
 import { meta as colorPickerMeta } from './image/color-picker/meta';
@@ -65,8 +66,7 @@ export const registry: ToolMeta[] = [
   uuidGeneratorMeta, hashGeneratorMeta, regexTesterMeta, jwtDecoderMeta,
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
-  imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
-import { meta as backgroundRemoverMeta } from './image/background-remover/meta';
+  imageResizerMeta, backgroundRemoverMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
   paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
   fileInfoMeta, fileToBase64Meta, multiCalendarMeta, unixTimestampMeta,
   dateCalculatorMeta, dateInfoMeta, csvJsonMeta, csvAnalyzerMeta, textDiffMeta, persianTextRefinerMeta
