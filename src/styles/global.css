@@ -42,8 +42,8 @@ html[dir="ltr"] body { direction: ltr; text-align: left; }
 
 main { flex: 1; }
 
-a { color: var(--color-primary); text-decoration: none; }
-a:hover { color: var(--color-primary-hover); text-decoration: underline; }
+a { color: var(--color-primary); text-decoration: underline; text-decoration-thickness: 0.08em; text-underline-offset: 0.15em; }
+a:hover { color: var(--color-primary-hover); text-decoration-thickness: 0.12em; }
 
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.25;
