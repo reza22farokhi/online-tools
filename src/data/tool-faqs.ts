@@ -42,6 +42,7 @@ import { faqs as date_info } from './faqs/date-info';
 import { faqs as file_info } from './faqs/file-info';
 import { faqs as file_to_base64 } from './faqs/file-to-base64';
 import { faqs as csv_json_converter } from './faqs/csv-json-converter';
+import { faqs as csv_analyzer } from './faqs/csv-analyzer';
 import { faqs as qr_code_generator } from './faqs/qr-code-generator';
 import { faqs as password_generator } from './faqs/password-generator';
 import { faqs as date_converter } from './faqs/date-converter';
@@ -90,6 +91,7 @@ export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'file-info': file_info,
   'file-to-base64': file_to_base64,
   'csv-json-converter': csv_json_converter,
+  'csv-analyzer': csv_analyzer,
   'qr-code-generator': qr_code_generator,
   'password-generator': password_generator,
   'date-converter': date_converter,

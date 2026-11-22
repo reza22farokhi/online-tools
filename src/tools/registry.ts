@@ -43,6 +43,7 @@ import { meta as unixTimestampMeta } from './date/unix-timestamp/meta';
 import { meta as dateCalculatorMeta } from './date/date-calculator/meta';
 import { meta as dateInfoMeta } from './date/date-info/meta';
 import { meta as csvJsonMeta } from './file/csv-json-converter/meta';
+import { meta as csvAnalyzerMeta } from './file/csv-analyzer/meta';
 import { meta as textDiffMeta } from './text/text-diff/meta';
 import { meta as persianTextRefinerMeta } from './text/persian-text-refiner/meta';
 export const categories: CategoryMeta[] = [
@@ -66,7 +67,7 @@ export const registry: ToolMeta[] = [
   imageResizerMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
   paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
   fileInfoMeta, fileToBase64Meta, multiCalendarMeta, unixTimestampMeta,
-  dateCalculatorMeta, dateInfoMeta, csvJsonMeta, textDiffMeta, persianTextRefinerMeta
+  dateCalculatorMeta, dateInfoMeta, csvJsonMeta, csvAnalyzerMeta, textDiffMeta, persianTextRefinerMeta
 ];
 export function getToolBySlug(slug: string): ToolMeta | undefined { return registry.find(t => t.slug === slug); }
 export function getToolsByCategory(category: ToolCategory): ToolMeta[] { return registry.filter(t => t.category === category); }
