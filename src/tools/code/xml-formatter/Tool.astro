@@ -1,0 +1,81 @@
+---
+---
+<div class="xf-tool">
+  <label for="xf-input"><span data-lang-fa="XML ورودی" data-lang-en="Input XML">XML ورودی</span></label>
+  <textarea id="xf-input" class="textarea xf-area" spellcheck="false" maxlength="100000" placeholder="<root><item>value</item></root>" aria-describedby="xf-help"></textarea>
+  <p id="xf-help" class="xf-help" data-lang-fa="حداکثر ۱۰۰ هزار کاراکتر؛ DOCTYPE پذیرفته نمی‌شود. پردازش کاملاً محلی است." data-lang-en="Maximum 100,000 characters. DOCTYPE is rejected. Processing stays in your browser.">حداکثر ۱۰۰ هزار کاراکتر؛ DOCTYPE پذیرفته نمی‌شود. پردازش کاملاً محلی است.</p>
+  <div class="xf-controls">
+    <div class="xf-modes" role="group" aria-label="XML operation">
+      <button type="button" class="btn xf-mode active" data-mode="format" aria-pressed="true">Format</button>
+      <button type="button" class="btn xf-mode" data-mode="minify" aria-pressed="false">Minify</button>
+      <button type="button" class="btn xf-mode" data-mode="validate" aria-pressed="false">Validate</button>
+    </div>
+    <label class="xf-indent" for="xf-indent"><span data-lang-fa="تورفتگی" data-lang-en="Indent">تورفتگی</span>
+      <select id="xf-indent" class="select"><option value="2">2 spaces</option><option value="4">4 spaces</option></select>
+    </label>
+  </div>
+  <div id="xf-status" class="xf-status" role="status" aria-live="polite"></div>
+  <div class="xf-actions">
+    <button type="button" class="btn" id="xf-clear"><span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
+    <button type="button" class="btn btn-primary" id="xf-copy" disabled><span data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</span></button>
+  </div>
+  <label for="xf-output"><span data-lang-fa="خروجی" data-lang-en="Output">خروجی</span></label>
+  <textarea id="xf-output" class="textarea xf-area xf-output" readonly></textarea>
+</div>
+<script>
+  import { processXml, type XmlMode } from './logic';
+  import { copyText, toast } from '../../../lib/ui';
+  const input = document.getElementById('xf-input') as HTMLTextAreaElement | null;
+  const output = document.getElementById('xf-output') as HTMLTextAreaElement | null;
+  const status = document.getElementById('xf-status');
+  const indent = document.getElementById('xf-indent') as HTMLSelectElement | null;
+  const copy = document.getElementById('xf-copy') as HTMLButtonElement | null;
+  const indentLabel = document.querySelector('.xf-indent') as HTMLElement | null;
+  const isEnglish = () => document.documentElement.lang === 'en';
+  let mode: XmlMode = 'format';
+  function refresh() {
+    if (!input || !output || !status || !copy) return;
+    if (!input.value.trim()) { output.value = ''; status.textContent = ''; status.className = 'xf-status'; copy.disabled = true; return; }
+    const result = processXml(input.value, mode, indent?.value === '4' ? 4 : 2);
+    output.value = result.output;
+    status.textContent = result.ok
+      ? (mode === 'validate' ? (isEnglish() ? 'Valid XML.' : 'ساختار XML معتبر است.') : (isEnglish() ? 'Done.' : 'عملیات انجام شد.'))
+      : (result.error || (isEnglish() ? 'Invalid XML.' : 'XML نامعتبر است.'));
+    status.className = result.ok ? 'xf-status success' : 'xf-status error';
+    copy.disabled = !result.ok || mode === 'validate' || !result.output;
+    if (indentLabel) indentLabel.hidden = mode !== 'format';
+  }
+  input?.addEventListener('input', refresh);
+  indent?.addEventListener('change', refresh);
+  document.querySelectorAll<HTMLButtonElement>('.xf-mode').forEach(button => button.addEventListener('click', () => {
+    mode = button.dataset.mode as XmlMode;
+    document.querySelectorAll('.xf-mode').forEach(item => {
+      item.classList.toggle('active', item === button);
+      item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
+    });
+    refresh();
+  }));
+  document.getElementById('xf-clear')?.addEventListener('click', () => { if (input) input.value = ''; refresh(); input?.focus(); });
+  copy?.addEventListener('click', async () => {
+    if (!output?.value) return;
+    const ok = await copyText(output.value);
+    toast(ok ? (isEnglish() ? 'Output copied.' : 'خروجی کپی شد.') : (isEnglish() ? 'Copy failed.' : 'کپی انجام نشد.'), ok ? 'success' : 'error');
+  });
+  document.addEventListener('app:languagechange', refresh);
+  refresh();
+</script>
+<style>
+  .xf-tool { display:flex; flex-direction:column; gap:var(--space-3); }
+  .xf-area { min-height:190px; font-family:var(--font-mono); direction:ltr; text-align:left; }
+  .xf-help { margin:0; color:var(--color-text-muted); font-size:.8rem; }
+  .xf-controls,.xf-actions,.xf-modes { display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-2); }
+  .xf-controls { justify-content:space-between; }
+  .xf-mode { padding:var(--space-1) var(--space-3); }
+  .xf-mode.active { background:var(--color-primary); border-color:var(--color-primary); color:var(--color-primary-fg); }
+  .xf-indent { display:flex; align-items:center; gap:var(--space-2); font-size:.9rem; }
+  .xf-indent select { width:auto; }
+  .xf-status { min-height:1.4em; overflow-wrap:anywhere; font-size:.9rem; }
+  .xf-status.success { color:var(--color-success); }
+  .xf-status.error { color:var(--color-danger); }
+  .xf-output { background:var(--color-surface-2); }
+</style>
