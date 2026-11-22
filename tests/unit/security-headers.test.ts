@@ -15,16 +15,16 @@ function directive(name: string): string {
 }
 
 describe('Content Security Policy allowlist', () => {
-  it('keeps scripts same-origin and excludes retired ad network origins', () => {
-    expect(directive('script-src')).toBe("'self'");
+  it('allows only the site and the background-removal module for scripts, excluding retired ad networks', () => {
+    expect(directive('script-src')).toBe("'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'");
     expect(csp).not.toMatch(/yektanet|triboon/i);
     expect(baseLayout).not.toMatch(/yektanet|ynpos|yn-bnr|yn_pub/i);
     expect(toolLayout).not.toMatch(/AdSlot|pos-article-display-card|data-ad-id/i);
     expect(blogLayout).not.toMatch(/pos-article-display-card|yektanet|ynpos/i);
   });
 
-  it('restricts browser connections to the same origin', () => {
-    expect(directive('connect-src')).toBe("'self'");
+  it('allows only required model delivery origins for browser connections', () => {
+    expect(directive('connect-src')).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net");
     expect(directive('img-src')).toBe("'self' data: blob:");
     expect(directive('font-src')).toBe("'self' data:");
     expect(directive('frame-src')).toBe('blob:');

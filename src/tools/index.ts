@@ -30,6 +30,7 @@ import SerpPreviewTool from './seo/serp-preview/Tool.astro';
 import RobotsTxtTool from './seo/robots-txt-generator/Tool.astro';
 import OgPreviewTool from './seo/og-preview/Tool.astro';
 import ImageResizerTool from './image/image-resizer/Tool.astro';
+import BackgroundRemoverTool from './image/background-remover/Tool.astro';
 import ImageCompressorTool from './image/image-compressor/Tool.astro';
 import FormatConverterTool from './image/format-converter/Tool.astro';
 import ColorPickerTool from './image/color-picker/Tool.astro';
@@ -59,6 +60,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'unit-converter': UnitConverterTool, 'meta-tag-generator': MetaTagTool,
   'serp-preview': SerpPreviewTool, 'robots-txt-generator': RobotsTxtTool,
   'og-preview': OgPreviewTool, 'image-resizer': ImageResizerTool,
+  'background-remover': BackgroundRemoverTool,
   'image-compressor': ImageCompressorTool, 'format-converter': FormatConverterTool,
   'qr-code-generator': QrCodeGeneratorTool, 'date-converter': DateConverterTool,
   'password-generator': PasswordGeneratorTool, 'color-picker': ColorPickerTool,
