@@ -25,7 +25,7 @@ test('every generated public HTML route has complete English navigation, copy, a
   const routes = findHtmlFiles(distDirectory)
     .filter(file => {
       const path = relative(distDirectory, file).split(sep).join('/');
-      return path === 'index.html' || path.endsWith('/index.html');
+      return (path === 'index.html' || path.endsWith('/index.html')) && !path.startsWith('en/');
     })
     .map(toRoute)
     .sort();
@@ -105,10 +105,10 @@ test('every generated public HTML route has complete English navigation, copy, a
       (response?.status() ?? 0) >= 400 ||
       result.lang !== 'en' ||
       result.dir !== 'ltr' ||
-      result.canonical !== new URL(route, 'https://abzar-tools.ir').toString().replace(/\/$/, '') + '/?lang=en' ||
+      result.canonical !== new URL(route + '?lang=en', 'https://abzar-tools.ir').toString() ||
       result.ogUrl !== result.canonical ||
       result.hreflangFa !== new URL(route, 'https://abzar-tools.ir').toString() ||
-      result.hreflangEn !== result.canonical ||
+      result.hreflangEn !== new URL('/en' + (route === '/' ? '/' : route), 'https://abzar-tools.ir').toString() ||
       result.hreflangDefault !== new URL(route, 'https://abzar-tools.ir').toString() ||
       /[\u0600-\u06FF]/.test(result.title) ||
       /[\u0600-\u06FF]/.test(result.description) ||
@@ -148,5 +148,31 @@ test('translated technical blog articles render complete English bodies and FAQs
     await expect(faq).toBeVisible();
     expect(await faq.locator('.faq-item').count()).toBeGreaterThan(0);
     expect(await faq.innerText()).not.toMatch(/[\u0600-\u06FF]/);
+  }
+});
+
+
+test('every generated /en/ route is indexable, English, and self-canonical', async ({ page }) => {
+  test.setTimeout(300_000);
+  const routes = findHtmlFiles(distDirectory)
+    .filter(file => {
+      const path = relative(distDirectory, file).split(sep).join('/');
+      return path.startsWith('en/') && path.endsWith('/index.html');
+    })
+    .map(toRoute)
+    .sort();
+  expect(routes.length, 'English route generation must mirror all public Persian routes').toBeGreaterThanOrEqual(80);
+
+  for (const route of routes) {
+    const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
+    expect(response?.status(), route).toBe(200);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://abzar-tools.ir' + route);
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', 'https://abzar-tools.ir' + route);
+    const faRoute = route.replace(/^\/en(?=\/|$)/, '') || '/';
+    await expect(page.locator('link[rel="alternate"][hreflang="fa"]')).toHaveAttribute('href', 'https://abzar-tools.ir' + faRoute);
+    const internalLinks = await page.locator('a[href^="/"]').evaluateAll(links => links.map(link => (link as HTMLAnchorElement).getAttribute('href') || ''));
+    expect(internalLinks.filter(href => !href.startsWith('/en/') && href !== '/en/'), route).toEqual([]);
   }
 });

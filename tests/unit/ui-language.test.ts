@@ -14,7 +14,7 @@ const dicts = {
 
 describe('language switching', () => {
   beforeEach(() => {
-    document.documentElement.innerHTML = '<head><title data-lang-fa="عنوان فارسی" data-lang-en="English title">عنوان فارسی</title><meta name="description" data-lang-fa="توضیح فارسی" data-lang-en="English description" content="توضیح فارسی"></head><body><a id="home" data-i18n="nav.home">خانه</a><span id="tool" data-lang-fa="ابزار" data-lang-en="Tool">ابزار</span><input id="search" data-i18n-placeholder="nav.home" placeholder="خانه"><textarea id="localized-placeholder" data-lang-placeholder-fa="متن فارسی" data-lang-placeholder-en="English text" placeholder="متن فارسی"></textarea><button id="skip" data-i18n-aria-label="accessibility.skip" aria-label="پرش به محتوا"></button><button id="language" data-lang-aria-fa="تغییر زبان" data-lang-aria-en="Change language" data-lang-title-fa="تغییر زبان" data-lang-title-en="Change language" aria-label="تغییر زبان" title="تغییر زبان"></button><aside id="notice" data-lang-only="en" hidden></aside><div id="tool-text">پاک کردن</div><div id="tool-dynamic"></div><div id="user-output" data-user-content="true">روز</div><div id="date-output" data-date-output>۱ فروردین ۱۴۰۳</div><div id="date-output-mehr" data-date-output>۱ مهر ۱۴۰۳</div><input id="tool-placeholder" placeholder="متن خود را وارد کنید..." /></body>';
+    document.documentElement.innerHTML = '<head><link rel="canonical" href="https://abzar-tools.ir/"><link rel="alternate" hreflang="fa" href="https://abzar-tools.ir/"><link rel="alternate" hreflang="en" href="https://abzar-tools.ir/en/"><title data-lang-fa="عنوان فارسی" data-lang-en="English title">عنوان فارسی</title><meta name="description" data-lang-fa="توضیح فارسی" data-lang-en="English description" content="توضیح فارسی"></head><body><a id="home" href="/" data-i18n="nav.home">خانه</a><span id="tool" data-lang-fa="ابزار" data-lang-en="Tool">ابزار</span><input id="search" data-i18n-placeholder="nav.home" placeholder="خانه"><textarea id="localized-placeholder" data-lang-placeholder-fa="متن فارسی" data-lang-placeholder-en="English text" placeholder="متن فارسی"></textarea><button id="skip" data-i18n-aria-label="accessibility.skip" aria-label="پرش به محتوا"></button><button id="language" data-lang-aria-fa="تغییر زبان" data-lang-aria-en="Change language" data-lang-title-fa="تغییر زبان" data-lang-title-en="Change language" aria-label="تغییر زبان" title="تغییر زبان"></button><aside id="notice" data-lang-only="en" hidden></aside><div id="tool-text">پاک کردن</div><div id="tool-dynamic"></div><div id="user-output" data-user-content="true">روز</div><div id="date-output" data-date-output>۱ فروردین ۱۴۰۳</div><div id="date-output-mehr" data-date-output>۱ مهر ۱۴۰۳</div><input id="tool-placeholder" placeholder="متن خود را وارد کنید..." /></body>';
     localStorage.clear();
     window.history.replaceState({}, '', '/');
   });
@@ -84,11 +84,14 @@ describe('language switching', () => {
     expect((document.getElementById('tool-placeholder') as HTMLInputElement).placeholder).toBe('متن خود را وارد کنید...');
   });
 
-  it('persists the language and updates the URL query parameter', () => {
+  it('persists the language and updates the dedicated English path', () => {
     setLang('en', dicts);
 
     expect(localStorage.getItem('pot.lang')).toBe('en');
-    expect(new URL(window.location.href).searchParams.get('lang')).toBe('en');
+    expect(new URL(window.location.href).pathname).toBe('/en/');
+    expect(new URL(window.location.href).searchParams.has('lang')).toBe(false);
+    expect(document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href).toBe('https://abzar-tools.ir/en/');
+    expect(document.getElementById('home')?.getAttribute('href')).toBe('/en/');
   });
 
   it('prefers a valid URL language over a previously stored language', () => {

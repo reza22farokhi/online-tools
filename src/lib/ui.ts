@@ -585,11 +585,43 @@ function updateLocaleCanonical(lang: Lang): void {
   const canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (!canonicalLink) return;
   const localized = new URL(canonicalLink.href, window.location.origin);
-  if (lang === 'en') localized.searchParams.set('lang', 'en');
-  else localized.searchParams.delete('lang');
+  const pathIsEnglish = /^\/en(?:\/|$)/.test(window.location.pathname);
+  if (pathIsEnglish) {
+    localized.pathname = window.location.pathname;
+    localized.searchParams.delete('lang');
+  } else if (lang === 'en') {
+    localized.searchParams.set('lang', 'en');
+  } else {
+    localized.searchParams.delete('lang');
+  }
   canonicalLink.href = localized.href;
+  const faPath = localized.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+  const enPath = '/en' + (faPath === '/' ? '/' : faPath);
+  document.querySelectorAll<HTMLLinkElement>('link[rel="alternate"][hreflang]').forEach(link => {
+    const locale = link.hreflang;
+    const alternate = new URL(localized.href);
+    alternate.pathname = locale === 'en' ? enPath : faPath;
+    alternate.searchParams.delete('lang');
+    link.href = alternate.href;
+  });
   const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
   if (ogUrl) ogUrl.content = localized.href;
+  document.querySelectorAll<HTMLAnchorElement>('a[href]').forEach(anchor => {
+    const raw = anchor.getAttribute('href');
+    if (!raw || raw.startsWith('#') || /^(mailto:|tel:|javascript:)/i.test(raw)) return;
+    try {
+      const target = new URL(raw, window.location.origin);
+      if (target.origin !== window.location.origin) return;
+      if (lang === 'en' && !/^\/en(?:\/|$)/.test(target.pathname)) {
+        target.pathname = '/en' + (target.pathname === '/' ? '/' : target.pathname);
+      } else if (lang === 'fa' && /^\/en(?:\/|$)/.test(target.pathname)) {
+        target.pathname = target.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+      }
+      anchor.setAttribute('href', target.pathname + target.search + target.hash);
+    } catch {}
+  });
+  const ogLocale = document.querySelector<HTMLMetaElement>('meta[property="og:locale"]');
+  if (ogLocale) ogLocale.content = lang === 'fa' ? 'fa_IR' : 'en_US';
 }
 
 export function applyLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>) {
@@ -650,7 +682,10 @@ export function setLang(lang: Lang, dicts?: Record<Lang, Record<string, string>>
   try { localStorage.setItem(LANG_KEY, lang); } catch {}
   try {
     const url = new URL(window.location.href);
-    url.searchParams.set('lang', lang);
+    const pathIsEnglish = /^\/en(?:\/|$)/.test(url.pathname);
+    if (lang === 'en' && !pathIsEnglish) url.pathname = '/en' + (url.pathname === '/' ? '/' : url.pathname);
+    if (lang === 'fa' && pathIsEnglish) url.pathname = url.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+    url.searchParams.delete('lang');
     window.history.replaceState({}, '', url);
   } catch {}
   applyLang(lang, dicts);
@@ -812,7 +847,8 @@ export function populateHomeSections(): void {
 export function initUI(dicts?: Record<Lang, Record<string, string>>) {
   setupFavoriteDelegation();
   const queryLang = new URLSearchParams(window.location.search).get('lang');
-  const initialLang: Lang = queryLang === 'fa' || queryLang === 'en' ? queryLang : (getStoredLang() ?? 'fa');
+  const pathLang: Lang | null = /^\/en(?:\/|$)/.test(window.location.pathname) ? 'en' : null;
+  const initialLang: Lang = pathLang ?? (queryLang === 'fa' || queryLang === 'en' ? queryLang : (getStoredLang() ?? 'fa'));
   if (queryLang === 'fa' || queryLang === 'en') {
     try { localStorage.setItem(LANG_KEY, queryLang); } catch {}
   }
