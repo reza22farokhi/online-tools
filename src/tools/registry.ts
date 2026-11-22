@@ -9,6 +9,7 @@ import { meta as lineSorterMeta } from './text/line-sorter/meta';
 import { meta as removeDuplicatesMeta } from './text/remove-duplicates/meta';
 import { meta as slugGeneratorMeta } from './text/slug-generator/meta';
 import { meta as jsonFormatterMeta } from './code/json-formatter/meta';
+import { meta as xmlFormatterMeta } from './code/xml-formatter/meta';
 import { meta as jsonToTypeScriptMeta } from './code/json-to-typescript/meta';
 import { meta as jsonSchemaValidatorMeta } from './code/json-schema-validator/meta';
 import { meta as jsonDiffMeta } from './code/json-diff/meta';
@@ -60,7 +61,7 @@ export const registry: ToolMeta[] = [
   dateConverterMeta, passwordGeneratorMeta, qrCodeMeta,
   wordCounterMeta, caseConverterMeta, removeExtraSpacesMeta, lineSorterMeta,
   removeDuplicatesMeta, slugGeneratorMeta,
-  jsonFormatterMeta, jsonToTypeScriptMeta, jsonSchemaValidatorMeta, jsonDiffMeta, yamlJsonConverterMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta,
+  jsonFormatterMeta, xmlFormatterMeta, jsonToTypeScriptMeta, jsonSchemaValidatorMeta, jsonDiffMeta, yamlJsonConverterMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta,
   uuidGeneratorMeta, hashGeneratorMeta, regexTesterMeta, jwtDecoderMeta,
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
