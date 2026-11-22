@@ -10,6 +10,7 @@ import { meta as removeDuplicatesMeta } from './text/remove-duplicates/meta';
 import { meta as slugGeneratorMeta } from './text/slug-generator/meta';
 import { meta as jsonFormatterMeta } from './code/json-formatter/meta';
 import { meta as jsonToTypeScriptMeta } from './code/json-to-typescript/meta';
+import { meta as jsonSchemaValidatorMeta } from './code/json-schema-validator/meta';
 import { meta as base64Meta } from './code/base64/meta';
 import { meta as htmlEscapeMeta } from './code/html-escape/meta';
 import { meta as urlEncoderMeta } from './code/url-encoder/meta';
@@ -56,7 +57,7 @@ export const registry: ToolMeta[] = [
   dateConverterMeta, passwordGeneratorMeta, qrCodeMeta,
   wordCounterMeta, caseConverterMeta, removeExtraSpacesMeta, lineSorterMeta,
   removeDuplicatesMeta, slugGeneratorMeta,
-  jsonFormatterMeta, jsonToTypeScriptMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta,
+  jsonFormatterMeta, jsonToTypeScriptMeta, jsonSchemaValidatorMeta, base64Meta, htmlEscapeMeta, urlEncoderMeta,
   uuidGeneratorMeta, hashGeneratorMeta, regexTesterMeta, jwtDecoderMeta,
   percentageMeta, ageMeta, dateDiffMeta, unitConverterMeta,
   metaTagMeta, serpPreviewMeta, robotsTxtMeta, ogPreviewMeta,
