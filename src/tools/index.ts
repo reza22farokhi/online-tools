@@ -9,6 +9,7 @@ import LineSorterTool from './text/line-sorter/Tool.astro';
 import RemoveDuplicatesTool from './text/remove-duplicates/Tool.astro';
 import SlugGeneratorTool from './text/slug-generator/Tool.astro';
 import JsonFormatterTool from './code/json-formatter/Tool.astro';
+import XmlFormatterTool from './code/xml-formatter/Tool.astro';
 import JsonToTypeScriptTool from './code/json-to-typescript/Tool.astro';
 import JsonSchemaValidatorTool from './code/json-schema-validator/Tool.astro';
 import JsonDiffTool from './code/json-diff/Tool.astro';
@@ -50,7 +51,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool, 'case-converter': CaseConverterTool,
   'remove-extra-spaces': RemoveExtraSpacesTool, 'line-sorter': LineSorterTool,
   'remove-duplicates': RemoveDuplicatesTool, 'slug-generator': SlugGeneratorTool,
-  'json-formatter': JsonFormatterTool, 'json-to-typescript': JsonToTypeScriptTool, 'json-schema-validator': JsonSchemaValidatorTool, 'json-diff': JsonDiffTool, 'yaml-json-converter': YamlJsonConverterTool,
+  'json-formatter': JsonFormatterTool, 'xml-formatter': XmlFormatterTool, 'json-to-typescript': JsonToTypeScriptTool, 'json-schema-validator': JsonSchemaValidatorTool, 'json-diff': JsonDiffTool, 'yaml-json-converter': YamlJsonConverterTool,
   'base64': Base64Tool, 'html-escape': HtmlEscapeTool, 'url-encoder': UrlEncoderTool,
   'uuid-generator': UuidGeneratorTool, 'hash-generator': HashGeneratorTool,
   'regex-tester': RegexTesterTool, 'jwt-decoder': JwtDecoderTool,
