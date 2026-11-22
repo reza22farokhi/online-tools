@@ -2,7 +2,7 @@
 ---
 <div class="csa-tool">
   <div class="csa-controls">
-    <label><span data-lang-fa="جداکننده" data-lang-en="Delimiter">جداکننده</span><select id="csa-delimiter" class="input"><option value=",">Comma (,)</option><option value=";">Semicolon (;)</option><option value="\\t">Tab</option></select></label>
+    <label><span data-lang-fa="جداکننده" data-lang-en="Delimiter">جداکننده</span><select id="csa-delimiter" class="input"><option value=",">Comma (,)</option><option value=";">Semicolon (;)</option><option value="tab">Tab</option></select></label>
     <label class="csa-check"><input id="csa-headers" type="checkbox" checked><span data-lang-fa="ردیف اول سرستون است" data-lang-en="First row contains headers">ردیف اول سرستون است</span></label>
   </div>
   <label for="csa-input"><strong data-lang-fa="داده CSV" data-lang-en="CSV data">داده CSV</strong></label>
@@ -38,7 +38,7 @@
   const column = $('csa-column') as HTMLSelectElement;
   const query = $('csa-query') as HTMLInputElement;
   const sort = $('csa-sort') as HTMLSelectElement;
-  const sample = 'name,age,city\\nAda,36,London\\nGrace,40,New York\\nAda,36,London\\n,28,Paris';
+  const sample = 'name,age,city\nAda,36,London\nGrace,40,New York\nAda,36,London\n,28,Paris';
   let analysis: ReturnType<typeof analyzeCsv> | null = null;
   let current: string[][] = [];
   let activeDelimiter = ',';
@@ -62,7 +62,7 @@
   function run() {
     error.hidden = true; results.hidden = true; analysis = null;
     try {
-      activeDelimiter = delimiter.value === '\\t' ? '\\t' : delimiter.value;
+      activeDelimiter = delimiter.value === 'tab' ? '\t' : delimiter.value;
       analysis = analyzeCsv(input.value, activeDelimiter, headers.checked);
       const a = analysis;
       const summary = $('csa-summary')!; summary.replaceChildren();
