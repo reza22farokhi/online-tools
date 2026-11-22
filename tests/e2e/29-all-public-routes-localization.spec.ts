@@ -105,10 +105,10 @@ test('every generated public HTML route has complete English navigation, copy, a
       (response?.status() ?? 0) >= 400 ||
       result.lang !== 'en' ||
       result.dir !== 'ltr' ||
-      result.canonical !== new URL(route, 'https://abzar-tools.ir').toString().replace(/\/$/, '') + '/?lang=en' ||
+      result.canonical !== new URL(route + '?lang=en', 'https://abzar-tools.ir').toString() ||
       result.ogUrl !== result.canonical ||
       result.hreflangFa !== new URL(route, 'https://abzar-tools.ir').toString() ||
-      result.hreflangEn !== result.canonical ||
+      result.hreflangEn !== new URL('/en' + (route === '/' ? '/' : route), 'https://abzar-tools.ir').toString() ||
       result.hreflangDefault !== new URL(route, 'https://abzar-tools.ir').toString() ||
       /[\u0600-\u06FF]/.test(result.title) ||
       /[\u0600-\u06FF]/.test(result.description) ||
