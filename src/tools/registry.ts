@@ -48,6 +48,7 @@ import { meta as csvJsonMeta } from './file/csv-json-converter/meta';
 import { meta as csvAnalyzerMeta } from './file/csv-analyzer/meta';
 import { meta as textDiffMeta } from './text/text-diff/meta';
 import { meta as persianTextRefinerMeta } from './text/persian-text-refiner/meta';
+import { meta as videoConverterMeta } from './video/video-converter/meta';
 export const categories: CategoryMeta[] = [
   { slug: 'text', fa: 'متن', en: 'Text', icon: '📝' },
   { slug: 'code', fa: 'برنامه‌نویسی', en: 'Code', icon: '💻' },
@@ -69,7 +70,7 @@ export const registry: ToolMeta[] = [
   imageResizerMeta, backgroundRemoverMeta, imageCompressorMeta, formatConverterMeta, colorPickerMeta,
   paletteGeneratorMeta, gradientGeneratorMeta, contrastCheckerMeta, boxShadowMeta,
   fileInfoMeta, fileToBase64Meta, multiCalendarMeta, unixTimestampMeta,
-  dateCalculatorMeta, dateInfoMeta, csvJsonMeta, csvAnalyzerMeta, textDiffMeta, persianTextRefinerMeta
+  dateCalculatorMeta, dateInfoMeta, csvJsonMeta, csvAnalyzerMeta, textDiffMeta, persianTextRefinerMeta, videoConverterMeta
 ];
 export function getToolBySlug(slug: string): ToolMeta | undefined { return registry.find(t => t.slug === slug); }
 export function getToolsByCategory(category: ToolCategory): ToolMeta[] { return registry.filter(t => t.category === category); }
