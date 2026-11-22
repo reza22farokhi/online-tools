@@ -19,14 +19,14 @@ function typeMatches(value: Json, type: string): boolean {
 function stable(value: Json): string {
   if (Array.isArray(value)) return '[' + value.map(stable).join(',') + ']';
   if (value !== null && typeof value === 'object') return '{' + Object.keys(value).sort().map(k => JSON.stringify(k) + ':' + stable(value[k])).join(',') + '}';
-  return JSON.stringify(value);
+  return JSON.stringify(value) ?? 'undefined';
 }
 export function validateJsonSchema(dataText: string, schemaText: string): ValidationResult {
   if (dataText.length > MAX_INPUT || schemaText.length > MAX_INPUT) throw new Error('هر ورودی باید حداکثر ۱۰۰٬۰۰۰ کاراکتر باشد.');
   let data: Json; let schema: Json;
   try { data = JSON.parse(dataText) as Json; } catch { throw new Error('JSON ورودی معتبر نیست.'); }
   try { schema = JSON.parse(schemaText) as Json; } catch { throw new Error('JSON Schema معتبر نیست.'); }
-  if (schema === null || Array.isArray(schema) || typeof schema !== 'object') throw new Error('ریشه Schema باید یک شیء JSON باشد.');
+  if (schema === null || Array.isArray(schema)) throw new Error('ریشه Schema باید یک شیء یا مقدار بولی باشد.');
   const issues: ValidationIssue[] = [];
   let checked = 0;
   const add = (path: string, message: string) => { if (issues.length < MAX_ISSUES) issues.push({ path, message }); };
