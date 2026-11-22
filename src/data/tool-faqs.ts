@@ -11,6 +11,7 @@ import { faqs as json_formatter } from './faqs/json-formatter';
 import { faqs as json_to_typescript } from './faqs/json-to-typescript';
 import { faqs as json_schema_validator } from './faqs/json-schema-validator';
 import { faqs as json_diff } from './faqs/json-diff';
+import { faqs as yaml_json_converter } from './faqs/yaml-json-converter';
 import { faqs as base64 } from './faqs/base64';
 import { faqs as html_escape } from './faqs/html-escape';
 import { faqs as url_encoder } from './faqs/url-encoder';
@@ -58,6 +59,7 @@ export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'json-to-typescript': json_to_typescript,
   'json-schema-validator': json_schema_validator,
   'json-diff': json_diff,
+  'yaml-json-converter': yaml_json_converter,
   'base64': base64,
   'html-escape': html_escape,
   'url-encoder': url_encoder,
