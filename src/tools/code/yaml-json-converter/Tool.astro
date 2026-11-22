@@ -26,7 +26,7 @@
   const label = $('yjc-input-label') as HTMLElement;
   const status = $('yjc-status') as HTMLElement;
   const en = () => document.documentElement.lang === 'en';
-  const yamlSample = 'name: Ada\\nage: 36\\nactive: true\\nskills:\\n  - mathematics\\n  - computing';
+  const yamlSample = 'name: Ada\nage: 36\nactive: true\nskills:\n  - mathematics\n  - computing';
   const jsonSample = JSON.stringify({ name: 'Ada', age: 36, active: true, skills: ['mathematics', 'computing'] }, null, 2);
   function updateMode() {
     const toJson = mode.value === 'yaml-json';
