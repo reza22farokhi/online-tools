@@ -232,7 +232,9 @@
         const data = await engine.readFile(activeOutput);
         if (!(data instanceof Uint8Array) || data.byteLength === 0) throw new Error('Empty output');
         const mime = format === 'mp4' ? 'video/mp4' : format === 'webm' ? 'video/webm' : 'audio/mpeg';
-        outputUrl = URL.createObjectURL(new Blob([data], { type: mime }));
+        const outputBuffer = new ArrayBuffer(data.byteLength);
+        new Uint8Array(outputBuffer).set(data);
+        outputUrl = URL.createObjectURL(new Blob([outputBuffer], { type: mime }));
         if (downloadLink) {
           downloadLink.href = outputUrl;
           downloadLink.download = outputFilename(inputFile.name, format);
@@ -240,7 +242,7 @@
         }
         if ($('vc-before')) $('vc-before')!.textContent = formatMediaBytes(inputFile.size);
         if ($('vc-after')) $('vc-after')!.textContent = formatMediaBytes(data.byteLength);
-        const change = Math.round((1 - data.byteLength / selectedFile.size) * 100);
+        const change = Math.round((1 - data.byteLength / inputFile.size) * 100);
         if ($('vc-savings')) $('vc-savings')!.textContent = change >= 0 ? change + '% smaller' : Math.abs(change) + '% larger';
         if ($('vc-result')) $('vc-result')!.hidden = false;
         setProgress(100);
