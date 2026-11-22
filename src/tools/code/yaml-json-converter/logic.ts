@@ -30,14 +30,14 @@ function scalar(raw: string, line: number): YamlJson {
   if (/^[\[{]/.test(value)) {
     try { return JSON.parse(value) as YamlJson; } catch { throw new Error('ساختار درون‌خطی خط ' + line + ' باید JSON معتبر باشد.'); }
   }
-  if (/^(?:!|&|\*|\\||>|%|---|\.\.\.)/.test(value)) throw new Error('این قابلیت YAML در نسخه فعلی پشتیبانی نمی‌شود (خط ' + line + ').');
+  if (/^(?:!|&|\*|\||>|%|---|\.\.\.)/.test(value)) throw new Error('این قابلیت YAML در نسخه فعلی پشتیبانی نمی‌شود (خط ' + line + ').');
   return value;
 }
 export function parseYaml(text: string): YamlJson {
   if (text.length > MAX_INPUT) throw new Error('ورودی باید حداکثر ۱۰۰٬۰۰۰ کاراکتر باشد.');
   const lines: Line[] = [];
   text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach((raw, i) => {
-    if (/\\t/.test(raw.match(/^\s*/)?.[0] ?? '')) throw new Error('در تورفتگی YAML از Tab استفاده نکنید (خط ' + (i + 1) + ').');
+    if (/\t/.test(raw.match(/^\s*/)?.[0] ?? '')) throw new Error('در تورفتگی YAML از Tab استفاده نکنید (خط ' + (i + 1) + ').');
     const clean = stripComment(raw);
     if (!clean.trim() || clean.trim() === '---' || clean.trim() === '...') return;
     const indent = clean.length - clean.trimStart().length;
