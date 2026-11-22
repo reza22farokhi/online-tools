@@ -14,9 +14,10 @@ const year = new Date().getFullYear();
       </nav>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">
-        © {year} · <span data-i18n="site.name">ابزارهای آنلاین</span> · <span data-i18n="footer.rights">تمامی حقوق محفوظ است.</span>
-      </p>
+      <div class="footer-copy">
+        <p>© {year} · <span data-i18n="site.name">ابزارهای آنلاین</span> · <span data-i18n="footer.rights">تمامی حقوق محفوظ است.</span></p>
+        <p class="footer-owner"><span data-lang-fa="مالک و توسعه‌دهنده: رضا فرخی" data-lang-en="Owner and Developer: Reza Farokhi">مالک و توسعه‌دهنده: رضا فرخی</span> · <a href="mailto:reza22farokhi@gmail.com">reza22farokhi@gmail.com</a></p>
+      </div>
       <nav aria-label="Footer" class="footer-nav">
         <a href={base} data-i18n="nav.home">خانه</a>
         <a href={base + 'tools/'} data-i18n="nav.tools">ابزارها</a>
@@ -79,7 +80,7 @@ const year = new Date().getFullYear();
   @media (min-width: 768px) {
     .footer-bottom { flex-direction: row; justify-content: space-between; text-align: initial; }
   }
-  .footer-copy { margin: 0; }
+  .footer-copy { margin: 0; }\n  .footer-copy p { margin: 0; }\n  .footer-owner { margin-top: 0.35rem !important; font-size: 0.8rem; }
   .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
   .footer-nav a { color: var(--color-text-muted); text-decoration: none; }
   .footer-nav a:hover { color: var(--color-primary); text-decoration: underline; }
