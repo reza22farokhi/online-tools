@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('service worker keeps an offline shell and bounds runtime caching', async ({ page }) => {
+test('service worker keeps an offline shell, serves cached pages instantly, and bounds runtime caching', async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
@@ -31,6 +31,10 @@ test('service worker keeps an offline shell and bounds runtime caching', async (
   expect(cacheState.runtimeUrls.length).toBeLessThanOrEqual(100);
 
   await page.context().setOffline(true);
+  await page.goto('/tools/jwt-inspector/');
+  await expect(page.locator('main')).toBeVisible();
+  await expect(page).toHaveURL(/\/tools\/jwt-inspector\/$/);
+
   await page.goto('/tools/uncached-offline-test/');
   await expect(page.getByRole('heading', { name: 'شما آفلاین هستید' })).toBeVisible();
 
