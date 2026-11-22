@@ -99,16 +99,30 @@ self.addEventListener('fetch', (event) => {
       }
     }
 
+    // Hashed assets are immutable; documents use stale-while-revalidate so repeat
+    // navigation is immediate while a fresh HTML response updates the cache.
+    if (runtimeCache) {
+      try {
+        const cached = await runtimeCache.match(request);
+        if (cached) {
+          if (isNavigation) {
+            const refresh = fetch(request)
+              .then((response) => putRuntimeEntry(runtimeCache, request, response))
+              .catch(() => undefined);
+            event.waitUntil(refresh);
+          }
+          return cached;
+        }
+      } catch {
+        // A cache read failure must not prevent a normal network request.
+      }
+    }
+
     try {
       const response = await fetch(request);
       if (runtimeCache) await putRuntimeEntry(runtimeCache, request, response);
       return response;
     } catch {
-      if (runtimeCache) {
-        const cached = await runtimeCache.match(request);
-        if (cached) return cached;
-      }
-
       if (isNavigation || isPrecachedAsset) {
         try {
           const shellCache = await caches.open(SHELL_CACHE_NAME);
@@ -117,7 +131,9 @@ self.addEventListener('fetch', (event) => {
             if (cachedAsset) return cachedAsset;
           }
 
-          const exactPage = cacheable ? await shellCache.match(request) : null;
+          const exactPage = cacheable && runtimeCache
+            ? await runtimeCache.match(request)
+            : null;
           if (exactPage) return exactPage;
 
           if (isNavigation) {
