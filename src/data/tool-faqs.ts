@@ -8,6 +8,7 @@ import { faqs as line_sorter } from './faqs/line-sorter';
 import { faqs as remove_duplicates } from './faqs/remove-duplicates';
 import { faqs as slug_generator } from './faqs/slug-generator';
 import { faqs as json_formatter } from './faqs/json-formatter';
+import { faqs as xml_formatter } from './faqs/xml-formatter';
 import { faqs as json_to_typescript } from './faqs/json-to-typescript';
 import { faqs as json_schema_validator } from './faqs/json-schema-validator';
 import { faqs as json_diff } from './faqs/json-diff';
@@ -57,6 +58,7 @@ export const TOOL_FAQS: Record<string, ToolFaqItem[]> = {
   'remove-duplicates': remove_duplicates,
   'slug-generator': slug_generator,
   'json-formatter': json_formatter,
+  'xml-formatter': xml_formatter,
   'json-to-typescript': json_to_typescript,
   'json-schema-validator': json_schema_validator,
   'json-diff': json_diff,
