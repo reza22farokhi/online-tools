@@ -53,7 +53,7 @@ test('offline fallback is localized and offers a same-origin retry link', async 
 
   await page.goto('/offline/?lang=en');
   await expect(page.getByRole('heading', { name: 'You are offline' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute('href', '/');
+  await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute('href', '/en/');
   await expect(page).toHaveTitle('Offline | Online Tools');
 });
 
