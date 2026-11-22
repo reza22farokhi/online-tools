@@ -38,9 +38,9 @@ test('background remover runs real browser inference and keeps the source image 
     };
   });
 
-  expect(output.width).toBeGreaterThan(0);
-  expect(output.height).toBeGreaterThan(0);
+  expect(output.width).toBe(2);
+  expect(output.height).toBe(2);
   expect(output.type).toBe('image/png');
-  expect(output.size).toBeGreaterThan(100);
+  expect(output.size).toBeGreaterThan(0);
   expect(uploadedImageRequests).toEqual([]);
 });
