@@ -1,0 +1,71 @@
+---
+---
+<div class="yjc-tool">
+  <div class="yjc-head">
+    <label for="yjc-mode"><strong data-lang-fa="جهت تبدیل" data-lang-en="Conversion direction">جهت تبدیل</strong><select id="yjc-mode" class="input"><option value="yaml-json">YAML ← JSON</option><option value="json-yaml">YAML → JSON</option></select></label>
+  </div>
+  <div class="yjc-grid">
+    <label for="yjc-input"><strong id="yjc-input-label" data-lang-fa="ورودی YAML" data-lang-en="YAML input">ورودی YAML</strong><textarea id="yjc-input" class="textarea yjc-area" rows="14" dir="ltr" spellcheck="false"></textarea></label>
+    <label for="yjc-output"><strong data-lang-fa="خروجی" data-lang-en="Output">خروجی</strong><textarea id="yjc-output" class="textarea yjc-area" rows="14" dir="ltr" spellcheck="false" readonly></textarea></label>
+  </div>
+  <div class="yjc-actions">
+    <button type="button" class="btn btn-primary" id="yjc-convert" data-lang-fa="تبدیل" data-lang-en="Convert">تبدیل</button>
+    <button type="button" class="btn" id="yjc-sample" data-lang-fa="نمونه" data-lang-en="Load sample">نمونه</button>
+    <button type="button" class="btn" id="yjc-copy" data-lang-fa="کپی خروجی" data-lang-en="Copy output">کپی خروجی</button>
+    <button type="button" class="btn" id="yjc-clear" data-lang-fa="پاک‌کردن" data-lang-en="Clear">پاک‌کردن</button>
+  </div>
+  <p id="yjc-status" class="yjc-status" aria-live="polite"></p>
+  <p class="yjc-note" data-lang-fa="پردازش کاملاً محلی است. این ابزار زیرمجموعه‌ای امن از YAML سازگار با JSON را پشتیبانی می‌کند؛ anchor، alias، tag و بلوک‌های چندخطی در این نسخه پشتیبانی نمی‌شوند. برای داده‌های پیچیده از اعتبارسنج کامل YAML استفاده کنید." data-lang-en="Processing is local. This tool supports a safe JSON-compatible YAML subset. Anchors, aliases, tags, and multiline block scalars are not supported in this version.">پردازش کاملاً محلی است. این ابزار زیرمجموعه‌ای امن از YAML سازگار با JSON را پشتیبانی می‌کند؛ anchor، alias، tag و بلوک‌های چندخطی در این نسخه پشتیبانی نمی‌شوند.</p>
+</div>
+<script>
+  import { jsonToYaml, parseYaml } from './logic';
+  const $ = (id: string) => document.getElementById(id);
+  const mode = $('yjc-mode') as HTMLSelectElement;
+  const input = $('yjc-input') as HTMLTextAreaElement;
+  const output = $('yjc-output') as HTMLTextAreaElement;
+  const label = $('yjc-input-label') as HTMLElement;
+  const status = $('yjc-status') as HTMLElement;
+  const en = () => document.documentElement.lang === 'en';
+  const yamlSample = 'name: Ada\nage: 36\nactive: true\nskills:\n  - mathematics\n  - computing';
+  const jsonSample = JSON.stringify({ name: 'Ada', age: 36, active: true, skills: ['mathematics', 'computing'] }, null, 2);
+  function updateMode() {
+    const toJson = mode.value === 'yaml-json';
+    label.textContent = toJson ? (en() ? 'YAML input' : 'ورودی YAML') : (en() ? 'JSON input' : 'ورودی JSON');
+    input.placeholder = toJson ? yamlSample : jsonSample;
+    output.value = '';
+    status.textContent = '';
+  }
+  function convert() {
+    try {
+      output.value = mode.value === 'yaml-json' ? JSON.stringify(parseYaml(input.value), null, 2) : jsonToYaml(input.value);
+      status.textContent = en() ? 'Conversion completed locally.' : 'تبدیل با موفقیت و به‌صورت محلی انجام شد.';
+      status.className = 'yjc-status yjc-ok';
+    } catch (error) {
+      output.value = '';
+      status.textContent = error instanceof Error ? error.message : 'Conversion failed';
+      status.className = 'yjc-status yjc-error';
+    }
+  }
+  mode.addEventListener('change', updateMode);
+  $('yjc-convert')?.addEventListener('click', convert);
+  $('yjc-sample')?.addEventListener('click', () => { input.value = mode.value === 'yaml-json' ? yamlSample : jsonSample; convert(); });
+  $('yjc-copy')?.addEventListener('click', async () => {
+    if (!output.value) return;
+    try { await navigator.clipboard.writeText(output.value); status.textContent = en() ? 'Copied.' : 'کپی شد.'; }
+    catch { status.textContent = en() ? 'Copy failed.' : 'کپی ناموفق بود.'; }
+  });
+  $('yjc-clear')?.addEventListener('click', () => { input.value = ''; output.value = ''; status.textContent = ''; input.focus(); });
+  input.value = yamlSample; updateMode(); convert();
+</script>
+<style>
+  .yjc-tool{display:flex;flex-direction:column;gap:var(--space-3)}
+  .yjc-head label{display:flex;flex-direction:column;gap:var(--space-2);max-width:24rem}
+  .yjc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}
+  .yjc-grid label{display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+  .yjc-area{font-family:var(--font-mono);font-size:.85rem;direction:ltr;text-align:left}
+  .yjc-actions{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+  .yjc-status{margin:0;font-size:.9rem}
+  .yjc-ok,.yjc-error{color:var(--color-text);font-weight:600}
+  .yjc-note{margin:0;font-size:.82rem;color:var(--color-text)}
+  @media(max-width:700px){.yjc-grid{grid-template-columns:1fr}}
+</style>

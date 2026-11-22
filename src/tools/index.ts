@@ -12,6 +12,7 @@ import JsonFormatterTool from './code/json-formatter/Tool.astro';
 import JsonToTypeScriptTool from './code/json-to-typescript/Tool.astro';
 import JsonSchemaValidatorTool from './code/json-schema-validator/Tool.astro';
 import JsonDiffTool from './code/json-diff/Tool.astro';
+import YamlJsonConverterTool from './code/yaml-json-converter/Tool.astro';
 import Base64Tool from './code/base64/Tool.astro';
 import HtmlEscapeTool from './code/html-escape/Tool.astro';
 import UrlEncoderTool from './code/url-encoder/Tool.astro';
@@ -48,7 +49,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool, 'case-converter': CaseConverterTool,
   'remove-extra-spaces': RemoveExtraSpacesTool, 'line-sorter': LineSorterTool,
   'remove-duplicates': RemoveDuplicatesTool, 'slug-generator': SlugGeneratorTool,
-  'json-formatter': JsonFormatterTool, 'json-to-typescript': JsonToTypeScriptTool, 'json-schema-validator': JsonSchemaValidatorTool, 'json-diff': JsonDiffTool,
+  'json-formatter': JsonFormatterTool, 'json-to-typescript': JsonToTypeScriptTool, 'json-schema-validator': JsonSchemaValidatorTool, 'json-diff': JsonDiffTool, 'yaml-json-converter': YamlJsonConverterTool,
   'base64': Base64Tool, 'html-escape': HtmlEscapeTool, 'url-encoder': UrlEncoderTool,
   'uuid-generator': UuidGeneratorTool, 'hash-generator': HashGeneratorTool,
   'regex-tester': RegexTesterTool, 'jwt-decoder': JwtDecoderTool,
