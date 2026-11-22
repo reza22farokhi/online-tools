@@ -6,8 +6,8 @@ export const meta: ToolMeta = {
   name: { fa: 'تحلیل‌گر فایل CSV', en: 'CSV Data Analyzer' },
   seoTitle: { fa: 'تحلیل آنلاین CSV؛ آمار، داده‌های خالی و تکراری', en: 'Free CSV Analyzer – Statistics, Missing and Duplicate Data' },
   description: {
-    fa: 'داده‌های CSV را تحلیل کنید؛ تعداد ردیف و ستون، سلول‌های خالی، ردیف‌های تکراری، مقادیر یکتا و آمار عددی را ببینید و داده‌ها را فیلتر، مرتب و خروجی‌گیری کنید.',
-    en: 'Analyze CSV files in your browser with row and column counts, missing cells, duplicate rows, unique values, numeric summaries, filtering, sorting, and safe CSV export.'
+    fa: 'فایل CSV را تحلیل کنید؛ ردیف‌ها، ستون‌ها، سلول‌های خالی، داده‌های تکراری و مقادیر یکتا را بشمارید، آمار عددی بگیرید و داده‌ها را فیلتر و مرتب کنید.',
+    en: 'Analyze CSV files locally: count rows, columns, empty cells and duplicates, inspect unique values and numeric statistics, then filter, sort and export results.'
   },
   keywords: ['csv analyzer', 'csv statistics', 'analyze csv online', 'تحلیل csv', 'آمار فایل csv', 'پاکسازی داده'],
   popular: true,
