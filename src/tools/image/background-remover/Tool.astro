@@ -44,11 +44,24 @@
 </div>
 
 <script>
-  const root = document.querySelector('[data-background-remover]');
+  type RemoveBackgroundOptions = {
+    model: 'isnet_fp16';
+    output: { format: 'image/png'; quality: number };
+    progress: (key: string, current: number, total: number) => void;
+  };
+  type BackgroundRemovalModule = {
+    removeBackground: (image: File, options: RemoveBackgroundOptions) => Promise<Blob>;
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-background-remover]');
   if (root && !root.dataset.initialized) {
     root.dataset.initialized = 'true';
-    const $ = (id) => root.querySelector('#' + id);
-    const fileInput = $('br-file');
+    const $ = <T extends HTMLElement>(id: string): T => {
+      const element = root.querySelector<T>('#' + id);
+      if (!element) throw new Error('Missing background-remover element: ' + id);
+      return element;
+    };
+    const fileInput = $('br-file') as HTMLInputElement;
     const dropzone = $('br-dropzone');
     const upload = $('br-upload');
     const progress = $('br-progress');
@@ -58,15 +71,15 @@
     const progressMessage = $('br-progress-message');
     const error = $('br-error');
     const result = $('br-result');
-    const before = $('br-before');
-    const after = $('br-after');
+    const before = $('br-before') as HTMLImageElement;
+    const after = $('br-after') as HTMLImageElement;
     const afterClip = $('br-after-clip');
     const divider = $('br-divider');
-    const slider = $('br-slider');
-    const download = $('br-download');
-    const reset = $('br-reset');
-    const isEn = () => document.documentElement.lang === 'en';
-    const messages = {
+    const slider = $('br-slider') as HTMLInputElement;
+    const download = $('br-download') as HTMLButtonElement;
+    const reset = $('br-reset') as HTMLButtonElement;
+    const isEn = (): boolean => document.documentElement.lang === 'en';
+    const messages: Record<string, [string, string]> = {
       invalid: ['لطفاً یک فایل تصویری معتبر انتخاب کنید.', 'Please choose a valid image file.'],
       size: ['حجم تصویر نباید بیشتر از ۱۰ مگابایت باشد.', 'Image size must not exceed 10 MB.'],
       dimensions: ['ابعاد تصویر بیش از حد مجاز است (حداکثر ۲۰ مگاپیکسل).', 'Image dimensions are too large (maximum 20 megapixels).'],
@@ -74,27 +87,27 @@
       loading: ['در حال بارگذاری مدل هوش مصنوعی…', 'Loading AI model…'],
       processing: ['در حال حذف پس‌زمینه…', 'Removing background…']
     };
-    const msg = (key) => messages[key][isEn() ? 1 : 0];
-    let originalUrl = null;
-    let outputUrl = null;
-    let outputBlob = null;
+    const msg = (key: keyof typeof messages): string => messages[key][isEn() ? 1 : 0];
+    let originalUrl: string | null = null;
+    let outputUrl: string | null = null;
+    let outputBlob: Blob | null = null;
     let busy = false;
 
-    function revokeUrls() {
+    function revokeUrls(): void {
       if (originalUrl) URL.revokeObjectURL(originalUrl);
       if (outputUrl) URL.revokeObjectURL(outputUrl);
       originalUrl = null;
       outputUrl = null;
       outputBlob = null;
     }
-    function setProgress(value, title, message) {
+    function setProgress(value: number, title: string, message: string): void {
       const safe = Math.max(0, Math.min(100, Math.round(value)));
       progressBar.style.width = safe + '%';
       progressValue.textContent = safe + '%';
       if (title) progressTitle.textContent = title;
       if (message) progressMessage.textContent = message;
     }
-    function fail(message) {
+    function fail(message: string): void {
       error.hidden = false;
       error.textContent = message;
       progress.hidden = true;
@@ -103,7 +116,7 @@
       busy = false;
       download.disabled = !outputBlob;
     }
-    function resetView() {
+    function resetView(): void {
       revokeUrls();
       error.hidden = true;
       error.textContent = '';
@@ -115,12 +128,12 @@
       busy = false;
       setProgress(0, isEn() ? 'Preparing AI model…' : 'در حال آماده‌سازی هوش مصنوعی…', '');
     }
-    function updateSlider() {
+    function updateSlider(): void {
       const value = Number(slider.value);
       afterClip.style.clipPath = 'inset(0 ' + (100 - value) + '% 0 0)';
       divider.style.left = value + '%';
     }
-    async function processFile(file) {
+    async function processFile(file: File): Promise<void> {
       if (busy) return;
       error.hidden = true;
       if (!file || !['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type)) {
@@ -134,15 +147,16 @@
       busy = true;
       revokeUrls();
       originalUrl = URL.createObjectURL(file);
+      const sourceUrl = originalUrl;
       const probe = new Image();
-      probe.onload = async () => {
+      probe.onload = async (): Promise<void> => {
         if (probe.naturalWidth * probe.naturalHeight > 20_000_000) {
-          URL.revokeObjectURL(originalUrl);
+          URL.revokeObjectURL(sourceUrl);
           originalUrl = null;
           fail(msg('dimensions'));
           return;
         }
-        before.src = originalUrl;
+        before.src = sourceUrl;
         before.alt = isEn() ? 'Original image before background removal' : 'تصویر اصلی پیش از حذف پس‌زمینه';
         upload.hidden = true;
         result.hidden = true;
@@ -150,12 +164,13 @@
         download.disabled = true;
         setProgress(2, msg('loading'), isEn() ? 'Downloading and initializing the AI model. This may take a while on the first run.' : 'مدل هوش مصنوعی در حال دریافت و آماده‌سازی است؛ اجرای اول ممکن است کمی طول بکشد.');
         try {
-          const { removeBackground } = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm');
+          const moduleUrl = 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm';
+          const module = await import(/* @vite-ignore */ moduleUrl) as BackgroundRemovalModule;
           setProgress(8, msg('processing'), isEn() ? 'The image is being processed on your device.' : 'تصویر مستقیماً روی دستگاه شما پردازش می‌شود.');
-          const blob = await removeBackground(file, {
+          const blob = await module.removeBackground(file, {
             model: 'isnet_fp16',
             output: { format: 'image/png', quality: 1 },
-            progress: (key, current, total) => {
+            progress: (key: string, current: number, total: number): void => {
               if (total > 0) {
                 const ratio = Math.max(0, Math.min(1, current / total));
                 setProgress(8 + ratio * 88, msg('processing'), key || (isEn() ? 'Processing locally…' : 'پردازش محلی…'));
@@ -178,36 +193,37 @@
           fail(msg('failed'));
         }
       };
-      probe.onerror = () => {
+      probe.onerror = (): void => {
         if (originalUrl) URL.revokeObjectURL(originalUrl);
         originalUrl = null;
         fail(msg('invalid'));
       };
-      probe.src = originalUrl;
+      probe.src = sourceUrl;
     }
-    fileInput.addEventListener('change', (event) => {
-      const file = event.target.files && event.target.files[0];
-      if (file) processFile(file);
+    fileInput.addEventListener('change', (event: Event): void => {
+      const target = event.currentTarget as HTMLInputElement;
+      const file = target.files?.[0];
+      if (file) void processFile(file);
     });
-    dropzone.addEventListener('keydown', (event) => {
+    dropzone.addEventListener('keydown', (event: KeyboardEvent): void => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
         fileInput.click();
       }
     });
-    upload.addEventListener('dragover', (event) => {
+    upload.addEventListener('dragover', (event: DragEvent): void => {
       event.preventDefault();
       upload.classList.add('is-dragging');
     });
-    upload.addEventListener('dragleave', () => upload.classList.remove('is-dragging'));
-    upload.addEventListener('drop', (event) => {
+    upload.addEventListener('dragleave', (): void => upload.classList.remove('is-dragging'));
+    upload.addEventListener('drop', (event: DragEvent): void => {
       event.preventDefault();
       upload.classList.remove('is-dragging');
-      const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
-      if (file) processFile(file);
+      const file = event.dataTransfer?.files?.[0];
+      if (file) void processFile(file);
     });
     slider.addEventListener('input', updateSlider);
-    download.addEventListener('click', () => {
+    download.addEventListener('click', (): void => {
       if (!outputBlob || !outputUrl) return;
       const link = document.createElement('a');
       link.href = outputUrl;
@@ -217,7 +233,7 @@
       link.remove();
     });
     reset.addEventListener('click', resetView);
-    document.addEventListener('app:languagechange', () => {
+    document.addEventListener('app:languagechange', (): void => {
       if (!busy) return;
       progressTitle.textContent = msg('processing');
     });
