@@ -66,7 +66,7 @@ test('offline fallback handles language and private query parameters without cac
   await page.goto('/tools/uncached-offline-test/?lang=en&token=do-not-cache').catch(() => undefined);
 
   await expect(page.getByRole('heading', { name: 'You are offline' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute('href', '/');
+  await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute('href', '/en/');
 
   const runtimeUrls = await page.evaluate(async () => {
     const cache = await caches.open('online-tools-v3-runtime');
