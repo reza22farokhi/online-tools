@@ -30,6 +30,7 @@ import SerpPreviewTool from './seo/serp-preview/Tool.astro';
 import RobotsTxtTool from './seo/robots-txt-generator/Tool.astro';
 import OgPreviewTool from './seo/og-preview/Tool.astro';
 import ImageResizerTool from './image/image-resizer/Tool.astro';
+import BackgroundRemoverTool from './image/background-remover/Tool.astro';
 import ImageCompressorTool from './image/image-compressor/Tool.astro';
 import FormatConverterTool from './image/format-converter/Tool.astro';
 import ColorPickerTool from './image/color-picker/Tool.astro';
