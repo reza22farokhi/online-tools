@@ -32,7 +32,7 @@ async function assertSeoMetadata(page: import('@playwright/test').Page, slug: st
   await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute('content', lang === 'fa' ? 'fa_IR' : 'en_US');
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical!);
   await expect(page.locator('link[rel="alternate"][hreflang="fa"]')).toHaveAttribute('href', `https://abzar-tools.ir${route}`);
-  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', `https://abzar-tools.ir${route}?lang=en`);
+  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', `https://abzar-tools.ir/en${route}`);
   await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute('href', `https://abzar-tools.ir${route}`);
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
