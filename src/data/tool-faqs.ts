@@ -29,6 +29,7 @@ import { faqs as serp_preview } from './faqs/serp-preview';
 import { faqs as robots_txt_generator } from './faqs/robots-txt-generator';
 import { faqs as og_preview } from './faqs/og-preview';
 import { faqs as image_resizer } from './faqs/image-resizer';
+import { faqs as background_remover } from './faqs/background-remover';
 import { faqs as image_compressor } from './faqs/image-compressor';
 import { faqs as format_converter } from './faqs/format-converter';
 import { faqs as color_picker } from './faqs/color-picker';
