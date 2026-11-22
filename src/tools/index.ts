@@ -48,6 +48,7 @@ import CsvJsonTool from './file/csv-json-converter/Tool.astro';
 import CsvAnalyzerTool from './file/csv-analyzer/Tool.astro';
 import TextDiffTool from './text/text-diff/Tool.astro';
 import PersianTextRefinerTool from './text/persian-text-refiner/Tool.astro';
+import VideoConverterTool from './video/video-converter/Tool.astro';
 export const toolComponents: Record<string, AstroComponentFactory> = {
   'word-counter': WordCounterTool, 'case-converter': CaseConverterTool,
   'remove-extra-spaces': RemoveExtraSpacesTool, 'line-sorter': LineSorterTool,
@@ -70,6 +71,7 @@ export const toolComponents: Record<string, AstroComponentFactory> = {
   'multi-calendar-converter': MultiCalendarTool, 'unix-timestamp': UnixTimestampTool,
   'date-calculator': DateCalculatorTool, 'date-info': DateInfoTool,
   'csv-json-converter': CsvJsonTool, 'csv-analyzer': CsvAnalyzerTool, 'text-diff': TextDiffTool,
-  'persian-text-refiner': PersianTextRefinerTool
+  'persian-text-refiner': PersianTextRefinerTool,
+  'video-converter': VideoConverterTool
 };
 export function getToolComponent(slug: string): AstroComponentFactory | null { return toolComponents[slug] ?? null; }
