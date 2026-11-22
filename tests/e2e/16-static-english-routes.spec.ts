@@ -32,7 +32,8 @@ test('static English tool route renders English UI, hides Persian FAQ, and expos
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await expect(page).toHaveTitle('Free Word & Character Counter Online | Text Counting Tool');
   await expect(page.locator('article h1').first()).toHaveText('Word & Character Counter');
-  await expect(page.locator('#wc-input')).toHaveAttribute('placeholder', 'Maximum 1 million characters. Processed locally and never sent to the server.');
+  await expect(page.locator('#wc-input')).toHaveAttribute('placeholder', 'Type or paste your text here...');
+  await expect(page.locator('#wc-help')).toHaveText('Maximum 1 million characters. Processed locally and never sent to the server.');
   await expect(page.locator('.tool-faq[data-lang-only="en"]')).toBeVisible();
   await expect(page.locator('.tool-faq[data-lang-only="en"]')).toContainText('How are words counted?');
   await expect(page.locator('.tool-faq[data-lang-only="fa"]')).toBeHidden();
