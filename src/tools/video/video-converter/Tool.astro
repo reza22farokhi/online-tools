@@ -204,7 +204,8 @@
     };
 
     processButton?.addEventListener('click', async () => {
-      if (!selectedFile || !formatSelect || !qualitySelect || !processButton || processing) return;
+      const inputFile = selectedFile;
+      if (!inputFile || !formatSelect || !qualitySelect || !processButton || processing) return;
       processing = true;
       clearOutput();
       if (errorEl) errorEl.hidden = true;
@@ -212,7 +213,7 @@
       processButton.disabled = true;
       setProgress(0);
       if (statusLabel) statusLabel.textContent = message('در حال بارگذاری موتور FFmpeg…', 'Loading FFmpeg engine…');
-      activeInput = 'source.' + (selectedFile.name.split('.').pop()?.toLowerCase() || 'bin');
+      activeInput = 'source.' + (inputFile.name.split('.').pop()?.toLowerCase() || 'bin');
       const format = formatSelect.value as 'mp4' | 'webm' | 'mp3';
       activeOutput = 'converted.' + format;
       const quality = qualitySelect.value;
@@ -225,7 +226,7 @@
       try {
         const engine = await loadEngine();
         if (statusLabel) statusLabel.textContent = message('در حال آماده‌سازی فایل…', 'Preparing media…');
-        await engine.writeFile(activeInput, await runtimeModule.fetchFile(selectedFile));
+        await engine.writeFile(activeInput, await runtimeModule.fetchFile(inputFile));
         if (statusLabel) statusLabel.textContent = message('در حال تبدیل و فشرده‌سازی…', 'Converting and compressing…');
         const exitCode = await engine.exec(args);
         if (exitCode !== 0) throw new Error('FFmpeg conversion failed with exit code ' + exitCode);
@@ -235,10 +236,10 @@
         outputUrl = URL.createObjectURL(new Blob([data], { type: mime }));
         if (downloadLink) {
           downloadLink.href = outputUrl;
-          downloadLink.download = outputFilename(selectedFile.name, format);
+          downloadLink.download = outputFilename(inputFile.name, format);
           downloadLink.hidden = false;
         }
-        if ($('vc-before')) $('vc-before')!.textContent = formatMediaBytes(selectedFile.size);
+        if ($('vc-before')) $('vc-before')!.textContent = formatMediaBytes(inputFile.size);
         if ($('vc-after')) $('vc-after')!.textContent = formatMediaBytes(data.byteLength);
         const change = Math.round((1 - data.byteLength / selectedFile.size) * 100);
         if ($('vc-savings')) $('vc-savings')!.textContent = change >= 0 ? change + '% smaller' : Math.abs(change) + '% larger';
