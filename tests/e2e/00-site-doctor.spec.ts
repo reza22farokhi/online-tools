@@ -1,5 +1,25 @@
 import { test, expect } from '@playwright/test';
 import { registry, categories, getToolsByCategory } from '../../src/tools/registry';
+import type { ToolQAProfile } from '../../src/tools/types';
+
+const QA_ADAPTERS: Record<ToolQAProfile, { selector: string; description: string }> = {
+  text: { selector: 'input:not([type="hidden"]), textarea', description: 'text input adapter' },
+  'structured-data': { selector: 'textarea, input:not([type="hidden"])', description: 'structured-data adapter' },
+  calculator: { selector: 'input:not([type="hidden"]), select', description: 'calculator adapter' },
+  'seo-generator': { selector: 'input:not([type="hidden"]), textarea', description: 'SEO generator adapter' },
+  image: { selector: 'input[type="file"], button', description: 'image adapter' },
+  file: { selector: 'input[type="file"], input:not([type="hidden"]), textarea, button', description: 'file adapter' },
+  color: { selector: 'input:not([type="hidden"]), button', description: 'color adapter' },
+  date: { selector: 'input:not([type="hidden"]), select, button', description: 'date adapter' }
+};
+
+test('site doctor QA contract: every registered tool resolves to a supported adapter', async () => {
+  expect(registry.length).toBeGreaterThan(0);
+  expect(new Set(registry.map(tool => tool.slug)).size).toBe(registry.length);
+  for (const tool of registry) {
+    expect(QA_ADAPTERS[tool.qaProfile], `${tool.slug} has no QA adapter for ${tool.qaProfile}`).toBeDefined();
+  }
+});
 
 // Registry-driven contract: every newly registered tool is automatically required
 // to provide both localized pages and a usable interactive surface.
@@ -17,8 +37,9 @@ for (const tool of registry) {
       await expect(article.locator('.tool-body')).toBeVisible();
       await expect(article.locator('.tool-privacy')).toBeVisible();
 
-      const controls = article.locator('.tool-body input:not([type="hidden"]), .tool-body textarea, .tool-body select, .tool-body button');
-      expect(await controls.count(), `${tool.slug} must expose at least one interactive control`).toBeGreaterThan(0);
+      const adapter = QA_ADAPTERS[tool.qaProfile];
+      const controls = article.locator(`.tool-body ${adapter.selector}`);
+      expect(await controls.count(), `${tool.slug} (${adapter.description}) must expose a compatible control`).toBeGreaterThan(0);
       await expect(controls.first()).toBeVisible();
       expect(pageErrors, `${route} should not throw browser runtime errors`).toEqual([]);
       pageErrors.length = 0;
