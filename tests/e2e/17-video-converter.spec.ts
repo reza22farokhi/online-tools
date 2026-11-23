@@ -82,5 +82,26 @@ test('video converter performs a real local WAV-to-MP3 conversion', async ({ pag
   await expect(page.locator('#vc-result')).toBeVisible();
   await expect(page.locator('#vc-after')).not.toHaveText('—');
   await expect(page.locator('#vc-download')).toHaveAttribute('href', /^blob:/);
+  // Reuse the generated MP3 as input to cover the user's MP3 -> WebM path.
+  const mp3Url = await page.locator('#vc-download').getAttribute('href');
+  if (!mp3Url) throw new Error('MP3 output URL was not created');
+  const mp3Base64 = await page.evaluate(async (url) => {
+    const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
+    let binary = '';
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return btoa(binary);
+  }, mp3Url);
+
+  await page.locator('#vc-reset').click();
+  await page.locator('#vc-file').setInputFiles({
+    name: 'generated-tone.mp3',
+    mimeType: 'audio/mpeg',
+    buffer: Buffer.from(mp3Base64, 'base64')
+  });
+  await page.locator('#vc-format').selectOption('webm');
+  await page.locator('#vc-process').click();
+  await expect(page.locator('#vc-download')).toBeVisible({ timeout: 150_000 });
+  await expect(page.locator('#vc-status')).toContainText('Conversion completed.');
+  await expect(page.locator('#vc-download')).toHaveAttribute('download', /\.webm$/);
+  await expect(page.locator('#vc-download')).toHaveAttribute('href', /^blob:/);
   expect(uploads).toEqual([]);
-});
