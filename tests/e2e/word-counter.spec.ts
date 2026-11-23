@@ -9,7 +9,7 @@ test('site doctor [tool:word-counter] calculates Persian text statistics and cle
   await expect(page.locator('#stat-sentences')).toHaveText('2');
   await expect(page.locator('#stat-lines')).toHaveText('1');
   await expect(page.locator('#stat-paragraphs')).toHaveText('1');
-  await expect(page.locator('#stat-chars-nospace')).toHaveText('16');
+  await expect(page.locator('#stat-chars-nospace')).toHaveText('17');
   await expect(page.locator('#wc-copy')).toBeEnabled();
 
   await page.locator('#wc-clear').click();
@@ -29,6 +29,6 @@ test('site doctor [tool:word-counter] handles empty text and multiline paragraph
   await input.fill('one two\n\nthree four five');
   await expect(page.locator('#stat-words')).toHaveText('5');
   await expect(page.locator('#stat-lines')).toHaveText('3');
-  await expect(page.locator('#stat-chars-nospace')).toHaveText('16');
+  await expect(page.locator('#stat-chars-nospace')).toHaveText('19');
   await expect(page.locator('#stat-paragraphs')).toHaveText('2');
 });
