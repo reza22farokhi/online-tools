@@ -1,7 +1,7 @@
 import { meta as dateConverterMeta } from './date/date-converter/meta';
 import { meta as passwordGeneratorMeta } from './code/password-generator/meta';
 import { meta as qrCodeMeta } from './image/qr-code-generator/meta';
-import type { ToolMeta, ToolCategory, CategoryMeta } from './types';
+import type { ToolMeta, ToolCategory, CategoryMeta, RegisteredToolMeta } from './types';
 import { meta as wordCounterMeta } from './text/word-counter/meta';
 import { meta as caseConverterMeta } from './text/case-converter/meta';
 import { meta as removeExtraSpacesMeta } from './text/remove-extra-spaces/meta';
@@ -85,7 +85,7 @@ const QA_PROFILE_BY_CATEGORY: Record<ToolCategory, ToolMeta['qaProfile']> = {
 };
 
 /** Single source of truth: newly registered tools inherit a typed QA profile automatically. */
-export const registry: ToolMeta[] = registeredTools.map(tool => ({
+export const registry: RegisteredToolMeta[] = registeredTools.map(tool => ({
   ...tool,
   qaProfile: QA_PROFILE_BY_CATEGORY[tool.category]
 }));
