@@ -40,6 +40,6 @@ export default class SiteDoctorReporter {
   async onEnd() {
     const report = buildSiteDoctorReport([...this.finalResults.values()]);
     await writeFile('site-doctor-report.json', JSON.stringify(report, null, 2) + '\n');
-    console.log(\`SITE_DOCTOR_SUMMARY \${JSON.stringify({total: report.total, passed: report.passed, failed: report.failed, skipped: report.skipped, interrupted: report.interrupted})}\`);
+    console.log('SITE_DOCTOR_SUMMARY ' + JSON.stringify({total: report.total, passed: report.passed, failed: report.failed, skipped: report.skipped, interrupted: report.interrupted}));
   }
 }
