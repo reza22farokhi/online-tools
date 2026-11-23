@@ -73,7 +73,7 @@ const registeredTools: Omit<ToolMeta, 'qaProfile'>[] = [
   dateCalculatorMeta, dateInfoMeta, csvJsonMeta, csvAnalyzerMeta, textDiffMeta, persianTextRefinerMeta, videoConverterMeta
 ];
 
-const QA_PROFILE_BY_CATEGORY: Record<ToolCategory, ToolMeta['qaProfile']> = {
+const QA_PROFILE_BY_CATEGORY: Record<ToolCategory, RegisteredToolMeta['qaProfile']> = {
   text: 'text',
   code: 'structured-data',
   calc: 'calculator',
