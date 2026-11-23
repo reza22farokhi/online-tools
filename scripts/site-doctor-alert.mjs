@@ -9,6 +9,7 @@ const summary = [
   `- Passed: ${report.passed}`,
   `- Failed: ${report.failed}`,
   `- Skipped: ${report.skipped}`,
+  `- Interrupted: ${report.interrupted ?? 0}`,
   `- Result: ${report.failed ? '❌ Unhealthy' : '✅ Healthy'}`,
   ''
 ].join('\n');
@@ -17,7 +18,7 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   await appendFile(process.env.GITHUB_STEP_SUMMARY, summary);
 }
 
-if (report.failed === 0) {
+if (report.failed === 0 && (report.interrupted ?? 0) === 0) {
   console.log('Site Doctor: all Playwright tests passed.');
   process.exit(0);
 }
