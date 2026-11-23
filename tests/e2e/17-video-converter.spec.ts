@@ -14,9 +14,7 @@ test('video converter route renders localized metadata and browser-only controls
 
 test('video converter rejects unknown media types without uploading anything', async ({ page }) => {
   const uploads: string[] = [];
-  const workerRequests: string[] = [];
   page.on('request', request => {
-    if (new URL(request.url()).pathname === '/vendor/ffmpeg/0.12.15/worker.js') workerRequests.push(request.url());
     if (request.method() === 'POST' && new URL(request.url()).origin === 'https://abzar-tools.ir') uploads.push(request.url());
   });
   await page.goto('/tools/video-converter/');
@@ -43,10 +41,12 @@ test('static English video converter route has English direction and FAQ', async
 });
 
 
-test('video converter performs a real local WAV-to-MP3 conversion', async ({ page }) => {
+test('video converter performs real local WAV-to-MP3 and MP3-to-WebM conversions', async ({ page }) => {
   test.setTimeout(180_000);
   const uploads: string[] = [];
+  const workerRequests: string[] = [];
   page.on('request', request => {
+    if (new URL(request.url()).pathname === '/vendor/ffmpeg/0.12.15/worker.js') workerRequests.push(request.url());
     if (request.method() === 'POST' && new URL(request.url()).origin === 'http://localhost:4321') uploads.push(request.url());
   });
 
@@ -108,4 +108,5 @@ test('video converter performs a real local WAV-to-MP3 conversion', async ({ pag
   await expect(page.locator('#vc-download')).toHaveAttribute('download', /\.webm$/);
   await expect(page.locator('#vc-download')).toHaveAttribute('href', /^blob:/);
   expect(uploads).toEqual([]);
+  expect(workerRequests.length).toBeGreaterThan(0);
 });
