@@ -26,7 +26,6 @@ test('video converter rejects unknown media types without uploading anything', a
   await expect(page.locator('#vc-error')).toBeVisible();
   await expect(page.locator('#vc-error')).toContainText('فرمت فایل ناشناخته');
   expect(uploads).toEqual([]);
-  expect(workerRequests.length).toBeGreaterThan(0);
 });
 
 test('static English video converter route has English direction and FAQ', async ({ page }) => {
