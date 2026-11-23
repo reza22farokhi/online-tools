@@ -6,7 +6,7 @@ const baseLayout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
 const toolLayout = readFileSync('src/layouts/ToolLayout.astro', 'utf8');
 const blogLayout = readFileSync('src/layouts/BlogLayout.astro', 'utf8');
 const offlinePage = readFileSync('src/pages/offline.astro', 'utf8');
-const csp = headers.match(/^\s*Content-Security-Policy:\s*(.+)$/m)?.[1] ?? '';
+const csp = headers.match(/^\\s*Content-Security-Policy:\\s*(.+)$/m)?.[1] ?? '';
 
 function directive(name: string): string {
   return csp.split(';').map(part => part.trim())
@@ -15,8 +15,10 @@ function directive(name: string): string {
 }
 
 describe('Content Security Policy allowlist', () => {
-  it('allows only the site and the background-removal module for scripts, excluding retired ad networks', () => {
-    expect(directive('script-src')).toBe("'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'");
+  it('allows only the site, the background-removal module, and verified inline script hashes', () => {
+    expect(directive('script-src')).toBe(
+      "'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval' 'sha256-feMt1N4YpWxmeS0EtHyuyChvwWkgbfB5LJvGAma7jzo=' 'sha256-PaqSNyGFkkCfhNK7zr4Zdw/6ul3MbCJFJwnC2lSES7A='"
+    );
     expect(csp).not.toMatch(/yektanet|triboon/i);
     expect(baseLayout).not.toMatch(/yektanet|ynpos|yn-bnr|yn_pub/i);
     expect(toolLayout).not.toMatch(/AdSlot|pos-article-display-card|data-ad-id/i);
@@ -31,12 +33,12 @@ describe('Content Security Policy allowlist', () => {
   });
 
   it('enforces HTTPS transport for one year without assuming all subdomains are HTTPS', () => {
-    expect(headers).toMatch(/^\s*Strict-Transport-Security: max-age=31536000$/m);
-    expect(headers).not.toMatch(/^\s*Strict-Transport-Security:.*includeSubDomains/m);
+    expect(headers).toMatch(/^\\s*Strict-Transport-Security: max-age=31536000$/m);
+    expect(headers).not.toMatch(/^\\s*Strict-Transport-Security:.*includeSubDomains/m);
   });
 
   it('does not ship inline blog scripts blocked by script-src self', () => {
-    expect(blogLayout).not.toMatch(/<script\s+is:inline(?:\s|>)/i);
+    expect(blogLayout).not.toMatch(/<script\\s+is:inline(?:\\s|>)/i);
   });
 
   it('keeps restrictive baseline directives', () => {
@@ -44,9 +46,12 @@ describe('Content Security Policy allowlist', () => {
     expect(csp).toContain("base-uri 'self'");
     expect(csp).toContain("form-action 'self'");
     expect(csp).not.toContain('*');
+    expect(csp).not.toContain("'unsafe-inline'");
+    expect(csp).not.toContain("'unsafe-eval'");
   });
+
   it('keeps the offline retry action compatible with the strict script CSP', () => {
-    expect(offlinePage).not.toMatch(/\son[a-z]+\s*=/i);
+    expect(offlinePage).not.toMatch(/\\son[a-z]+\\s*=/i);
     expect(offlinePage).toContain('<a href="/"');
   });
 });
