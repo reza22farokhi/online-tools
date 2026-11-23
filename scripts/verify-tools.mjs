@@ -33,7 +33,7 @@ function getMetaSlug(filePath) {
   }
 
   const source = fs.readFileSync(filePath, 'utf8');
-  const match = source.match(/\\bslug\\s*:\\s*['"]([^'"]+)['"]/);
+  const match = source.match(/\bslug\s*:\s*['"]([^'"]+)['"]/);
   if (!match) {
     errors.push('Metadata file has no literal slug: ' + path.relative(root, filePath));
     return null;
@@ -62,7 +62,7 @@ const registrySource = fs.readFileSync(registryFile, 'utf8');
 // The registry is assembled from imported metadata modules. Accept the typed
 // source array rather than requiring a legacy inline ToolMeta[] declaration.
 const registryMatch = registrySource.match(
-  /const\\s+registeredTools\\s*:\\s*Omit<ToolMeta,\\s*['"]qaProfile['"]>\\[\\]\\s*=\\s*\\[([\\s\\S]*?)\\n\\];/
+  /const\s+registeredTools\s*:\s*Omit<ToolMeta,\s*['"]qaProfile['"]>\[\]\s*=\s*\[([\s\S]*?)\n\];/
 );
 if (!registryMatch) {
   console.error('Could not parse the registeredTools source array.');
@@ -70,12 +70,12 @@ if (!registryMatch) {
 }
 
 const registryMetaImports = [...registrySource.matchAll(
-  /import\\s+\\{\\s*meta\\s+as\\s+\\w+\\s*\\}\\s+from\\s+['"]([^'"]+)['"]/g
+  /import\s+\{\s*meta\s+as\s+\w+\s*\}\s+from\s+['"]([^'"]+)['"]/g
 )].map(match => path.resolve(path.dirname(registryFile), match[1] + '.ts'));
 
 const importedRegistrySlugs = registryMetaImports.map(getMetaSlug);
 const literalRegistrySlugs = [...registryMatch[1].matchAll(
-  /\\bslug\\s*:\\s*['"]([^'"]+)['"]/g
+  /\bslug\s*:\s*['"]([^'"]+)['"]/g
 )].map(match => match[1]);
 const registrySlugs = [...importedRegistrySlugs, ...literalRegistrySlugs];
 
@@ -130,9 +130,9 @@ console.log('Metadata modules:           ' + allMetaSlugs.length);
 console.log('Built tool directories:     ' + builtSlugs.length);
 
 if (errors.length) {
-  console.error('\\nTool registry/build parity failed:');
+  console.error('\nTool registry/build parity failed:');
   for (const error of errors) console.error(' - ' + error);
   process.exit(1);
 }
 
-console.log('\\nTool registry, source components, metadata, and built routes are in exact parity.');
+console.log('\nTool registry, source components, metadata, and built routes are in exact parity.');
