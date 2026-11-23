@@ -105,3 +105,4 @@ test('video converter performs a real local WAV-to-MP3 conversion', async ({ pag
   await expect(page.locator('#vc-download')).toHaveAttribute('download', /\.webm$/);
   await expect(page.locator('#vc-download')).toHaveAttribute('href', /^blob:/);
   expect(uploads).toEqual([]);
+});
