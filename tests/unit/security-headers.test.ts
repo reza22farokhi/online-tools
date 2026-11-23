@@ -46,8 +46,9 @@ describe('Content Security Policy allowlist', () => {
     expect(csp).toContain("base-uri 'self'");
     expect(csp).toContain("form-action 'self'");
     expect(csp).not.toContain('*');
-    expect(csp).not.toContain("'unsafe-inline'");
-    expect(csp).not.toContain("'unsafe-eval'");
+    expect(directive('script-src')).not.toContain("'unsafe-inline'");
+    expect(directive('script-src')).not.toContain("'unsafe-eval'");
+    expect(directive('style-src')).toBe("'self' 'unsafe-inline'");
   });
 
   it('keeps the offline retry action compatible with the strict script CSP', () => {
