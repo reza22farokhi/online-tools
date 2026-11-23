@@ -84,6 +84,16 @@ test('video converter performs real local WAV-to-MP3 and MP3-to-WebM conversions
   await expect(page.locator('#vc-result')).toBeVisible();
   await expect(page.locator('#vc-after')).not.toHaveText('—');
   await expect(page.locator('#vc-download')).toHaveAttribute('href', /^blob:/);
+  const mp3Artifact = await page.evaluate(async (url) => {
+    const blob = await (await fetch(url!)).blob();
+    const bytes = new Uint8Array(await blob.slice(0, 4).arrayBuffer());
+    return { type: blob.type, signature: Array.from(bytes) };
+  }, await page.locator('#vc-download').getAttribute('href'));
+  expect(mp3Artifact.type).toBe('audio/mpeg');
+  expect(
+    (mp3Artifact.signature[0] === 0x49 && mp3Artifact.signature[1] === 0x44 && mp3Artifact.signature[2] === 0x33) ||
+    (mp3Artifact.signature[0] === 0xff && (mp3Artifact.signature[1] & 0xe0) === 0xe0)
+  ).toBe(true);
   // Reuse the generated MP3 as input to cover the user's MP3 -> WebM path.
   const mp3Url = await page.locator('#vc-download').getAttribute('href');
   if (!mp3Url) throw new Error('MP3 output URL was not created');
@@ -106,6 +116,36 @@ test('video converter performs real local WAV-to-MP3 and MP3-to-WebM conversions
   await expect(page.locator('#vc-status')).toContainText('Conversion completed.');
   await expect(page.locator('#vc-download')).toHaveAttribute('download', /\.webm$/);
   await expect(page.locator('#vc-download')).toHaveAttribute('href', /^blob:/);
+  const webmArtifact = await page.evaluate(async (url) => {
+    const blob = await (await fetch(url!)).blob();
+    const bytes = new Uint8Array(await blob.slice(0, 4).arrayBuffer());
+    return { type: blob.type, signature: Array.from(bytes) };
+  }, await page.locator('#vc-download').getAttribute('href'));
+  expect(webmArtifact.type).toBe('video/webm');
+  expect(webmArtifact.signature).toEqual([0x1a, 0x45, 0xdf, 0xa3]);
   expect(uploads).toEqual([]);
   expect(workerRequests.length).toBeGreaterThan(0);
+});
+
+
+test('video converter rejects empty and unsupported files before starting the engine', async ({ page }) => {
+  await page.goto('/tools/video-converter/');
+  await page.locator('#vc-file').setInputFiles({
+    name: 'empty.mp4',
+    mimeType: 'video/mp4',
+    buffer: Buffer.alloc(0)
+  });
+  await expect(page.locator('#vc-error')).toBeVisible();
+  await expect(page.locator('#vc-error')).toContainText('فایل خالی است');
+  await expect(page.locator('#vc-workspace')).toBeHidden();
+
+  await page.locator('#vc-file').setInputFiles({
+    name: 'payload.bin',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from('not media')
+  });
+  await expect(page.locator('#vc-error')).toBeVisible();
+  await expect(page.locator('#vc-error')).toContainText('فرمت فایل ناشناخته');
+  await expect(page.locator('#vc-workspace')).toBeHidden();
+  await expect(page.locator('#vc-progress-wrap')).toBeHidden();
 });
