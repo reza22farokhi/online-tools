@@ -29,6 +29,6 @@ test('site doctor [tool:word-counter] handles empty text and multiline paragraph
   await input.fill('one two\n\nthree four five');
   await expect(page.locator('#stat-words')).toHaveText('5');
   await expect(page.locator('#stat-lines')).toHaveText('3');
-  await expect(page.locator('#stat-nonexistent')).toHaveCount(0);
+  await expect(page.locator('#stat-chars-nospace')).toHaveText('16');
   await expect(page.locator('#stat-paragraphs')).toHaveText('2');
 });
