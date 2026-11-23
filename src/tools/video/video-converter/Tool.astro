@@ -1,0 +1,305 @@
+---
+---
+<div class="vc-tool" data-video-converter>
+  <section class="vc-dropzone" id="vc-dropzone" tabindex="0" role="button" aria-label="Choose a video or audio file">
+    <input id="vc-file" class="sr-only" type="file" aria-label="Choose video or audio file" accept="video/*,audio/*,.mp4,.mov,.m4v,.webm,.mkv,.avi,.3gp,.ogv,.mp3,.wav,.m4a,.aac,.ogg,.flac" />
+    <div class="vc-drop-icon" aria-hidden="true">🎬</div>
+    <strong data-lang-fa="ویدیو یا فایل صوتی را اینجا رها کنید" data-lang-en="Drop a video or audio file here">ویدیو یا فایل صوتی را اینجا رها کنید</strong>
+    <span data-lang-fa="یا برای انتخاب فایل کلیک کنید" data-lang-en="or click to browse">یا برای انتخاب فایل کلیک کنید</span>
+    <small data-lang-fa="حداکثر ۵۰۰ مگابایت؛ پردازش کاملاً محلی" data-lang-en="Up to 500 MB; processing stays on this device">حداکثر ۵۰۰ مگابایت؛ پردازش کاملاً محلی</small>
+  </section>
+
+  <div id="vc-error" class="vc-message vc-error" role="alert" hidden></div>
+  <div id="vc-warning" class="vc-message vc-warning" role="status" hidden></div>
+
+  <section id="vc-workspace" class="vc-workspace" hidden>
+    <div class="vc-file-card">
+      <div class="vc-file-icon" aria-hidden="true">📹</div>
+      <div class="vc-file-details">
+        <strong id="vc-filename">—</strong>
+        <span><span data-lang-fa="حجم ورودی:" data-lang-en="Input size:">حجم ورودی:</span> <b id="vc-input-size">—</b></span>
+      </div>
+      <button type="button" id="vc-reset" class="btn vc-reset" data-lang-fa="تعویض فایل" data-lang-en="Change file">تعویض فایل</button>
+    </div>
+
+    <div class="vc-controls">
+      <div class="vc-field">
+        <label for="vc-format" data-lang-fa="فرمت خروجی" data-lang-en="Output format">فرمت خروجی</label>
+        <select id="vc-format" class="select">
+          <option value="mp4">MP4 (H.264)</option>
+          <option value="webm">WebM (VP9)</option>
+          <option value="mp3">MP3 (استخراج صدا / Extract audio)</option>
+        </select>
+      </div>
+      <div class="vc-field" id="vc-quality-field">
+        <label for="vc-quality" data-lang-fa="کیفیت فشرده‌سازی" data-lang-en="Compression quality">کیفیت فشرده‌سازی</label>
+        <select id="vc-quality" class="select">
+          <option value="high" data-lang-fa="زیاد (حجم بیشتر)" data-lang-en="High (larger file)">زیاد (حجم بیشتر)</option>
+          <option value="medium" selected data-lang-fa="متوسط (متعادل)" data-lang-en="Medium (balanced)">متوسط (متعادل)</option>
+          <option value="low" data-lang-fa="کم (حجم کمتر)" data-lang-en="Low (smaller file)">کم (حجم کمتر)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="vc-progress-wrap" id="vc-progress-wrap" hidden>
+      <div class="vc-progress-label">
+        <strong id="vc-status" role="status" aria-live="polite">در حال آماده‌سازی موتور پردازش…</strong>
+        <b id="vc-percent">0%</b>
+      </div>
+      <progress id="vc-progress" max="100" value="0">0%</progress>
+      <small data-lang-fa="هنگام پردازش این برگه را نبندید. زمان اجرا به دستگاه و مدت ویدیو بستگی دارد." data-lang-en="Keep this tab open. Processing time depends on your device and video duration.">هنگام پردازش این برگه را نبندید. زمان اجرا به دستگاه و مدت ویدیو بستگی دارد.</small>
+    </div>
+
+    <div class="vc-actions">
+      <button type="button" id="vc-process" class="btn btn-primary">⚡ <span data-lang-fa="شروع تبدیل" data-lang-en="Start conversion">شروع تبدیل</span></button>
+      <a id="vc-download" class="btn vc-download" hidden>⬇ <span data-lang-fa="دانلود خروجی" data-lang-en="Download result">دانلود خروجی</span></a>
+    </div>
+
+    <div id="vc-result" class="vc-result" hidden>
+      <div><span data-lang-fa="حجم اولیه" data-lang-en="Original size">حجم اولیه</span><strong id="vc-before">—</strong></div>
+      <div><span data-lang-fa="حجم خروجی" data-lang-en="Output size">حجم خروجی</span><strong id="vc-after">—</strong></div>
+      <div><span data-lang-fa="تغییر حجم" data-lang-en="Size change">تغییر حجم</span><strong id="vc-savings">—</strong></div>
+    </div>
+  </section>
+  <p class="vc-privacy" data-lang-fa="حریم خصوصی: فایل شما فقط در حافظه مرورگر پردازش می‌شود و به سرور سایت ارسال نمی‌شود. برای اجرای موتور FFmpeg، فایل‌های WASM از CDN جاوااسکریپت دریافت می‌شوند." data-lang-en="Privacy: your media is processed in browser memory and is never uploaded to this website. FFmpeg WASM runtime assets are downloaded from a JavaScript CDN.">حریم خصوصی: فایل شما فقط در حافظه مرورگر پردازش می‌شود و به سرور سایت ارسال نمی‌شود. برای اجرای موتور FFmpeg، فایل‌های WASM از CDN جاوااسکریپت دریافت می‌شوند.</p>
+</div>
+
+<script>
+  import { FFmpeg } from '@ffmpeg/ffmpeg';
+  import { MAX_VIDEO_SIZE, LARGE_VIDEO_WARNING_SIZE, formatMediaBytes, isSupportedMedia, outputFilename, isMemoryError } from './logic';
+
+  const root = document.querySelector('[data-video-converter]');
+  if (root) {
+    const $ = (id: string) => root.querySelector('#' + id) as HTMLElement | null;
+    const fileInput = $('vc-file') as HTMLInputElement | null;
+    const dropzone = $('vc-dropzone');
+    const workspace = $('vc-workspace');
+    const errorEl = $('vc-error');
+    const warningEl = $('vc-warning');
+    const formatSelect = $('vc-format') as HTMLSelectElement | null;
+    const qualitySelect = $('vc-quality') as HTMLSelectElement | null;
+    const qualityField = $('vc-quality-field');
+    const processButton = $('vc-process') as HTMLButtonElement | null;
+    const downloadLink = $('vc-download') as HTMLAnchorElement | null;
+    const progressWrap = $('vc-progress-wrap');
+    const progressBar = $('vc-progress') as HTMLProgressElement | null;
+    const progressLabel = $('vc-percent');
+    const statusLabel = $('vc-status');
+    let selectedFile: File | null = null;
+    let outputUrl: string | null = null;
+    let ffmpeg: any = null;
+    let processing = false;
+    let activeInput = '';
+    let activeOutput = '';
+
+    const english = () => document.documentElement.lang === 'en';
+    const message = (fa: string, en: string) => english() ? en : fa;
+    const setProgress = (value: number) => {
+      const percent = Math.max(0, Math.min(100, Math.round(value)));
+      if (progressBar) progressBar.value = percent;
+      if (progressLabel) progressLabel.textContent = percent + '%';
+    };
+    const clearOutput = () => {
+      if (outputUrl) URL.revokeObjectURL(outputUrl);
+      outputUrl = null;
+      if (downloadLink) { downloadLink.removeAttribute('href'); downloadLink.hidden = true; }
+      if ($('vc-result')) $('vc-result')!.hidden = true;
+    };
+    const showError = (fa: string, en: string) => {
+      if (errorEl) { errorEl.textContent = message(fa, en); errorEl.hidden = false; }
+    };
+    const selectFile = (file: File) => {
+      if (processing) return;
+      if (!isSupportedMedia(file)) {
+        showError('فرمت فایل ناشناخته یا پشتیبانی‌نشده است. فایل ویدیویی/صوتی استاندارد انتخاب کنید.', 'Unknown or unsupported media format. Choose a supported video or audio file.');
+        return;
+      }
+      if (file.size === 0) { showError('فایل خالی است.', 'The selected file is empty.'); return; }
+      if (file.size > MAX_VIDEO_SIZE) {
+        showError('حجم فایل بیشتر از سقف ۵۰۰ مگابایت است.', 'File exceeds the 500 MB limit.');
+        return;
+      }
+      selectedFile = file;
+      clearOutput();
+      if (errorEl) errorEl.hidden = true;
+      if (warningEl) {
+        warningEl.hidden = file.size <= LARGE_VIDEO_WARNING_SIZE;
+        warningEl.textContent = message('این فایل بزرگ است و ممکن است به حافظه زیادی نیاز داشته باشد. برای کاهش خطر بسته‌شدن مرورگر، برگه‌های دیگر را ببندید یا فایل کوچک‌تری انتخاب کنید.', 'This is a large file and may require substantial memory. Close other tabs or choose a smaller file to reduce the risk of browser termination.');
+      }
+      if ($('vc-filename')) $('vc-filename')!.textContent = file.name;
+      if ($('vc-input-size')) $('vc-input-size')!.textContent = formatMediaBytes(file.size);
+      if (dropzone) dropzone.hidden = true;
+      if (workspace) workspace.hidden = false;
+      if (progressWrap) progressWrap.hidden = true;
+      if (processButton) processButton.disabled = false;
+    };
+
+    fileInput?.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) selectFile(file);
+    });
+    dropzone?.addEventListener('click', () => fileInput?.click());
+    dropzone?.addEventListener('keydown', (event) => {
+      if (event instanceof KeyboardEvent && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault(); fileInput?.click();
+      }
+    });
+    dropzone?.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      (dropzone as HTMLElement).classList.add('is-dragging');
+    });
+    dropzone?.addEventListener('dragleave', () => dropzone.classList.remove('is-dragging'));
+    dropzone?.addEventListener('drop', (event) => {
+      event.preventDefault();
+      dropzone.classList.remove('is-dragging');
+      const file = (event as DragEvent).dataTransfer?.files?.[0];
+      if (file) selectFile(file);
+    });
+    $('vc-reset')?.addEventListener('click', () => {
+      if (processing) return;
+      selectedFile = null;
+      clearOutput();
+      if (fileInput) fileInput.value = '';
+      if (workspace) workspace.hidden = true;
+      if (dropzone) dropzone.hidden = false;
+      if (errorEl) errorEl.hidden = true;
+      if (warningEl) warningEl.hidden = true;
+    });
+    formatSelect?.addEventListener('change', () => {
+      if (qualityField) qualityField.hidden = formatSelect.value === 'mp3';
+    });
+    qualityField && formatSelect && (qualityField.hidden = formatSelect.value === 'mp3');
+
+    const loadEngine = async () => {
+      if (ffmpeg) return ffmpeg;
+      const engine = new FFmpeg();
+      engine.on('progress', ({ progress }: { progress: number }) => {
+        if (Number.isFinite(progress)) setProgress(progress * 100);
+      });
+      engine.on('log', ({ message: logMessage }: { message: string }) => {
+        if (/\bframe=|\btime=/.test(logMessage) && statusLabel) {
+          statusLabel.textContent = message('در حال رمزگذاری ویدیو…', 'Encoding media…');
+        }
+      });
+      const coreBase = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';
+      const [coreResponse, wasmResponse] = await Promise.all([
+        fetch(coreBase + '/ffmpeg-core.js'),
+        fetch(coreBase + '/ffmpeg-core.wasm')
+      ]);
+      if (!coreResponse.ok || !wasmResponse.ok) throw new Error('FFmpeg runtime download failed');
+      const [coreBlob, wasmBlob] = await Promise.all([coreResponse.blob(), wasmResponse.blob()]);
+      const coreURL = URL.createObjectURL(coreBlob);
+      const wasmURL = URL.createObjectURL(wasmBlob);
+      try {
+        await engine.load({ coreURL, wasmURL });
+      } finally {
+        URL.revokeObjectURL(coreURL);
+        URL.revokeObjectURL(wasmURL);
+      }
+      ffmpeg = engine;
+      return ffmpeg;
+    };
+
+    processButton?.addEventListener('click', async () => {
+      const inputFile = selectedFile;
+      if (!inputFile || !formatSelect || !qualitySelect || !processButton || processing) return;
+      processing = true;
+      clearOutput();
+      if (errorEl) errorEl.hidden = true;
+      if (progressWrap) progressWrap.hidden = false;
+      processButton.disabled = true;
+      setProgress(0);
+      if (statusLabel) statusLabel.textContent = message('در حال بارگذاری موتور FFmpeg…', 'Loading FFmpeg engine…');
+      activeInput = 'source.' + (inputFile.name.split('.').pop()?.toLowerCase() || 'bin');
+      const format = formatSelect.value as 'mp4' | 'webm' | 'mp3';
+      activeOutput = 'converted.' + format;
+      const quality = qualitySelect.value;
+      const crf = quality === 'high' ? '23' : quality === 'low' ? '34' : '28';
+      let activeEngine: any = null;
+      const args = format === 'mp3'
+        ? ['-i', activeInput, '-vn', '-c:a', 'libmp3lame', '-q:a', quality === 'high' ? '2' : quality === 'low' ? '7' : '4', activeOutput]
+        : format === 'webm'
+          ? ['-i', activeInput, '-threads', '1', '-c:v', 'libvpx-vp9', '-crf', quality === 'high' ? '28' : quality === 'low' ? '42' : '34', '-b:v', '0', '-c:a', 'libopus', activeOutput]
+          : ['-i', activeInput, '-threads', '1', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crf, '-c:a', 'aac', '-movflags', '+faststart', activeOutput];
+      try {
+        const engine = await loadEngine();
+        activeEngine = engine;
+        if (statusLabel) statusLabel.textContent = message('در حال آماده‌سازی فایل…', 'Preparing media…');
+        await engine.writeFile(activeInput, new Uint8Array(await inputFile.arrayBuffer()));
+        if (statusLabel) statusLabel.textContent = message('در حال تبدیل و فشرده‌سازی…', 'Converting and compressing…');
+        const exitCode = await engine.exec(args);
+        if (exitCode !== 0) throw new Error('FFmpeg conversion failed with exit code ' + exitCode);
+        const data = await engine.readFile(activeOutput);
+        if (!(data instanceof Uint8Array) || data.byteLength === 0) throw new Error('Empty output');
+        const mime = format === 'mp4' ? 'video/mp4' : format === 'webm' ? 'video/webm' : 'audio/mpeg';
+        const outputBuffer = new ArrayBuffer(data.byteLength);
+        new Uint8Array(outputBuffer).set(data);
+        outputUrl = URL.createObjectURL(new Blob([outputBuffer], { type: mime }));
+        if (downloadLink) {
+          downloadLink.href = outputUrl;
+          downloadLink.download = outputFilename(inputFile.name, format);
+          downloadLink.hidden = false;
+        }
+        if ($('vc-before')) $('vc-before')!.textContent = formatMediaBytes(inputFile.size);
+        if ($('vc-after')) $('vc-after')!.textContent = formatMediaBytes(data.byteLength);
+        const change = Math.round((1 - data.byteLength / inputFile.size) * 100);
+        if ($('vc-savings')) $('vc-savings')!.textContent = change >= 0 ? change + '% smaller' : Math.abs(change) + '% larger';
+        if ($('vc-result')) $('vc-result')!.hidden = false;
+        setProgress(100);
+        if (statusLabel) statusLabel.textContent = message('تبدیل با موفقیت انجام شد.', 'Conversion completed.');
+      } catch (error) {
+        if (isMemoryError(error)) {
+          showError('حافظه مرورگر کافی نیست. فایل کوچک‌تری انتخاب کنید، برگه‌های دیگر را ببندید و دوباره تلاش کنید.', 'The browser ran out of memory. Choose a smaller file, close other tabs, and try again.');
+        } else {
+          showError('تبدیل انجام نشد. ممکن است کدک یا فرمت ورودی پشتیبانی نشود؛ فایل دیگری امتحان کنید.', 'Conversion failed. The input format or codec may be unsupported; try another file.');
+        }
+        if (statusLabel) statusLabel.textContent = message('پردازش ناموفق بود.', 'Processing failed.');
+      } finally {
+        try { if (ffmpeg && activeInput) await ffmpeg.deleteFile(activeInput); } catch {}
+        try { if (ffmpeg && activeOutput) await ffmpeg.deleteFile(activeOutput); } catch {}
+        if (activeEngine) { activeEngine.terminate(); ffmpeg = null; }
+        processing = false;
+        if (processButton) processButton.disabled = false;
+      }
+    });
+
+    window.addEventListener('pagehide', () => {
+      if (outputUrl) URL.revokeObjectURL(outputUrl);
+      if (ffmpeg) { ffmpeg.terminate(); ffmpeg = null; }
+    }, { once: true });
+  }
+</script>
+
+<style>
+  .vc-tool { display:flex; flex-direction:column; gap:var(--space-4); min-width:0; }
+  .vc-dropzone { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:var(--space-2); min-height:210px; padding:var(--space-6); text-align:center; border:2px dashed var(--color-border); border-radius:var(--radius-lg); background:var(--color-surface-2); cursor:pointer; transition:border-color .2s,background .2s; }
+  .vc-dropzone:hover,.vc-dropzone.is-dragging { border-color:var(--color-primary); background:color-mix(in srgb,var(--color-primary) 7%,var(--color-surface)); }
+  .vc-drop-icon { font-size:2.8rem; }
+  .vc-dropzone small,.vc-privacy,.vc-progress-wrap small { color:var(--color-text-muted); font-size:.82rem; line-height:1.7; }
+  .vc-message { padding:var(--space-3); border-radius:var(--radius-md); font-size:.9rem; }
+  .vc-error { color:var(--color-danger); background:color-mix(in srgb,var(--color-danger) 10%,transparent); border:1px solid var(--color-danger); }
+  .vc-warning { color:var(--color-text); background:var(--color-surface-2); border:1px solid var(--color-border); }
+  .vc-workspace { display:flex; flex-direction:column; gap:var(--space-4); }
+  .vc-file-card { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-3); border:1px solid var(--color-border); border-radius:var(--radius-md); min-width:0; }
+  .vc-file-icon { font-size:1.7rem; }
+  .vc-file-details { display:flex; flex:1; min-width:0; flex-direction:column; gap:4px; font-size:.85rem; }
+  .vc-file-details strong { overflow-wrap:anywhere; }
+  .vc-file-details span { color:var(--color-text-muted); }
+  .vc-reset { white-space:nowrap; }
+  .vc-controls { display:grid; grid-template-columns:1fr; gap:var(--space-3); }
+  .vc-field { display:flex; flex-direction:column; gap:var(--space-2); }
+  .vc-field label { font-weight:600; font-size:.9rem; }
+  .vc-actions { display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-2); }
+  .vc-download { text-decoration:none; }
+  .vc-progress-wrap { display:flex; flex-direction:column; gap:var(--space-2); }
+  .vc-progress-label { display:flex; justify-content:space-between; gap:var(--space-2); font-size:.9rem; }
+  .vc-progress-wrap progress { width:100%; height:14px; accent-color:var(--color-primary); }
+  .vc-result { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--space-2); padding:var(--space-3); border:1px solid var(--color-border); border-radius:var(--radius-md); }
+  .vc-result div { display:flex; flex-direction:column; gap:5px; min-width:0; }
+  .vc-result span { color:var(--color-text-muted); font-size:.78rem; }
+  .vc-result strong { overflow-wrap:anywhere; font-size:.95rem; }
+  .vc-privacy { margin:0; }
+  [hidden] { display:none !important; }
+  @media(min-width:640px) { .vc-controls { grid-template-columns:1fr 1fr; } }
+  @media(max-width:420px) { .vc-file-card { flex-wrap:wrap; } .vc-result { grid-template-columns:1fr; } }
+</style>
