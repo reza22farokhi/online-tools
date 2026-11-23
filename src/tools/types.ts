@@ -8,7 +8,11 @@ export type ToolCategory =
   | 'color'
   | 'date';
 
+export type ToolQAProfile = 'text' | 'structured-data' | 'calculator' | 'seo-generator' | 'image' | 'file' | 'color' | 'date';
+
 export interface ToolMeta {
+  /** Automatically assigned by the registry from category; every tool gets a QA adapter profile. */
+  qaProfile: ToolQAProfile;
   slug: string;
   category: ToolCategory;
   name: { fa: string; en: string };
