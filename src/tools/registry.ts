@@ -59,7 +59,7 @@ export const categories: CategoryMeta[] = [
   { slug: 'date', fa: 'تاریخ و زمان', en: 'Date & Time', icon: '📅' },
   { slug: 'file', fa: 'فایل', en: 'File', icon: '📁' }
 ];
-export const registry: ToolMeta[] = [
+const registeredTools: Omit<ToolMeta, 'qaProfile'>[] = [
   dateConverterMeta, passwordGeneratorMeta, qrCodeMeta,
   wordCounterMeta, caseConverterMeta, removeExtraSpacesMeta, lineSorterMeta,
   removeDuplicatesMeta, slugGeneratorMeta,
@@ -72,6 +72,24 @@ export const registry: ToolMeta[] = [
   fileInfoMeta, fileToBase64Meta, multiCalendarMeta, unixTimestampMeta,
   dateCalculatorMeta, dateInfoMeta, csvJsonMeta, csvAnalyzerMeta, textDiffMeta, persianTextRefinerMeta, videoConverterMeta
 ];
+
+const QA_PROFILE_BY_CATEGORY: Record<ToolCategory, ToolMeta['qaProfile']> = {
+  text: 'text',
+  code: 'structured-data',
+  calc: 'calculator',
+  seo: 'seo-generator',
+  image: 'image',
+  file: 'file',
+  color: 'color',
+  date: 'date'
+};
+
+/** Single source of truth: newly registered tools inherit a typed QA profile automatically. */
+export const registry: ToolMeta[] = registeredTools.map(tool => ({
+  ...tool,
+  qaProfile: QA_PROFILE_BY_CATEGORY[tool.category]
+}));
+
 export function getToolBySlug(slug: string): ToolMeta | undefined { return registry.find(t => t.slug === slug); }
 export function getToolsByCategory(category: ToolCategory): ToolMeta[] { return registry.filter(t => t.category === category); }
 export function getPopular(): ToolMeta[] { return registry.filter(t => t.popular); }
