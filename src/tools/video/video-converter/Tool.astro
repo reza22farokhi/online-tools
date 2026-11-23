@@ -91,6 +91,8 @@
     let processing = false;
     let activeInput = '';
     let activeOutput = '';
+    let processingPhase = 'engine';
+    const ffmpegLogs: string[] = [];
 
     const english = () => document.documentElement.lang === 'en';
     const message = (fa: string, en: string) => english() ? en : fa;
@@ -177,6 +179,8 @@
         if (Number.isFinite(progress)) setProgress(progress * 100);
       });
       engine.on('log', ({ message: logMessage }: { message: string }) => {
+        ffmpegLogs.push(logMessage);
+        if (ffmpegLogs.length > 20) ffmpegLogs.shift();
         if (/\bframe=|\btime=/.test(logMessage) && statusLabel) {
           statusLabel.textContent = message('در حال رمزگذاری ویدیو…', 'Encoding media…');
         }
@@ -192,6 +196,10 @@
       const wasmURL = URL.createObjectURL(wasmBlob);
       try {
         await engine.load({ coreURL, wasmURL });
+      } catch (error) {
+        engine.terminate();
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new Error('FFmpeg engine initialization failed: ' + detail);
       } finally {
         URL.revokeObjectURL(coreURL);
         URL.revokeObjectURL(wasmURL);
@@ -210,6 +218,8 @@
       processButton.disabled = true;
       setProgress(0);
       if (statusLabel) statusLabel.textContent = message('در حال بارگذاری موتور FFmpeg…', 'Loading FFmpeg engine…');
+      ffmpegLogs.length = 0;
+      processingPhase = 'engine';
       activeInput = 'source.' + (inputFile.name.split('.').pop()?.toLowerCase() || 'bin');
       const format = formatSelect.value as 'mp4' | 'webm' | 'mp3';
       activeOutput = 'converted.' + format;
@@ -224,11 +234,14 @@
       try {
         const engine = await loadEngine();
         activeEngine = engine;
+        processingPhase = 'input';
         if (statusLabel) statusLabel.textContent = message('در حال آماده‌سازی فایل…', 'Preparing media…');
         await engine.writeFile(activeInput, new Uint8Array(await inputFile.arrayBuffer()));
+        processingPhase = 'conversion';
         if (statusLabel) statusLabel.textContent = message('در حال تبدیل و فشرده‌سازی…', 'Converting and compressing…');
         const exitCode = await engine.exec(args);
         if (exitCode !== 0) throw new Error('FFmpeg conversion failed with exit code ' + exitCode);
+        processingPhase = 'output';
         const data = await engine.readFile(activeOutput);
         if (!(data instanceof Uint8Array) || data.byteLength === 0) throw new Error('Empty output');
         const mime = format === 'mp4' ? 'video/mp4' : format === 'webm' ? 'video/webm' : 'audio/mpeg';
@@ -248,10 +261,18 @@
         setProgress(100);
         if (statusLabel) statusLabel.textContent = message('تبدیل با موفقیت انجام شد.', 'Conversion completed.');
       } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error);
+        const lastLog = ffmpegLogs.slice(-5).join(' | ');
+        console.error('[video-converter]', { phase: processingPhase, error: detail, ffmpegLogs });
         if (isMemoryError(error)) {
           showError('حافظه مرورگر کافی نیست. فایل کوچک‌تری انتخاب کنید، برگه‌های دیگر را ببندید و دوباره تلاش کنید.', 'The browser ran out of memory. Choose a smaller file, close other tabs, and try again.');
+        } else if (processingPhase === 'engine') {
+          showError('موتور تبدیل بارگذاری نشد. اتصال به CDN را بررسی کنید و دوباره تلاش کنید. جزئیات: ' + detail.slice(0, 180), 'The conversion engine could not load. Check your CDN connection and retry. Details: ' + detail.slice(0, 180));
+        } else if (processingPhase === 'conversion' && /unknown encoder|encoder .* not found|error selecting an encoder/i.test(detail + ' ' + lastLog)) {
+          showError('کدک خروجی در موتور فعلی موجود نیست. فرمت خروجی دیگری انتخاب کنید. جزئیات: ' + (lastLog || detail).slice(0, 180), 'This output encoder is unavailable in the current engine. Choose another output format. Details: ' + (lastLog || detail).slice(0, 180));
         } else {
-          showError('تبدیل انجام نشد. ممکن است کدک یا فرمت ورودی پشتیبانی نشود؛ فایل دیگری امتحان کنید.', 'Conversion failed. The input format or codec may be unsupported; try another file.');
+          const reason = (lastLog || detail).slice(0, 220);
+          showError('تبدیل ناموفق بود؛ خطا از نوع فرمت ورودی تشخیص داده نشد. جزئیات فنی: ' + reason, 'Conversion failed; this was not identified as an unsupported input format. Technical details: ' + reason);
         }
         if (statusLabel) statusLabel.textContent = message('پردازش ناموفق بود.', 'Processing failed.');
       } finally {
