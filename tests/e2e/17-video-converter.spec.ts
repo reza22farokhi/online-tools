@@ -14,7 +14,9 @@ test('video converter route renders localized metadata and browser-only controls
 
 test('video converter rejects unknown media types without uploading anything', async ({ page }) => {
   const uploads: string[] = [];
+  const workerRequests: string[] = [];
   page.on('request', request => {
+    if (new URL(request.url()).pathname === '/vendor/ffmpeg/0.12.15/worker.js') workerRequests.push(request.url());
     if (request.method() === 'POST' && new URL(request.url()).origin === 'https://abzar-tools.ir') uploads.push(request.url());
   });
   await page.goto('/tools/video-converter/');
@@ -26,6 +28,7 @@ test('video converter rejects unknown media types without uploading anything', a
   await expect(page.locator('#vc-error')).toBeVisible();
   await expect(page.locator('#vc-error')).toContainText('فرمت فایل ناشناخته');
   expect(uploads).toEqual([]);
+  expect(workerRequests.length).toBeGreaterThan(0);
 });
 
 test('static English video converter route has English direction and FAQ', async ({ page }) => {
