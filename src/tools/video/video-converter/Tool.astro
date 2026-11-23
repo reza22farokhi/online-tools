@@ -179,6 +179,8 @@
         if (Number.isFinite(progress)) setProgress(progress * 100);
       });
       engine.on('log', ({ message: logMessage }: { message: string }) => {
+        ffmpegLogs.push(logMessage);
+        if (ffmpegLogs.length > 20) ffmpegLogs.shift();
         if (/\bframe=|\btime=/.test(logMessage) && statusLabel) {
           statusLabel.textContent = message('در حال رمزگذاری ویدیو…', 'Encoding media…');
         }
