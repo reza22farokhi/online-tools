@@ -186,23 +186,17 @@
         }
       });
       const coreBase = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';
-      const [coreResponse, wasmResponse] = await Promise.all([
-        fetch(coreBase + '/ffmpeg-core.js'),
-        fetch(coreBase + '/ffmpeg-core.wasm')
-      ]);
-      if (!coreResponse.ok || !wasmResponse.ok) throw new Error('FFmpeg runtime download failed');
-      const [coreBlob, wasmBlob] = await Promise.all([coreResponse.blob(), wasmResponse.blob()]);
-      const coreURL = URL.createObjectURL(coreBlob);
-      const wasmURL = URL.createObjectURL(wasmBlob);
+      const workerURL = new URL('/vendor/ffmpeg/0.12.15/worker.js', location.origin).href;
       try {
-        await engine.load({ coreURL, wasmURL });
+        await engine.load({
+          coreURL: coreBase + '/ffmpeg-core.js',
+          wasmURL: coreBase + '/ffmpeg-core.wasm',
+          classWorkerURL: workerURL
+        });
       } catch (error) {
         engine.terminate();
         const detail = error instanceof Error ? error.message : String(error);
         throw new Error('FFmpeg engine initialization failed: ' + detail);
-      } finally {
-        URL.revokeObjectURL(coreURL);
-        URL.revokeObjectURL(wasmURL);
       }
       ffmpeg = engine;
       return ffmpeg;
