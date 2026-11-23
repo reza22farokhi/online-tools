@@ -15,8 +15,10 @@ function directive(name: string): string {
 }
 
 describe('Content Security Policy allowlist', () => {
-  it('allows only the site and the background-removal module for scripts, excluding retired ad networks', () => {
-    expect(directive('script-src')).toBe("'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'");
+  it('allows only the site, the background-removal module, and verified inline script hashes', () => {
+    expect(directive('script-src')).toBe(
+      "'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval' 'sha256-feMt1N4YpWxmeS0EtHyuyChvwWkgbfB5LJvGAma7jzo=' 'sha256-PaqSNyGFkkCfhNK7zr4Zdw/6ul3MbCJFJwnC2lSES7A='"
+    );
     expect(csp).not.toMatch(/yektanet|triboon/i);
     expect(baseLayout).not.toMatch(/yektanet|ynpos|yn-bnr|yn_pub/i);
     expect(toolLayout).not.toMatch(/AdSlot|pos-article-display-card|data-ad-id/i);
@@ -44,7 +46,11 @@ describe('Content Security Policy allowlist', () => {
     expect(csp).toContain("base-uri 'self'");
     expect(csp).toContain("form-action 'self'");
     expect(csp).not.toContain('*');
+    expect(directive('script-src')).not.toContain("'unsafe-inline'");
+    expect(directive('script-src')).not.toContain("'unsafe-eval'");
+    expect(directive('style-src')).toBe("'self' 'unsafe-inline'");
   });
+
   it('keeps the offline retry action compatible with the strict script CSP', () => {
     expect(offlinePage).not.toMatch(/\son[a-z]+\s*=/i);
     expect(offlinePage).toContain('<a href="/"');
