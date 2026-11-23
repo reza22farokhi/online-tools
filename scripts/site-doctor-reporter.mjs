@@ -20,9 +20,9 @@ export default class SiteDoctorReporter {
 
   onTestEnd(test, result) {
     const titlePath = test.titlePath().join(' › ');
-    const tool = titlePath.match(/\\[tool:([a-z0-9-]+)\\]/i)?.[1];
-    const category = titlePath.match(/\\[category:([a-z0-9-]+)\\]/i)?.[1];
-    const file = test.location?.file?.split('/').pop()?.replace(/^\\d+-/, '').replace(/\\.spec\\.[^.]+$/, '');
+    const tool = titlePath.match(/\[tool:([a-z0-9-]+)\]/i)?.[1];
+    const category = titlePath.match(/\[category:([a-z0-9-]+)\]/i)?.[1];
+    const file = test.location?.file?.split('/').pop()?.replace(/^\d+-/, '').replace(/\.spec\.[^.]+$/, '');
 
     this.finalResults.set(test.id, {
       status: result.status,
@@ -33,13 +33,13 @@ export default class SiteDoctorReporter {
       file: test.location?.file ?? '',
       line: test.location?.line ?? null,
       durationMs: result.duration,
-      error: (result.errors || []).map(item => item.stack || item.message || String(item)).join('\\n\\n').slice(0, 12000)
+      error: (result.errors || []).map(item => item.stack || item.message || String(item)).join('\n\n').slice(0, 12000)
     });
   }
 
   async onEnd() {
     const report = buildSiteDoctorReport([...this.finalResults.values()]);
-    await writeFile('site-doctor-report.json', JSON.stringify(report, null, 2) + '\\n');
-    console.log(`SITE_DOCTOR_SUMMARY ${JSON.stringify({total: report.total, passed: report.passed, failed: report.failed, skipped: report.skipped, interrupted: report.interrupted})}`);
+    await writeFile('site-doctor-report.json', JSON.stringify(report, null, 2) + '\n');
+    console.log(\`SITE_DOCTOR_SUMMARY \${JSON.stringify({total: report.total, passed: report.passed, failed: report.failed, skipped: report.skipped, interrupted: report.interrupted})}\`);
   }
 }
