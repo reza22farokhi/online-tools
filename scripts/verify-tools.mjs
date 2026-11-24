@@ -59,9 +59,13 @@ if (!fs.existsSync(registryFile)) {
 }
 
 const registrySource = fs.readFileSync(registryFile, 'utf8');
-const registryMatch = registrySource.match(/export const registry:\s*ToolMeta\[\]\s*=\s*\[([\s\S]*?)\n\];/);
+// The registry is assembled from imported metadata modules. Accept the typed
+// source array rather than requiring a legacy inline ToolMeta[] declaration.
+const registryMatch = registrySource.match(
+  /const\s+registeredTools\s*:\s*Omit<ToolMeta,\s*['"]qaProfile['"]>\[\]\s*=\s*\[([\s\S]*?)\n\];/
+);
 if (!registryMatch) {
-  console.error('Could not parse the exported tool registry.');
+  console.error('Could not parse the registeredTools source array.');
   process.exit(1);
 }
 

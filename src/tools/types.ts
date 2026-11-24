@@ -8,6 +8,8 @@ export type ToolCategory =
   | 'color'
   | 'date';
 
+export type ToolQAProfile = 'text' | 'structured-data' | 'calculator' | 'seo-generator' | 'image' | 'file' | 'color' | 'date';
+
 export interface ToolMeta {
   slug: string;
   category: ToolCategory;
@@ -18,6 +20,11 @@ export interface ToolMeta {
   popular?: boolean;
   addedAt: string;
   related?: string[];
+}
+
+export interface RegisteredToolMeta extends ToolMeta {
+  /** Assigned centrally by the registry; callers always receive a QA profile. */
+  qaProfile: ToolQAProfile;
 }
 
 export interface CategoryMeta {
