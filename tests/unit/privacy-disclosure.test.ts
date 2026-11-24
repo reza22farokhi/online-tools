@@ -6,17 +6,19 @@ const about = readFileSync('src/pages/about.astro', 'utf8');
 const toolLayout = readFileSync('src/layouts/ToolLayout.astro', 'utf8');
 
 describe('privacy disclosures', () => {
-  it('explains local tool-input processing and accurately discloses Tapsell advertising', () => {
+  it('explains local tool-input processing and accurately discloses Yektanet advertising', () => {
     expect(privacy).toContain('محتوای واردشده در ابزارها');
-    expect(privacy).toContain('اسکریپت تبلیغاتی تپسل (MediaAd)');
+    expect(privacy).toContain('اسکریپت تبلیغاتی یکتانت');
     expect(privacy).toContain('درخواست‌های تبلیغاتی');
-    expect(privacy).toContain('Tapsell (MediaAd)');
+    expect(privacy).toContain('Yektanet');
     expect(privacy).not.toContain('هیچ اسکریپت یا شبکه تبلیغاتی شخص ثالثی');
-    expect(privacy).not.toContain('یکتانت');
+    expect(privacy).toContain('یکتانت');
+    expect(privacy).not.toMatch(/تپسل|Tapsell|MediaAd/i);
   });
 
   it('does not describe a retired advertising provider', () => {
-    expect(about).not.toContain('یکتانت');
+    expect(about).toContain('یکتانت');
+    expect(about).not.toMatch(/تپسل|Tapsell|MediaAd/i);
     expect(about).not.toContain('تبلیغات شخص ثالث');
   });
 
