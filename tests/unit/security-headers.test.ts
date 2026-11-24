@@ -15,21 +15,23 @@ function directive(name: string): string {
 }
 
 describe('Content Security Policy allowlist', () => {
-  it('allows only the site, required modules, the Tapsell loader, and verified inline script hashes', () => {
+  it('allows only the site, required modules, the Yektanet loader, and verified inline script hashes', () => {
     expect(directive('script-src')).toBe(
-      "'self' https://s1.mediaad.org https://cdn.jsdelivr.net 'wasm-unsafe-eval' 'sha256-feMt1N4YpWxmeS0EtHyuyChvwWkgbfB5LJvGAma7jzo=' 'sha256-PaqSNyGFkkCfhNK7zr4Zdw/6ul3MbCJFJwnC2lSES7A='"
+      "'self' https://cdn.yektanet.ir https://cdn.yektanet.com https://native-scripts.yektanet.com https://cdn.jsdelivr.net 'wasm-unsafe-eval' 'sha256-feMt1N4YpWxmeS0EtHyuyChvwWkgbfB5LJvGAma7jzo=' 'sha256-PaqSNyGFkkCfhNK7zr4Zdw/6ul3MbCJFJwnC2lSES7A='"
     );
-    expect(csp).not.toMatch(/yektanet|triboon/i);
-    expect(baseLayout.split('https://s1.mediaad.org/serve/abzar-tools.ir/loader.js')).toHaveLength(2);
-    expect(baseLayout.split('<AdSlot />')).toHaveLength(2);
-    expect(baseLayout).not.toMatch(/yektanet|ynpos|yn-bnr|yn_pub/i);
+    expect(csp).not.toMatch(/mediaad|triboon/i);
+    expect(baseLayout.split('https://cdn.yektanet.ir/superscript-v2/Cg1anVr4/native-49280/yn_pub.js')).toHaveLength(2);
+    expect(baseLayout.split('<AdSlot id="ynpos-21471" />')).toHaveLength(2);
+    expect(baseLayout.split('<AdSlot id="ynpos-21470" />')).toHaveLength(2);
+    expect(baseLayout).toContain('ynpos-21471');
+    expect(baseLayout).toContain('ynpos-21470');
     expect(toolLayout).not.toMatch(/AdSlot|pos-article-display-card|data-ad-id/i);
     expect(blogLayout).not.toMatch(/pos-article-display-card|yektanet|ynpos/i);
   });
 
-  it('allows the observed Tapsell API and fingerprint frame endpoints without wildcards', () => {
-    expect(directive('connect-src')).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net https://api.mediaad.org https://s1.mediaad.org");
-    expect(directive('frame-src')).toBe('blob: https://s1.mediaad.org');
+  it('allows the observed Yektanet API and fingerprint frame endpoints without wildcards', () => {
+    expect(directive('connect-src')).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net https://jamssp.yektanet.com https://audience.yektanet.com https://ua.yektanet.com");
+    expect(directive('frame-src')).toBe('blob: https://cdn.yektanet.com');
     expect(directive('img-src')).toBe("'self' data: blob:");
     expect(directive('font-src')).toBe("'self' data:");
     expect(csp).not.toContain('*');
