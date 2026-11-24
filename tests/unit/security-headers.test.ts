@@ -20,8 +20,8 @@ describe('Content Security Policy allowlist', () => {
       "'self' https://s1.mediaad.org https://cdn.jsdelivr.net 'wasm-unsafe-eval' 'sha256-feMt1N4YpWxmeS0EtHyuyChvwWkgbfB5LJvGAma7jzo=' 'sha256-PaqSNyGFkkCfhNK7zr4Zdw/6ul3MbCJFJwnC2lSES7A='"
     );
     expect(csp).not.toMatch(/yektanet|triboon/i);
-    expect(baseLayout.match(/https:\\/\\/s1\\.mediaad\\.org\\/serve\\/abzar-tools\\.ir\\/loader\\.js/g)).toHaveLength(1);
-    expect(baseLayout.match(/<AdSlot \\/>/g)).toHaveLength(1);
+    expect(baseLayout.split('https://s1.mediaad.org/serve/abzar-tools.ir/loader.js')).toHaveLength(2);
+    expect(baseLayout.split('<AdSlot />')).toHaveLength(2);
     expect(baseLayout).not.toMatch(/yektanet|ynpos|yn-bnr|yn_pub/i);
     expect(toolLayout).not.toMatch(/AdSlot|pos-article-display-card|data-ad-id/i);
     expect(blogLayout).not.toMatch(/pos-article-display-card|yektanet|ynpos/i);
