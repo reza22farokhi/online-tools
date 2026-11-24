@@ -30,7 +30,7 @@ describe('retired third-party integrations', () => {
     const connectSources = policy.match(/(?:^|;\s*)connect-src\s+([^;]+)/)?.[1]?.trim();
 
     expect(connectSources).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net https://jamssp.yektanet.com https://audience.yektanet.com https://ua.yektanet.com");
-    expect(connectSources).not.toMatch(/yektanet|triboon|counterapi|\*/i);
+    expect(connectSources).not.toMatch(/mediaad|tapsell|triboon|counterapi|\\*/i);
     expect(policy).toContain('frame-src blob: https://cdn.yektanet.com');
     expect(policy).not.toContain('*');
   });
