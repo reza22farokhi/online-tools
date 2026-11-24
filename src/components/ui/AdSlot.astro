@@ -1,13 +1,7 @@
 ---
-/**
- * Tapsell / MediaAd placement.
- * Keep the provider's placement ID isolated from the global loader.
- */
+export interface Props {
+  id: string;
+}
+const { id } = Astro.props;
 ---
-<div
-  id="mediaad-G75mv"
-  class="tapsell-ad-slot"
-  data-ad-provider="tapsell"
-  role="region"
-  aria-label="Advertisement"
-></div>
+<div id={id} class="yn-bnr" role="region" aria-label="Advertisement"></div>
