@@ -6,20 +6,15 @@ const about = readFileSync('src/pages/about.astro', 'utf8');
 const toolLayout = readFileSync('src/layouts/ToolLayout.astro', 'utf8');
 
 describe('privacy disclosures', () => {
-  it('explains local tool-input processing and accurately discloses Yektanet advertising', () => {
+  it('explains local tool-input processing without advertising disclosures', () => {
     expect(privacy).toContain('محتوای واردشده در ابزارها');
-    expect(privacy).toContain('اسکریپت تبلیغاتی یکتانت');
-    expect(privacy).toContain('درخواست‌های تبلیغاتی');
-    expect(privacy).toContain('Yektanet');
-    expect(privacy).not.toContain('هیچ اسکریپت یا شبکه تبلیغاتی شخص ثالثی');
-    expect(privacy).toContain('یکتانت');
-    expect(privacy).not.toMatch(/تپسل|Tapsell|MediaAd/i);
+    expect(privacy).not.toMatch(/یکتانت|Yektanet|تپسل|Tapsell|MediaAd|تبلیغ/i);
   });
 
-  it('does not describe a retired advertising provider', () => {
-    expect(about).toContain('یکتانت');
-    expect(about).not.toMatch(/تپسل|Tapsell|MediaAd/i);
-    expect(about).not.toContain('تبلیغات شخص ثالث');
+  it('states the no-ad policy without naming advertising providers', () => {
+    expect(about).toMatch(/هیچ تبلیغی نمایش نمی‌دهد/);
+    expect(about).toMatch(/does not display advertisements/i);
+    expect(about).not.toMatch(/یکتانت|Yektanet|تپسل|Tapsell|MediaAd/i);
   });
 
   it('keeps tool privacy statements accurate and advertising-free', () => {
