@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import AdSlot from '../components/ui/AdSlot.astro';
 import { getDicts } from '../lib/i18n';
 import { SITE_NAME_FA, DEFAULT_DESCRIPTION } from '../lib/seo';
 import { getLocaleSeoUrls } from '../lib/locale-seo';
@@ -90,6 +91,8 @@ const dicts = getDicts();
   <body>
     <a href="#main" class="skip-link" data-i18n="accessibility.skip">پرش به محتوا</a>
     <Header />
+    <AdSlot />
+    <script is:inline async src="https://s1.mediaad.org/serve/abzar-tools.ir/loader.js"></script>
     <main id="main">
       <slot />
     </main>
