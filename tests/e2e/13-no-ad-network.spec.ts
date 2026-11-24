@@ -28,7 +28,7 @@ test('site loads with the approved Yektanet placements and no retired ad scripts
   await expect(page.locator(YEKTANET_TOP_SLOT)).toHaveCount(1);
   await expect(page.locator(YEKTANET_BOTTOM_SLOT)).toHaveCount(1);
   await expect(page.locator('script[src="' + YEKTANET_LOADER + '"]')).toHaveCount(1);
-  await expect(page.locator('script[src*="mediaad"], script[src*="yektanet.ir/superscript-v2/Cg1anVr4/native-49280/yn_pub.js"]').filter({ has: page.locator('script[src*="mediaad"]') })).toHaveCount(0);
+  await expect(page.locator('script[src*="mediaad"], script[src*="tapsell"]')).toHaveCount(0);
 
   const dimensions = await page.evaluate(() => ({
     viewportWidth: document.documentElement.clientWidth,
