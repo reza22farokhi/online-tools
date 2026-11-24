@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const TAPSELL_LOADER = 'https://s1.mediaad.org/serve/abzar-tools.ir/loader.js';
-const TAPSELL_SLOT = '#mediaad-qn1xY';
+const TAPSELL_SLOT = '#mediaad-G75mv';
 
 test('site loads with the approved Tapsell placement and no unapproved ad scripts', async ({ page }) => {
   const externalScripts: string[] = [];
