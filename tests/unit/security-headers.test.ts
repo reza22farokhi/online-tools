@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const headers = readFileSync('public/_headers', 'utf8');
 const baseLayout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
 const toolLayout = readFileSync('src/layouts/ToolLayout.astro', 'utf8');
+const homePage = readFileSync('src/pages/index.astro', 'utf8');
 const blogLayout = readFileSync('src/layouts/BlogLayout.astro', 'utf8');
 const offlinePage = readFileSync('src/pages/offline.astro', 'utf8');
 const csp = headers.match(/^\s*Content-Security-Policy:\s*(.+)$/m)?.[1] ?? '';
@@ -21,11 +22,11 @@ describe('Content Security Policy allowlist', () => {
     );
     expect(csp).not.toMatch(/mediaad|triboon/i);
     expect(baseLayout.split('https://cdn.yektanet.ir/superscript-v2/Cg1anVr4/native-49280/yn_pub.js')).toHaveLength(2);
-    expect(baseLayout.split('<AdSlot id="ynpos-21471" />')).toHaveLength(2);
+    expect(baseLayout).not.toContain('<AdSlot id="ynpos-21471" />');
     expect(baseLayout.split('<AdSlot id="ynpos-21470" />')).toHaveLength(2);
-    expect(baseLayout).toContain('ynpos-21471');
     expect(baseLayout).toContain('ynpos-21470');
-    expect(toolLayout).not.toMatch(/AdSlot|pos-article-display-card|data-ad-id/i);
+    expect(toolLayout).toContain('<AdSlot id="ynpos-21471" />');
+    expect(homePage).toContain('<AdSlot id="ynpos-21471" />');
     expect(blogLayout).not.toMatch(/pos-article-display-card|yektanet|ynpos/i);
   });
 
