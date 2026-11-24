@@ -6,9 +6,12 @@ const about = readFileSync('src/pages/about.astro', 'utf8');
 const toolLayout = readFileSync('src/layouts/ToolLayout.astro', 'utf8');
 
 describe('privacy disclosures', () => {
-  it('explains local tool-input processing without advertising disclosures', () => {
+  it('explains local tool-input processing and accurately discloses Tapsell advertising', () => {
     expect(privacy).toContain('محتوای واردشده در ابزارها');
-    expect(privacy).toContain('هیچ اسکریپت یا شبکه تبلیغاتی شخص ثالثی');
+    expect(privacy).toContain('اسکریپت تبلیغاتی تپسل (MediaAd)');
+    expect(privacy).toContain('درخواست‌های تبلیغاتی');
+    expect(privacy).toContain('Tapsell (MediaAd)');
+    expect(privacy).not.toContain('هیچ اسکریپت یا شبکه تبلیغاتی شخص ثالثی');
     expect(privacy).not.toContain('یکتانت');
   });
 
