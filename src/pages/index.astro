@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ToolCard from '../components/ui/ToolCard.astro';
-import AdSlot from '../components/ui/AdSlot.astro';
 import { registry, getPopular, categories } from '../tools/registry';
 import { buildWebSiteJsonLd, SITE_NAME_FA, DEFAULT_DESCRIPTION, DEFAULT_DESCRIPTION_EN } from '../lib/seo';
 
@@ -65,8 +64,6 @@ const base = import.meta.env.BASE_URL;
       </div>
     </div>
   </section>
-
-  <AdSlot id="ynpos-21471" />
 
   <section class="container section" aria-labelledby="cats-title">
     <h2 id="cats-title" class="section-title" data-i18n="categories.title">دسته‌بندی‌ها</h2>
