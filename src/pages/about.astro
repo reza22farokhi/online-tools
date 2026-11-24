@@ -1,28 +1,172 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-const title = "درباره ما | ابزارهای آنلاین";
-const titleEn = "About Us | Online Tools";
-const description = "با مأموریت، امکانات و اصول حریم خصوصی پلتفرم ابزارهای آنلاین آشنا شوید.";
-const descriptionEn = "Learn about the mission, features, and privacy principles of Online Tools.";
+
+const title = "منشور ما | درباره ابزارهای آنلاین";
+const titleEn = "Our Charter | About Online Tools";
+const description = "منشور رسمی ابزارهای آنلاین؛ مأموریت، اصول طراحی، دسترسی رایگان، حریم خصوصی، امنیت، شفافیت و تعهدات ما در برابر کاربران.";
+const descriptionEn = "The Online Tools charter: our mission, design principles, free access, privacy, security, transparency, and commitments to users.";
 ---
+
 <BaseLayout title={title} titleEn={titleEn} description={description} descriptionEn={descriptionEn}>
-  <article class="about-page container">
-    <header class="about-header">
-      <p class="eyebrow" data-lang-fa="درباره پلتفرم" data-lang-en="ABOUT THE PLATFORM">درباره پلتفرم</p>
-      <h1 data-lang-fa="ابزارهای کاربردی، ساده و در دسترس" data-lang-en="Practical tools, simple and accessible">ابزارهای کاربردی، ساده و در دسترس</h1>
-      <p class="lead" data-lang-fa="ابزارهای آنلاین مجموعه‌ای از ابزارهای رایگان تحت وب است که برای ساده‌ترکردن کارهای روزمره، آموزشی و تخصصی طراحی شده است. این وب‌سایت هیچ تبلیغی نمایش نمی‌دهد و از شبکه‌های تبلیغاتی استفاده نمی‌کند." data-lang-en="Online Tools is a collection of free web utilities designed to make everyday, educational, and professional tasks easier. This website does not display advertisements or use advertising networks.">ابزارهای آنلاین مجموعه‌ای از ابزارهای رایگان تحت وب است که برای ساده‌ترکردن کارهای روزمره، آموزشی و تخصصی طراحی شده است.</p>
+  <article class="charter-page container">
+    <header class="charter-hero">
+      <p class="eyebrow" data-lang-fa="منشور رسمی پلتفرم" data-lang-en="OUR PLATFORM CHARTER">منشور رسمی پلتفرم</p>
+      <h1 data-lang-fa="فناوری باید در خدمت انسان باشد؛ روشن، آزاد و قابل اعتماد." data-lang-en="Technology should serve people: clearly, freely, and responsibly.">فناوری باید در خدمت انسان باشد؛ روشن، آزاد و قابل اعتماد.</h1>
+      <p class="hero-lead" data-lang-fa="ابزارهای آنلاین برای یک هدف ساخته شده است: انجام کارهای دیجیتال باید ساده‌تر، در دسترس‌تر و قابل فهم‌تر باشد. این منشور توضیح می‌دهد چرا این پلتفرم وجود دارد، بر چه اصولی اداره می‌شود و کاربران چه انتظاری می‌توانند از ما داشته باشند." data-lang-en="Online Tools exists for one purpose: making digital tasks simpler, more accessible, and easier to understand. This charter explains why the platform exists, the principles that guide it, and what users can expect from us.">ابزارهای آنلاین برای یک هدف ساخته شده است: انجام کارهای دیجیتال باید ساده‌تر، در دسترس‌تر و قابل فهم‌تر باشد. این منشور توضیح می‌دهد چرا این پلتفرم وجود دارد، بر چه اصولی اداره می‌شود و کاربران چه انتظاری می‌توانند از ما داشته باشند.</p>
+      <div class="charter-meta">
+        <span data-lang-fa="اصول راهنمای محصول" data-lang-en="Guiding product principles">اصول راهنمای محصول</span>
+        <span data-lang-fa="نسخه ۱.۰ · ۲۴ نوامبر ۲۰۲۶" data-lang-en="Version 1.0 · November 24, 2026">نسخه ۱.۰ · ۲۴ نوامبر ۲۰۲۶</span>
+      </div>
     </header>
-    <section class="about-card"><h2 data-lang-fa="ماموریت ما" data-lang-en="Our mission">ماموریت ما</h2><p data-lang-fa="هدف ما فراهم‌کردن ابزارهای سریع و قابل‌فهم، بدون نیاز به ثبت‌نام یا پرداخت است. می‌خواهیم کاربران بتوانند کارهای متداول خود را مستقیماً در مرورگر و با کمترین مراحل انجام دهند." data-lang-en="Our goal is to provide fast, understandable tools without registration or payment. We want people to complete common tasks directly in their browser with as few steps as possible.">هدف ما فراهم‌کردن ابزارهای سریع و قابل‌فهم، بدون نیاز به ثبت‌نام یا پرداخت است. می‌خواهیم کاربران بتوانند کارهای متداول خود را مستقیماً در مرورگر و با کمترین مراحل انجام دهند.</p></section>
-    <section class="about-card"><h2 data-lang-fa="چه امکاناتی ارائه می‌کنیم؟" data-lang-en="What we offer">چه امکاناتی ارائه می‌کنیم؟</h2><ul>
-      <li data-lang-fa="ابزارهای متن، برنامه‌نویسی، محاسبات، تصویر، سئو، تاریخ و فایل" data-lang-en="Tools for text, development, calculations, images, SEO, dates, and files">ابزارهای متن، برنامه‌نویسی، محاسبات، تصویر، سئو، تاریخ و فایل</li>
-      <li data-lang-fa="رابط فارسی و انگلیسی با پشتیبانی از چیدمان راست‌چین و چپ‌چین" data-lang-en="Persian and English interfaces with right-to-left and left-to-right layouts">رابط فارسی و انگلیسی با پشتیبانی از چیدمان راست‌چین و چپ‌چین</li>
-      <li data-lang-fa="دسترسی رایگان و بدون ساخت حساب کاربری" data-lang-en="Free access without creating an account">دسترسی رایگان و بدون ساخت حساب کاربری</li>
-      <li data-lang-fa="طراحی واکنش‌گرا برای موبایل، تبلت و رایانه" data-lang-en="Responsive design for phones, tablets, and computers">طراحی واکنش‌گرا برای موبایل، تبلت و رایانه</li>
-    </ul></section>
-    <section class="about-card"><h2 data-lang-fa="حریم خصوصی و شیوه پردازش" data-lang-en="Privacy and processing">حریم خصوصی و شیوه پردازش</h2><p data-lang-fa="در ابزارهایی که پردازش محلی دارند، ورودی شما در مرورگر دستگاه پردازش می‌شود و برای انجام همان پردازش به سرور ما ارسال نمی‌شود. بارگذاری سایت ممکن است برای ارائه محتوا، امنیت و عملکرد صحیح به درخواست‌های فنی زیرساختی نیاز داشته باشد. جزئیات و محدودیت‌های این تعهد در سیاست حریم خصوصی توضیح داده شده است." data-lang-en="In tools that support local processing, your input is processed in your device's browser and is not sent to our server for that processing. Loading the site may still require infrastructure requests for content delivery, security, and operation. Details and limitations are explained in the Privacy Policy.">در ابزارهایی که پردازش محلی دارند، ورودی شما در مرورگر دستگاه پردازش می‌شود و برای انجام همان پردازش به سرور ما ارسال نمی‌شود. بارگذاری سایت ممکن است برای ارائه محتوا، امنیت و عملکرد صحیح به درخواست‌های فنی زیرساختی نیاز داشته باشد. جزئیات و محدودیت‌های این تعهد در سیاست حریم خصوصی توضیح داده شده است.</p><a href="/privacy/" data-lang-fa="مطالعه سیاست حریم خصوصی" data-lang-en="Read the Privacy Policy">مطالعه سیاست حریم خصوصی</a></section>
-    <section class="about-card"><h2 data-lang-fa="مالکیت و ارتباط با ما" data-lang-en="Ownership and contact">مالکیت و ارتباط با ما</h2><p data-lang-fa="این پلتفرم با نام تجاری «ابزارهای آنلاین» توسط رضا فرخی توسعه و نگهداری می‌شود. برای گزارش خطا، پیشنهاد قابلیت جدید یا طرح پرسش می‌توانید از راه ایمیل با ما در ارتباط باشید." data-lang-en="This platform, operating under the name “Online Tools”, is developed and maintained by Reza Farokhi. Contact us by email to report an issue, suggest a feature, or ask a question.">این پلتفرم با نام تجاری «ابزارهای آنلاین» توسط رضا فرخی توسعه و نگهداری می‌شود. برای گزارش خطا، پیشنهاد قابلیت جدید یا طرح پرسش می‌توانید از راه ایمیل با ما در ارتباط باشید.</p><p><strong data-lang-fa="مدیر و توسعه‌دهنده: رضا فرخی" data-lang-en="Owner and developer: Reza Farokhi">مدیر و توسعه‌دهنده: رضا فرخی</strong></p><a href="mailto:reza22farokhi@gmail.com">reza22farokhi@gmail.com</a></section>
+
+    <section class="charter-promise" aria-label="تعهد اصلی">
+      <p class="promise-label" data-lang-fa="وعده اصلی ما" data-lang-en="OUR CORE PROMISE">وعده اصلی ما</p>
+      <h2 data-lang-fa="ابزار مفید، بدون مانع غیرضروری." data-lang-en="Useful tools. No unnecessary barriers.">ابزار مفید، بدون مانع غیرضروری.</h2>
+      <p data-lang-fa="دسترسی رایگان، بدون الزام به ساخت حساب کاربری و بدون نمایش تبلیغات؛ با احترام به زمان، داده‌ها و انتخاب آگاهانه شما." data-lang-en="Free access, no mandatory account, and no advertisements — with respect for your time, your data, and your informed choices.">دسترسی رایگان، بدون الزام به ساخت حساب کاربری و بدون نمایش تبلیغات؛ با احترام به زمان، داده‌ها و انتخاب آگاهانه شما.</p>
+    </section>
+
+    <nav class="charter-index" aria-label="فهرست منشور">
+      <strong data-lang-fa="در این منشور" data-lang-en="IN THIS CHARTER">در این منشور</strong>
+      <a href="#identity" data-lang-fa="۱. هویت و مأموریت" data-lang-en="1. Identity and mission">۱. هویت و مأموریت</a>
+      <a href="#principles" data-lang-fa="۲. اصول بنیادین" data-lang-en="2. Fundamental principles">۲. اصول بنیادین</a>
+      <a href="#free-access" data-lang-fa="۳. دسترسی و مدل ارائه" data-lang-en="3. Access and service model">۳. دسترسی و مدل ارائه</a>
+      <a href="#privacy" data-lang-fa="۴. حریم خصوصی و داده" data-lang-en="4. Privacy and data">۴. حریم خصوصی و داده</a>
+      <a href="#security" data-lang-fa="۵. امنیت و مسئولیت‌پذیری" data-lang-en="5. Security and responsibility">۵. امنیت و مسئولیت‌پذیری</a>
+      <a href="#quality" data-lang-fa="۶. کیفیت و دقت" data-lang-en="6. Quality and accuracy">۶. کیفیت و دقت</a>
+      <a href="#accessibility" data-lang-fa="۷. دسترس‌پذیری و زبان" data-lang-en="7. Accessibility and language">۷. دسترس‌پذیری و زبان</a>
+      <a href="#transparency" data-lang-fa="۸. شفافیت و پاسخ‌گویی" data-lang-en="8. Transparency and accountability">۸. شفافیت و پاسخ‌گویی</a>
+      <a href="#evolution" data-lang-fa="۹. توسعه و آینده" data-lang-en="9. Evolution and the future">۹. توسعه و آینده</a>
+      <a href="#contact" data-lang-fa="۱۰. ارتباط با ما" data-lang-en="10. Contact">۱۰. ارتباط با ما</a>
+    </nav>
+
+    <section class="charter-section" id="identity">
+      <p class="section-number">۰۱ / ۱۰</p>
+      <h2 data-lang-fa="هویت و مأموریت ما" data-lang-en="Who we are and why we exist">هویت و مأموریت ما</h2>
+      <p data-lang-fa="ابزارهای آنلاین یک پلتفرم مستقلِ ابزارهای کاربردی تحت وب است. ما ابزارهایی برای کارهای متنی، محاسباتی، فنی، تصویری، فایل و دیگر نیازهای دیجیتال فراهم می‌کنیم تا انجام کارهای کوچک و بزرگ به نصب نرم‌افزارهای متعدد، طی‌کردن مسیرهای پیچیده یا ایجاد حساب‌های غیرضروری وابسته نباشد." data-lang-en="Online Tools is an independent web-based utility platform. We provide tools for text, calculations, development, images, files, and other digital tasks so that everyday work does not require installing multiple applications, navigating needless complexity, or creating unnecessary accounts.">ابزارهای آنلاین یک پلتفرم مستقلِ ابزارهای کاربردی تحت وب است. ما ابزارهایی برای کارهای متنی، محاسباتی، فنی، تصویری، فایل و دیگر نیازهای دیجیتال فراهم می‌کنیم تا انجام کارهای کوچک و بزرگ به نصب نرم‌افزارهای متعدد، طی‌کردن مسیرهای پیچیده یا ایجاد حساب‌های غیرضروری وابسته نباشد.</p>
+      <p data-lang-fa="مأموریت ما صرفاً افزایش تعداد ابزارها نیست؛ می‌خواهیم هر ابزار مسئله‌ای واقعی را با تجربه‌ای روشن، قابل فهم و تا حد امکان سریع حل کند. ارزش یک قابلیت را با میزان فایده‌ای می‌سنجیم که برای کاربر ایجاد می‌کند، نه با پیچیدگی ظاهری آن." data-lang-en="Our mission is not simply to publish more tools. Each tool should solve a real problem through an experience that is clear, understandable, and as fast as reasonably possible. We measure a feature by the value it creates for people, not by how complicated it looks.">مأموریت ما صرفاً افزایش تعداد ابزارها نیست؛ می‌خواهیم هر ابزار مسئله‌ای واقعی را با تجربه‌ای روشن، قابل فهم و تا حد امکان سریع حل کند. ارزش یک قابلیت را با میزان فایده‌ای می‌سنجیم که برای کاربر ایجاد می‌کند، نه با پیچیدگی ظاهری آن.</p>
+    </section>
+
+    <section class="charter-section" id="principles">
+      <p class="section-number">۰۲ / ۱۰</p>
+      <h2 data-lang-fa="اصول بنیادین" data-lang-en="Our fundamental principles">اصول بنیادین</h2>
+      <div class="principle-grid">
+        <article class="principle"><h3 data-lang-fa="سادگی، نه سطحی‌بودن" data-lang-en="Simplicity, not shallowness">سادگی، نه سطحی‌بودن</h3><p data-lang-fa="رابط کاربری باید مسیر انجام کار را کوتاه کند، بدون آنکه کنترل‌ها، توضیحات ضروری یا کیفیت نتیجه قربانی شوند." data-lang-en="The interface should shorten the path to completion without sacrificing essential controls, explanations, or result quality.">رابط کاربری باید مسیر انجام کار را کوتاه کند، بدون آنکه کنترل‌ها، توضیحات ضروری یا کیفیت نتیجه قربانی شوند.</p></article>
+        <article class="principle"><h3 data-lang-fa="احترام به کاربر" data-lang-en="Respect for users">احترام به کاربر</h3><p data-lang-fa="زمان، توجه، دستگاه، پهنای باند و داده‌های کاربر منابع ارزشمندند؛ طراحی ما نباید بی‌دلیل آن‌ها را مصرف کند." data-lang-en="A user's time, attention, device, bandwidth, and data are valuable resources. Our design should not waste them without a good reason.">زمان، توجه، دستگاه، پهنای باند و داده‌های کاربر منابع ارزشمندند؛ طراحی ما نباید بی‌دلیل آن‌ها را مصرف کند.</p></article>
+        <article class="principle"><h3 data-lang-fa="شفافیت به‌جای اغراق" data-lang-en="Transparency over hype">شفافیت به‌جای اغراق</h3><p data-lang-fa="قابلیت‌ها، محدودیت‌ها و شیوه کار ابزارها باید صادقانه بیان شوند. هیچ نتیجه‌ای را دقیق‌تر یا قطعی‌تر از واقعیت معرفی نمی‌کنیم." data-lang-en="Capabilities, limitations, and tool behavior should be described honestly. We do not present a result as more precise or certain than it is.">قابلیت‌ها، محدودیت‌ها و شیوه کار ابزارها باید صادقانه بیان شوند. هیچ نتیجه‌ای را دقیق‌تر یا قطعی‌تر از واقعیت معرفی نمی‌کنیم.</p></article>
+        <article class="principle"><h3 data-lang-fa="دسترسی برابر" data-lang-en="Inclusive access">دسترسی برابر</h3><p data-lang-fa="تجربه ابزارها باید تا حد امکان برای کاربران با دستگاه‌ها، زبان‌ها، اندازه صفحه و شرایط دسترسی متفاوت قابل استفاده باشد." data-lang-en="Tools should be usable, as far as practical, across different devices, languages, screen sizes, and access conditions.">تجربه ابزارها باید تا حد امکان برای کاربران با دستگاه‌ها، زبان‌ها، اندازه صفحه و شرایط دسترسی متفاوت قابل استفاده باشد.</p></article>
+        <article class="principle"><h3 data-lang-fa="حریم خصوصی در طراحی" data-lang-en="Privacy by design">حریم خصوصی در طراحی</h3><p data-lang-fa="هرجا پردازش محلی امکان‌پذیر و مناسب باشد، آن را به ارسال غیرضروری داده ترجیح می‌دهیم. داده‌ای که برای یک قابلیت لازم نیست، نباید صرفاً از روی عادت درخواست شود." data-lang-en="Where local processing is feasible and appropriate, we prefer it to unnecessary data transmission. A feature should not request information it does not need.">هرجا پردازش محلی امکان‌پذیر و مناسب باشد، آن را به ارسال غیرضروری داده ترجیح می‌دهیم. داده‌ای که برای یک قابلیت لازم نیست، نباید صرفاً از روی عادت درخواست شود.</p></article>
+        <article class="principle"><h3 data-lang-fa="بهبود مستمر" data-lang-en="Continuous improvement">بهبود مستمر</h3><p data-lang-fa="کیفیت مقصدی ثابت نیست. خطاها را بررسی می‌کنیم، بازخورد را جدی می‌گیریم و قابلیت‌ها را بر پایه نیاز واقعی اصلاح می‌کنیم." data-lang-en="Quality is not a fixed destination. We investigate defects, take feedback seriously, and improve features based on real needs.">کیفیت مقصدی ثابت نیست. خطاها را بررسی می‌کنیم، بازخورد را جدی می‌گیریم و قابلیت‌ها را بر پایه نیاز واقعی اصلاح می‌کنیم.</p></article>
+      </div>
+    </section>
+
+    <section class="charter-section" id="free-access">
+      <p class="section-number">۰۳ / ۱۰</p>
+      <h2 data-lang-fa="دسترسی رایگان و مدل ارائه خدمات" data-lang-en="Free access and how we provide the service">دسترسی رایگان و مدل ارائه خدمات</h2>
+      <ul>
+        <li data-lang-fa="استفاده از ابزارهای منتشرشده در پلتفرم در زمان ارائه، رایگان است؛ برای استفاده معمول از آن‌ها پرداخت یا اشتراک اجباری در نظر گرفته نشده است." data-lang-en="Use of the tools published on the platform is free at the time they are offered; ordinary use does not require a mandatory payment or subscription.">استفاده از ابزارهای منتشرشده در پلتفرم در زمان ارائه، رایگان است؛ برای استفاده معمول از آن‌ها پرداخت یا اشتراک اجباری در نظر گرفته نشده است.</li>
+        <li data-lang-fa="برای استفاده از ابزارها، ساخت حساب کاربری الزامی نیست؛ مگر آنکه در آینده قابلیتی مستقل با نیاز روشن و توضیح شفاف ارائه شود." data-lang-en="An account is not required to use the tools, unless a future standalone feature has a clear need and is explained transparently.">برای استفاده از ابزارها، ساخت حساب کاربری الزامی نیست؛ مگر آنکه در آینده قابلیتی مستقل با نیاز روشن و توضیح شفاف ارائه شود.</li>
+        <li data-lang-fa="این وب‌سایت تبلیغات نمایشی یا تبلیغات شبکه‌ای نمایش نمی‌دهد و از شبکه‌های تبلیغاتی برای کسب درآمد یا هدف‌گیری کاربران استفاده نمی‌کند." data-lang-en="This website does not display advertisements or use advertising networks to monetize or target users.">این وب‌سایت تبلیغات نمایشی یا تبلیغات شبکه‌ای نمایش نمی‌دهد و از شبکه‌های تبلیغاتی برای کسب درآمد یا هدف‌گیری کاربران استفاده نمی‌کند.</li>
+        <li data-lang-fa="رایگان‌بودن به معنای تضمین دسترس‌پذیری بی‌وقفه یا نبود محدودیت فنی نیست. نگهداری، به‌روزرسانی، ظرفیت زیرساخت و وابستگی‌های فنی ممکن است بر دسترسی موقت به برخی قابلیت‌ها اثر بگذارند." data-lang-en="Free access does not guarantee uninterrupted availability or the absence of technical limits. Maintenance, updates, infrastructure capacity, and technical dependencies may temporarily affect some features.">رایگان‌بودن به معنای تضمین دسترس‌پذیری بی‌وقفه یا نبود محدودیت فنی نیست. نگهداری، به‌روزرسانی، ظرفیت زیرساخت و وابستگی‌های فنی ممکن است بر دسترسی موقت به برخی قابلیت‌ها اثر بگذارند.</li>
+      </ul>
+      <p data-lang-fa="اگر مدل ارائه خدمات به‌طور اساسی تغییر کند، اصل ما اطلاع‌رسانی روشن و پیش از اعمال تغییر است؛ نه غافلگیرکردن کاربر با هزینه یا شرط پنهان." data-lang-en="If the service model materially changes, our principle is to communicate clearly before the change takes effect — never to surprise users with hidden fees or conditions.">اگر مدل ارائه خدمات به‌طور اساسی تغییر کند، اصل ما اطلاع‌رسانی روشن و پیش از اعمال تغییر است؛ نه غافلگیرکردن کاربر با هزینه یا شرط پنهان.</p>
+    </section>
+
+    <section class="charter-section" id="privacy">
+      <p class="section-number">۰۴ / ۱۰</p>
+      <h2 data-lang-fa="حریم خصوصی و احترام به داده‌ها" data-lang-en="Privacy and respect for data">حریم خصوصی و احترام به داده‌ها</h2>
+      <p data-lang-fa="حریم خصوصی یک ویژگی تزئینی یا وعده تبلیغاتی نیست؛ بخشی از مسئولیت طراحی و نگهداری این پلتفرم است. با این حال، درباره شیوه پردازش هر ابزار باید دقیق و واقع‌بین باشیم:" data-lang-en="Privacy is not a decorative feature or a marketing slogan; it is part of the responsibility of designing and operating this platform. At the same time, processing behavior must be described accurately for each tool:">حریم خصوصی یک ویژگی تزئینی یا وعده تبلیغاتی نیست؛ بخشی از مسئولیت طراحی و نگهداری این پلتفرم است. با این حال، درباره شیوه پردازش هر ابزار باید دقیق و واقع‌بین باشیم:</p>
+      <ul>
+        <li data-lang-fa="در ابزارهایی که پردازش محلی دارند، ورودی برای همان عملیات در مرورگر دستگاه پردازش می‌شود و برای آن پردازش به سرور ما ارسال نمی‌شود." data-lang-en="In tools that support local processing, input is processed in the device's browser for that operation and is not sent to our server for that processing.">در ابزارهایی که پردازش محلی دارند، ورودی برای همان عملیات در مرورگر دستگاه پردازش می‌شود و برای آن پردازش به سرور ما ارسال نمی‌شود.</li>
+        <li data-lang-fa="برخی قابلیت‌ها ممکن است برای انجام وظیفه خود به سرویس بیرونی، API یا زیرساخت پردازشی نیاز داشته باشند. در چنین مواردی، نوع داده ارسالی و نقش سرویس مربوط باید در توضیحات همان ابزار یا سیاست حریم خصوصی مشخص شود." data-lang-en="Some features may rely on an external service, API, or processing infrastructure. In those cases, the type of data transmitted and the role of that service should be explained in the tool information or Privacy Policy.">برخی قابلیت‌ها ممکن است برای انجام وظیفه خود به سرویس بیرونی، API یا زیرساخت پردازشی نیاز داشته باشند. در چنین مواردی، نوع داده ارسالی و نقش سرویس مربوط باید در توضیحات همان ابزار یا سیاست حریم خصوصی مشخص شود.</li>
+        <li data-lang-fa="برای ارائه محتوا، امنیت، جلوگیری از سوءاستفاده و عملکرد فنی، ممکن است داده‌های فنی ضروری مانند اطلاعات درخواست یا گزارش خطا توسط زیرساخت میزبانی پردازش شوند." data-lang-en="To deliver content, protect the service, prevent abuse, and maintain operation, hosting infrastructure may process necessary technical data such as request information or error logs.">برای ارائه محتوا، امنیت، جلوگیری از سوءاستفاده و عملکرد فنی، ممکن است داده‌های فنی ضروری مانند اطلاعات درخواست یا گزارش خطا توسط زیرساخت میزبانی پردازش شوند.</li>
+        <li data-lang-fa="ما نباید داده‌های ورودی کاربران را برای هدفی نامرتبط با عملکرد اعلام‌شده ابزار، بدون اطلاع‌رسانی و مبنای مناسب، استفاده کنیم." data-lang-en="We should not use user input for purposes unrelated to a tool's stated function without appropriate notice and grounds.">ما نباید داده‌های ورودی کاربران را برای هدفی نامرتبط با عملکرد اعلام‌شده ابزار، بدون اطلاع‌رسانی و مبنای مناسب، استفاده کنیم.</li>
+      </ul>
+      <p data-lang-fa="هیچ ادعای مطلقی مانند «هیچ داده‌ای هرگز منتقل نمی‌شود» درباره تمام ابزارها مطرح نمی‌کنیم. جزئیات، استثناها و حقوق کاربران در صفحه سیاست حریم خصوصی آمده است." data-lang-en="We do not make blanket claims such as “no data is ever transmitted” across every tool. Details, exceptions, and user rights are described in the Privacy Policy.">هیچ ادعای مطلقی مانند «هیچ داده‌ای هرگز منتقل نمی‌شود» درباره تمام ابزارها مطرح نمی‌کنیم. جزئیات، استثناها و حقوق کاربران در صفحه سیاست حریم خصوصی آمده است.</p>
+      <a class="text-link" href="/privacy/" data-lang-fa="مطالعه سیاست حریم خصوصی" data-lang-en="Read the Privacy Policy">مطالعه سیاست حریم خصوصی</a>
+    </section>
+
+    <section class="charter-section" id="security">
+      <p class="section-number">۰۵ / ۱۰</p>
+      <h2 data-lang-fa="امنیت و مسئولیت‌پذیری فنی" data-lang-en="Security and engineering responsibility">امنیت و مسئولیت‌پذیری فنی</h2>
+      <p data-lang-fa="امنیت یک اقدام یک‌باره نیست. ما متعهدیم در توسعه و نگهداری، اصولی مانند حداقل‌سازی دسترسی، اعتبارسنجی ورودی‌ها، استفاده از ارتباط امن، محدودکردن منابع خارجی، به‌روزرسانی وابستگی‌ها و آزمون تغییرات مهم را رعایت کنیم." data-lang-en="Security is not a one-time task. In development and maintenance, we aim to follow practices such as least privilege, input validation, secure connections, limiting external resources, updating dependencies, and testing significant changes.">امنیت یک اقدام یک‌باره نیست. ما متعهدیم در توسعه و نگهداری، اصولی مانند حداقل‌سازی دسترسی، اعتبارسنجی ورودی‌ها، استفاده از ارتباط امن، محدودکردن منابع خارجی، به‌روزرسانی وابستگی‌ها و آزمون تغییرات مهم را رعایت کنیم.</p>
+      <p data-lang-fa="هیچ سامانه متصل به اینترنت را نمی‌توان به‌طور مطلق مصون از خطا یا حمله دانست. در صورت شناسایی آسیب‌پذیری یا رخداد امنیتی، موضوع باید بررسی، مهار و در حد مقتضی به کاربران مرتبط اطلاع داده شود." data-lang-en="No internet-connected system can be described as absolutely immune to defects or attacks. If a vulnerability or security incident is identified, it should be investigated, contained, and communicated to affected users as appropriate.">هیچ سامانه متصل به اینترنت را نمی‌توان به‌طور مطلق مصون از خطا یا حمله دانست. در صورت شناسایی آسیب‌پذیری یا رخداد امنیتی، موضوع باید بررسی، مهار و در حد مقتضی به کاربران مرتبط اطلاع داده شود.</p>
+    </section>
+
+    <section class="charter-section" id="quality">
+      <p class="section-number">۰۶ / ۱۰</p>
+      <h2 data-lang-fa="کیفیت، دقت و محدودیت نتایج" data-lang-en="Quality, accuracy, and limitations">کیفیت، دقت و محدودیت نتایج</h2>
+      <ul>
+        <li data-lang-fa="هر ابزار باید هدف مشخص، ورودی قابل فهم و خروجی تا حد امکان قابل تفسیر داشته باشد." data-lang-en="Every tool should have a clear purpose, understandable inputs, and outputs that are as interpretable as possible.">هر ابزار باید هدف مشخص، ورودی قابل فهم و خروجی تا حد امکان قابل تفسیر داشته باشد.</li>
+        <li data-lang-fa="نتیجه ابزار به کیفیت ورودی، الگوریتم، نسخه فناوری و محدودیت‌های ذاتی مسئله وابسته است؛ بنابراین خروجی‌ها باید متناسب با ماهیت ابزار ارزیابی شوند." data-lang-en="A result depends on input quality, the algorithm, technology versions, and inherent limits of the task. Outputs should therefore be assessed in the context of the tool.">نتیجه ابزار به کیفیت ورودی، الگوریتم، نسخه فناوری و محدودیت‌های ذاتی مسئله وابسته است؛ بنابراین خروجی‌ها باید متناسب با ماهیت ابزار ارزیابی شوند.</li>
+        <li data-lang-fa="ابزارهای عمومی جایگزین قضاوت متخصص در تصمیم‌های پزشکی، حقوقی، مالی، ایمنی یا سایر تصمیم‌های حساس نیستند." data-lang-en="General-purpose tools are not substitutes for qualified professional judgment in medical, legal, financial, safety-related, or other high-impact decisions.">ابزارهای عمومی جایگزین قضاوت متخصص در تصمیم‌های پزشکی، حقوقی، مالی، ایمنی یا سایر تصمیم‌های حساس نیستند.</li>
+        <li data-lang-fa="در صورت گزارش خطا، تلاش می‌کنیم آن را بازتولید، بررسی و در صورت تأیید اصلاح کنیم؛ و در موارد مهم، محدودیت یا تغییر رفتار ابزار را توضیح دهیم." data-lang-en="When an issue is reported, we aim to reproduce, investigate, and fix it when confirmed; for material changes, we explain the tool's limitations or changed behavior.">در صورت گزارش خطا، تلاش می‌کنیم آن را بازتولید، بررسی و در صورت تأیید اصلاح کنیم؛ و در موارد مهم، محدودیت یا تغییر رفتار ابزار را توضیح دهیم.</li>
+      </ul>
+    </section>
+
+    <section class="charter-section" id="accessibility">
+      <p class="section-number">۰۷ / ۱۰</p>
+      <h2 data-lang-fa="دسترس‌پذیری، زبان و تجربه کاربری" data-lang-en="Accessibility, language, and user experience">دسترس‌پذیری، زبان و تجربه کاربری</h2>
+      <p data-lang-fa="این پلتفرم با توجه به کاربران فارسی‌زبان و انگلیسی‌زبان توسعه می‌یابد. پشتیبانی از راست‌به‌چپ و چپ‌به‌راست، نمایش مناسب در موبایل و رایانه، متن‌های روشن، ساختار قابل پیمایش و کنترل‌های قابل فهم از اولویت‌های طراحی هستند." data-lang-en="The platform is developed with Persian- and English-speaking users in mind. Right-to-left and left-to-right support, responsive layouts, clear language, navigable structure, and understandable controls are design priorities.">این پلتفرم با توجه به کاربران فارسی‌زبان و انگلیسی‌زبان توسعه می‌یابد. پشتیبانی از راست‌به‌چپ و چپ‌به‌راست، نمایش مناسب در موبایل و رایانه، متن‌های روشن، ساختار قابل پیمایش و کنترل‌های قابل فهم از اولویت‌های طراحی هستند.</p>
+      <p data-lang-fa="دسترس‌پذیری یک مسیر پیوسته است و ممکن است همه بخش‌ها در همه شرایط به‌طور کامل با تمام فناوری‌های کمکی سازگار نباشند. گزارش موانع دسترسی به بهبود این تجربه کمک می‌کند." data-lang-en="Accessibility is an ongoing effort, and not every part may be fully compatible with every assistive technology in every circumstance. Reports of access barriers help us improve the experience.">دسترس‌پذیری یک مسیر پیوسته است و ممکن است همه بخش‌ها در همه شرایط به‌طور کامل با تمام فناوری‌های کمکی سازگار نباشند. گزارش موانع دسترسی به بهبود این تجربه کمک می‌کند.</p>
+    </section>
+
+    <section class="charter-section" id="transparency">
+      <p class="section-number">۰۸ / ۱۰</p>
+      <h2 data-lang-fa="شفافیت، پاسخ‌گویی و اعتماد" data-lang-en="Transparency, accountability, and trust">شفافیت، پاسخ‌گویی و اعتماد</h2>
+      <p data-lang-fa="اعتماد با شعار به دست نمی‌آید؛ نتیجه رفتار قابل بررسی و پاسخ‌گویی مداوم است. ما تلاش می‌کنیم درباره عملکرد ابزارها، تغییرات مهم، محدودیت‌ها، شیوه پردازش داده و راه‌های تماس اطلاعات روشن ارائه کنیم." data-lang-en="Trust is not earned through slogans; it comes from verifiable behavior and ongoing accountability. We aim to provide clear information about tool behavior, significant changes, limitations, data processing, and ways to contact us.">اعتماد با شعار به دست نمی‌آید؛ نتیجه رفتار قابل بررسی و پاسخ‌گویی مداوم است. ما تلاش می‌کنیم درباره عملکرد ابزارها، تغییرات مهم، محدودیت‌ها، شیوه پردازش داده و راه‌های تماس اطلاعات روشن ارائه کنیم.</p>
+      <p data-lang-fa="اگر متوجه اشتباه، نقص امنیتی، توضیح گمراه‌کننده یا ناسازگاری با این منشور شدید، آن را گزارش کنید. گزارش دقیق و مستند، از مهم‌ترین مسیرهای ارتقای کیفیت این پلتفرم است." data-lang-en="If you notice an error, security issue, misleading explanation, or inconsistency with this charter, please report it. Specific, evidence-based reports are among the most valuable ways to improve the platform.">اگر متوجه اشتباه، نقص امنیتی، توضیح گمراه‌کننده یا ناسازگاری با این منشور شدید، آن را گزارش کنید. گزارش دقیق و مستند، از مهم‌ترین مسیرهای ارتقای کیفیت این پلتفرم است.</p>
+    </section>
+
+    <section class="charter-section" id="evolution">
+      <p class="section-number">۰۹ / ۱۰</p>
+      <h2 data-lang-fa="توسعه مسئولانه و آینده پلتفرم" data-lang-en="Responsible development and the future">توسعه مسئولانه و آینده پلتفرم</h2>
+      <p data-lang-fa="نیازهای کاربران و فناوری تغییر می‌کنند؛ ابزارهای آنلاین نیز باید همراه آن‌ها رشد کند، اما نه به قیمت کنارگذاشتن اصول بنیادین. قابلیت جدید زمانی ارزشمند است که مسئله‌ای واقعی را حل کند، تجربه را پیچیده‌تر از ضرورت نکند و با حریم خصوصی، امنیت و دسترس‌پذیری سازگار باشد." data-lang-en="User needs and technology evolve, and Online Tools should evolve with them — without abandoning its fundamental principles. A new feature is valuable when it solves a real problem, avoids needless complexity, and respects privacy, security, and accessibility.">نیازهای کاربران و فناوری تغییر می‌کنند؛ ابزارهای آنلاین نیز باید همراه آن‌ها رشد کند، اما نه به قیمت کنارگذاشتن اصول بنیادین. قابلیت جدید زمانی ارزشمند است که مسئله‌ای واقعی را حل کند، تجربه را پیچیده‌تر از ضرورت نکند و با حریم خصوصی، امنیت و دسترس‌پذیری سازگار باشد.</p>
+      <p data-lang-fa="این منشور سندی زنده است. اگر اصلاح آن لازم شود، نسخه و تاریخ بازنگری را به‌روزرسانی می‌کنیم. تغییر متن منشور نباید بهانه‌ای برای پنهان‌کردن تغییرات مهم در شیوه ارائه خدمات یا پردازش داده‌ها باشد." data-lang-en="This charter is a living document. When it needs revision, we will update its version and revision date. Revising the wording must never be used to obscure material changes to the service or data processing.">این منشور سندی زنده است. اگر اصلاح آن لازم شود، نسخه و تاریخ بازنگری را به‌روزرسانی می‌کنیم. تغییر متن منشور نباید بهانه‌ای برای پنهان‌کردن تغییرات مهم در شیوه ارائه خدمات یا پردازش داده‌ها باشد.</p>
+    </section>
+
+    <section class="charter-section contact-section" id="contact">
+      <p class="section-number">۱۰ / ۱۰</p>
+      <h2 data-lang-fa="مسئولیت و راه ارتباطی" data-lang-en="Ownership and contact">مسئولیت و راه ارتباطی</h2>
+      <p data-lang-fa="ابزارهای آنلاین توسط رضا فرخی توسعه و نگهداری می‌شود. برای پیشنهاد، گزارش اشکال، اعلام نگرانی درباره حریم خصوصی یا امنیت، و ارائه بازخورد درباره این منشور می‌توانید از ایمیل زیر استفاده کنید." data-lang-en="Online Tools is developed and maintained by Reza Farokhi. For suggestions, bug reports, privacy or security concerns, or feedback about this charter, you can use the email address below.">ابزارهای آنلاین توسط رضا فرخی توسعه و نگهداری می‌شود. برای پیشنهاد، گزارش اشکال، اعلام نگرانی درباره حریم خصوصی یا امنیت، و ارائه بازخورد درباره این منشور می‌توانید از ایمیل زیر استفاده کنید.</p>
+      <a class="contact-email" href="mailto:reza22farokhi@gmail.com">reza22farokhi@gmail.com</a>
+      <p class="closing" data-lang-fa="ما به‌جای وعده بی‌نقص‌بودن، خود را متعهد به صداقت، اصلاح‌پذیری و بهترشدن می‌دانیم. معیار نهایی ما ساده است: آیا این ابزار واقعاً به کاربر کمک می‌کند، بدون آنکه هزینه پنهان یا مانع غیرضروری بر او تحمیل کند؟" data-lang-en="Rather than promising perfection, we commit to honesty, correction, and continuous improvement. Our ultimate test is simple: does this tool genuinely help the user without imposing hidden costs or unnecessary barriers?">ما به‌جای وعده بی‌نقص‌بودن، خود را متعهد به صداقت، اصلاح‌پذیری و بهترشدن می‌دانیم. معیار نهایی ما ساده است: آیا این ابزار واقعاً به کاربر کمک می‌کند، بدون آنکه هزینه پنهان یا مانع غیرضروری بر او تحمیل کند؟</p>
+    </section>
+
+    <footer class="charter-footer">
+      <a href="/" data-lang-fa="بازگشت به صفحه اصلی" data-lang-en="Back to home">بازگشت به صفحه اصلی</a>
+      <a href="/privacy/" data-lang-fa="سیاست حریم خصوصی" data-lang-en="Privacy Policy">سیاست حریم خصوصی</a>
+    </footer>
   </article>
 </BaseLayout>
+
 <style>
-.about-page{max-width:850px;padding-block:var(--space-6)}.about-header{text-align:center;margin-bottom:var(--space-5)}.eyebrow{color:var(--color-primary);font-weight:700;letter-spacing:.06em}.about-header h1{font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.4;margin-block:var(--space-2)}.lead{color:var(--color-text-muted);line-height:1.9;max-width:680px;margin-inline:auto}.about-card{padding:var(--space-4);margin-block:var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-surface);line-height:1.9}.about-card h2{color:var(--color-primary);font-size:1.2rem;margin-bottom:var(--space-2)}.about-card p{color:var(--color-text-muted);margin-block:var(--space-2)}.about-card ul{padding-inline-start:1.5rem;color:var(--color-text-muted)}.about-card li{margin-block:.4rem}.about-card a{color:var(--color-primary);text-decoration:underline;text-underline-offset:.2em}
+.charter-page{max-width:920px;padding-block:var(--space-6) var(--space-7);line-height:1.95}
+.charter-hero{text-align:center;padding:clamp(1.5rem,5vw,3.5rem) 0 var(--space-5)}
+.eyebrow,.promise-label,.section-number{color:var(--color-primary);font-size:.82rem;font-weight:800;letter-spacing:.06em}
+.charter-hero h1{max-width:820px;margin:var(--space-3) auto;font-size:clamp(2rem,5.5vw,3.35rem);line-height:1.45;letter-spacing:-.035em}
+.hero-lead{max-width:760px;margin:0 auto;color:var(--color-text-muted);font-size:1.08rem}
+.charter-meta{display:flex;justify-content:center;gap:.7rem 1.2rem;flex-wrap:wrap;margin-top:var(--space-4);color:var(--color-text-muted);font-size:.82rem}
+.charter-promise{padding:clamp(1.4rem,4vw,2.3rem);margin-bottom:var(--space-4);border:1px solid var(--color-border);border-inline-start:4px solid var(--color-primary);border-radius:var(--radius-lg);background:var(--color-surface)}
+.charter-promise h2{font-size:clamp(1.4rem,4vw,2rem);margin:.2rem 0 .5rem}
+.charter-promise p:last-child{margin:0;color:var(--color-text-muted)}
+.charter-index{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.55rem 1rem;padding:var(--space-4);margin-bottom:var(--space-5);border:1px solid var(--color-border);border-radius:var(--radius-lg)}
+.charter-index strong{grid-column:1/-1;color:var(--color-text)}
+.charter-index a,.text-link,.charter-footer a{color:var(--color-primary);text-decoration:underline;text-underline-offset:.22em}
+.charter-index a{font-size:.92rem}
+.charter-section{padding:var(--space-4) 0;border-bottom:1px solid var(--color-border);scroll-margin-top:6rem}
+.charter-section h2{font-size:clamp(1.35rem,3.5vw,1.75rem);line-height:1.5;margin:.15rem 0 var(--space-3)}
+.charter-section p,.charter-section li{color:var(--color-text-muted)}
+.charter-section p{margin-block:.7rem}
+.charter-section ul{padding-inline-start:1.4rem}
+.charter-section li{padding-inline-start:.25rem;margin-block:.65rem}
+.section-number{margin:0 0 .2rem}
+.principle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:var(--space-3)}
+.principle{padding:var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface)}
+.principle h3{font-size:1.03rem;margin:0 0 .45rem}
+.principle p{font-size:.94rem;margin:0}
+.contact-section{border-bottom:0}
+.contact-email{display:inline-block;margin:.4rem 0;font-weight:700;color:var(--color-primary);text-decoration:underline;text-underline-offset:.25em}
+.closing{padding:var(--space-3);border-radius:var(--radius-md);background:var(--color-surface);font-weight:600}
+.charter-footer{display:flex;gap:1rem 1.5rem;flex-wrap:wrap;padding-top:var(--space-4);border-top:1px solid var(--color-border);font-size:.92rem}
+@media(max-width:600px){.charter-page{padding-inline:var(--space-3)}.charter-index{grid-template-columns:1fr 1fr}.charter-section{padding-block:var(--space-3)}}
 </style>
