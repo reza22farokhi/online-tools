@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const roots = ['src', 'public'];
 const textExtensions = new Set(['.astro', '.css', '.html', '.js', '.json', '.md', '.svg', '.ts', '.txt', '.xml']);
-const retiredThirdPartyMarkers = /yektanet|triboon|ynpos|yn-bnr|yn_pub|ad-slot-wrap|pos-article-display-card|cdn\.yektanet|counterapi\.dev|live-count|VisitorCounter/i;
+const retiredThirdPartyMarkers = /mediaad|tapsell|counterapi\\.dev|live-count|VisitorCounter/i;
 
 function collectTextFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -24,14 +24,14 @@ describe('retired third-party integrations', () => {
     expect(matches).toEqual([]);
   });
 
-  it('allows only the site, required AI model hosts, and explicit Tapsell runtime endpoints', () => {
+  it('allows only the site, required AI model hosts, and explicit Yektanet runtime endpoints', () => {
     const headers = readFileSync('public/_headers', 'utf8');
     const policy = headers.match(/Content-Security-Policy:\s*([^\r\n]+)/)?.[1] ?? '';
     const connectSources = policy.match(/(?:^|;\s*)connect-src\s+([^;]+)/)?.[1]?.trim();
 
-    expect(connectSources).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net https://api.mediaad.org https://s1.mediaad.org");
-    expect(connectSources).not.toMatch(/yektanet|triboon|counterapi|\*/i);
-    expect(policy).toContain('frame-src blob: https://s1.mediaad.org');
+    expect(connectSources).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net https://jamssp.yektanet.com https://audience.yektanet.com https://ua.yektanet.com");
+    expect(connectSources).not.toMatch(/mediaad|tapsell|triboon|counterapi|\*/i);
+    expect(policy).toContain('frame-src blob: https://cdn.yektanet.com');
     expect(policy).not.toContain('*');
   });
 
