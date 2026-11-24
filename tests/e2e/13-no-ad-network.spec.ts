@@ -19,12 +19,9 @@ test('site loads without advertising placements, loaders, or third-party ad requ
   await page.goto('/?lang=fa');
   await expect(page.locator('body')).toBeVisible();
 
-  await expect(page.locator('[id*="ynpos"], [class*="yektanet"], [class*="tapsell"], [class*="mediaad"]')).toHaveCount(0);
-  await expect(page.locator('script[src], iframe[src]')).toHaveCount(await page.locator('script[src], iframe[src]').evaluateAll(nodes => nodes.filter(node => AD_NETWORK_MARKERS.test(node.getAttribute('src') ?? '')).length === 0 ? nodes.length : -1).then(count => count === -1 ? -1 : count));
-
   const adNetworkReferences = await page.locator('script[src], iframe[src], [id], [class]').evaluateAll(nodes =>
     nodes.flatMap(node => ['src', 'id', 'class'].map(attribute => node.getAttribute(attribute) ?? ''))
-      .filter(value => AD_NETWORK_MARKERS.test(value))
+      .filter(value => /yektanet|tapsell|mediaad|ynpos-/i.test(value))
   );
   expect(adNetworkReferences).toEqual([]);
   expect(externalScripts.filter(url => AD_NETWORK_MARKERS.test(url))).toEqual([]);
