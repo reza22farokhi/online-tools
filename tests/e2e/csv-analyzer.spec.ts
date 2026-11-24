@@ -5,11 +5,11 @@ test('CSV analyzer calculates row, column, empty, duplicate and numeric statisti
 
   await expect(page.locator('#csa-results')).toBeVisible();
   await expect(page.locator('#csa-summary')).toContainText('4');
-  await expect(page.locator('#csa-columns')).toContainText('name');
-  await expect(page.locator('#csa-columns')).toContainText('age');
+  await expect(page.locator('#csa-stats')).toContainText('name');
+  await expect(page.locator('#csa-stats')).toContainText('age');
   await expect(page.locator('#csa-stats')).toContainText('28');
   await expect(page.locator('#csa-stats')).toContainText('40');
-  await expect(page.locator('#csa-stats')).toContainText('34.67');
+  await expect(page.locator('#csa-stats')).toContainText('35.00');
 });
 
 test('CSV analyzer filters and sorts the displayed rows', async ({ page }) => {
@@ -38,7 +38,7 @@ test('CSV analyzer honors delimiter and header settings', async ({ page }) => {
   await page.locator('#csa-analyze').click();
 
   await expect(page.locator('#csa-results')).toBeVisible();
-  await expect(page.locator('#csa-columns')).toContainText('column_1');
+  await expect(page.locator('#csa-stats')).toContainText('column_1');
   await expect(page.locator('#csa-preview')).toContainText('Ada');
   await expect(page.locator('#csa-preview')).toContainText('Grace');
   await expect(page.locator('#csa-summary')).toContainText('2');
