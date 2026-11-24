@@ -9,7 +9,7 @@
   Cross-Origin-Resource-Policy: same-origin
   Origin-Agent-Cluster: ?1
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://s1.mediaad.org https://cdn.jsdelivr.net 'wasm-unsafe-eval' 'sha256-feMt1N4YpWxmeS0EtHyuyChvwWkgbfB5LJvGAma7jzo=' 'sha256-PaqSNyGFkkCfhNK7zr4Zdw/6ul3MbCJFJwnC2lSES7A='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://staticimgly.com https://cdn.jsdelivr.net; worker-src 'self' blob:; frame-src blob:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://s1.mediaad.org https://cdn.jsdelivr.net 'wasm-unsafe-eval' 'sha256-feMt1N4YpWxmeS0EtHyuyChvwWkgbfB5LJvGAma7jzo=' 'sha256-PaqSNyGFkkCfhNK7zr4Zdw/6ul3MbCJFJwnC2lSES7A='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://staticimgly.com https://cdn.jsdelivr.net https://api.mediaad.org https://s1.mediaad.org; worker-src 'self' blob:; frame-src blob: https://s1.mediaad.org; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;
 
 /_astro/*
   ! Cache-Control
