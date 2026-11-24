@@ -4,4 +4,14 @@ export interface Props {
 }
 const { id } = Astro.props;
 ---
-<div id={id} class="yn-bnr" role="region" aria-label="Advertisement"></div>
+<div id={id} class="yn-bnr ad-slot" data-ad-network="yektanet" role="region" aria-label="Advertisement"></div>
+
+<style>
+  .ad-slot {
+    display: block;
+    width: min(100% - 2rem, 970px);
+    margin: 1.5rem auto;
+    text-align: center;
+    clear: both;
+  }
+</style>
