@@ -24,14 +24,15 @@ describe('retired third-party integrations', () => {
     expect(matches).toEqual([]);
   });
 
-  it('allows only the site, required AI model hosts, and explicit Yektanet runtime endpoints', () => {
+  it('allows only required first-party and non-ad utility endpoints', () => {
     const headers = readFileSync('public/_headers', 'utf8');
     const policy = headers.match(/Content-Security-Policy:\s*([^\r\n]+)/)?.[1] ?? '';
     const connectSources = policy.match(/(?:^|;\s*)connect-src\s+([^;]+)/)?.[1]?.trim();
 
-    expect(connectSources).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net https://jamssp.yektanet.com https://audience.yektanet.com https://ua.yektanet.com");
-    expect(connectSources).not.toMatch(/mediaad|tapsell|triboon|counterapi|\*/i);
-    expect(policy).toContain('frame-src blob: https://cdn.yektanet.com');
+    expect(connectSources).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net");
+    expect(connectSources).not.toMatch(/yektanet|tapsell|mediaad|triboon|counterapi|\*/i);
+    expect(policy).toContain('frame-src blob:');
+    expect(policy).not.toMatch(/yektanet|tapsell|mediaad|triboon/i);
     expect(policy).not.toContain('*');
   });
 

@@ -5,7 +5,6 @@ import type { ToolMeta } from '../tools/types';
 import { getRelated } from '../tools/registry';
 import { buildWebAppJsonLd, buildBreadcrumbJsonLd } from '../lib/seo';
 import ToolFAQ from '../components/seo/ToolFAQ.astro';
-import AdSlot from '../components/ui/AdSlot.astro';
 
 export interface Props {
   meta: ToolMeta;
@@ -75,8 +74,6 @@ const related = getRelated(meta.slug);
       <h1 data-lang-fa={meta.name.fa} data-lang-en={meta.name.en}>{meta.name[lang]}</h1>
       <p class="lead" data-lang-fa={meta.description.fa} data-lang-en={meta.description.en}>{meta.description[lang]}</p>
     </header>
-
-    <AdSlot id="ynpos-21471" />
 
     <div class="tool-body card">
       <slot />
