@@ -27,11 +27,12 @@ describe('Content Security Policy allowlist', () => {
     expect(blogLayout).not.toMatch(/pos-article-display-card|yektanet|ynpos/i);
   });
 
-  it('allows only required model delivery origins for browser connections', () => {
-    expect(directive('connect-src')).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net");
+  it('allows the observed Tapsell API and fingerprint frame endpoints without wildcards', () => {
+    expect(directive('connect-src')).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net https://api.mediaad.org https://s1.mediaad.org");
+    expect(directive('frame-src')).toBe('blob: https://s1.mediaad.org');
     expect(directive('img-src')).toBe("'self' data: blob:");
     expect(directive('font-src')).toBe("'self' data:");
-    expect(directive('frame-src')).toBe('blob:');
+    expect(csp).not.toContain('*');
   });
 
   it('enforces HTTPS transport for one year without assuming all subdomains are HTTPS', () => {

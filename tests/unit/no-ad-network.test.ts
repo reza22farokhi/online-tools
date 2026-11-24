@@ -15,7 +15,7 @@ function collectTextFiles(directory: string): string[] {
 }
 
 describe('retired third-party integrations', () => {
-  it('leaves no advertising provider or visitor-counter code in shipped source and assets', () => {
+  it('leaves no retired advertising provider or visitor-counter code in shipped source and assets', () => {
     const matches = roots.flatMap(root => collectTextFiles(root)).flatMap(path => {
       const content = readFileSync(path, 'utf8');
       return retiredThirdPartyMarkers.test(content) ? [path] : [];
@@ -24,14 +24,17 @@ describe('retired third-party integrations', () => {
     expect(matches).toEqual([]);
   });
 
-  it('limits browser connections to the site and the explicitly required AI model hosts', () => {
+  it('allows only the site, required AI model hosts, and explicit Tapsell runtime endpoints', () => {
     const headers = readFileSync('public/_headers', 'utf8');
     const policy = headers.match(/Content-Security-Policy:\s*([^\r\n]+)/)?.[1] ?? '';
     const connectSources = policy.match(/(?:^|;\s*)connect-src\s+([^;]+)/)?.[1]?.trim();
 
-    expect(connectSources).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net");
+    expect(connectSources).toBe("'self' https://staticimgly.com https://cdn.jsdelivr.net https://api.mediaad.org https://s1.mediaad.org");
     expect(connectSources).not.toMatch(/yektanet|triboon|counterapi|\*/i);
+    expect(policy).toContain('frame-src blob: https://s1.mediaad.org');
+    expect(policy).not.toContain('*');
   });
+
   it('denies framing, cross-origin document isolation escapes, and unsafe script sources', () => {
     const headers = readFileSync('public/_headers', 'utf8');
     const policy = headers.match(/Content-Security-Policy:\s*([^\r\n]+)/)?.[1] ?? '';
@@ -46,5 +49,4 @@ describe('retired third-party integrations', () => {
     expect(headers).toContain('Cross-Origin-Resource-Policy: same-origin');
     expect(headers).toContain('Origin-Agent-Cluster: ?1');
   });
-
 });
