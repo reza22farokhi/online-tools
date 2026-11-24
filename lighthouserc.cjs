@@ -55,6 +55,8 @@ module.exports = {
       numberOfRuns: 1,
       settings: {
         throttlingMethod: 'simulate',
+        // Keep Lighthouse focused on first-party UX; ad-provider behavior is validated separately by E2E.
+        blockedUrlPatterns: ['https://s1.mediaad.org/**'],
         chromeFlags: '--headless --no-sandbox --disable-dev-shm-usage'
       }
     },
