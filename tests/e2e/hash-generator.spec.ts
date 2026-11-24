@@ -52,14 +52,18 @@ test('hash generator updates live for Unicode input and clears output state', as
   await expect(page.locator('#hg-error')).toBeHidden();
 });
 
-test('hash generation stays client-side and does not send the input to a server', async ({ page }) => {
-  const requests: string[] = [];
+test('hash generation stays client-side and never transmits the input value', async ({ page }) => {
+  const secret = 'private text that must remain in this browser';
+  const markers = [secret, encodeURIComponent(secret), Buffer.from(secret, 'utf8').toString('base64')];
+  const leakedRequests: string[] = [];
+
   page.on('request', request => {
-    if (['POST', 'PUT', 'PATCH'].includes(request.method())) requests.push(request.url());
+    const requestData = `${request.url()}\n${request.postData() ?? ''}`;
+    if (markers.some(marker => requestData.includes(marker))) leakedRequests.push(request.url());
   });
 
   await page.goto('/tools/hash-generator/?lang=en');
-  await page.locator('#hg-input').fill('private text that must remain in this browser');
+  await page.locator('#hg-input').fill(secret);
   await expect(page.locator('#hg-output')).toHaveValue(/^[0-9a-f]{64}$/);
-  expect(requests).toEqual([]);
+  expect(leakedRequests).toEqual([]);
 });
