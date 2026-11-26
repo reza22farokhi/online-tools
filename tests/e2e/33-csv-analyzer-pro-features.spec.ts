@@ -17,6 +17,8 @@ test('CSV analyzer exposes advanced data-quality stats and local cleanup actions
   await page.locator('#csa-remove-empty').click();
   await expect(page.locator('#csa-summary div').nth(0).locator('strong')).toHaveText('3');
 
+  await input.fill('name,value\\nAda,\\nGrace,3');
+  await page.locator('#csa-analyze').click();
   await page.locator('#csa-fill-value').fill('N/A');
   await page.locator('#csa-fill').click();
   await expect(input).toHaveValue(/N\\/A/);
