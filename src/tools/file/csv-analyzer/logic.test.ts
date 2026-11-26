@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeCsv, filterCsvRows, rowsToCsv, sortCsvRows } from './logic';
+import { analyzeCsv, cleanCsvRows, filterCsvRows, rowsToCsv, sortCsvRows } from './logic';
 
 describe('CSV analyzer', () => {
   const csv = 'name,age,city\nAda,36,London\nGrace,40,New York\nAda,36,London\n,28,Paris';
@@ -31,5 +31,23 @@ describe('CSV analyzer', () => {
   it('handles empty input and rejects invalid filters', () => {
     expect(analyzeCsv('')).toMatchObject({ rowCount: 0, columnCount: 0 });
     expect(() => filterCsvRows([], -1, 'x')).toThrow();
+  });
+});
+
+describe('CSV advanced quality and cleanup', () => {
+  it('classifies columns and calculates missingness, quartiles, deviation and outliers', () => {
+    const result = analyzeCsv('score,flag,when,label\\n1,true,2024-01-01,a\\n2,false,2024-01-02,b\\n3,true,2024-01-03,b\\n4,false,2024-01-04,\\n100,true,2024-01-05,c');
+    expect(result.columns[0]).toMatchObject({ type: 'number', missingPercent: 0, q1: 2, q3: 4, outliers: 1 });
+    expect(result.columns[1].type).toBe('boolean');
+    expect(result.columns[2].type).toBe('date');
+    expect(result.columns[3]).toMatchObject({ type: 'text', missingPercent: 20, mode: 'b' });
+  });
+  it('cleans whitespace, duplicate and empty rows without mutating input', () => {
+    const rows = [[' Ada ', ' 1 '], ['Ada', '1'], ['', '  '], ['Grace', '2']];
+    expect(cleanCsvRows(rows, { trim: true, removeDuplicates: true, removeEmptyRows: true })).toEqual([['Ada', '1'], ['Grace', '2']]);
+    expect(rows[0]).toEqual([' Ada ', ' 1 ']);
+  });
+  it('fills missing cells with the exact replacement and preserves row order', () => {
+    expect(cleanCsvRows([['Ada', ''], ['', '2']], { fillEmpty: 'N/A' })).toEqual([['Ada', 'N/A'], ['N/A', '2']]);
   });
 });
