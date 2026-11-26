@@ -21,5 +21,5 @@ test('CSV analyzer exposes advanced data-quality stats and local cleanup actions
   await page.locator('#csa-analyze').click();
   await page.locator('#csa-fill-value').fill('N/A');
   await page.locator('#csa-fill').click();
-  await expect(input).toHaveValue(/N\\/A/);
+  expect(await input.inputValue()).toContain('N/A');
 });
