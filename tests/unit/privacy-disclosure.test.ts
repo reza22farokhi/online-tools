@@ -12,7 +12,7 @@ describe('privacy disclosures', () => {
   });
 
   it('states the no-ad policy without naming advertising providers', () => {
-    expect(about).toMatch(/هیچ تبلیغی نمایش نمی‌دهد/);
+    expect(about).toMatch(/بدون نمایش تبلیغات/);
     expect(about).toMatch(/does not display advertisements/i);
     expect(about).not.toMatch(/یکتانت|Yektanet|تپسل|Tapsell|MediaAd/i);
   });
