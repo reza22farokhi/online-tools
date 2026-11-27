@@ -134,7 +134,8 @@ export function csvToJson(csv: string, opts: CsvToJsonOptions): string {
   const columnCount = Math.max(...rows.map(row => row.length));
   const headers = uniqueHeaders(rows[0], columnCount);
   const data = rows.slice(1).map(row => {
-    const obj: Record<string, string> = {};
+    // Null-prototype records preserve special CSV headers such as __proto__ safely.
+    const obj = Object.create(null) as Record<string, string>;
     headers.forEach((header, index) => { obj[header] = row[index] ?? ''; });
     return obj;
   });
