@@ -2,6 +2,9 @@ export type YamlJson = null | boolean | number | string | YamlJson[] | { [key: s
 interface Line { indent: number; text: string; number: number; }
 const MAX_INPUT = 100_000;
 const MAX_DEPTH = 40;
+function setOwn(target: Record<string, YamlJson>, key: string, value: YamlJson): void {
+  Object.defineProperty(target, key, { value, enumerable: true, configurable: true, writable: true });
+}
 function stripComment(line: string): string {
   let quote = ''; let escaped = false;
   for (let i = 0; i < line.length; i++) {
@@ -76,13 +79,13 @@ export function parseYaml(text: string): YamlJson {
         } else if (/^[^:[\]{}]+:\s|^[^:[\]{}]+:$/.test(rest)) {
           const [key, value] = pair(rest, current.number);
           const obj: Record<string, YamlJson> = {};
-          if (value) obj[key] = scalar(value, current.number);
-          else if (index < lines.length && lines[index].indent > indent + 1) obj[key] = block(lines[index].indent, depth + 1);
-          else obj[key] = null;
+          if (value) setOwn(obj, key, scalar(value, current.number));
+          else if (index < lines.length && lines[index].indent > indent + 1) setOwn(obj, key, block(lines[index].indent, depth + 1));
+          else setOwn(obj, key, null);
           if (index < lines.length && lines[index].indent > indent) {
             const extra = block(lines[index].indent, depth + 1);
             if (extra === null || Array.isArray(extra) || typeof extra !== 'object') throw new Error('ادامه شیء در خط ' + lines[index - 1].number + ' معتبر نیست.');
-            Object.assign(obj, extra);
+            for (const [extraKey, extraValue] of Object.entries(extra)) setOwn(obj, extraKey, extraValue);
           }
           out.push(obj);
         } else out.push(scalar(rest, current.number));
@@ -94,11 +97,11 @@ export function parseYaml(text: string): YamlJson {
       const current = lines[index++];
       const [key, value] = pair(current.text, current.number);
       if (Object.prototype.hasOwnProperty.call(out, key)) throw new Error('کلید تکراری "' + key + '" در خط ' + current.number + '.');
-      if (value) out[key] = scalar(value, current.number);
+      if (value) setOwn(out, key, scalar(value, current.number));
       else if (index < lines.length && lines[index].indent > indent) {
         if (lines[index].indent !== indent + 2) throw new Error('تورفتگی نامعتبر در خط ' + lines[index].number + '.');
-        out[key] = block(lines[index].indent, depth + 1);
-      } else out[key] = null;
+        setOwn(out, key, block(lines[index].indent, depth + 1));
+      } else setOwn(out, key, null);
     }
     return out;
   };
