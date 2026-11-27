@@ -2,6 +2,7 @@ export type YamlJson = null | boolean | number | string | YamlJson[] | { [key: s
 interface Line { indent: number; text: string; number: number; }
 const MAX_INPUT = 100_000;
 const MAX_DEPTH = 40;
+export const MAX_YAML_NODES = 20_000;
 function setOwn(target: Record<string, YamlJson>, key: string, value: YamlJson): void {
   Object.defineProperty(target, key, { value, enumerable: true, configurable: true, writable: true });
 }
@@ -47,6 +48,7 @@ export function parseYaml(text: string): YamlJson {
     if (indent % 2 !== 0) throw new Error('تورفتگی باید مضربی از دو فاصله باشد (خط ' + (i + 1) + ').');
     lines.push({ indent, text: clean.trim(), number: i + 1 });
   });
+  if (lines.length > MAX_YAML_NODES) throw new Error('ساختار YAML از سقف ۲۰٬۰۰۰ گره عبور کرده است.');
   if (!lines.length) return null;
   let index = 0;
   const pair = (text: string, line: number): [string, string] => {
@@ -111,6 +113,18 @@ export function parseYaml(text: string): YamlJson {
 }
 function keyText(key: string): string { return /^[A-Za-z_][A-Za-z0-9_-]*$/.test(key) ? key : JSON.stringify(key); }
 export function stringifyYaml(value: YamlJson, depth = 0): string {
+  if (depth === 0) {
+    const pending: unknown[] = [value];
+    let count = 0;
+    while (pending.length) {
+      const current = pending.pop();
+      count += 1;
+      if (count > MAX_YAML_NODES) throw new Error('ساختار از سقف ۲۰٬۰۰۰ گره عبور کرده است.');
+      if (current !== null && typeof current === 'object') {
+        for (const child of Array.isArray(current) ? current : Object.values(current as Record<string, unknown>)) pending.push(child);
+      }
+    }
+  }
   if (depth > MAX_DEPTH) throw new Error('عمق ساختار از ۴۰ سطح بیشتر است.');
   const scalarText = (v: YamlJson): string => {
     if (v === null) return 'null';
