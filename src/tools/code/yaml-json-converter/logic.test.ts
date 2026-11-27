@@ -22,4 +22,20 @@ describe('YAML and JSON conversion', () => {
   it('quotes strings that resemble YAML booleans or numbers', () => {
     expect(parseYaml('flag: "true"\nnumber: "12"')).toEqual({ flag: 'true', number: '12' });
   });
+  it('preserves prototype-like mapping keys as own properties', () => {
+    const parsed = parseYaml('__proto__: safe\nconstructor: value\ntoString: text') as Record<string, unknown>;
+    expect(Object.prototype.hasOwnProperty.call(parsed, '__proto__')).toBe(true);
+    expect(Object.prototype.hasOwnProperty.call(parsed, 'constructor')).toBe(true);
+    expect(Object.prototype.hasOwnProperty.call(parsed, 'toString')).toBe(true);
+    expect(parsed['__proto__']).toBe('safe');
+    expect(parsed.constructor).toBe('value');
+    expect(parsed.toString).toBe('text');
+    expect(Object.getPrototypeOf(parsed)).toBe(Object.prototype);
+  });
+  it('safely merges prototype-like keys in sequence mapping continuations', () => {
+    const parsed = parseYaml('items:\n  - name: first\n    __proto__: safe') as { items: Record<string, unknown>[] };
+    expect(Object.prototype.hasOwnProperty.call(parsed.items[0], '__proto__')).toBe(true);
+    expect(parsed.items[0]['__proto__']).toBe('safe');
+    expect(Object.getPrototypeOf(parsed.items[0])).toBe(Object.prototype);
+  });
 });
