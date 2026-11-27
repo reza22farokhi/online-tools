@@ -39,7 +39,10 @@ describe('csvToJson', () => {
   });
   it('preserves prototype-like headers as ordinary own properties', () => {
     const result = JSON.parse(csvToJson('__proto__,constructor,toString\\nvalue,ctor,string', { delimiter: ',', useHeaders: true }));
-    expect(result).toEqual([{ '__proto__': 'value', constructor: 'ctor', toString: 'string' }]);
+    expect(result).toHaveLength(1);
+    expect(result[0]['__proto__']).toBe('value');
+    expect(result[0].constructor).toBe('ctor');
+    expect(result[0].toString).toBe('string');
     expect(Object.hasOwn(result[0], '__proto__')).toBe(true);
   });
   it('no headers', () => {
