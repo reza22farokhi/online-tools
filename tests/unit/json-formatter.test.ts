@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { processJson } from '../../src/tools/code/json-formatter/logic';
+import { processJson, queryJsonPath, transformJson } from '../../src/tools/code/json-formatter/logic';
 
 describe('processJson', () => {
   it('formats simple object with 2-space indent', () => {
@@ -98,7 +98,6 @@ describe('processJson', () => {
   });
 
   it('preserves a __proto__ JSON key without mutating object prototypes', async () => {
-    const { transformJson } = await import('../../src/tools/code/json-formatter/logic');
     const result = transformJson('{"__proto__":{"polluted":true},"safe":1}', { sortKeys: true });
     expect(result.ok).toBe(true);
     const parsed = JSON.parse(result.output);
@@ -110,7 +109,6 @@ describe('processJson', () => {
 
 describe('transformJson', () => {
   it('sorts object keys recursively and removes null and empty values', async () => {
-    const { transformJson } = await import('../../src/tools/code/json-formatter/logic');
     const result = transformJson(
       '{"z":1,"nested":{"b":"","a":2},"nothing":null,"empty":[]}',
       { sortKeys: true, removeNulls: true, removeEmpty: true }
@@ -120,14 +118,12 @@ describe('transformJson', () => {
   });
 
   it('keeps null and empty containers when their options are disabled', async () => {
-    const { transformJson } = await import('../../src/tools/code/json-formatter/logic');
     const result = transformJson('{"nullValue":null,"empty":[],"text":""}', {});
     expect(result.ok).toBe(true);
     expect(JSON.parse(result.output)).toEqual({ nullValue: null, empty: [], text: '' });
   });
 
   it('rejects invalid JSON and does not return partial output', async () => {
-    const { transformJson } = await import('../../src/tools/code/json-formatter/logic');
     const result = transformJson('{"broken":', { sortKeys: true });
     expect(result.ok).toBe(false);
     expect(result.output).toBe('');
@@ -137,14 +133,12 @@ describe('transformJson', () => {
 
 describe('queryJsonPath', () => {
   it('reads nested object properties and array indexes', async () => {
-    const { queryJsonPath } = await import('../../src/tools/code/json-formatter/logic');
     const result = queryJsonPath('{"users":[{"name":"Ada"},{"name":"Grace"}]}', '$.users[1].name');
     expect(result.ok).toBe(true);
     expect(result.output).toBe('"Grace"');
   });
 
   it('supports quoted property names and array wildcards', async () => {
-    const { queryJsonPath } = await import('../../src/tools/code/json-formatter/logic');
     const source = '{"odd-key":[{"id":1},{"id":2}]}';
     const quoted = queryJsonPath(source, '$["odd-key"][0].id');
     const wildcard = queryJsonPath(source, '$["odd-key"][*].id');
@@ -153,14 +147,12 @@ describe('queryJsonPath', () => {
   });
 
   it('returns a clear error for invalid or missing paths', async () => {
-    const { queryJsonPath } = await import('../../src/tools/code/json-formatter/logic');
     expect(queryJsonPath('{"a":1}', 'a').ok).toBe(false);
     expect(queryJsonPath('{"a":1}', '$.missing').ok).toBe(false);
     expect(queryJsonPath('{"a":1}', '$[abc]').ok).toBe(false);
   });
 
   it('does not expose inherited object properties', async () => {
-    const { queryJsonPath } = await import('../../src/tools/code/json-formatter/logic');
     expect(queryJsonPath('{"a":1}', '$.__proto__').ok).toBe(false);
   });
 });
