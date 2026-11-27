@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateJsonSchema } from './logic';
+import { validateJsonSchema, MAX_JSON_NODES, MAX_JSON_TREE_DEPTH } from './logic';
 describe('validateJsonSchema', () => {
   it('accepts valid nested objects and arrays', () => {
     const result = validateJsonSchema('{"name":"Ada","age":36,"tags":["a","b"]}', JSON.stringify({ type:'object', required:['name'], properties:{ name:{type:'string'}, age:{type:'integer',minimum:0}, tags:{type:'array',items:{type:'string'}} } }));
@@ -18,6 +18,18 @@ describe('validateJsonSchema', () => {
   it('rejects malformed and oversized input', () => {
     expect(() => validateJsonSchema('{bad','{}')).toThrow(/ورودی/);
     expect(() => validateJsonSchema('null',' '.repeat(100001))).toThrow(/۱۰۰/);
+  });
+  it('rejects data and schemas above the node limit', () => {
+    const oversized = JSON.stringify(Array.from({ length: MAX_JSON_NODES + 1 }, () => 0));
+    expect(() => validateJsonSchema(oversized, '{}')).toThrow(/۲۰٬۰۰۰/);
+    expect(() => validateJsonSchema('null', oversized)).toThrow(/۲۰٬۰۰۰/);
+  });
+  it('rejects deeply nested data and schemas before recursive validation', () => {
+    const depth = MAX_JSON_TREE_DEPTH + 1;
+    const nestedData = '['.repeat(depth) + '0' + ']'.repeat(depth);
+    const nestedSchema = '{"type":"object","properties":' + '{"x":'.repeat(depth) + '{}'+ '}'.repeat(depth) + '}';
+    expect(() => validateJsonSchema(nestedData, '{}')).toThrow(/عمق/);
+    expect(() => validateJsonSchema('null', nestedSchema)).toThrow(/عمق/);
   });
   it('supports additionalProperties false', () => {
     const result = validateJsonSchema('{"ok":true,"extra":1}', '{"type":"object","properties":{"ok":{"type":"boolean"}},"additionalProperties":false}');
