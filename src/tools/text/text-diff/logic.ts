@@ -48,13 +48,13 @@ export interface AdvancedDiffOptions {
 
 function tokenizeDiffText(text: string, granularity: DiffGranularity): string[] {
   if (granularity === 'character') return Array.from(text);
-  if (granularity === 'word') return text.match(/\\s+|[\\p{L}\\p{N}_]+|[^\\s\\p{L}\\p{N}_]/gu) ?? [];
-  return text.split('\\n');
+  if (granularity === 'word') return text.match(/\s+|[\p{L}\p{N}_]+|[^\s\p{L}\p{N}_]/gu) ?? [];
+  return text.split('\n');
 }
 
 function normalizeDiffToken(token: string, options: AdvancedDiffOptions): string {
-  let value = options.ignoreWhitespace ? token.replace(/\\s+/gu, '') : token;
-  if (options.ignoreCase) value = value.toLocaleLowerCase();
+  let value = options.ignoreWhitespace ? token.replace(/\s+/gu, '') : token;
+  if (options.ignoreCase) value = value.toLowerCase();
   return value;
 }
 
@@ -123,7 +123,7 @@ export function createUnifiedDiff(
   }));
 
   const changed = rows.map((row, index) => row.item.type !== 'unchanged' ? index : -1).filter(index => index >= 0);
-  if (!changed.length) return '--- original\\n+++ updated\\n(no changes)';
+  if (!changed.length) return '--- original\n+++ updated\n(no changes)';
 
   const included = new Set<number>();
   for (const index of changed) {
@@ -139,5 +139,5 @@ export function createUnifiedDiff(
     output.push(prefix + row.item.value);
     previous = index;
   }
-  return output.join('\\n');
+  return output.join('\n');
 }
