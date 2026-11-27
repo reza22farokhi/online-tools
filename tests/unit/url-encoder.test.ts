@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { processUrl } from '../../src/tools/code/url-encoder/logic';
+import { processUrl, MAX_URL_INPUT_LENGTH } from '../../src/tools/code/url-encoder/logic';
 describe('processUrl', () => {
   it('encodes component with space', () => {
     expect(processUrl('hello world', 'encode', 'component').output).toBe('hello%20world');
@@ -23,6 +23,15 @@ describe('processUrl', () => {
   });
   it('invalid percent returns error', () => {
     expect(processUrl('%E0%A4%A', 'decode', 'component').ok).toBe(false);
+  });
+  it('rejects inputs above the resource limit', () => {
+    const result = processUrl('a'.repeat(MAX_URL_INPUT_LENGTH + 1), 'encode', 'component');
+    expect(result.ok).toBe(false);
+    expect(result.output).toBe('');
+    expect(result.error).toMatch(/۱۰۰/);
+  });
+  it('accepts inputs at the resource limit', () => {
+    expect(processUrl('a'.repeat(MAX_URL_INPUT_LENGTH), 'encode', 'component').ok).toBe(true);
   });
   it('unicode round-trip', () => {
     const orig = 'سلام دنیا!';
