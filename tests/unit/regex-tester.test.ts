@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { testRegex, MAX_PATTERN_LENGTH } from '../../src/tools/code/regex-tester/logic';
+import { testRegex, MAX_PATTERN_LENGTH, MAX_INPUT_LENGTH } from '../../src/tools/code/regex-tester/logic';
 
 describe('testRegex', () => {
   it('finds all matches with g flag', () => {
@@ -53,6 +53,12 @@ describe('testRegex', () => {
 
   it('pattern too long returns error', () => {
     const r = testRegex('a'.repeat(MAX_PATTERN_LENGTH + 1), 'g', 'abc');
+    expect(r.ok).toBe(false);
+    expect(r.error).toContain('طولانی');
+  });
+
+  it('rejects input above the configured size limit', () => {
+    const r = testRegex('a', 'g', 'a'.repeat(MAX_INPUT_LENGTH + 1));
     expect(r.ok).toBe(false);
     expect(r.error).toContain('طولانی');
   });

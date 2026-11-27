@@ -77,11 +77,12 @@
         return;
       }
       worker.onmessage = (e) => {
-        if (timeoutHandle !== null) { clearTimeout(timeoutHandle); timeoutHandle = null; }
-        resolve(e.data as RegexResult);
+        const result = e.data as RegexResult;
+        killWorker();
+        resolve(result);
       };
       worker.onerror = () => {
-        if (timeoutHandle !== null) { clearTimeout(timeoutHandle); timeoutHandle = null; }
+        killWorker();
         resolve({ ok: false, error: t('خطا در اجرای Worker', 'Worker execution failed.'), matches: [] });
       };
       worker.postMessage({ pattern, flags, input });
