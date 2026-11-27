@@ -81,6 +81,7 @@ describe('Advanced Text Diff', () => {
     const output = createUnifiedDiff('one\ntwo\n', 'one\nthree\n');
     expect(output).toContain('--- original');
     expect(output).toContain('+++ updated');
+    expect(output).toContain('@@ -2,1 +2,1 @@');
     expect(output).toContain('-two');
     expect(output).toContain('+three');
   });
