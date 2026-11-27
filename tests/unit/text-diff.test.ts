@@ -48,7 +48,7 @@ describe('Text Diff', () => {
 
 describe('Advanced Text Diff', () => {
   it('detects word-level edits without collapsing punctuation', () => {
-    const result = diffTextsAdvanced('hello world!', 'hello there!');
+    const result = diffTextsAdvanced('hello world!', 'hello there!', { granularity: 'word' });
     expect(result).toEqual([
       { type: 'unchanged', value: 'hello' },
       { type: 'unchanged', value: ' ' },
