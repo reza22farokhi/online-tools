@@ -74,7 +74,7 @@ function transformValue(
     const source = value as Record<string, unknown>;
     const keys = Object.keys(source);
     if (options.sortKeys) keys.sort((a, b) => a.localeCompare(b));
-    const result: Record<string, unknown> = {};
+    const result = Object.create(null) as Record<string, unknown>;
     for (const key of keys) {
       const transformed = transformValue(source[key], options, depth + 1);
       if (options.removeNulls && transformed === null) continue;
