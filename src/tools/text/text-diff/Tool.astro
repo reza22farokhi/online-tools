@@ -5,14 +5,31 @@
     <label for="text-new" class="sr-only"><span data-lang-fa="متن دوم برای مقایسه" data-lang-en="Second text to compare">متن دوم برای مقایسه</span></label>
     <textarea id="text-new" placeholder="متن دوم (جدید)..." data-lang-placeholder-fa="متن دوم (جدید)..." data-lang-placeholder-en="Second text (updated)..." style="width: 100%; min-height: 250px; padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border, #ccc); font-family: monospace; resize: vertical;"></textarea>
   </div>
-  <button id="btn-compare" data-lang-fa="مقایسه متن‌ها" data-lang-en="Compare texts" style="padding: 1rem; background: #4f46e5; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">مقایسه متن‌ها</button>
+  <div class="diff-controls">
+    <label for="diff-granularity"><span data-lang-fa="نوع مقایسه" data-lang-en="Diff mode">نوع مقایسه</span>
+      <select id="diff-granularity">
+        <option value="line" data-lang-fa="خطی" data-lang-en="Line">خطی</option>
+        <option value="word" data-lang-fa="کلمه‌ای" data-lang-en="Word">کلمه‌ای</option>
+        <option value="character" data-lang-fa="کاراکتری" data-lang-en="Character">کاراکتری</option>
+      </select>
+    </label>
+    <label><input id="diff-ignore-whitespace" type="checkbox"> <span data-lang-fa="نادیده‌گرفتن فاصله‌ها" data-lang-en="Ignore whitespace">نادیده‌گرفتن فاصله‌ها</span></label>
+    <label><input id="diff-ignore-case" type="checkbox"> <span data-lang-fa="نادیده‌گرفتن بزرگی/کوچکی حروف" data-lang-en="Ignore letter case">نادیده‌گرفتن بزرگی/کوچکی حروف</span></label>
+    <button id="btn-compare" data-lang-fa="مقایسه متن‌ها" data-lang-en="Compare texts">مقایسه متن‌ها</button>
+    <button id="btn-unified" type="button" data-lang-fa="ساخت Unified Diff" data-lang-en="Create unified diff">ساخت Unified Diff</button>
+  </div>
   
   <div id="diff-error" class="diff-error" hidden role="alert"></div>
   <div id="diff-result" style="display: none; padding: 1rem; background: #f9fafb; border-radius: 8px; border: 1px solid #eaeaea; font-family: monospace; white-space: pre-wrap; overflow-x: auto; direction: ltr; text-align: left;"></div>
+  <section id="diff-unified-panel" class="diff-unified-panel" hidden>
+    <label for="diff-unified-output"><span data-lang-fa="خروجی Unified Diff" data-lang-en="Unified diff output">خروجی Unified Diff</span></label>
+    <textarea id="diff-unified-output" readonly spellcheck="false"></textarea>
+    <button id="btn-download-diff" type="button" data-lang-fa="دانلود فایل .diff" data-lang-en="Download .diff file">دانلود فایل .diff</button>
+  </section>
 </div>
 
 <script>
-  import { diffTexts } from './logic';
+  import { diffTextsAdvanced, createUnifiedDiff } from './logic';
 
   const isEnglish = () => document.documentElement.lang === 'en';
 
@@ -23,7 +40,10 @@
     try {
     const oldText = (document.getElementById('text-old') as HTMLTextAreaElement).value;
     const newText = (document.getElementById('text-new') as HTMLTextAreaElement).value;
-    const result = diffTexts(oldText, newText);
+    const granularity = (document.getElementById('diff-granularity') as HTMLSelectElement).value as 'line' | 'word' | 'character';
+    const ignoreWhitespace = (document.getElementById('diff-ignore-whitespace') as HTMLInputElement).checked;
+    const ignoreCase = (document.getElementById('diff-ignore-case') as HTMLInputElement).checked;
+    const result = diffTextsAdvanced(oldText, newText, { granularity, ignoreWhitespace, ignoreCase });
     
     resultDiv.style.display = 'block';
     resultDiv.innerHTML = '';
@@ -55,9 +75,50 @@
       }
     }
   });
+
+  document.getElementById('btn-unified')?.addEventListener('click', () => {
+    const oldText = (document.getElementById('text-old') as HTMLTextAreaElement).value;
+    const newText = (document.getElementById('text-new') as HTMLTextAreaElement).value;
+    const ignoreWhitespace = (document.getElementById('diff-ignore-whitespace') as HTMLInputElement).checked;
+    const ignoreCase = (document.getElementById('diff-ignore-case') as HTMLInputElement).checked;
+    const errorEl = document.getElementById('diff-error');
+    const panel = document.getElementById('diff-unified-panel')!;
+    const output = document.getElementById('diff-unified-output') as HTMLTextAreaElement;
+    try {
+      output.value = createUnifiedDiff(oldText, newText, { ignoreWhitespace, ignoreCase, contextLines: 3 });
+      panel.hidden = false;
+      if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+    } catch (error) {
+      panel.hidden = true;
+      if (errorEl) {
+        errorEl.hidden = false;
+        errorEl.textContent = error instanceof Error ? error.message : (isEnglish() ? 'Could not create unified diff.' : 'ساخت diff ناموفق بود.');
+      }
+    }
+  });
+
+  document.getElementById('btn-download-diff')?.addEventListener('click', () => {
+    const output = document.getElementById('diff-unified-output') as HTMLTextAreaElement;
+    if (!output.value) return;
+    const blob = new Blob([output.value], { type: 'text/x-diff;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'text-diff.diff';
+    link.click();
+    URL.revokeObjectURL(url);
+  });
 </script>
 
 <style>
+  .diff-controls { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; }
+  .diff-controls label { display:inline-flex; align-items:center; gap:.4rem; flex-wrap:wrap; }
+  .diff-controls select { padding:.55rem; border:1px solid var(--color-border); border-radius:8px; background:var(--color-surface); color:inherit; }
+  .diff-controls button, #btn-download-diff { padding:.75rem 1rem; background:var(--color-primary,#4f46e5); color:white; border:0; border-radius:8px; font-weight:600; cursor:pointer; }
+  #btn-unified { background:var(--color-surface-2,#555); }
+  .diff-unified-panel { display:flex; flex-direction:column; gap:.75rem; }
+  .diff-unified-panel[hidden] { display:none; }
+  .diff-unified-panel textarea { width:100%; min-height:180px; padding:.75rem; border:1px solid var(--color-border); border-radius:8px; font-family:monospace; direction:ltr; text-align:left; white-space:pre; overflow:auto; }
   @media (max-width: 700px) {
     .tool-container > div:first-child { grid-template-columns: 1fr !important; }
     .tool-container textarea { min-height: 180px !important; }
