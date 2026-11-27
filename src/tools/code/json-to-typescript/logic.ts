@@ -3,12 +3,12 @@ export const MAX_JSON_NODES = 20_000;
 export const MAX_JSON_DEPTH = 128;
 const RESERVED = new Set(["any","boolean","constructor","number","string","symbol","this","void","never","unknown","null","true","false","interface","type","class","function","return","default","export","import","extends","implements","new","delete","typeof","instanceof","in","of","as","async","await","break","case","catch","continue","debugger","do","else","finally","for","if","switch","throw","try","var","let","const","while","with","yield"]);
 function identifier(value: string): string {
-  const clean = value.replace(/[^\\p{L}\\p{N}_$]/gu, "_");
-  const safe = /^[\\p{L}_$]/u.test(clean) ? clean : "_" + clean;
+  const clean = value.replace(/[^\p{L}\p{N}_$]/gu, "_");
+  const safe = /^[\p{L}_$]/u.test(clean) ? clean : "_" + clean;
   return RESERVED.has(safe) ? safe + "_" : safe || "Property";
 }
 function typeName(value: string): string {
-  return identifier(value).replace(/(^|_)([\\p{L}\\p{N}])/gu, (_match, _prefix, char: string) => char.toUpperCase()) || "Generated";
+  return identifier(value).replace(/(^|_)([\p{L}\p{N}])/gu, (_match, _prefix, char: string) => char.toUpperCase()) || "Generated";
 }
 function quote(value: string): string { return JSON.stringify(value); }
 export function generateTypeScript(source: string, options: GenerateOptions = {}): string {
@@ -49,12 +49,12 @@ export function generateTypeScript(source: string, options: GenerateOptions = {}
       const currentName = typeName(name);
       seen.set(signature, currentName);
       const properties = Object.entries(object).map(([key, value]) => {
-        const property = /^[A-Za-z_$][\\w$]*$/.test(key) && !RESERVED.has(key) ? key : quote(key);
+        const property = /^[A-Za-z_$][\w$]*$/.test(key) && !RESERVED.has(key) ? key : quote(key);
         return "  " + property + (options.optionalProperties ? "?" : "") + ": " + visit(value, currentName + typeName(key)) + ";";
       });
       declarations.push(options.useTypeAliases
-        ? "export type " + currentName + " = {\\n" + properties.join("\\n") + "\\n};"
-        : "export interface " + currentName + " {\\n" + properties.join("\\n") + "\\n}");
+        ? "export type " + currentName + " = {\n" + properties.join("\n") + "\n};"
+        : "export interface " + currentName + " {\n" + properties.join("\n") + "\n}");
       return currentName;
     }
     if (typeof item === "string") return "string";
@@ -63,5 +63,5 @@ export function generateTypeScript(source: string, options: GenerateOptions = {}
     return "unknown";
   }
   const rootType = visit(value, root);
-  return declarations.length ? declarations.join("\\n\\n") : "export type " + root + " = " + rootType + ";";
+  return declarations.length ? declarations.join("\n\n") : "export type " + root + " = " + rootType + ";";
 }
