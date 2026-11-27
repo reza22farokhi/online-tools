@@ -78,7 +78,7 @@ describe('Advanced Text Diff', () => {
   });
 
   it('creates a unified diff and marks added and removed lines', () => {
-    const output = createUnifiedDiff('one\\ntwo\\n', 'one\\nthree\\n');
+    const output = createUnifiedDiff('one\ntwo\n', 'one\nthree\n');
     expect(output).toContain('--- original');
     expect(output).toContain('+++ updated');
     expect(output).toContain('-two');
