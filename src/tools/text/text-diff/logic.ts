@@ -58,18 +58,11 @@ function normalizeDiffToken(token: string, options: AdvancedDiffOptions): string
   return value;
 }
 
-export function diffTextsAdvanced(
-  oldText: string,
-  newText: string,
+function diffTokenSequences(
+  oldTokens: string[],
+  newTokens: string[],
   options: AdvancedDiffOptions = {}
 ): DiffResult[] {
-  const granularity = options.granularity ?? 'line';
-  if (oldText.length + newText.length > 200_000) {
-    throw new Error('حجم متن برای مقایسه بیش از حد مجاز است (حداکثر ۲۰۰ هزار نویسه).');
-  }
-
-  const oldTokens = tokenizeDiffText(oldText, granularity);
-  const newTokens = tokenizeDiffText(newText, granularity);
   if (oldTokens.length > 20_000 || newTokens.length > 20_000 || oldTokens.length * newTokens.length > 1_000_000) {
     throw new Error('تعداد قطعه‌ها برای مقایسه بیش از حد مجاز است (حداکثر ۱ میلیون خانه مقایسه).');
   }
@@ -104,17 +97,59 @@ export function diffTextsAdvanced(
   return reversed.reverse();
 }
 
+export function diffTextsAdvanced(
+  oldText: string,
+  newText: string,
+  options: AdvancedDiffOptions = {}
+): DiffResult[] {
+  if (oldText.length + newText.length > 200_000) {
+    throw new Error('حجم متن برای مقایسه بیش از حد مجاز است (حداکثر ۲۰۰ هزار نویسه).');
+  }
+
+  const granularity = options.granularity ?? 'line';
+  return diffTokenSequences(
+    tokenizeDiffText(oldText, granularity),
+    tokenizeDiffText(newText, granularity),
+    options
+  );
+}
+
+function tokenizeUnifiedLines(text: string): string[] {
+  if (text.length === 0) return [];
+  const lines = text.split('\n');
+  if (text.endsWith('\n')) lines.pop();
+  return lines;
+}
+
 export function createUnifiedDiff(
   oldText: string,
   newText: string,
   options: { contextLines?: number; ignoreWhitespace?: boolean; ignoreCase?: boolean } = {}
 ): string {
+  if (oldText.length + newText.length > 200_000) {
+    throw new Error('حجم متن برای مقایسه بیش از حد مجاز است (حداکثر ۲۰۰ هزار نویسه).');
+  }
+
   const contextLines = Math.max(0, Math.min(20, Math.floor(options.contextLines ?? 3)));
-  const result = diffTextsAdvanced(oldText, newText, {
-    granularity: 'line',
+  const oldLines = tokenizeUnifiedLines(oldText);
+  const newLines = tokenizeUnifiedLines(newText);
+  const oldHasNoFinalNewline = oldText.length > 0 && !oldText.endsWith('\n');
+  const newHasNoFinalNewline = newText.length > 0 && !newText.endsWith('\n');
+  const result = diffTokenSequences(oldLines, newLines, {
     ignoreWhitespace: options.ignoreWhitespace,
     ignoreCase: options.ignoreCase
   });
+
+  // A final-newline-only change must remain visible in a unified diff.
+  if (oldHasNoFinalNewline !== newHasNoFinalNewline && oldLines.length > 0 && newLines.length > 0) {
+    const last = result[result.length - 1];
+    if (last?.type === 'unchanged' && last.value === oldLines[oldLines.length - 1] && last.value === newLines[newLines.length - 1]) {
+      result.splice(result.length - 1, 1,
+        { type: 'removed', value: oldLines[oldLines.length - 1] },
+        { type: 'added', value: newLines[newLines.length - 1] }
+      );
+    }
+  }
 
   let oldLine = 1;
   let newLine = 1;
@@ -150,9 +185,16 @@ export function createUnifiedDiff(
     const newStart = newCount === 0 ? Math.max(0, first.newLine - 1) : first.newLine;
     output.push('@@ -' + oldStart + ',' + oldCount + ' +' + newStart + ',' + newCount + ' @@');
     for (const index of hunk) {
-      const item = rows[index].item;
+      const row = rows[index];
+      const item = row.item;
       const prefix = item.type === 'added' ? '+' : item.type === 'removed' ? '-' : ' ';
       output.push(prefix + item.value);
+      if (item.type === 'removed' && oldHasNoFinalNewline && row.oldLine === oldLines.length) {
+        output.push('\\ No newline at end of file');
+      }
+      if (item.type === 'added' && newHasNoFinalNewline && row.newLine === newLines.length) {
+        output.push('\\ No newline at end of file');
+      }
     }
   }
   return output.join('\n');
