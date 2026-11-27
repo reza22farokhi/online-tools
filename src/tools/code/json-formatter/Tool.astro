@@ -18,6 +18,28 @@
       </select>
     </div>
   </div>
+  <section class="jf-advanced" aria-label="Advanced JSON tools">
+    <div class="jf-advanced-options">
+      <strong data-lang-fa="پاک‌سازی و تبدیل پیشرفته" data-lang-en="Advanced cleanup and transforms">پاک‌سازی و تبدیل پیشرفته</strong>
+      <label><input id="jf-sort-keys" type="checkbox"> <span data-lang-fa="مرتب‌سازی کلیدها" data-lang-en="Sort object keys">مرتب‌سازی کلیدها</span></label>
+      <label><input id="jf-remove-nulls" type="checkbox"> <span data-lang-fa="حذف مقدارهای null" data-lang-en="Remove null values">حذف مقدارهای null</span></label>
+      <label><input id="jf-remove-empty" type="checkbox"> <span data-lang-fa="حذف رشته و ساختارهای خالی" data-lang-en="Remove empty strings and containers">حذف رشته و ساختارهای خالی</span></label>
+      <button type="button" class="btn" id="jf-transform"><span data-lang-fa="اعمال پاک‌سازی" data-lang-en="Apply cleanup">اعمال پاک‌سازی</span></button>
+    </div>
+    <div class="jf-path-tools">
+      <strong data-lang-fa="کاوشگر JSONPath" data-lang-en="JSONPath explorer">کاوشگر JSONPath</strong>
+      <label for="jf-path"><span data-lang-fa="مسیر داده" data-lang-en="Data path">مسیر داده</span></label>
+      <div class="jf-path-row">
+        <input id="jf-path" class="input" type="text" value="$" maxlength="500" placeholder="$.users[0].name" dir="ltr" spellcheck="false">
+        <button type="button" class="btn btn-primary" id="jf-path-extract"><span data-lang-fa="استخراج مسیر" data-lang-en="Extract path">استخراج مسیر</span></button>
+        <button type="button" class="btn" id="jf-path-copy" disabled><span data-lang-fa="کپی نتیجه" data-lang-en="Copy result">کپی نتیجه</span></button>
+      </div>
+      <p class="jf-help" data-lang-fa="نمونه: $.user.name ، $[&quot;odd-key&quot;] ، $.items[*].id. اجرای کد یا eval انجام نمی‌شود." data-lang-en="Examples: $.user.name, $[&quot;odd-key&quot;], $.items[*].id. No code execution or eval is used.">Examples: $.user.name, $[&quot;odd-key&quot;], $.items[*].id.</p>
+      <p id="jf-path-error" class="jf-path-error" role="alert" hidden></p>
+      <label for="jf-path-output"><span data-lang-fa="نتیجه مسیر" data-lang-en="Path result">نتیجه مسیر</span></label>
+      <textarea id="jf-path-output" class="textarea jf-path-output" readonly spellcheck="false"></textarea>
+    </div>
+  </section>
   <div class="jf-error" id="jf-error" hidden role="alert"></div>
   <div class="jf-actions">
     <button type="button" class="btn" id="jf-clear"><span aria-hidden="true">🗑️</span> <span data-lang-fa="پاک کردن" data-lang-en="Clear">پاک کردن</span></button>
@@ -27,7 +49,7 @@
   <textarea id="jf-output" class="textarea jf-output" readonly placeholder="پس از جای‌گذاری JSON، خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-fa="پس از جای‌گذاری JSON، خروجی اینجا نمایش داده می‌شود..." data-lang-placeholder-en="Formatted JSON will appear here..."></textarea>
 </div>
 <script>
-  import { processJson } from './logic';
+  import { processJson, queryJsonPath, transformJson } from './logic';
   import type { JsonMode } from './logic';
   import { copyText, toast } from '../../../lib/ui';
   const MAX_INPUT = 100_000;
@@ -39,6 +61,15 @@
   const clearBtn = document.getElementById('jf-clear') as HTMLButtonElement | null;
   const copyBtn = document.getElementById('jf-copy') as HTMLButtonElement | null;
   const modeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.jf-mode'));
+  const sortKeys = document.getElementById('jf-sort-keys') as HTMLInputElement | null;
+  const removeNulls = document.getElementById('jf-remove-nulls') as HTMLInputElement | null;
+  const removeEmpty = document.getElementById('jf-remove-empty') as HTMLInputElement | null;
+  const transformBtn = document.getElementById('jf-transform') as HTMLButtonElement | null;
+  const pathInput = document.getElementById('jf-path') as HTMLInputElement | null;
+  const pathOutput = document.getElementById('jf-path-output') as HTMLTextAreaElement | null;
+  const pathError = document.getElementById('jf-path-error') as HTMLParagraphElement | null;
+  const pathExtractBtn = document.getElementById('jf-path-extract') as HTMLButtonElement | null;
+  const pathCopyBtn = document.getElementById('jf-path-copy') as HTMLButtonElement | null;
   let currentMode: JsonMode = 'format';
   let hasError = false;
   const isEnglish = () => document.documentElement.lang === 'en';
@@ -67,7 +98,12 @@
       hasError = false; renderError(); output.value = result.output; if (copyBtn) copyBtn.disabled = result.output === '';
     }
   }
-  input?.addEventListener('input', refresh);
+  input?.addEventListener('input', () => {
+    if (pathOutput) pathOutput.value = '';
+    if (pathError) { pathError.hidden = true; pathError.textContent = ''; }
+    if (pathCopyBtn) pathCopyBtn.disabled = true;
+    refresh();
+  });
   indentSelect?.addEventListener('change', refresh);
   for (const btn of modeBtns) {
     btn.addEventListener('click', () => {
@@ -75,7 +111,53 @@
       currentMode = (btn.dataset.mode as JsonMode) || 'format'; refresh();
     });
   }
-  clearBtn?.addEventListener('click', () => { if (input) input.value = ''; refresh(); input?.focus(); });
+  clearBtn?.addEventListener('click', () => {
+    if (input) input.value = '';
+    if (pathOutput) pathOutput.value = '';
+    if (pathError) { pathError.hidden = true; pathError.textContent = ''; }
+    if (pathCopyBtn) pathCopyBtn.disabled = true;
+    refresh();
+    input?.focus();
+  });
+
+  transformBtn?.addEventListener('click', () => {
+    if (!input || !output) return;
+    const indent: 2 | 4 = indentSelect?.value === '4' ? 4 : 2;
+    const result = transformJson(input.value, {
+      sortKeys: Boolean(sortKeys?.checked),
+      removeNulls: Boolean(removeNulls?.checked),
+      removeEmpty: Boolean(removeEmpty?.checked)
+    }, indent);
+    if (!result.ok) {
+      hasError = true;
+      renderError();
+      if (errorEl) errorEl.textContent = result.error || (isEnglish() ? 'Could not transform JSON.' : 'تبدیل JSON ناموفق بود.');
+      if (copyBtn) copyBtn.disabled = true;
+      return;
+    }
+    hasError = false;
+    renderError();
+    output.value = result.output;
+    if (copyBtn) copyBtn.disabled = result.output === '';
+  });
+
+  pathExtractBtn?.addEventListener('click', () => {
+    if (!input || !pathInput || !pathOutput) return;
+    const indent: 2 | 4 = indentSelect?.value === '4' ? 4 : 2;
+    const result = queryJsonPath(input.value, pathInput.value, indent);
+    if (pathError) {
+      pathError.hidden = result.ok;
+      pathError.textContent = result.ok ? '' : result.error || '';
+    }
+    pathOutput.value = result.ok ? result.output : '';
+    if (pathCopyBtn) pathCopyBtn.disabled = !result.ok || result.output === '';
+  });
+
+  pathCopyBtn?.addEventListener('click', async () => {
+    if (!pathOutput?.value) return;
+    const ok = await copyText(pathOutput.value);
+    toast(ok ? (isEnglish() ? 'Path result copied.' : 'نتیجه مسیر کپی شد') : (isEnglish() ? 'Copy failed.' : 'کپی نشد'), ok ? 'success' : 'error');
+  });
   copyBtn?.addEventListener('click', async () => {
     if (!output || !output.value) return;
     const ok = await copyText(output.value);
@@ -97,4 +179,13 @@
   .jf-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
   .jf-output-label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); margin-top: var(--space-2); }
   .jf-output { background: var(--color-surface-2); }
+  .jf-advanced { display:flex; flex-direction:column; gap:var(--space-3); padding:var(--space-3); border:1px solid var(--color-border); border-radius:var(--radius-md); }
+  .jf-advanced-options { display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-3); }
+  .jf-advanced-options label { display:inline-flex; align-items:center; gap:var(--space-1); font-size:.9rem; }
+  .jf-path-tools { display:flex; flex-direction:column; gap:var(--space-2); }
+  .jf-path-row { display:flex; flex-wrap:wrap; gap:var(--space-2); }
+  .jf-path-row .input { flex:1 1 14rem; min-width:0; direction:ltr; text-align:left; }
+  .jf-path-output { min-height:7rem; font-family:var(--font-mono); direction:ltr; text-align:left; }
+  .jf-path-error { margin:0; color:var(--color-danger); font-size:.85rem; }
+  @media(max-width:480px){ .jf-advanced-options { align-items:flex-start; flex-direction:column; } .jf-path-row > button { flex:1 1 auto; } }
 </style>
