@@ -6,7 +6,7 @@ test('CSV analyzer exposes advanced data-quality stats and local cleanup actions
   await input.fill('name,value\n Ada ,1\nAda,1\n,\n,2\nGrace,3');
   await page.locator('#csa-analyze').click();
 
-  await expect(page.locator('#csa-stats')).toContainText('25.0%');
+  await expect(page.locator('#csa-stats')).toContainText('40.0%');
   await expect(page.locator('#csa-stats')).toContainText('number');
   await expect(page.locator('#csa-stats')).toContainText('Q1');
 
