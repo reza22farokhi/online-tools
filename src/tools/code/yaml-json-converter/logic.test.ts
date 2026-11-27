@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { jsonToYaml, parseYaml, stringifyYaml } from './logic';
+import { jsonToYaml, MAX_YAML_NODES, parseYaml, stringifyYaml } from './logic';
 describe('YAML and JSON conversion', () => {
   it('parses nested mappings, sequences and scalar values', () => {
     expect(parseYaml('name: Ada\nage: 36\nactive: true\ntags:\n  - math\n  - logic')).toEqual({ name: 'Ada', age: 36, active: true, tags: ['math', 'logic'] });
@@ -21,6 +21,11 @@ describe('YAML and JSON conversion', () => {
   });
   it('quotes strings that resemble YAML booleans or numbers', () => {
     expect(parseYaml('flag: "true"\nnumber: "12"')).toEqual({ flag: 'true', number: '12' });
+  });
+  it('rejects YAML and JSON conversion inputs above the node limit', () => {
+    expect(MAX_YAML_NODES).toBe(20000);
+    expect(() => stringifyYaml(Array.from({ length: MAX_YAML_NODES + 1 }, () => null))).toThrow(/۲۰٬۰۰۰/);
+    expect(() => parseYaml(Array.from({ length: MAX_YAML_NODES + 1 }, (_, i) => `k${i}: null`).join('\n'))).toThrow(/۲۰٬۰۰۰/);
   });
   it('preserves prototype-like mapping keys as own properties', () => {
     const parsed = parseYaml('__proto__: safe\nconstructor: value\ntoString: text') as Record<string, unknown>;
