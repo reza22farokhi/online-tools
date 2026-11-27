@@ -77,13 +77,25 @@ describe('Advanced Text Diff', () => {
     expect(result.every(item => item.type === 'unchanged')).toBe(true);
   });
 
-  it('creates a unified diff and marks added and removed lines', () => {
+  it('creates a line-accurate unified diff without a phantom trailing line', () => {
     const output = createUnifiedDiff('one\ntwo\n', 'one\nthree\n');
     expect(output).toContain('--- original');
     expect(output).toContain('+++ updated');
-    expect(output).toContain('@@ -1,3 +1,3 @@');
+    expect(output).toContain('@@ -1,2 +1,2 @@');
+    expect(output).not.toContain('@@ -1,3 +1,3 @@');
     expect(output).toContain('-two');
     expect(output).toContain('+three');
+  });
+
+  it('marks a missing final newline on the updated side', () => {
+    const output = createUnifiedDiff('same\n', 'same');
+    expect(output).toContain('@@ -1,1 +1,1 @@');
+    expect(output).toContain('-same\n+same\n\\ No newline at end of file');
+  });
+
+  it('marks a missing final newline on the original side', () => {
+    const output = createUnifiedDiff('same', 'same\n');
+    expect(output).toContain('-same\n\\ No newline at end of file\n+same');
   });
 
   it('returns a no-changes unified diff for identical text', () => {
