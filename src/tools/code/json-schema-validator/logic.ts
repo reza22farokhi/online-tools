@@ -3,7 +3,24 @@ export interface ValidationResult { valid: boolean; issues: ValidationIssue[]; c
 const MAX_INPUT = 100_000;
 const MAX_DEPTH = 30;
 const MAX_ISSUES = 100;
+export const MAX_JSON_NODES = 20_000;
+export const MAX_JSON_TREE_DEPTH = 100;
 type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
+function assertJsonTreeLimits(root: Json): void {
+  const stack: Array<{ value: Json; depth: number }> = [{ value: root, depth: 0 }];
+  let nodes = 0;
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+    nodes++;
+    if (nodes > MAX_JSON_NODES) throw new Error('ساختار JSON بیش از ۲۰٬۰۰۰ گره دارد.');
+    if (current.depth > MAX_JSON_TREE_DEPTH) throw new Error('عمق ساختار JSON بیش از ۱۰۰ سطح است.');
+    if (Array.isArray(current.value)) {
+      for (const child of current.value) stack.push({ value: child, depth: current.depth + 1 });
+    } else if (current.value !== null && typeof current.value === 'object') {
+      for (const child of Object.values(current.value)) stack.push({ value: child, depth: current.depth + 1 });
+    }
+  }
+}
 function typeMatches(value: Json, type: string): boolean {
   switch (type) {
     case 'null': return value === null;
@@ -27,6 +44,8 @@ export function validateJsonSchema(dataText: string, schemaText: string): Valida
   let data: Json; let schema: Json;
   try { data = JSON.parse(dataText) as Json; } catch { throw new Error('JSON ورودی معتبر نیست.'); }
   try { schema = JSON.parse(schemaText) as Json; } catch { throw new Error('JSON Schema معتبر نیست.'); }
+  assertJsonTreeLimits(data);
+  assertJsonTreeLimits(schema);
   if (schema === null || Array.isArray(schema)) throw new Error('ریشه Schema باید یک شیء یا مقدار بولی باشد.');
   const issues: ValidationIssue[] = [];
   let checked = 0;
