@@ -55,13 +55,13 @@ function serializeNode(node: Node, depth: number, pretty: boolean): string {
   const content = children
     .filter(child => !(child.nodeType === Node.TEXT_NODE && !child.textContent?.trim()))
     .map(child => serializeNode(child, depth + 1, pretty))
-    .join(pretty ? '\\n' : '');
+    .join(pretty ? '\n' : '');
   if (!content) return opening;
   if (!pretty) return opening.replace(/\/>$/, '>') + content + `</${element.tagName}>`;
   const pad = '  '.repeat(depth + 1);
   const closePad = '  '.repeat(depth);
-  return opening.replace(/\/>$/, '>') + '\\n' + pad +
-    content.replace(/\\n/g, '\\n' + pad) + '\\n' + closePad +
+  return opening.replace(/\/>$/, '>') + '\n' + pad +
+    content.replace(/\n/g, '\n' + pad) + '\n' + closePad +
     `</${element.tagName}>`;
 }
 
@@ -73,7 +73,7 @@ export function processXml(input: string, mode: XmlMode, indent: 2 | 4 = 2): Xml
     if (mode === 'minify') return { ok: true, output: serializer.serializeToString(doc) };
     const formatted = serializeNode(doc.documentElement, 0, true);
     const output = indent === 4 ? formatted.replace(/^(?:  )+/gm, spaces => spaces + spaces) : formatted;
-    return { ok: true, output: `<?xml version="1.0"?>\\n${output}` };
+    return { ok: true, output: `<?xml version="1.0"?>\n${output}` };
   } catch (error) {
     return { ok: false, output: '', error: error instanceof Error ? error.message : 'Unable to process XML.' };
   }
