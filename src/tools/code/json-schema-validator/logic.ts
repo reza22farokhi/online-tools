@@ -16,6 +16,7 @@ function typeMatches(value: Json, type: string): boolean {
     default: return true;
   }
 }
+function escapePointerSegment(value: string): string { return value.replace(/~/g, '~0').replace(/\//g, '~1'); }
 function stable(value: Json): string {
   if (Array.isArray(value)) return '[' + value.map(stable).join(',') + ']';
   if (value !== null && typeof value === 'object') return '{' + Object.keys(value).sort().map(k => JSON.stringify(k) + ':' + stable(value[k])).join(',') + '}';
@@ -54,6 +55,10 @@ export function validateJsonSchema(dataText: string, schemaText: string): Valida
     if (typeof value === 'number') {
       if (typeof s.minimum === 'number' && value < s.minimum) add(path, 'مقدار کمتر از minimum است.');
       if (typeof s.maximum === 'number' && value > s.maximum) add(path, 'مقدار بیشتر از maximum است.');
+      if (typeof s.multipleOf === 'number') {
+        if (s.multipleOf <= 0) add(path, 'تعریف multipleOf باید عددی بزرگ‌تر از صفر باشد.');
+        else { const quotient = value / s.multipleOf; if (Math.abs(quotient - Math.round(quotient)) > 1e-10 * Math.max(1, Math.abs(quotient))) add(path, 'مقدار باید مضرب multipleOf باشد.'); }
+      }
       if (typeof s.exclusiveMinimum === 'number' && value <= s.exclusiveMinimum) add(path, 'مقدار باید بزرگ‌تر از exclusiveMinimum باشد.');
       if (typeof s.exclusiveMaximum === 'number' && value >= s.exclusiveMaximum) add(path, 'مقدار باید کوچک‌تر از exclusiveMaximum باشد.');
     }
@@ -68,12 +73,19 @@ export function validateJsonSchema(dataText: string, schemaText: string): Valida
       const keys = Object.keys(obj);
       if (typeof s.minProperties === 'number' && keys.length < s.minProperties) add(path, 'تعداد ویژگی‌ها کمتر از minProperties است.');
       if (typeof s.maxProperties === 'number' && keys.length > s.maxProperties) add(path, 'تعداد ویژگی‌ها بیشتر از maxProperties است.');
-      if (Array.isArray(s.required)) for (const key of s.required) if (typeof key === 'string' && !(key in obj)) add(path + '/' + key, 'ویژگی الزامی وجود ندارد.');
+      if (Array.isArray(s.required)) for (const key of s.required) if (typeof key === 'string' && !Object.hasOwn(obj, key)) add(path + '/' + escapePointerSegment(key), 'ویژگی الزامی وجود ندارد.');
       const props = s.properties && typeof s.properties === 'object' && !Array.isArray(s.properties) ? s.properties as Record<string, Json> : {};
+      const patternProps = s.patternProperties && typeof s.patternProperties === 'object' && !Array.isArray(s.patternProperties) ? s.patternProperties as Record<string, Json> : {};
       for (const [key, child] of Object.entries(obj)) {
-        if (key in props) visit(child, props[key], path + '/' + key.replace(/~/g, '~0').replace(/\//g, '~1'), depth + 1);
-        else if (s.additionalProperties === false) add(path + '/' + key, 'ویژگی اضافی مجاز نیست.');
-        else if (s.additionalProperties && typeof s.additionalProperties === 'object') visit(child, s.additionalProperties, path + '/' + key, depth + 1);
+        const childPath = path + '/' + escapePointerSegment(key);
+        let matched = false;
+        if (Object.hasOwn(props, key)) { matched = true; visit(child, props[key], childPath, depth + 1); }
+        for (const [pattern, patternRule] of Object.entries(patternProps)) {
+          try { if (new RegExp(pattern, 'u').test(key)) { matched = true; visit(child, patternRule, childPath, depth + 1); } }
+          catch { add(path, 'عبارت منظم patternProperties نامعتبر است.'); }
+        }
+        if (!matched && s.additionalProperties === false) add(childPath, 'ویژگی اضافی مجاز نیست.');
+        else if (!matched && s.additionalProperties && typeof s.additionalProperties === 'object') visit(child, s.additionalProperties, childPath, depth + 1);
       }
     }
     if (Array.isArray(s.allOf)) for (const child of s.allOf) visit(value, child, path, depth + 1);
