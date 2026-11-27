@@ -116,11 +116,14 @@ export function createUnifiedDiff(
     ignoreCase: options.ignoreCase
   });
 
-  const rows = result.map((item, index) => ({
-    item,
-    oldLine: result.slice(0, index + 1).filter(x => x.type !== 'added').length,
-    newLine: result.slice(0, index + 1).filter(x => x.type !== 'removed').length
-  }));
+  let oldLine = 1;
+  let newLine = 1;
+  const rows = result.map(item => {
+    const row = { item, oldLine, newLine };
+    if (item.type !== 'added') oldLine++;
+    if (item.type !== 'removed') newLine++;
+    return row;
+  });
 
   const changed = rows.map((row, index) => row.item.type !== 'unchanged' ? index : -1).filter(index => index >= 0);
   if (!changed.length) return '--- original\n+++ updated\n(no changes)';
@@ -130,14 +133,27 @@ export function createUnifiedDiff(
     for (let i = Math.max(0, index - contextLines); i <= Math.min(rows.length - 1, index + contextLines); i++) included.add(i);
   }
 
+  const sorted = [...included].sort((a, b) => a - b);
+  const hunks: number[][] = [];
+  for (const index of sorted) {
+    const current = hunks[hunks.length - 1];
+    if (!current || index > current[current.length - 1] + 1) hunks.push([index]);
+    else current.push(index);
+  }
+
   const output = ['--- original', '+++ updated'];
-  let previous = -2;
-  for (const index of [...included].sort((a, b) => a - b)) {
-    if (previous >= 0 && index > previous + 1) output.push('@@ ... @@');
-    const row = rows[index];
-    const prefix = row.item.type === 'added' ? '+' : row.item.type === 'removed' ? '-' : ' ';
-    output.push(prefix + row.item.value);
-    previous = index;
+  for (const hunk of hunks) {
+    const first = rows[hunk[0]];
+    const oldCount = hunk.filter(index => rows[index].item.type !== 'added').length;
+    const newCount = hunk.filter(index => rows[index].item.type !== 'removed').length;
+    const oldStart = oldCount === 0 ? Math.max(0, first.oldLine - 1) : first.oldLine;
+    const newStart = newCount === 0 ? Math.max(0, first.newLine - 1) : first.newLine;
+    output.push('@@ -' + oldStart + ',' + oldCount + ' +' + newStart + ',' + newCount + ' @@');
+    for (const index of hunk) {
+      const item = rows[index].item;
+      const prefix = item.type === 'added' ? '+' : item.type === 'removed' ? '-' : ' ';
+      output.push(prefix + item.value);
+    }
   }
   return output.join('\n');
 }
