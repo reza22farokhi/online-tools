@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateTypeScript } from './logic';
+import { generateTypeScript, MAX_JSON_DEPTH, MAX_JSON_NODES } from './logic';
 describe('generateTypeScript', () => {
   it('creates nested interfaces and array types', () => {
     const result = generateTypeScript('{"user":{"id":1},"tags":["a","b"]}');
@@ -23,5 +23,13 @@ describe('generateTypeScript', () => {
   it('rejects invalid and oversized JSON', () => {
     expect(() => generateTypeScript('{bad')).toThrow();
     expect(() => generateTypeScript(' '.repeat(100001))).toThrow(/100,000/);
+  });
+  it('rejects deeply nested JSON before recursive generation', () => {
+    const source = '{"a":'.repeat(MAX_JSON_DEPTH + 2) + '0' + '}'.repeat(MAX_JSON_DEPTH + 2);
+    expect(() => generateTypeScript(source)).toThrow(/128-level/);
+  });
+  it('rejects JSON with too many nodes', () => {
+    const source = '[' + Array(MAX_JSON_NODES).fill('0').join(',') + ']';
+    expect(() => generateTypeScript(source)).toThrow(/20,000-node/);
   });
 });
