@@ -73,7 +73,7 @@ function transformValue(
   if (value !== null && typeof value === 'object') {
     const source = value as Record<string, unknown>;
     const keys = Object.keys(source);
-    if (options.sortKeys) keys.sort((a, b) => a.localeCompare(b));
+    if (options.sortKeys) keys.sort();
     const result = Object.create(null) as Record<string, unknown>;
     for (const key of keys) {
       const transformed = transformValue(source[key], options, depth + 1);
