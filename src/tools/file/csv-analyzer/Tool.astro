@@ -21,6 +21,11 @@
       <label><span data-lang-fa="شامل عبارت" data-lang-en="Contains">شامل عبارت</span><input id="csa-query" class="input" type="search" maxlength="500"></label>
       <label><span data-lang-fa="مرتب‌سازی" data-lang-en="Sort">مرتب‌سازی</span><select id="csa-sort" class="input"><option value="none">—</option><option value="asc">A → Z / 0 → 9</option><option value="desc">Z → A / 9 → 0</option></select></label>
       <button id="csa-export" class="btn" type="button" data-lang-fa="دریافت CSV" data-lang-en="Export CSV">دریافت CSV</button>
+      <button id="csa-trim" class="btn" type="button" data-lang-fa="حذف فاصله‌های اضافی" data-lang-en="Trim whitespace">حذف فاصله‌های اضافی</button>
+      <button id="csa-deduplicate" class="btn" type="button" data-lang-fa="حذف ردیف تکراری" data-lang-en="Remove duplicate rows">حذف ردیف تکراری</button>
+      <button id="csa-remove-empty" class="btn" type="button" data-lang-fa="حذف ردیف خالی" data-lang-en="Remove empty rows">حذف ردیف خالی</button>
+      <label class="csa-fill"><span data-lang-fa="جایگزین سلول خالی" data-lang-en="Fill empty cells">جایگزین سلول خالی</span><input id="csa-fill-value" class="input" type="text" maxlength="200"></label>
+      <button id="csa-fill" class="btn" type="button" data-lang-fa="پرکردن خالی‌ها" data-lang-en="Fill empty cells">پرکردن خالی‌ها</button>
     </div>
     <p id="csa-visible" class="csa-muted" aria-live="polite"></p>
     <div class="csa-table-wrap"><table class="csa-table"><thead id="csa-preview-head"></thead><tbody id="csa-preview"></tbody></table></div>
@@ -28,7 +33,7 @@
   <p class="csa-note" data-lang-fa="پردازش کاملاً محلی است. برای جلوگیری از مصرف بیش از حد حافظه، محدودیت‌های CSV موجود در مبدل سایت اعمال می‌شوند." data-lang-en="Processing is entirely local. The existing CSV parser limits are applied to keep memory usage bounded.">پردازش کاملاً محلی است.</p>
 </div>
 <script>
-  import { analyzeCsv, filterCsvRows, rowsToCsv, sortCsvRows } from './logic';
+  import { analyzeCsv, cleanCsvRows, filterCsvRows, rowsToCsv, sortCsvRows } from './logic';
   const $ = (id: string) => document.getElementById(id);
   const input = $('csa-input') as HTMLTextAreaElement;
   const delimiter = $('csa-delimiter') as HTMLSelectElement;
@@ -75,10 +80,10 @@
       stats.forEach(([label, value]) => { const box = document.createElement('div'); cell('strong', value, box); cell('span', label, box); summary.append(box); });
       const columnsRow = $('csa-columns')!; const statsBody = $('csa-stats')!;
       columnsRow.replaceChildren(); statsBody.replaceChildren();
-      ['Column','Non-empty','Empty','Unique','Numeric summary'].forEach((v,i)=>cell('th',words(['ستون','غیرخالی','خالی','یکتا','آمار عددی'][i],v),columnsRow));
+      ['Column','Type','Missing %','Non-empty','Empty','Unique','Numeric summary'].forEach((v,i)=>cell('th',words(['ستون','نوع داده','درصد خالی','غیرخالی','خالی','یکتا','آمار پیشرفته'][i],v),columnsRow));
       a.columns.forEach(col => {
         const tr = document.createElement('tr');
-        [col.name,String(col.nonEmpty),String(col.empty),String(col.unique),col.numeric ? `min ${col.min} · max ${col.max} · mean ${col.mean!.toFixed(2)} · median ${col.median}` : words('—','—')].forEach(v=>cell('td',v,tr));
+        [col.name,words(({empty:'خالی',number:'عدد',boolean:'بولی',date:'تاریخ',text:'متن'} as Record<string,string>)[col.type],col.type),col.missingPercent.toFixed(1)+'%',String(col.nonEmpty),String(col.empty),String(col.unique),col.numeric ? `min ${col.min} · max ${col.max} · mean ${col.mean!.toFixed(2)} · median ${col.median} · Q1 ${col.q1} · Q3 ${col.q3} · SD ${col.standardDeviation!.toFixed(2)} · outliers ${col.outliers}` : (col.mode ? words('نما: ','Mode: ')+col.mode : words('—','—'))].forEach(v=>cell('td',v,tr));
         statsBody.append(tr);
       });
       column.replaceChildren(); a.headers.forEach((h,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=h;column.append(o);});
@@ -100,10 +105,22 @@
     link.href=url; link.download='csv-analysis-export.csv'; link.click(); URL.revokeObjectURL(url);
   });
   input.value=sample; run();
+
+  function applyCleaning(options: { trim?: boolean; removeDuplicates?: boolean; removeEmptyRows?: boolean; fillEmpty?: string }) {
+    if (!analysis) return;
+    const cleaned = cleanCsvRows(analysis.rows, options);
+    input.value = rowsToCsv(analysis.headers, cleaned, activeDelimiter);
+    run();
+  }
+  $('csa-trim')?.addEventListener('click', () => applyCleaning({ trim: true }));
+  $('csa-deduplicate')?.addEventListener('click', () => applyCleaning({ removeDuplicates: true }));
+  $('csa-remove-empty')?.addEventListener('click', () => applyCleaning({ removeEmptyRows: true }));
+  $('csa-fill')?.addEventListener('click', () => applyCleaning({ fillEmpty: ($('csa-fill-value') as HTMLInputElement).value }));
 </script>
 <style>
   .csa-tool{display:flex;flex-direction:column;gap:var(--space-3)}
   .csa-controls,.csa-filter{display:flex;flex-wrap:wrap;align-items:end;gap:var(--space-3)}
+  .csa-fill{display:flex;flex-direction:column;gap:var(--space-1);min-width:9rem}
   .csa-controls label,.csa-filter label{display:flex;flex-direction:column;gap:var(--space-1);min-width:9rem}
   .csa-check{flex-direction:row!important;align-items:center;padding:.6rem 0}
   .csa-area{font-family:var(--font-mono);font-size:.85rem;direction:ltr;text-align:left}
