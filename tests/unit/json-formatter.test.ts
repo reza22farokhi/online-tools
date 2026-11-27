@@ -2,6 +2,22 @@ import { describe, it, expect } from 'vitest';
 import { processJson, queryJsonPath, transformJson } from '../../src/tools/code/json-formatter/logic';
 
 describe('processJson', () => {
+  it('rejects JSON inputs above the character limit in every operation', () => {
+    const oversized = '"' + 'x'.repeat(100_001) + '"';
+    const rootPath = String.fromCharCode(36);
+    expect(processJson(oversized, 'format').ok).toBe(false);
+    expect(transformJson(oversized, {}).ok).toBe(false);
+    expect(queryJsonPath(oversized, rootPath).ok).toBe(false);
+  });
+
+  it('rejects structures above the 20,000-node limit in every operation', () => {
+    const oversized = JSON.stringify(Array.from({ length: 20_001 }, () => 0));
+    const rootPath = String.fromCharCode(36);
+    expect(processJson(oversized, 'minify').ok).toBe(false);
+    expect(transformJson(oversized, {}).ok).toBe(false);
+    expect(queryJsonPath(oversized, rootPath + '[*]').ok).toBe(false);
+  });
+
   it('formats simple object with 2-space indent', () => {
     const r = processJson('{"a":1}', 'format');
     expect(r.ok).toBe(true);
