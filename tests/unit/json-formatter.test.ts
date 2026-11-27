@@ -96,6 +96,15 @@ describe('processJson', () => {
     expect(r.ok).toBe(true);
     expect(r.output).toContain('line1\\nline2');
   });
+
+  it('preserves a __proto__ JSON key without mutating object prototypes', async () => {
+    const { transformJson } = await import('../../src/tools/code/json-formatter/logic');
+    const result = transformJson('{"__proto__":{"polluted":true},"safe":1}', { sortKeys: true });
+    expect(result.ok).toBe(true);
+    const parsed = JSON.parse(result.output);
+    expect(Object.prototype.hasOwnProperty.call(parsed, '__proto__')).toBe(true);
+    expect(({} as { polluted?: boolean }).polluted).toBeUndefined();
+  });
 });
 
 
