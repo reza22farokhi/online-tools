@@ -2,6 +2,28 @@ export type XmlMode = 'format' | 'minify' | 'validate';
 export interface XmlResult { ok: boolean; output: string; error?: string; }
 
 const MAX_XML_LENGTH = 100_000;
+export const MAX_XML_NODES = 20_000;
+export const MAX_XML_DEPTH = 256;
+
+function enforceTreeLimits(doc: XMLDocument): void {
+  const stack: Array<{ node: Node; depth: number }> = [{ node: doc.documentElement, depth: 1 }];
+  let nodeCount = 0;
+
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+    nodeCount += 1;
+    if (nodeCount > MAX_XML_NODES) {
+      throw new Error(`XML document exceeds the ${MAX_XML_NODES.toLocaleString()} node limit.`);
+    }
+    if (current.depth > MAX_XML_DEPTH) {
+      throw new Error(`XML nesting exceeds the maximum depth of ${MAX_XML_DEPTH}.`);
+    }
+
+    for (let i = current.node.childNodes.length - 1; i >= 0; i -= 1) {
+      stack.push({ node: current.node.childNodes[i], depth: current.depth + 1 });
+    }
+  }
+}
 
 function parseXml(input: string): XMLDocument {
   if (!input.trim()) throw new Error('XML input is empty.');
@@ -11,6 +33,7 @@ function parseXml(input: string): XMLDocument {
   const parserError = doc.getElementsByTagName('parsererror')[0];
   if (parserError) throw new Error(parserError.textContent?.trim() || 'Invalid XML syntax.');
   if (!doc.documentElement) throw new Error('XML document has no root element.');
+  enforceTreeLimits(doc);
   return doc;
 }
 
