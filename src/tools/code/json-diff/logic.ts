@@ -5,7 +5,8 @@ export interface JsonDiffResult { entries: JsonDiffEntry[]; total: number; trunc
 const MAX_INPUT = 100_000;
 const MAX_DEPTH = 40;
 const MAX_ENTRIES = 500;
-const pointer = (key: string) => '/' + key.replace(/~/g, '~0').replace(/\//g, '~1');
+const MAX_WORK = 20_000;
+const pointer = (key: string) => '/' + key.replace(/~/g, '~0').replace(/\\//g, '~1');
 export function compareJsonTexts(beforeText: string, afterText: string): JsonDiffResult {
   if (beforeText.length > MAX_INPUT || afterText.length > MAX_INPUT) throw new Error('هر ورودی باید حداکثر ۱۰۰٬۰۰۰ کاراکتر باشد.');
   let before: JsonValue; let after: JsonValue;
@@ -13,8 +14,14 @@ export function compareJsonTexts(beforeText: string, afterText: string): JsonDif
   try { after = JSON.parse(afterText) as JsonValue; } catch { throw new Error('JSON دوم معتبر نیست.'); }
   const entries: JsonDiffEntry[] = [];
   let total = 0;
-  const add = (entry: JsonDiffEntry) => { total++; if (entries.length < MAX_ENTRIES) entries.push(entry); };
+  let work = 0;
+  const consumeWork = (amount = 1) => {
+    work += amount;
+    if (work > MAX_WORK) throw new Error('مقایسهٔ JSON از سقف پردازش مجاز (۲۰٬۰۰۰ گام) عبور کرد؛ ورودی کوچک‌تری استفاده کنید.');
+  };
+  const add = (entry: JsonDiffEntry) => { consumeWork(); total++; if (entries.length < MAX_ENTRIES) entries.push(entry); };
   const walk = (a: JsonValue, b: JsonValue, path: string, depth: number): void => {
+    consumeWork();
     if (depth > MAX_DEPTH) throw new Error('عمق ساختار JSON از حد مجاز (۴۰) بیشتر است.');
     if (Object.is(a, b)) return;
     const aArray = Array.isArray(a); const bArray = Array.isArray(b);
@@ -23,6 +30,7 @@ export function compareJsonTexts(beforeText: string, afterText: string): JsonDif
     if (aArray && bArray) {
       const max = Math.max(a.length, b.length);
       for (let i = 0; i < max; i++) {
+        consumeWork();
         const childPath = path + '/' + i;
         if (i >= a.length) add({ path: childPath, kind: 'added', after: b[i] });
         else if (i >= b.length) add({ path: childPath, kind: 'removed', before: a[i] });
@@ -32,8 +40,11 @@ export function compareJsonTexts(beforeText: string, afterText: string): JsonDif
     }
     if (aObject && bObject) {
       const left = a as Record<string, JsonValue>; const right = b as Record<string, JsonValue>;
-      const keys = [...new Set([...Object.keys(left), ...Object.keys(right)])].sort();
+      const leftKeys = Object.keys(left); const rightKeys = Object.keys(right);
+      consumeWork(leftKeys.length + rightKeys.length);
+      const keys = [...new Set([...leftKeys, ...rightKeys])].sort();
       for (const key of keys) {
+        consumeWork();
         const hasA = Object.prototype.hasOwnProperty.call(left, key);
         const hasB = Object.prototype.hasOwnProperty.call(right, key);
         const childPath = path + pointer(key);
