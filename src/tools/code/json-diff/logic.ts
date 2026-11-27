@@ -6,7 +6,7 @@ const MAX_INPUT = 100_000;
 const MAX_DEPTH = 40;
 const MAX_ENTRIES = 500;
 const MAX_WORK = 20_000;
-const pointer = (key: string) => '/' + key.replace(/~/g, '~0').replace(/\\//g, '~1');
+const pointer = (key: string) => '/' + key.replace(/~/g, '~0').replace(/\//g, '~1');
 export function compareJsonTexts(beforeText: string, afterText: string): JsonDiffResult {
   if (beforeText.length > MAX_INPUT || afterText.length > MAX_INPUT) throw new Error('هر ورودی باید حداکثر ۱۰۰٬۰۰۰ کاراکتر باشد.');
   let before: JsonValue; let after: JsonValue;
