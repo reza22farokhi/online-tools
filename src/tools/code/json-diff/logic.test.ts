@@ -32,4 +32,9 @@ describe('compareJsonTexts', () => {
     expect(result.total).toBe(510);
     expect(result.truncated).toBe(true);
   });
+  it('rejects comparisons that exceed the bounded traversal work', () => {
+    const left = JSON.stringify(Array.from({ length: 15000 }, (_, i) => i));
+    const right = JSON.stringify(Array.from({ length: 15000 }, (_, i) => i + 1));
+    expect(() => compareJsonTexts(left, right)).toThrow(/۲۰٬۰۰۰ گام/);
+  });
 });
