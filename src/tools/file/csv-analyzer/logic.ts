@@ -30,14 +30,12 @@ export interface CsvAnalysis {
 }
 const MAX_FILTER_LENGTH = 500;
 
-function median(values: number[]): number {
-  const sorted = [...values].sort((a, b) => a - b);
+function medianSorted(sorted: number[]): number {
   const mid = Math.floor(sorted.length / 2);
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
-function quartile(values: number[], fraction: number): number {
-  if (values.length === 1) return values[0];
-  const sorted = [...values].sort((a, b) => a - b);
+function quartileSorted(sorted: number[], fraction: number): number {
+  if (sorted.length === 1) return sorted[0];
   const position = (sorted.length - 1) * fraction;
   const lower = Math.floor(position);
   const upper = Math.ceil(position);
@@ -98,13 +96,15 @@ export function analyzeCsv(input: string, delimiter = ',', hasHeaders = true): C
       const count = numericValues.length;
       const sum = numericValues.reduce((total, value) => total + value, 0);
       const mean = sum / count;
-      const q1 = quartile(numericValues, 0.25);
-      const q3 = quartile(numericValues, 0.75);
+      // Reuse one sorted copy for median and quartiles instead of sorting the column three times.
+      const sorted = [...numericValues].sort((a, b) => a - b);
+      const q1 = quartileSorted(sorted, 0.25);
+      const q3 = quartileSorted(sorted, 0.75);
       const iqr = q3 - q1;
-      stats.min = numericValues.reduce((min, value) => Math.min(min, value), Infinity);
-      stats.max = numericValues.reduce((max, value) => Math.max(max, value), -Infinity);
+      stats.min = sorted[0];
+      stats.max = sorted[count - 1];
       stats.mean = mean;
-      stats.median = median(numericValues);
+      stats.median = medianSorted(sorted);
       stats.q1 = q1;
       stats.q3 = q3;
       stats.standardDeviation = Math.sqrt(numericValues.reduce((total, value) => total + (value - mean) ** 2, 0) / count);
